@@ -18,6 +18,15 @@
     --main-width: 1160px;
 
     --border-radius: 8px;
+
+    --put-width: 240px;
+    --put-height: 54px;
+    --put-border-color: #dadfe6;
+    --put-border-hover-color: #3264ff;
+    --put-border-raduis: 4px;
+    --text-color: #0f294d;
+    --pd-16: 16px;
+    --tips-color: #455873;
 }
 
 /* semantic color variables for this project */

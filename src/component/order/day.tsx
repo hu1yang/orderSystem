@@ -35,7 +35,7 @@ const DayChoose = memo(() => {
                                   content: '""',
                                   position: 'absolute',
                                   height: 20,
-                                  borderRight: '1px solid #dadfe6',
+                                  borderRight: '1px solid var(--put-border-color)',
                                   right: 0
                               },
                               '&:last-child::before': {
@@ -53,7 +53,7 @@ const DayChoose = memo(() => {
                               fontSize: 24,
                           },
                           '.MuiTabs-indicator': {
-                              backgroundColor: '#0f294d',
+                              backgroundColor: 'var(--text-color)',
                           }
                       }}>
                     {

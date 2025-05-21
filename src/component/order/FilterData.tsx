@@ -7,12 +7,9 @@ import {
     CardContent,
     Divider,
     Link,
-    styled,
     Tab,
     Tabs,
-    Tooltip,
-    tooltipClasses,
-    type TooltipProps, Typography
+    Typography
 } from "@mui/material";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -23,21 +20,10 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import FareCardsSlider from "@/component/order/Detail.tsx";
+import HtmlTooltip from "../defult/Tooltip";
+import AirTooltip from "@/component/defult/AirTooltip.tsx";
 
-const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} arrow />
-))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: 'var(--vt-c-white)',
-        color: 'rgba(0, 0, 0, 0.87)',
-        fontSize: theme.typography.pxToRem(12),
-        padding: '10px',
-        boxShadow: '0 -8px 16px 3px rgba(15, 41, 77, .2)',
-    },
-    '.MuiTooltip-arrow':{
-        color: 'var(--vt-c-white)',
-    }
-}));
+
 
 const FlightTimeline = memo(() => {
     return (
@@ -319,37 +305,7 @@ const FilterItem = memo(() => {
                                     <span>Air China</span>
                                 </div>
                                 <HtmlTooltip title={
-                                    <div className={styles.airTooltipContent}>
-                                        <div className='s-flex ai-ct'>
-                                            <div className={styles.contentPicture}>
-                                                <img src="https://static.tripcdn.com/packages/flight/airline-logo/latest/airline_logo/3x/ca.webp" alt=""/>
-                                            </div>
-                                            <div className={styles.contentAirTitle}>
-                                                <span>Air China</span>
-                                            </div>
-                                        </div>
-                                        <div className={styles.moreInfo}>
-                                            <div className={styles.moreTitle}>Economy class</div>
-                                            <div className={styles.moreIcon}>
-                                                <div className={`${styles.moreIconLi} s-flex ai-ct`}>
-                                                    <BoltIcon />
-                                                    <span>Inflight meals are available</span>
-                                                </div>
-                                                <div className={`${styles.moreIconLi} s-flex ai-ct`}>
-                                                    <RestaurantIcon />
-                                                    <span>Wi-Fi available</span>
-                                                </div>
-                                                <div className={`${styles.moreIconLi} s-flex ai-ct`}>
-                                                    <WifiIcon />
-                                                    <span>Power outlet</span>
-                                                </div>
-                                                <div className={`${styles.moreIconLi} s-flex ai-ct`}>
-                                                    <PlayCircleIcon />
-                                                    <span>On-demand entertainment</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <AirTooltip />
                                 }>
                                     <div className={styles.airIcon}>
                                         <BoltIcon />

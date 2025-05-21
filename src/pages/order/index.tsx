@@ -1,4 +1,3 @@
-import Orderlayout from "@/component/order/layout";
 import SearchComponent from "@/component/order/search";
 import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
@@ -7,14 +6,16 @@ import FilterData from "@/component/order/FilterData.tsx";
 
 const Order = () => {
     return (
-        <Orderlayout>
-            <SearchComponent />
-            <DayChoose />
-            <div className={`${styles.mainContainer} s-flex jc-bt`}>
-                <FilterComponent />
-                <FilterData />
+        <div className={styles.orderLayout}>
+            <div className={styles.layoutWidth}>
+                <SearchComponent/>
+                <DayChoose/>
+                <div className={`${styles.mainContainer} s-flex jc-bt`}>
+                    <FilterComponent/>
+                    <FilterData/>
+                </div>
             </div>
-        </Orderlayout>
+        </div>
     )
 }
 

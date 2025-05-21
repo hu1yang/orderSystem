@@ -1,0 +1,282 @@
+.detailContainer{
+    font-size: 1rem;
+    .leftDetail{
+        gap: 40px;
+        padding-bottom: 48px;
+        position: relative;
+        .firportTitle{
+            line-height: 1;
+            span{
+                color: var(--text-color);
+                font-size: 1.8em;
+                font-weight: bold;
+            }
+            .firportSet{
+                background: rgba(50,100,255,.08);
+                display: inline-flex;
+                border-radius: 11px;
+                padding: 2px 8px;
+                vertical-align: middle;
+                margin-left: 8px;
+                span{
+                    font-size: 1em;
+                    color: var(--active-color);
+                    font-weight: 400;
+                }
+                &:hover{
+                    outline: 1px solid #3264ff;
+                }
+            }
+        }
+        .firportInfomationBox{
+            gap: 40px;
+            padding-bottom: 48px;
+            margin-bottom: 48px;
+            .firportInfomation{
+                .firportDate{
+                    .firportDateLabel{
+                        line-height: 1;
+                        span{
+                            margin: 0 8px;
+                            font-size: 1.2em;
+                            color: #252b31;
+                        }
+                    }
+
+                }
+                .infoNew{
+                    margin-top: 16px;
+                    position: relative;
+                    .infoLabel{
+                        width: 45px;
+                        font-size: 1.3em;
+                        font-weight: bold;
+                        color: var(--text-color);
+                        margin-inline-end: 52px;
+                    }
+                    .infoNewList{
+                        .infoValue{
+                            color: var(--text-color);
+                            font-size: 1.3em;
+                            font-weight: bold;
+                            strong{
+                                color: #eb5600;
+                                font-size: 1em;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                    .firportDetails{
+                        &::before{
+                            background-color: var(--put-border-color);
+                            border-radius: 2px;
+                            content: "";
+                            display: inline-block;
+                            height: 80%;
+                            inset-inline-start: 68px;
+                            position: absolute;
+                            top: 10%;
+                            width: 4px;
+                        }
+                        .firPicture{
+                            width: 22px;
+                            height: 22px;
+                            img{
+                                max-width: 100%;
+                                height: 100%;
+                            }
+                        }
+                        .firTips{
+                            padding: 16px 0;
+                            .tipsLabel{
+                                color: #8592a6;
+                                font-size: 1.1em;
+                                font-weight: 400;
+                            }
+                            .airIcon{
+                                color: #05939f;
+                                font-size: .8em;
+                                &:hover{
+                                    cursor: help;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .passengerContainer{
+            .tips{
+                font-size: 1.1em;
+                color: var(--text-color);
+            }
+            .cardContent{
+                gap: var(--pd-16);
+                .cardli{
+                    padding: var(--pd-16);
+                    border: 1px solid var(--put-border-color);
+                    border-radius: 8px;
+                    .picture{
+                        width: 56px;
+                        height: 56px;
+                        margin-right: var(--pd-16);
+                        img{
+                            max-height: 100%;
+                            max-width: 100%;
+                        }
+                    }
+                    .cardTitle{
+                        span{
+                            color: var(--text-color);
+                            font-weight: bold;
+                            font-size: 1.1;
+                        }
+
+                    }
+                    .desc{
+                        span{
+                            color: #8592a6;
+                        }
+                        .viewDetail{
+                            color: var(--active-color);
+                            font-size: 1em;
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .cardCom{
+        .priceBox{
+            margin-top: 14px;
+            .priceli{
+
+                .labels , .values{
+                    span{
+                        color: var(--text-color);
+                        font-weight: bold;
+                        font-size: 1.2em;
+                    }
+
+                }
+            }
+
+            .priceHeight {
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+
+                .labels, .values {
+                    line-height: 18px;
+                    padding-top: 8px;
+
+                    span {
+                        font-weight: 400;
+                        font-size: 1.2em;
+                    }
+                }
+
+            }
+            .baggage{
+                .labels{
+                    span{
+                        border: 1px #ced2d9;
+                        border-style: none none dashed;
+                    }
+                }
+            }
+
+        }
+        .priceLine{
+            .labels{
+                font-size: 1.6em;
+                color: var(--text-color);
+                font-weight: bold;
+            }
+            .prices{
+                font-size: 1.6em;
+                color: var(--active-color);
+
+            }
+        }
+    }
+
+}
+.tripBox{
+    text-align: center;
+
+    .tripTitle{
+        color: var(--text-color);
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+    .tripBoxFor, .tripBoxEarn{
+        margin-top: 8px;
+        padding: var(--pd-16);
+        position: relative;
+        &::before{
+            content: '';
+            background-image: url(https://aw-s.tripcdn.com/modules/ibu/online-flight/images/save_coins_pic_3d03beac63.png);
+            width: 32px;
+            height: 32px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            position: absolute;
+            right: 4px;
+            top: 4px;
+        }
+        .tripBoxTitles{
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: left;
+
+        }
+        .tripBoxContent{
+            .tripBoxContentText{
+                display: block;
+                text-align: left;
+                font-size: 1.1em;
+                color: var(--text-color);
+                strong{
+                    color: #996c00;
+                    font-size: 1.2em;
+                }
+            }
+            .tripBoxMore{
+                .tripBoxMoreText{
+                    color: var(--active-color);
+                    font-size: 1.2em;
+                }
+            }
+            .tripBoxMoreBox{
+                .ratio{
+                    background: #f5594a;
+                    border-radius: 2px;
+                    color: var(--vt-c-white);
+                    font-style: italic;
+                    font-weight: bold;
+                    height: 16px;
+                    line-height: 16px;
+                    padding: 0 4px;
+                }
+                span{
+                    color:var(--text-color);
+                    font-size: 1em;
+                    font-weight: 400;
+                }
+            }
+
+
+        }
+    }
+    .tripBoxFor{
+        background: linear-gradient(-.699turn, rgba(97, 157, 255, .08), rgba(77, 50, 255, .08) 101.36%);
+    }
+    .tripBoxEarn{
+        background: #f5f7fa;
+        &::before{
+            background-image: url(https://aw-s.tripcdn.com/modules/ibu/online-flight/images/earn_coins_pic_8813f3c089.png);
+        }
+    }
+}

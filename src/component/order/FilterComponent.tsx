@@ -121,7 +121,7 @@ const RecommendedCheckboxList = () => (
                         sx={{
                             'svg': {
                                 fontSize: 24,
-                                fill: '#0f294d'
+                                fill: 'var(--text-color)'
                             }
                         }}
                     />
