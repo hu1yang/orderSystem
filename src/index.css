@@ -1,0 +1,311 @@
+/* color palette from <https://github.com/vuejs/theme> */
+
+:root {
+    --vt-c-white: #ffffff;
+    --vt-c-white-mute: #f2f2f2;
+
+    --layout-back-color: #f0f2f5;
+    --back-color: rgba(88,68,117,1);
+
+    --active-color:#3264ff;
+
+    --vt-c-indigo: #2c3e50;
+
+    --color-999: #999;
+    --color-666: #666;
+
+    --base-font-size: 12px;
+    --main-width: 1160px;
+
+    --border-radius: 8px;
+}
+
+/* semantic color variables for this project */
+:root {
+    --color-background: var(--vt-c-white);
+    --layout-backgrount: var(--back-color);
+}
+
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    font-weight: normal;
+}
+
+body {
+    min-height: 100vh;
+    color: var(--base-font-size);
+    background: var(--color-background);
+    transition: color 0.5s,
+    background-color 0.5s;
+    line-height: 1.6;
+    font-family: Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+    font-size: 15px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-weight: normal;
+
+    font-size: var(--base-font-size);
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    transition: color 0.5s,
+    background-color 0.5s;
+    line-height: 1.6;
+    font-family: Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+textarea, select, input {
+    appearance: none;
+    outline: none;
+    border-color: transparent;
+    background-color: transparent;
+}
+
+/* 通用 */
+::-webkit-input-placeholder {
+    color: var(--color-999);
+}
+
+::-moz-placeholder {
+    color: var(--color-999);
+}
+
+/* firefox 19+ */
+:-ms-input-placeholder {
+    color: var(--color-999);
+}
+
+/* ie */
+input:-moz-placeholder {
+    color: var(--color-999);
+}
+
+/*flex布局*/
+.s-flex, .flex {
+    display: flex;
+}
+
+.flex-shrink {
+    flex-shrink: 0;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-row{
+    flex-direction: row;
+}
+
+.flex-dir {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.jc-ct {
+    justify-content: center;
+}
+
+.ai-ct {
+    align-items: center;
+}
+
+.ai-bs {
+    align-items: baseline;
+}
+
+.jc-bt {
+    justify-content: space-between;
+}
+
+.jc-ad {
+    justify-content: space-around;
+}
+
+.jc-fe {
+    justify-content: flex-end;
+}
+
+.jc-fs {
+    justify-content: flex-start;
+}
+
+.jc-se {
+    justify-content: space-evenly;
+}
+
+.ai-fe {
+    align-items: flex-end;
+}
+
+.ac-fs {
+    align-content: flex-start;
+}
+
+.ac-fe {
+    align-content: flex-end;
+}
+
+.ai-fs {
+    align-items: flex-start;
+}
+
+.ai-st {
+    align-items: stretch;
+}
+
+/*文本省略*/
+
+.elli-1, .ellipsis-1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.elli-2, .ellipsis-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+.elli-3, .ellipsis-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+.tc {
+    text-align: center;
+}
+
+.bg-fff {
+    background-color: var(--vt-c-white);
+}
+
+.fw-b {
+    font-weight: bold;
+}
+
+.fr {
+    float: right;
+}
+
+.cursor-p {
+    cursor: pointer;
+}
+
+.cursor-h {
+    cursor: help;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/*nodata*/
+.noData {
+    text-align: center;
+
+}
+
+.noData img {
+    width: 100%;
+}
+
+.noData p,
+.noData span,
+.noData .noTex {
+    text-align: center;
+    color: var(--color-666);
+    font-size: 0.28rem;
+}
+
+
+.expandHeight{
+    transition: .2s ease-in-out max-height;
+}
+.expandClass{
+    transition: .3s ease all;
+}
+
+.imgs img{
+    width: 100%;
+    height: 100%;
+}
+
+svg:focus{
+    outline: none;
+}
+
+.full-width {
+    width: 100%;
+}
+.full-height {
+    height: 100%;
+}
+
+
+.rdrDateDisplayWrapper{
+    display: none !important;
+}

@@ -1,0 +1,624 @@
+:root{
+    --put-width: 240px;
+    --put-height: 54px;
+    --put-border-color: #dadfe6;
+    --put-border-hover-color: #3264ff;
+    --put-border-raduis: 4px;
+    --text-color: #0f294d;
+    --pd-16: 16px;
+    --tips-color: #455873;
+}
+.orderLayout{
+    width: 100%;
+    background: var(--layout-back-color);
+
+    .layoutWidth{
+        width: var(--main-width);
+        margin: 0 auto;
+    }
+}
+.searchContainer{
+    border-radius: var(--border-radius);
+    background: var(--vt-c-white);
+    padding: 8px 16px 16px;
+    box-shadow: 0 8px 20px 0 rgba(15, 41, 77, .12);
+}
+
+.inputModel{
+    width: var(--put-width);
+    height: var(--put-height);
+    border: 1px solid;
+    border-color: var(--put-border-color);
+    border-radius: var(--put-border-raduis);
+    padding-inline: 18px 8px;
+    padding: 4px 8px;
+    font-size: 1rem;
+    .addressCard{
+        background: rgba(50, 100, 255, .08);
+        border: 1px solid transparent;
+        padding: 3px 7px;
+        display: inline-flex;
+        border-radius: 4px;
+        height: 100%;
+        &:hover{
+            border-color: var(--put-border-hover-color);
+        }
+        span{
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.4em;
+            line-height: 1;
+        }
+        p{
+            color: var(--text-color);
+            font-weight: 400;
+            font-size: 1.1em;
+            line-height: 1;
+        }
+        svg{
+            color: var(--put-border-color);
+            &:hover{
+                color: var(--put-border-hover-color);
+            }
+        }
+    }
+}
+
+.cycleAddress{
+    width: 40px;
+    height: 40px;
+    border: 1px solid;
+    border-color: var(--put-border-color);
+    background: var(--vt-c-white);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    margin: 0 -7px;
+    z-index: 1;
+    svg{
+        font-size: 1.7em;
+    }
+}
+
+.inputMessage{
+    font-size: 1.4rem;
+    height: 100%;
+    p{
+        font-size: .8em;
+        font-weight: bold;
+    }
+}
+
+
+
+.popBox{
+    width: 450px;
+    font-size: 1rem;
+    user-select: none;
+    .popBoxSearch{
+        padding: var(--pd-16);
+        .inputBox{
+            height: 100%;
+            margin-left: 5px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+    }
+    .popScroll{
+        max-height: 800px;
+        overflow-y: auto;
+        .currentAddress{
+            .currentAddressTitle{
+                padding: var(--pd-16);
+                span{
+                    font-size:1.2em;
+                    font-weight: bold;
+                }
+
+            }
+
+        }
+    }
+    .popTitle{
+        padding: var(--pd-16);
+    }
+    .personContainer{
+        padding: var(--pd-16);
+        .tips{
+            font-size: 1.1em;
+            color: var(--tips-color);
+        }
+    }
+}
+.addressArea{
+    font-size: 1rem;
+    padding: 10px 16px;
+    span{
+        color: #8592a6;
+        font-weight: normal;
+        font-size: 1.1em;
+    }
+}
+.addressBox{
+    padding: 5px 10px;
+    font-size: 1rem;
+    .addressItem{
+        padding: 0px 8px;
+        height: 44px;
+        width: 100%;
+        user-select: none;
+        border-radius: var(--border-radius);
+        &:hover{
+            background: rgba(50, 100, 255, 0.08);
+        }
+        span,svg{
+            font-weight: 400;
+            font-size: 1.1em;
+        }
+        svg{
+            font-size: 1.4em;
+        }
+    }
+}
+
+.dateClass{
+    .rdrDateDisplayWrapper {
+        display: none !important;
+    }
+}
+
+.checkBox {
+    padding: 16px 0;
+
+    .personCheck {
+        font-size: 1rem;
+        margin-top: 22px;
+        &:first-child{
+            margin-top: 0px;
+        }
+
+        .checkLabel {
+            span {
+                color: var(--text-color);
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            p {
+                font-size: 1em;
+
+            }
+        }
+    }
+
+}
+
+.arrowDownIcon{
+    transition: .5s ease transform !important;
+    &.open{
+        transform: rotate(180deg);
+    }
+}
+
+.dayContainer{
+    font-size: 1rem;
+    margin: 16px 0;
+
+    .dayChoose{
+        width: 0;
+        background: var(--vt-c-white);
+        border-radius: var(--border-radius);
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        .dayItem{
+            padding: 8px 16px;
+            .dayView{
+                margin-bottom: 4px;
+                span{
+                    color: var(--text-color);
+                    font-size: 1.2em;
+                }
+            }
+            .moneyView{
+                font-size: 1em;
+                color: #8592a6;
+            }
+        }
+    }
+    .dayChartBtn{
+        background: var(--vt-c-white);
+        border-radius: var(--border-radius);
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-left: 5px;
+        width: 105px;
+        span{
+            font-size: 1.2rem;
+            color: var(--text-color);
+            font-weight: 400;
+        }
+    }
+}
+
+.filterContainer{
+    width: 310px;
+    padding-top: 26px;
+    font-size: 1rem;
+    margin-inline-end: 8px;
+    padding: 0 14px 16px 8px;
+    .filterbox{
+        margin-bottom: 24px;
+        .titleBox{
+            margin-bottom: 16px;
+            .title{
+                span{
+                    color: #051a37;
+                    font-size: 1.6em;
+                    font-weight: bold;
+                }
+                p{
+                    color: var(--tips-color);
+                    font-size: 1.1em;
+                }
+
+            }
+        }
+        .filterLiBox{
+            .fliterLi{
+                background-color: var(--vt-c-white);
+                border-radius: var(--border-radius);
+                color: #051a37;
+                padding: 8px;
+                margin-bottom: 4px;
+                margin-right: 4px;
+                .label{
+                    margin-right: 5px;
+                    span{
+                        font-size: 1.1em;
+                        &:last-child{
+                            font-weight: 500;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    .filterAccordion{
+        margin: 16px 0;
+        .filterHeader{
+            .filterTitle{
+                span{
+                    color: var(--text-color);
+                    font-weight: bold;
+                    font-size: 1.1em;
+                }
+            }
+
+        }
+        .filterCheckBox{
+            .checkLabel{
+                color: #05939f;
+                .icons , svg{
+                    font-size: 1.2em;
+                }
+                div{
+                    font-size: 1.1em;
+                }
+                span{
+                    margin-left: 5px;
+                    font-size: 1.2em;
+                }
+
+            }
+        }
+        .timerTitle{
+            span{
+                color: var(--text-color);
+                font-size: 1em;
+                &:last-child{
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                }
+            }
+        }
+    }
+}
+
+.filterData{
+    width: 0;
+    .filterBox{
+        border-top-left-radius: var(--border-radius);
+        border-top-right-radius: var(--border-radius);
+        overflow: hidden;
+        .filterHeader{
+            background: url("@/assets/100r1c000001d5cue3196_C_960_210.jpg")  center bottom -30px / cover, rgb(50, 100, 255);
+            height: 54px;
+            padding: var(--pd-16);
+            text-shadow: 0 2px 4px rgba(15, 41, 77, .7);
+            color: #fff;
+            margin: 0 0 4px;
+            position: relative;
+            .stackedColor{
+                background: linear-gradient(90deg, #0f294d, rgba(50, 100, 255, .7));
+                border-radius: 8px 8px 0 0;
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+            .filterHeaderTitle{
+                color: #fff;
+                position: relative;
+                h2{
+                    text-shadow: 0 2px 4px rgba(15, 41, 77, .7);
+                    font-size: 1.3em;
+                    font-weight: bold;
+                }
+                span{
+                    font-size: 1.1em;
+                    font-weight: 400;
+                }
+
+            }
+        }
+        .filterContent{
+            margin-top: 4px;
+            margin-bottom: 8px;
+            .filterItem{
+                .filterItemBox{
+                    padding: 0 var(--pd-16);
+                    background: #fff;
+                    .filterTips{
+                        padding: 12px 0;
+                        .tipsIcon{
+                            display: inline-flex;
+                            background: rgba(6,174,189,.08);
+                            border-radius: 2px;
+                            line-height: 1.4em;
+                            padding: 0 4px;
+                            margin-left: 10px;
+                            span{
+                                color: #05939f;
+                                font-size: 1em;
+                                font-weight: 400;
+                                margin-left: 5px;
+                            }
+
+                        }
+
+                    }
+                    .airInfomation{
+                        padding-bottom: 16px;
+                        .leftInfo{
+                            .leftInfoDetail{
+                                .picture{
+                                    width: 40px;
+                                    height: 40px;
+                                    img{
+                                        max-width: 100%;
+                                        max-height: 100%;
+                                    }
+                                }
+                                .leftInfoDetailTitle{
+                                    padding: 0 8px;
+                                    .airTitle{
+                                        span{
+                                            color: var(--text-color);
+                                            font-size: 1.1em;
+                                            font-weight: bold;
+                                        }
+                                    }
+                                    .airIcon{
+                                        svg{
+                                            font-size: 1.1em;
+                                            color: #05939f;
+                                            margin-right: 2px;
+                                        }
+                                        &:hover{
+                                            cursor: help;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .rightInfo{
+                            min-width: 276px;
+                            padding-left: 15px;
+                            flex: 0 0 auto;
+                            .priceBox{
+                                margin-right: 8px;
+                                span{
+                                    color: #8592a6;
+                                    font-size: 1.1em;
+                                    line-height: 1;
+                                }
+                                .price{
+                                    div{
+                                        color: #0f294d;
+                                        font-weight: bold;
+                                        font-size: 1.7em;
+                                        margin-left: 2px;
+                                        line-height: 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .filterItemMore{
+                    margin-top: var(--pd-16);
+                    overflow: hidden;
+                    transition: .5s ease-in-out max-height !important;
+                }
+            }
+        }
+    }
+    .filterTab{
+        background: var(--vt-c-white);
+        width: 100%;
+        height: 57px;
+        .tabItem{
+            span{
+                color: var(--text-color);
+                font-weight: bold;
+                font-size: 1.1em;
+                &:last-child{
+                    font-size: 1em;
+                    font-weight: 400;
+                }
+            }
+
+        }
+    }
+}
+
+.tooltipContent{
+    .tooltipTitle{
+        span{
+            font-size: 1.1em;
+            color: #05939f;
+
+        }
+    }
+    .cardBox{
+        .cardLi{
+            padding: 8px 0;
+            div{
+                color: #051a37;
+                font-size: 1em;
+            }
+            &:last-child{
+                div{
+                    color: #05939f;
+                }
+            }
+        }
+    }
+
+}
+
+.airTooltipContent{
+    .contentPicture{
+        width: 18px;
+        height: 18px;
+        img{
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+    .contentAirTitle{
+        line-height: 1;
+        padding: 0 8px;
+        span{
+            color: var(--text-color);
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+    }
+    .moreInfo{
+        padding: 8px 0;
+        .moreTitle{
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+        .moreIcon{
+            margin-top: 10px;
+            .moreIconLi{
+                margin-bottom: 4px;
+                svg{
+                    color: #05939f;
+                    font-size: 1.1em;
+                }
+                span{
+                    color: #8592a6;
+                    font-size: 1.1em;
+                    margin-left: 4px;
+                }
+
+            }
+        }
+    }
+
+}
+
+.airportLine {
+    position: relative;
+    padding-left: 14px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 4px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: #d8dce5;
+    }
+
+    .airportNode {
+        position: relative;
+        margin-bottom: 8px;
+        line-height: 1.5;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: -13px;
+            top: 5px;
+            width: 8px;
+            height: 8px;
+            background: #d8dce5;
+            border-radius: 2px;
+        }
+
+        .code {
+            font-weight: bold;
+            color: #f56c00;
+            background: #fff2ec;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-right: 6px;
+            font-size: 0.9em;
+        }
+    }
+}
+
+
+.fareCardsSlider{
+    font-size: 1rem;
+    .detailText{
+        .texts{
+            font-size: 1.1em;
+            strong{
+                font-size: 1.1em;
+                color: var(--text-color) !important;
+                font-weight: bold !important;
+            }
+        }
+    }
+    .fareCardsTips{
+        padding: 16px 8px 8px;
+        img{
+            width: 36px;
+            height: 36px;
+        }
+        .fareCardsTipsText{
+            margin-left: 10px;
+            line-height: 1;
+            span{
+                color: var(--text-color);
+                font-size: 1.1em;
+                font-weight: bold;
+            }
+            strong{
+                color: #c15400;
+                font-size: 1.1em;
+                font-weight: bold;
+                margin: 0 2px;
+            }
+        }
+    }
+}
+
