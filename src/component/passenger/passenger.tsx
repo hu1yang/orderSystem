@@ -40,6 +40,11 @@ const Passenger = memo(() => {
                     </div>
                 </div>
             </div>
+            <div className={styles.traveling}>
+                <div className={styles.travelingTitle}>
+                    Who's Traveling?
+                </div>
+            </div>
         </div>
     )
 })
