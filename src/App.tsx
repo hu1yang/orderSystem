@@ -4,7 +4,7 @@ import AppRoutes from "./routes.tsx";
 function App() {
     return (
         <Suspense fallback={<div>loading...</div>}>
-            <AppRoutes />
+            <AppRoutes  />
         </Suspense>
     )
 }
