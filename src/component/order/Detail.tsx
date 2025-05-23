@@ -151,7 +151,7 @@ const FareCardsSlider = memo(() => {
                                     <HtmlTooltip placement="top" sx={{
                                         width: 300,
                                         'MuiTooltip-tooltip':{
-                                            padding: 'var(--pd-16)',
+                                            padding: 'var(--pm-16)',
                                         }
                                     }} title={
                                         <PriceDetail  />
@@ -170,7 +170,7 @@ const FareCardsSlider = memo(() => {
                                     size="large"
                                     sx={{
                                         mt: 4,
-                                        backgroundColor: '#3264ff',
+                                        backgroundColor: 'var(--active-color)',
                                         fontSize:16,
                                         fontWeight: 'bold',
                                         '&:hover': { backgroundColor: '#264fd3' },

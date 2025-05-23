@@ -22,11 +22,15 @@
     --put-width: 240px;
     --put-height: 54px;
     --put-border-color: #dadfe6;
-    --put-border-hover-color: #3264ff;
+    --put-border-hover-color: var(--active-color);
     --put-border-raduis: 4px;
     --text-color: #0f294d;
-    --pd-16: 16px;
+    --price-color: #c15400;
+    --pm-16: 16px;
     --tips-color: #455873;
+    --tips-gary-color: #8592a6;
+    --keynote-text: #05939f;
+
 }
 
 /* semantic color variables for this project */

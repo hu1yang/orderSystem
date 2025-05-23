@@ -1,9 +1,31 @@
+.mb48{
+    margin-bottom: 48px;
+
+}
 .detailContainer{
     font-size: 1rem;
+    .mb48;
     .leftDetail{
-        gap: 40px;
-        padding-bottom: 48px;
-        position: relative;
+        width: 768px;
+        .commonTitle{
+            color: var(--text-color);
+            font-size: 2em;
+            font-weight: bold;
+            line-height: 34px;
+            margin-bottom: var(--pm-16);
+        }
+
+        .commonBox{
+            background: var(--vt-c-white);
+            border-radius: var(--border-radius);
+            padding: var(--pm-16);
+        }
+
+        .gap{
+            gap: 40px;
+            .mb48;
+            position: relative;
+        }
         .firportTitle{
             line-height: 1;
             span{
@@ -24,14 +46,13 @@
                     font-weight: 400;
                 }
                 &:hover{
-                    outline: 1px solid #3264ff;
+                    outline: 1px solid var(--active-color);
                 }
             }
         }
         .firportInfomationBox{
             gap: 40px;
-            padding-bottom: 48px;
-            margin-bottom: 48px;
+            .mb48;
             .firportInfomation{
                 .firportDate{
                     .firportDateLabel{
@@ -89,12 +110,12 @@
                         .firTips{
                             padding: 16px 0;
                             .tipsLabel{
-                                color: #8592a6;
+                                color: var(--tips-gary-color);
                                 font-size: 1.1em;
                                 font-weight: 400;
                             }
                             .airIcon{
-                                color: #05939f;
+                                color: var(--keynote-text);
                                 font-size: .8em;
                                 &:hover{
                                     cursor: help;
@@ -112,16 +133,15 @@
                 margin-bottom: 24px;
             }
             .cardContent{
-                gap: var(--pd-16);
-                margin-bottom: 48px;
+                gap: var(--pm-16);
                 .cardli{
-                    padding: var(--pd-16);
+                    padding: var(--pm-16);
                     border: 1px solid var(--put-border-color);
                     border-radius: 8px;
                     .picture{
                         width: 56px;
                         height: 56px;
-                        margin-right: var(--pd-16);
+                        margin-right: var(--pm-16);
                         img{
                             max-height: 100%;
                             max-width: 100%;
@@ -137,7 +157,7 @@
                     }
                     .desc{
                         span{
-                            color: #8592a6;
+                            color: var(--tips-gary-color);
                         }
                         .viewDetail{
                             color: var(--active-color);
@@ -147,24 +167,205 @@
                     }
                 }
             }
+
+        }
+
+        .passengerFormContainer{
+            .mb48;
+
             .traveling{
                 .travelingTitle{
-                    color: #0f294d;
+                    .commonTitle;
+                }
+            }
+            .cardName{
+                color: var(--text-color);
+                font-weight: bold;
+                font-size: 1.3em;
+                margin-bottom: 10px;
+            }
+            .addForm{
+                padding: var(--pm-16);
+                color: var(--text-color);
+                font-size: 1.3em;
+                background: var(--vt-c-white);
+                border-radius: var(--border-radius);
+                text-align: center;
+                margin-top: 8px;
+                .textA{
+                    display: inline-flex;
+                }
+                &:hover .textA{
+                    box-shadow: 0 1px 0 0 var(--active-color);
+                    transition: .2s;
+                    span , svg{
+                        color: var(--active-color);
+                    }
+                }
+
+            }
+
+        }
+        .contactFormContainer{
+            .mb48;
+
+            .contactTitle{
+                .commonTitle;
+            }
+
+        }
+        .package{
+            .mb48;
+
+            .packgaeTitle{
+                .commonTitle;
+            }
+            .packgaeTips{
+                margin-bottom: var(--pm-16);
+            }
+            .packageContent{
+                .packageli{
+                    .packageliPicture{
+                        width: 184px;
+                        height: 60px;
+                        img{
+                            max-width: 100%;
+                            max-height: 100%;
+                        }
+                    }
+                    .packageliNames{
+                        color: var(--text-color);
+                        font-size: 1.3em;
+                        font-weight: 500;
+                        margin-top: 12px;
+                    }
+                    .packageliTips{
+                        color: var(--tips-gary-color);
+                        font-size: 1em;
+                        line-height: 18px;
+                        margin-top: 8px;
+                    }
+                }
+                .cityText{
+                    color: var(--text-color);
+                    font-size: 1.4em;
+                    font-weight: 400;
+                    margin: 0 8px;
+                }
+                .cityDetail{
+                    color: var(--text-color);
+                    font-size: 1.4em;
+                    font-weight: bold;
+                    line-height: 22px;
+                    padding: 0 4px;
+                    text-align: center;
+                    width: 160px;
+                    text-align: center;
+                }
+                .cityDetailSp{
+                    color: var(--text-color);
+                    font-size: 1.2em;
+                    font-weight: 500;
+                    text-align: center;
+                }
+            }
+
+        }
+        .cancellation{
+            .mb48;
+
+            .cancellationTitle{
+                .commonTitle;
+            }
+            .cancellationli{
+                padding: 10px 0;
+                span{
+                    &:first-child{
+                        color: var(--text-color);
+                        font-size: 1.4em;
+                        font-weight: 500;
+                        line-height: 22px;
+                    }
+                    &:nth-child(2){
+                        color: var(--text-color);
+                        font-size: 1.2em;
+                        line-height: 18px;
+                        margin: 0 6px;
+                    }
+                }
+            }
+
+        }
+        .stayDiscounts{
+            .mb48;
+            .stayDiscountsTitle{
+                .commonTitle;
+            }
+            .stayDiscountsli{
+                .stayDiscountsliPicture{
+                    width: 64px;
+                    height: 64px;
+                    img{
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
+                }
+                .stayDiscountsliTitle{
+                    color: var(--text-color);
+                    font-size: 1.3em;
+                    margin-bottom: 4px;
+                    margin-top: 8px;
+                    line-height: 18px;
+                }
+                .stayDiscountsliPrice{
+                    color: var(--price-color);
+                    font-weight: 700;
+                }
+            }
+
+        }
+        .agreeContainer{
+            margin-bottom: calc(var(--pm-16) / 2);
+            .agree{
+                color: var(--text-color);
+                font-size: 1.2em;
+
+            }
+        }
+        .payContainer{
+            .payPrice{
+                .payPriceLabels{
+                    font-weight: bold;
+                    font-size: 1.4em;
+                    color: var(--text-color);
+                }
+                .payPricevalue{
+                    color: var(--active-color);
                     font-size: 2em;
                     font-weight: bold;
-                    line-height: 34px;
-                    margin-bottom: 16px;
+
                 }
             }
         }
-        .cardFormContainer{
-            background: var(--vt-c-white);
-            border-radius: var(--border-radius);
-            padding: var(--pd-16);
+        .simple{
+            .simpleli{
+                margin: var(--pm-16);
 
+                img{
+                    width: 20px;
+                    height: 20px;
+                }
+                span{
+                    color: var(--text-color);
+                    font-size: 1.2em;
+                }
+
+            }
         }
     }
     .cardCom{
+        position: sticky;
+        top: 20px;
         .priceBox{
             margin-top: 14px;
             .priceli{
@@ -229,7 +430,7 @@
     }
     .tripBoxFor, .tripBoxEarn{
         margin-top: 8px;
-        padding: var(--pd-16);
+        padding: var(--pm-16);
         position: relative;
         &::before{
             content: '';

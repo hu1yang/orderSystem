@@ -76,7 +76,7 @@
     font-size: 1rem;
     user-select: none;
     .popBoxSearch{
-        padding: var(--pd-16);
+        padding: var(--pm-16);
         .inputBox{
             height: 100%;
             margin-left: 5px;
@@ -90,7 +90,7 @@
         overflow-y: auto;
         .currentAddress{
             .currentAddressTitle{
-                padding: var(--pd-16);
+                padding: var(--pm-16);
                 span{
                     font-size:1.2em;
                     font-weight: bold;
@@ -101,10 +101,10 @@
         }
     }
     .popTitle{
-        padding: var(--pd-16);
+        padding: var(--pm-16);
     }
     .personContainer{
-        padding: var(--pd-16);
+        padding: var(--pm-16);
         .tips{
             font-size: 1.1em;
             color: var(--tips-color);
@@ -279,7 +279,7 @@
         }
         .filterCheckBox{
             .checkLabel{
-                color: #05939f;
+                color: var(--keynote-text);
                 .icons , svg{
                     font-size: 1.2em;
                 }
@@ -305,7 +305,24 @@
         }
     }
 }
-
+.tooplis{
+    font-size: 1rem;
+    li{
+        color: var(--text-color);
+        font-size: 1.1em;
+        position: relative;
+        &::before{
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            top: 10px;
+            left: -10px;
+            content: '';
+            border-radius: 50%;
+            background: var(--active-color);
+        }
+    }
+}
 .filterData{
     width: 0;
     .filterBox{
@@ -315,7 +332,7 @@
         .filterHeader{
             background: url("@/assets/100r1c000001d5cue3196_C_960_210.jpg")  center bottom -30px / cover, rgb(50, 100, 255);
             height: 54px;
-            padding: var(--pd-16);
+            padding: var(--pm-16);
             text-shadow: 0 2px 4px rgba(15, 41, 77, .7);
             color: #fff;
             margin: 0 0 4px;
@@ -338,9 +355,10 @@
                     font-weight: bold;
                 }
                 span{
-                    font-size: 1.1em;
+                    font-size: 1.2em;
                     font-weight: 400;
                 }
+
 
             }
         }
@@ -349,7 +367,7 @@
             margin-bottom: 8px;
             .filterItem{
                 .filterItemBox{
-                    padding: 0 var(--pd-16);
+                    padding: 0 var(--pm-16);
                     background: #fff;
                     .filterTips{
                         padding: 12px 0;
@@ -361,7 +379,7 @@
                             padding: 0 4px;
                             margin-left: 10px;
                             span{
-                                color: #05939f;
+                                color: var(--keynote-text);
                                 font-size: 1em;
                                 font-weight: 400;
                                 margin-left: 5px;
@@ -394,7 +412,7 @@
                                     .airIcon{
                                         svg{
                                             font-size: 1.1em;
-                                            color: #05939f;
+                                            color: var(--keynote-text);
                                             margin-right: 2px;
                                         }
                                         &:hover{
@@ -429,7 +447,7 @@
                     }
                 }
                 .filterItemMore{
-                    margin-top: var(--pd-16);
+                    margin-top: var(--pm-16);
                     overflow: hidden;
                     transition: .5s ease-in-out max-height !important;
                 }
@@ -441,12 +459,15 @@
         width: 100%;
         height: 57px;
         .tabItem{
+            font-size: 1rem;
+
             span{
                 color: var(--text-color);
                 font-weight: bold;
-                font-size: 1.1em;
+                font-size: 1.2em;
+                line-height: 1;
                 &:last-child{
-                    font-size: 1em;
+                    font-size: 1.1em;
                     font-weight: 400;
                 }
             }
@@ -459,7 +480,7 @@
     .tooltipTitle{
         span{
             font-size: 1.1em;
-            color: #05939f;
+            color: var(--keynote-text);
 
         }
     }
@@ -472,7 +493,7 @@
             }
             &:last-child{
                 div{
-                    color: #05939f;
+                    color: var(--keynote-text);
                 }
             }
         }
@@ -551,7 +572,7 @@
                 font-weight: bold;
             }
             strong{
-                color: #c15400;
+                color: var(--price-color);
                 font-size: 1.1em;
                 font-weight: bold;
                 margin: 0 2px;
@@ -584,7 +605,7 @@
         .details{
             .detailsLabel , .detailsValue{
                 span{
-                    color: #8592a6;
+                    color: var(--tips-gary-color);
                     font-size: 1.1em;
                 }
                 &.detailsValueWeight span{

@@ -84,7 +84,7 @@ const FilterAccordion = memo(({title, render}: {
                     <Box
                         onClick={() => console.log('clicked')}
                         sx={{
-                            cursor: 'pointer', color: '#3264ff', '&:hover': {
+                            cursor: 'pointer', color: 'var(--active-color)', '&:hover': {
                                 textDecoration: 'underline',
                             }
                         }}
@@ -239,7 +239,7 @@ const FilterComponent = memo(() => {
                         onClick={() => console.log('clicked')}
                         sx={{
                             cursor: 'pointer',
-                            color: '#3264ff',
+                            color: 'var(--active-color)',
                             '&:hover': {
                                 textDecoration: 'underline',
                             },

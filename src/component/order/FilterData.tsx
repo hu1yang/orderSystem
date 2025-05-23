@@ -22,6 +22,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import FareCardsSlider from "@/component/order/Detail.tsx";
 import HtmlTooltip from "../defult/Tooltip";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 
 
@@ -228,7 +229,16 @@ const FilterTab = memo(() => {
                             borderRight: index < filterTabArr.length - 1 ? '1px solid #ddd' : 'none',
                         }} label={
                             <Box className={`${styles.tabItem} s-flex flex-dir`}>
-                                <span>{item.title}</span>
+                                <span className={`s-flex ai-ct`}>{item.title}
+                                    {item.tips && <HtmlTooltip placement={'top'} title={
+                                       <p style={{fontSize: 12 , color: 'var(--text-color)'}}>Our sorting method considers factors such as price, duration, and number of stops to provide you with a variety of options</p>
+                                    }>
+                                        <ErrorOutlineIcon sx={{
+                                            fontSize: 18,
+                                            ml: '10px'
+                                        }} />
+                                    </HtmlTooltip> }
+                                </span>
                                 <span>{item.price}</span>
                             </Box>
                         } />
@@ -251,8 +261,8 @@ const FilterItem = memo(() => {
             <div className={styles.filterItemBox}>
                 <div className={`${styles.filterTips} s-flex ai-ct`}>
                     <div className={`${styles.tipsIcon} s-flex ai-ct`}>
-                        <LuggageIcon sx={{fontSize:14, color: '#05939f' }} />
-                        <BusinessCenterIcon sx={{fontSize:14, color: '#05939f' }} />
+                        <LuggageIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        <BusinessCenterIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
                         <span>Included</span>
                     </div>
                     <HtmlTooltip title={
@@ -333,7 +343,7 @@ const FilterItem = memo(() => {
                             backgroundColor: !open ? 'var(--put-border-hover-color)' : 'transparent',
                             fontWeight: 'bold',
                             fontSize: '1.2em',
-                            color: !open ? '#fff' : '#3264ff',
+                            color: !open ? 'var(--vt-c-white)' : 'var(--active-color)',
                             width: '110px'
 
                         }}>
@@ -360,7 +370,7 @@ const FilterData = memo(() => {
                         <div className={`s-flex ai-fs cursor-p`}>
                             <span>*Last updated: 17:42:44</span>
                             <HtmlTooltip title={
-                                <ul>
+                                <ul className={styles.tooplis}>
                                     <li>Ticket prices are determined by various factors, including seasonal demand, route popularity, booking time, and seat availability. Airlines adjust ticket prices in real-time, which can cause fluctuations.</li>
                                     <li>We recommend booking soon to secure the current offer. We will do our best to continuously monitor the latest prices for you. For accurate information, please refer to the price on the payment page.</li>
                                 </ul>

@@ -119,8 +119,8 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
                 horizontal: 'left',
             }}
             sx={{
-                marginTop: 'calc(var(--pd-16) * -1)',
-                marginLeft: 'calc(var(--pd-16) * -1)',
+                marginTop: 'calc(var(--pm-16) * -1)',
+                marginLeft: 'calc(var(--pm-16) * -1)',
                 pointerEvents: open?'auto':'none'
             }}
             container={document.body}

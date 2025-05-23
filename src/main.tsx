@@ -18,6 +18,15 @@ const theme = createTheme({
                 },
             },
         },
+        MuiFormHelperText:{
+            styleOverrides: {
+                root: {
+                    fontSize: '14px',
+                    marginLeft: 0,
+                    marginRight: 0
+                },
+            },
+        },
         // 标签字体
         MuiInputLabel: {
             styleOverrides: {
