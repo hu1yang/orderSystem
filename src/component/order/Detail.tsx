@@ -11,6 +11,7 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import styles from './styles.module.less'
 import {memo, useCallback} from "react";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
+import {useNavigate} from "react-router";
 
 const fareData = [
     { title: 'Economy', baggage: [{icon: <LuggageIcon sx={{ fontSize: 16, color: '#00b894', mr: 0.5 }} /> , text: 'Carry-on baggage: <strong>1 × 8 kg</strong>'}, {icon: <BusinessCenterIcon sx={{ fontSize: 16, color: '#00b894', mr: 0.5 }} /> , text: 'Checked baggage: <strong> 20 kg</strong>'}], rules: ['Cancellation fee: from US$27.00', 'Change fee: from US$14.00', 'Ticketing: Within 1 hour after payment'], price: 388 },
@@ -113,6 +114,10 @@ const FareCardsSlider = memo(() => {
         nextArrow: <NextArrow />,
         prevArrow: <PrevArrow />,
     };
+    const navigate = useNavigate()
+    const routerPush = () => {
+        navigate('/passenger')
+    }
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider} >
@@ -168,6 +173,7 @@ const FareCardsSlider = memo(() => {
                                     variant='contained'
                                     fullWidth
                                     size="large"
+                                    onClick={routerPush}
                                     sx={{
                                         mt: 4,
                                         backgroundColor: 'var(--active-color)',
