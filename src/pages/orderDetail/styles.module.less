@@ -1,0 +1,306 @@
+
+
+.orderDetailContainer{
+    width: 100%;
+    background: var(--layout-back-color);
+    --status-color: #eb5600;
+
+    .mb48{
+        margin-bottom: 48px;
+    }
+    .commonTitle{
+        color: var(--text-color);
+        font-size: 2em;
+        font-weight: bold;
+        line-height: 34px;
+        margin-bottom: var(--pm-16);
+    }
+    .orderDetailMain{
+        margin: 0 auto;
+        font-size: 1rem;
+        width: var(--main-width);
+        padding: var(--pm-16) 0;
+        .leftContent{
+            width: 0;
+            font-size: 1rem;
+            .orderStatus{
+                padding: var(--pm-16);
+                background: var(--vt-c-white);
+                margin-bottom: var(--pm-16);
+                .orderStatusT{
+                    color: var(--status-color);
+                    font-weight: bold;
+                    font-size: 2em;
+
+                }
+                .orderStatusP{
+                    p{
+                        font-size: 1.2em;
+                        font-weight: 400;
+                    }
+                }
+                .orderPay{
+                    margin-top: var(--pm-16);
+                }
+                .orderTips{
+                    padding: var(--pm-16);
+                    background: rgba(255, 111, 0, 0.08);
+                    span{
+                        color: var(--text-color);
+                        font-size: 1.2em;
+                        font-weight: 400;
+                        i{
+                            color: rgb(235, 86, 0);
+                            font-style: normal;
+                        }
+                    }
+                }
+            }
+            .flightContent{
+                padding: var(--pm-16);
+                background: var(--vt-c-white);
+                margin-bottom: var(--pm-16);
+                font-size: 1rem;
+                .flightTitle{
+                    .commonTitle;
+                }
+                .flightBox{
+                    padding: var(--pm-16) 0;
+                    .flightTips{
+                        color: var(--tips-color);
+                        font-size: 1em;
+                        margin-bottom: 5px;
+                    }
+                    .flightCom{
+                        font-size: 1rem;
+                        margin-bottom: var(--pm-16);
+                        .flightComTitle{
+                            span{
+                                font-size: 1.4em;
+                                font-weight: bold;
+                            }
+                            .tipX{
+                                border-radius: 1px;
+                                background-color: var(--active-color);
+                                font-weight: 600;
+                                font-size: 1em;
+                                padding: 2px 8px;
+                                display: inline-block;
+                                margin-right: 5px;
+                                span{
+                                    color: var(--vt-c-white);
+                                    font-size: 1em;
+                                }
+                            }
+                        }
+                        .flightDetail{
+                            font-size: 1rem;
+                            margin-top: 10px;
+                            .tripBox{
+                                position: relative;
+                                .tripli{
+                                    .timer{
+                                        width: 68px;
+                                        margin-right: 40px;
+                                        margin-left: 12px;
+                                        display: inline-block;
+                                        text-align: right;
+                                        color: var(--text-color);
+
+                                        position: relative;
+                                        font-weight: 400;
+                                        font-size: 1.2em;
+                                    }
+                                    .info{
+                                        margin-right: 8px;
+                                        flex: 1 1 0%;
+                                        color: var(--text-color);
+                                        font-size: 1.2em;
+                                    }
+                                }
+                                .timeConsuming{
+                                    color: #707f94;
+                                    font-size: 1em;
+                                    margin: 8px 0px;
+                                    width: 88px;
+                                    text-align: right;
+                                }
+                                .lines{
+                                    position: absolute;
+                                    height: 90%;
+                                    width: 3px;
+                                    background: var(--put-border-color);
+                                    top: 50%;
+                                    left: 100px;
+                                    transform: translateY(-50%);
+                                    &::before{
+                                        position: absolute;
+                                        width: 8px;
+                                        height: 8px;
+                                        background: var(--put-border-color);
+                                        content: '';
+                                        top: 0;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                    }
+                                    &::after{
+                                        position: absolute;
+                                        width: 8px;
+                                        height: 8px;
+                                        background: var(--put-border-color);
+                                        content: '';
+                                        bottom: 0;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                    }
+                                }
+                            }
+                            .airT{
+                                font-size: 1rem;
+                                .titles{
+                                    img{
+                                        width: 16px;
+                                        height: 16px;
+                                    }
+                                    span{
+                                        font-size: 1.2em;
+                                        font-weight: 400;
+                                        color: var(--text-color);
+                                    }
+                                }
+                                .airTtips{
+                                    .airl{
+                                        color: var(--tips-color);
+                                        font-size: 1.2em;
+                                        padding-right: 8px;
+                                        margin-right: 8px;
+                                        position: relative;
+                                        &:after{
+                                            content: "";
+                                            position: absolute;
+                                            width: 1px;
+                                            top: 4px;
+                                            bottom: 3px;
+                                            right: 0px;
+                                            background: var(--put-border-color);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .passengerContent{
+                background: var(--vt-c-white);
+                padding: var(--pm-16);
+                margin-bottom: var(--pm-16);
+                .passengerTitle{
+                    .commonTitle;
+                }
+                .passengerBox{
+                    padding-bottom: var(--pm-16);
+
+                    .passengerLi{
+                        font-size: 1rem;
+                        .passengerName{
+
+                            span{
+                                font-size: 1.35em;
+                                color: var(--text-color);
+                                font-weight: bold;
+                            }
+                            .write{
+                                font-size: 1rem;
+                                margin-left: 10px;
+                                span{
+                                    color: var(--active-color);
+                                    font-size: 1.2em;
+                                    font-weight: 400;
+                                    font-weight: bold;
+                                }
+                            }
+
+                        }
+                        .liBox{
+                            font-size: 1rem;
+                            color: var(--text-color);
+                            .lis{
+                                color: var(--text-color);
+                                font-size: 1.2rem;
+                                .label{
+                                    flex: 1 1 0%;
+
+                                }
+                                .values{
+                                    flex: 3.5 1 0%;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .detailInfo{
+            width: 376px;
+            font-size: 1rem;
+            margin-left: 20px;
+            .priceT{
+                color: var(--text-color);
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .priceV{
+                color: var(--active-color);
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .priceBox{
+                padding: var(--pm-16) 0 0;
+                font-size: 1rem;
+                .priceBTitle{
+                    .price {
+                        font-size: 1.35em;
+                        font-weight: bold;
+                    }
+                    .bookingTitle {
+                        span{
+                            .price;
+                        }
+                        p{
+                            color: var(--tips-color);
+                            font-size: 1em;
+                        }
+                    }
+                }
+                .tips{
+                    color: var(--status-color);
+                    font-size: 1em;
+                    margin-top: 6px;
+
+                }
+                .about{
+                    margin-top: 8px;
+                    padding: var(--pm-16);
+                    background: var(--layout-back-color);
+                    .aboutF{
+                        span{
+                            color: var(--text-color);
+                            font-size: 1.2em;
+                        }
+                    }
+                    .aboutFC{
+                        .aboutF;
+                        span{
+
+                            color: var(--tips-gary-color);
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+}

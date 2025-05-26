@@ -10,7 +10,7 @@ const Order = () => {
             <div className={styles.layoutWidth}>
                 <SearchComponent/>
                 <DayChoose/>
-                <div className={`${styles.mainContainer} s-flex jc-bt`}>
+                <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
                     <FilterComponent/>
                     <FilterData/>
                 </div>

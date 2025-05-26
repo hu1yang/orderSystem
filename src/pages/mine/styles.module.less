@@ -1,0 +1,134 @@
+.mineContainer{
+    width: 100%;
+    background: var(--layout-back-color);
+    .mb48{
+        margin-bottom: 48px;
+    }
+    .mineMain{
+        margin: 0 auto;
+        font-size: 1rem;
+        width: var(--main-width);
+        padding: var(--pm-16) 0;
+        .mineContent{
+            width: calc(var(--main-width) - 280px - 20px);
+
+            .header{
+                margin-bottom: var(--pm-16);
+                .mineTitle{
+
+                    color: var(--text-color);
+                    font-size: 2.3em;
+                    font-weight: bold;
+                    padding-bottom: var(--pm-16);
+                }
+            }
+            .mineBox{
+                .cardHeader{
+                    font-size: 1rem;
+                    .cardHeaderLeft{
+                        p{
+                            font-size: 1.2em;
+                            color: var(--tips-color);
+                        }
+                        i{
+                            font-size: 1.2em;
+                            text-decoration: underline dotted;
+                            color: var(--tips-color);
+                        }
+                    }
+                    .cardHeaderRight{
+                        .tips{
+                            background: rgba(255, 111, 0, 0.08);
+                            padding: 4px 8px;
+                            border-radius: 2px 2px 2px 2px;
+                            letter-spacing: 0;
+                            line-height: 18px;
+                            span{
+                                font-size: 1.2em;
+                                font-weight: 500;
+                                color: rgb(255, 111, 0);
+                            }
+                        }
+                    }
+
+
+                }
+                .orderBox{
+                    padding: var(--pm-16) 0;
+                    .orderli{
+                        font-size: 1rem;
+                        margin-bottom: var(--pm-16);
+                        .orderTitle{
+                            .orderTitleLeft p , .orderPrice{
+                                font-size: 1.5em;
+                                color: var(--text-color);
+                                font-weight: bold;
+                            }
+
+                        }
+                        .orderDetail{
+                            background: linear-gradient(90deg, #f5f7fa 40%, #fff);
+                            padding: 0 var(--pm-16);
+                            border-radius: 4px 0 0 4px;
+                            font-size: 1rem;
+                            .line{
+                                width: 32px;
+                                height: 1px;
+                                background: var(--put-border-color);
+                                position: relative;
+                                &::before{
+                                    content: '';
+                                    height: 4px;
+                                    width: 4px;
+                                    background: var(--put-border-color);
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    top: -4px;
+                                    left: 0;
+                                }
+                                &::after{
+                                    content: '';
+                                    height: 4px;
+                                    width: 4px;
+                                    background: var(--put-border-color);
+                                    border-radius: 50%;
+                                    position: absolute;
+                                    top: -4px;
+                                    right: 0;
+                                }
+                            }
+                            .timer{
+                                span{
+                                    color: var(--tips-color);
+                                    font-size: 1.1em;
+                                    font-weight: 500;
+                                }
+                            }
+                            .airlinesname{
+                                font-size: 1.1rem;
+                                img{
+                                    width: 18px;
+                                    height: 18px;
+                                }
+                                span{
+                                    font-size: 1.1em;
+                                    font-weight: 500;
+                                    color: var(--text-color);
+                                }
+                            }
+                            .tips{
+                                color: var(--tips-color);
+                                font-size: 1em;
+                                font-weight: 400;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+    }
+
+}

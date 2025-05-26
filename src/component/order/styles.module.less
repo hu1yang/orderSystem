@@ -184,6 +184,9 @@
 .dayContainer{
     font-size: 1rem;
     margin: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 9;
     .dayChoose{
         width: 0;
         background: var(--vt-c-white);
@@ -223,10 +226,11 @@
 
 .filterContainer{
     width: 310px;
-    padding-top: 26px;
     font-size: 1rem;
     margin-inline-end: 8px;
-    padding: 0 14px 16px 8px;
+    padding: 26px 14px 16px 8px;
+    position: sticky;
+    top: 77px;
     .filterbox{
         margin-bottom: 24px;
         .titleBox{
