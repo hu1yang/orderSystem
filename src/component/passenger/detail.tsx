@@ -2,6 +2,7 @@ import {memo, useState} from "react";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import {
+    Alert,
     Avatar, Button,
     Card,
     CardActions,
@@ -11,7 +12,7 @@ import {
     Chip,
     Divider, FormControlLabel,
     Grid,
-    Link,
+    Link, Snackbar, type SnackbarCloseReason,
     Typography
 } from "@mui/material";
 
@@ -32,6 +33,7 @@ import Passenger from "@/component/passenger/passenger.tsx";
 
 import PassengerForm from "./PassengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
+import {useNavigate} from "react-router";
 
 const FirportInfomation = memo(() => {
     return (
@@ -368,10 +370,27 @@ const CardCom = memo(() => {
 })
 
 const NextStep = memo(() => {
+    const [open, setOpen] = useState(false)
     const [agree, setAgree] = useState(true)
+    const navigate  = useNavigate()
 
     const handleSetAgree = () => {
         setAgree(!agree)
+    }
+
+    const payTo = () => {
+        setOpen(true)
+        setTimeout(() => {
+            navigate('/mine')
+        },1000)
+    }
+    const handleClose = (_event?: React.SyntheticEvent | Event,
+                         reason?: SnackbarCloseReason,) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
     }
 
     return (
@@ -409,7 +428,7 @@ const NextStep = memo(() => {
                         color:'var(--vt-c-white)',
                         fontWeight: 'bold',
                         fontSize: 18
-                    }} fullWidth>Pay Now</Button>
+                    }} fullWidth onClick={payTo}>Pay Now</Button>
                 </div>
             </div>
             <div className={`${styles.simple} s-flex ai-ct jc-ct`}>
@@ -426,6 +445,16 @@ const NextStep = memo(() => {
                     <span>Rewards for booking</span>
                 </div>
             </div>
+            <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
+                      onClose={handleClose}>
+                <Alert
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' , fontSize: 18 }}
+                >
+                    Payment successful! Redirecting soon~
+                </Alert>
+            </Snackbar>
         </div>
 
     )

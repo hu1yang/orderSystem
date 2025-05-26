@@ -65,11 +65,11 @@ const cabinOptions = [
     { label: 'First', value: 'first' },
 ];
 
-const AddressCard = memo(({style}:{style?:React.CSSProperties}) => {
+const AddressCard = memo(({style,addressName}:{style?:React.CSSProperties,addressName:string}) => {
     return (
         <div className={`${styles.addressCard} cursor-p`} style={style}>
             <div>
-                <span>Beijing</span>
+                <span>{addressName}</span>
                 <p>All airports</p>
             </div>
             <CancelIcon className='cursor-p' />
@@ -150,13 +150,13 @@ const Airports = memo(() => {
     return (
         <div className={`s-flex s-flex ai-ct`}>
             <InputModel openPop={openPop}>
-                <AddressCard  />
+                <AddressCard addressName={'Beijing'}  />
             </InputModel>
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`}>
                 <ConnectingAirportsIcon />
             </div>
             <InputModel openPop={openPop}>
-                <AddressCard style={{marginLeft: '4px'}} />
+                <AddressCard style={{marginLeft: '4px'}} addressName={'Shanghai'} />
             </InputModel>
             <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
