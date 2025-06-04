@@ -84,8 +84,8 @@ const Mine = () => {
     return (
         <div className={styles.mineContainer}>
             <div className={`${styles.mineMain} s-flex ai-fs jc-bt`}>
-                <div style={{width: '280px',height: '200px' , background: 'var(--vt-c-white)' , borderRadius: 'var(--border-radius)' }}>
-
+                <div style={{width: '280px',height: '200px' , background: 'var(--vt-c-white)' , borderRadius: 'var(--border-radius)',textAlign: 'center',padding: 20 }}>
+                    Menu
                 </div>
                 <div className={styles.mineContent}>
                     <div className={styles.header}>

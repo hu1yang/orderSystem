@@ -135,7 +135,9 @@ const Airports = memo(() => {
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
     const popId = useMemo(() => open ? 'airportId':undefined ,[open])
-    const openPop = useCallback((event:React.MouseEvent<HTMLDivElement>) => {
+    const [addressChoose, setAddressChoose] = useState('')
+    const openPop = useCallback((event:React.MouseEvent<HTMLDivElement>,name:string) => {
+        setAddressChoose(name)
         setAnchorEl(event.currentTarget)
     },[])
 
@@ -149,20 +151,20 @@ const Airports = memo(() => {
 
     return (
         <div className={`s-flex s-flex ai-ct`}>
-            <InputModel openPop={openPop}>
+            <InputModel openPop={(event) => openPop(event,'Beijing')}>
                 <AddressCard addressName={'Beijing'}  />
             </InputModel>
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`}>
                 <ConnectingAirportsIcon />
             </div>
-            <InputModel openPop={openPop}>
+            <InputModel openPop={(event) => openPop(event,'Shanghai')}>
                 <AddressCard style={{marginLeft: '4px'}} addressName={'Shanghai'} />
             </InputModel>
             <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
                     <div className={styles.popBoxSearch}>
                         <InputModel style={{width: '100%',}}>
-                            <AddressCard  />
+                            <AddressCard  addressName={addressChoose} />
                             <input type="text" className={styles.inputBox}/>
                         </InputModel>
                     </div>
