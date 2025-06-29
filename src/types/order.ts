@@ -6,10 +6,17 @@ export type PassengerType =  'adt'| 'chd'| 'inf'
 export type LuggageType = 'carry'| 'hand'| 'checked'
 export type LuggageSizeType = 'pc'| 'kg'| 'lb'
 export type ResultType = 'normal'|'teamed'
+export type ISourceType = 'manual'| 'webApi'| 'import'
+export type ChangedType = 'income'|'outlay'|unknown; // 如有更多类型可在此扩展
+export type PaymentType = 'createTicket'| 'refundTicket'| 'changeTicket'| 'teamPayments'| 'teamRetracts'| 'assistIncome'| 'assistOutlay'| 'queryLimited'| 'queryReturns'| 'otherReasons'|unknown; // 如有固定枚举建议列出
 
 type IPassengerIdType =  'pp'| 'ni'| 'bd' | unknown
 type ITravelerSex = 'm'| 'f'| null | unknown
-
+interface ExpandsSetting {
+    indexId: string;
+    value: string;
+    name: string;
+}
 export interface Travelers {
     passengerCount: number
     passengerType: string
@@ -92,7 +99,6 @@ export interface Result {
 }
 
 export interface ResponseData {
-
     channelCode: string
     updatedTime: string
     isFromCaching: boolean
@@ -113,16 +119,19 @@ export interface FQueryResult {
     response: ResponseData
 }
 
+export type FQueryResultForm = Omit<FQueryResult, 'response'> & {
+    response: Result
+}
 
 export interface AirChoose{
     result: Result | null
     channelCode: string
 }
 
-
 export type AirChooseForm = AirChoose & {
     request:FQuery
 }
+
 
 export type OrderCreate = AirChooseForm & {
     shuttleNumber: string
@@ -166,9 +175,64 @@ export interface IResponse{
     taxesAmount: number
     orderNumber: string
 }
-export interface CommonResponseGroup {
+export interface CommonResponseOrder {
     succeed: boolean
     errorCode: string
     errorMessage: string
-    "response": IResponse
+    response: IResponse
+}
+export interface BookingHistory {
+    paymentAccountId: string
+    bookingPaymentId: string
+}
+export interface BookingPayment {
+    id: string
+    branchId: string
+    accountName: string
+    bookingNumber: string
+    transactionId: string
+    balance: number
+    currency: string
+    totalAmount: number
+    exchangeRate: number
+    changedType: ChangedType
+    paymentType: PaymentType
+    remarks: string
+    operator: string
+    creator: string
+    bookingHistory: BookingHistory
+    updatedTime: string // ISO 格式时间
+    createdTime: string // ISO 格式时间
+}
+export interface GroupBalance{
+    id: string;
+    branchId: string;
+    agentId: string;
+    isLocked:boolean;
+    currency:'USD';
+    balance:string|number;
+    operator: string;
+    updatedTime: string;
+    createdTime: string;
+    expandSettings: ExpandsSetting[];
+}
+export interface IContent {
+    beforeBalance: number
+    currentBalance: number
+    agentAccountId: string
+    tradePaymentId: string
+    agentAccount: GroupBalance
+    tradePayment: Omit<BookingPayment, 'accountName'|'bookingNumber'|'balance'|'bookingHistory'>&{
+        agentId: string
+        orderNumber: string
+        reconciled: boolean
+        sourceType:ISourceType;
+        tradeHistory: string
+    }
+    time: string
+}
+export interface CommonResponseGroup {
+    succeed: boolean;
+    message: string;
+    content?: null|string|IContent
 }

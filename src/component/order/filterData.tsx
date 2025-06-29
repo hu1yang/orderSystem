@@ -28,6 +28,7 @@ import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
 import {setChannelCode, setResult} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
+import {queryBookingAgent} from "@/utils/request/agetn.ts";
 
 
 
@@ -325,6 +326,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
         newItineraries.push({
             amounts:chooseAmount,
             itineraryNo:itinerarie.itineraryNo!,
+            itineraryKey: itinerarie.itineraryKey,
             subItineraryId: itinerarie.subItineraryId!,
             segments: itinerarie.segments
         })

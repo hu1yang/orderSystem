@@ -19,7 +19,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ConnectingAirportsIcon from '@mui/icons-material/ConnectingAirports';
 import AddLocationIcon from '@mui/icons-material/AddLocation';
 import PersonIcon from '@mui/icons-material/Person';
-import { DateRange } from 'react-date-range';
+import {Calendar, DateRange} from 'react-date-range';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import { enUS } from 'date-fns/locale';
@@ -30,7 +30,8 @@ import 'react-date-range/dist/theme/default.css';
 import type {ItineraryType, PassengerType} from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {setTravelers, setQueryValue} from "@/store/orderInfo.ts";
+import {setTravelers, setQueryValue, updateItineraries, setAirportList} from "@/store/orderInfo.ts";
+import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
 
 const regions = [
     {
@@ -229,13 +230,23 @@ interface IDate {
     key: 'selection';
 }
 const TimerChoose = memo(() => {
+    const dispatch = useDispatch()
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const isOneWay = useMemo(() => query.itineraryType === 'oneWay', [query.itineraryType]);
+
+    const initialStartDate = useMemo(() => {
+        const dateStr = query.itineraries[0]?.departureDate;
+        return dateStr ? new Date(dateStr) : new Date();
+    }, [query.itineraries]);
+
+    const initialEndDate = useMemo(() => {
+        const roundDateStr = query.itineraries[1]?.departureDate;
+        return roundDateStr ? new Date(roundDateStr) : new Date(initialStartDate.getTime() + 86400000);
+    }, [query.itineraries, initialStartDate]);
+
     const [dateValue, setDateValue] = useState<IDate[]>([{
-        startDate: new Date(),
-        endDate: (() => {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            return tomorrow;
-        })(),
+        startDate: initialStartDate,
+        endDate: isOneWay ? initialStartDate : initialEndDate,
         key: 'selection',
     },])
 
@@ -254,25 +265,47 @@ const TimerChoose = memo(() => {
         setAnchorEl(null)
     },[])
 
+
+
     const formatRange = useMemo(() => {
-        const formattedStart = format(dateValue[0].startDate, 'EEE,MMM dd'); // Thu,May 22
-        const formattedEnd = format(dateValue[0].endDate, 'EEE,MMM dd');     // Thu,Jun 19
+        const formattedStart = format(dateValue[0].startDate, 'EEE, MMM dd');
+        if (isOneWay) return <p>{formattedStart}</p>;
+
+        const formattedEnd = format(dateValue[0].endDate, 'EEE, MMM dd');
         return (
             <>
                 <p>{formattedStart}</p>
                 <p>-</p>
                 <p>{formattedEnd}</p>
             </>
-        )
-    },[dateValue])
+        );
+    }, [dateValue, isOneWay]);
 
-    const changeDate = (selection:IDate) => {
-        const { startDate, endDate } = selection;
-        if (startDate && endDate && startDate.getTime() !== endDate.getTime()) {
+    const changeDate = (selection: IDate | Date) => {
+        if (isOneWay && selection instanceof Date) {
+            const newDate = format(selection, 'yyyy-MM-dd');
+            setDateValue([{
+                startDate: selection,
+                endDate: selection,
+                key: 'selection'
+            }]);
+
+            dispatch(updateItineraries([newDate,'']));
+
             closePop();
         }
-        setDateValue([selection])
-    }
+
+        if (!isOneWay && 'startDate' in selection && 'endDate' in selection) {
+            const startStr = format(selection.startDate!, 'yyyy-MM-dd');
+            const endStr = format(selection.endDate!, 'yyyy-MM-dd');
+
+            setDateValue([selection]);
+
+            dispatch(updateItineraries([startStr,endStr]));
+
+            closePop();
+        }
+    };
 
     return (
         <>
@@ -284,14 +317,22 @@ const TimerChoose = memo(() => {
             <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 {
                     <div className={styles.dateClass}>
-                        <DateRange
-                            locale={enUS}
-                            onChange={({selection}) => changeDate(selection as IDate)}
-                            moveRangeOnFirstSelection={false}
-                            ranges={dateValue}
-                            months={2}
-                            direction="horizontal"
-                        />
+                        {isOneWay ? (
+                            <Calendar
+                                locale={enUS}
+                                date={dateValue[0].startDate}
+                                onChange={(date) => changeDate(date)}
+                            />
+                        ) : (
+                            <DateRange
+                                locale={enUS}
+                                onChange={({ selection }) => changeDate(selection as IDate)}
+                                moveRangeOnFirstSelection={false}
+                                ranges={dateValue}
+                                months={2}
+                                direction="horizontal"
+                            />
+                        )}
                     </div>
                 }
             </InputPop>
@@ -431,6 +472,18 @@ const PersonChoose = memo(() => {
 const SearchComponent = memo(() => {
     const dispatch = useDispatch()
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+
+    const search = () => {
+        const newQuery = {...query}
+        newQuery.travelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+
+        getAuthorizableRoutingGroupAgent(newQuery).then(res => {
+            if(res.length){
+                dispatch(setAirportList(res))
+            }
+        })
+    }
+
     return (
         <div className={styles.searchContainer}>
             <div>
@@ -449,7 +502,7 @@ const SearchComponent = memo(() => {
                 <Airports />
                 <TimerChoose />
                 <PersonChoose />
-                <Button variant="contained" sx={{
+                <Button variant="contained" onClick={search} sx={{
                     width: '120px',
                     height: '54px',
                     color: 'white',

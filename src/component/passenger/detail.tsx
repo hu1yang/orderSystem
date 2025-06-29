@@ -10,6 +10,10 @@ import {
     CardHeader,
     Checkbox,
     Chip,
+    Dialog, DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Divider, FormControlLabel,
     Grid,
     Link, Snackbar, type SnackbarCloseReason,
@@ -34,7 +38,7 @@ import {useNavigate} from "react-router";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {orderCreateAgent} from "@/utils/request/agetn.ts";
+import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
 
 const CardCom = memo(() => {
 
@@ -383,6 +387,8 @@ const Detail = memo(() => {
 
 
     const [open, setOpen] = useState(false)
+    const [dialogVisible, setDialogVisible] = useState(false)
+    const [orderNumber, setOrderNumber] = useState('')
 
     const handleClose = (_event?: React.SyntheticEvent | Event,
                          reason?: SnackbarCloseReason,) => {
@@ -398,7 +404,7 @@ const Detail = memo(() => {
     }>(null)
     const contactRef = useRef<{
         triggerSubmit:() => Promise<IContact>
-    }>()
+    }>(null)
 
     const handlepaySubmit = async () => {
         const passengerForm = [] as IPassenger[]
@@ -408,16 +414,19 @@ const Detail = memo(() => {
         if(passengerRef.current){
             passengerResult = await passengerRef.current.triggerSubmit()
         }
-        if(passengerRef.current){
+        if(contactRef.current){
             contactFormResult = await contactRef.current.triggerSubmit()
         }
         if(passengerResult && contactFormResult){
             passengerForm.push(passengerResult)
             contactForm.push(contactFormResult)
+            const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+
             const result = {
                 ...airChoose,
                 request:{
-                    ...query
+                    ...query,
+                    travelers:newTravelers
                 },
                 shuttleNumber:'',
                 tLimit:'',
@@ -427,13 +436,21 @@ const Detail = memo(() => {
             } as OrderCreate
             orderCreateAgent(result).then(res => {
                 if(res.succeed){
-                    setOpen(true)
-
+                    setOrderNumber(res.response.orderNumber)
                 }
             })
-
-
         }
+    }
+
+    const handleCloseVisible = () => {
+        setDialogVisible(false)
+    }
+    const handlePayment = () => {
+        paymentOrderAgent(orderNumber).then(res => {
+            if(res.succeed){
+                setOpen(true)
+            }
+        })
     }
 
     return (
@@ -652,6 +669,27 @@ const Detail = memo(() => {
                     Payment successful! Redirecting soon~
                 </Alert>
             </Snackbar>
+            <Dialog
+                open={dialogVisible}
+                onClose={handleCloseVisible}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"The order is successfully placed, please pay in time"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Please click Pay to complete this order
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handlePayment} autoFocus>
+                        Payment
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 })
