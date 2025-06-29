@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router';
 import './index.css'
 import App from './App.tsx'
 import {createTheme, ThemeProvider} from "@mui/material";
+import {Provider} from 'react-redux'
+import {store} from '@/store/index.ts'
 
 const theme = createTheme({
     components: {
@@ -99,7 +101,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
       <BrowserRouter  basename={import.meta.env.VITE_BASE}>
           <ThemeProvider theme={theme}>
-            <App />
+              <Provider store={store}>
+                  <App />
+              </Provider>
           </ThemeProvider>
       </BrowserRouter>
   </StrictMode>,

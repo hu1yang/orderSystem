@@ -1,11 +1,11 @@
-import {memo, useCallback, useState} from "react";
+import {memo, useCallback, useMemo, useState} from "react";
 import HelpIcon from '@mui/icons-material/Help';
 import styles from './styles.module.less'
 import {
     Box, Button,
     Card,
-    CardContent,
-    Divider,
+    CardContent, Dialog, DialogActions, DialogContent, DialogTitle,
+    Divider, Grid,
     Link,
     Tab,
     Tabs,
@@ -17,24 +17,31 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import WifiIcon from '@mui/icons-material/Wifi';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import FareCardsSlider from "@/component/order/Detail.tsx";
 import HtmlTooltip from "../defult/Tooltip";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import type {Amount, ResponseItinerary, Result, ResultType, Segment} from "@/types/order.ts";
+import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
+import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
+import {setChannelCode, setResult} from "@/store/orderInfo.ts";
+import {useNavigate} from "react-router";
 
 
 
-const FlightTimeline = memo(() => {
+const FlightTimeline = memo(({segment}:{
+    segment:Segment
+}) => {
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
                 {/* 左侧时间与机场 */}
             <HtmlTooltip placement="bottom" title={
-                <div style={{fontSize: '1.4em',}}>Shanghai Pudong International Airport T2</div>
+                <div style={{fontSize: '1.4em',}}>{segment.departureAirport} - {segment.flightNumber}</div>
             }>
                 <Box textAlign="center">
-                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>06:55</Typography>
+                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(segment.departureTime)}</Typography>
                     <Box
                         lineHeight={1}
                         className={'cursor-h'}
@@ -50,103 +57,116 @@ const FlightTimeline = memo(() => {
                             fontWeight: 500,
                         }}
                     >
-                        PVG T2
+                        {segment.departureAirport} {segment.departureTerminal}
                     </Box>
                 </Box>
             </HtmlTooltip>
             {/* 中间线段与飞行信息 */}
-            <HtmlTooltip placement="bottom" componentsProps={{
-                tooltip: {
-                    sx: {
-                        width: 1200, // ✅ 直接控制
-                    },
-                },
-            }} title={
-                <Box className={styles.airportLine}>
-                    <Box className={styles.airportNode}>
-                        <span className={styles.code}>PVG</span>
-                        Shanghai Pudong International Airport T2
-                    </Box>
-                    <Box className={styles.airportNode}>
-                        <span className={styles.code}>PKX</span>
-                        Beijing Daxing International Airport
-                    </Box>
-                </Box>
-            }>
-                <Box flex="1" mx={2} position="relative">
-                    {/* 线条 */}
-                    <Box
-                        sx={{
-                            height: '2px',
-                            backgroundColor: '#d8dce5',
+
+            <Box flex="1" mx={2} position="relative">
+                {/* 线条 */}
+                <Box
+                    sx={{
+                        height: '2px',
+                        backgroundColor: '#d8dce5',
+                        position: 'relative',
+                        top: '50%',
+                        '&.MuiBox-root': {
+                            background: '#d8dce5',
                             position: 'relative',
-                            top: '50%',
-                            '&.MuiBox-root': {
-                                background: '#d8dce5',
-                                position: 'relative',
-                                '&::before': {
-                                    content: '""', // ✅ 必须用字符串
-                                    position: 'absolute',
-                                    width: '6px',
-                                    height: '6px',
-                                    top: '50%',
-                                    left: '0',
-                                    transform: 'translateY(-50%)',
-                                    backgroundColor: '#d8dce5',
-                                },
-                                '&::after': {
-                                    content: '""', // ✅ 必须用字符串
-                                    position: 'absolute',
-                                    width: '6px',
-                                    height: '6px',
-                                    top: '50%',
-                                    right: '0',
-                                    transform: 'translateY(-50%)',
-                                    backgroundColor: '#d8dce5',
-                                },
-                            }
-                        }}
-                    />
+                            '&::before': {
+                                content: '""', // ✅ 必须用字符串
+                                position: 'absolute',
+                                width: '6px',
+                                height: '6px',
+                                top: '50%',
+                                left: '0',
+                                transform: 'translateY(-50%)',
+                                backgroundColor: '#d8dce5',
+                            },
+                            '&::after': {
+                                content: '""', // ✅ 必须用字符串
+                                position: 'absolute',
+                                width: '6px',
+                                height: '6px',
+                                top: '50%',
+                                right: '0',
+                                transform: 'translateY(-50%)',
+                                backgroundColor: '#d8dce5',
+                            },
+                        }
+                    }}
+                />
                     {/* 飞行时长 */}
-                    <Typography
-                        sx={{
-                            position: 'absolute',
-                            top: '-18px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            fontSize: '1em',
-                            color: '#a0a4af',
-                        }}
-                    >
-                        2h 35m
-                    </Typography>
-                    {/* Nonstop 标签 */}
+                    <HtmlTooltip placement="bottom"  title={
+                        <Box className={styles.airportLine}>
+                            <Box className={styles.airportNode}>
+                                <span className={styles.code}>{segment.departureAirport}</span>
+                                {segment.departureAirport} International Airport {segment.departureTerminal}
+                            </Box>
+                            <Box className={styles.airportNode}>
+                                <span className={styles.code}>{segment.arrivalAirport}</span>
+                                {segment.arrivalAirport} International Airport {segment.arrivalTerminal}
+                            </Box>
+                        </Box>
+                    }>
+                        <Typography
+                            sx={{
+                                position: 'absolute',
+                                top: '-18px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                fontSize: '1em',
+                                color: '#a0a4af',
+                            }}
+                        >
+                            {formatFlyingTime(segment.totalFlyingTime!)}
+                        </Typography>
+                </HtmlTooltip>
+                {/* Nonstop 标签 */}
+                <HtmlTooltip placement="bottom"  title={
+                    <Box className={styles.airportLine}>
+                        <Box className={styles.airportNode}>
+                            <span className={styles.code}>{segment.departureAirport}</span>
+                            {segment.departureAirport} International Airport {segment.departureTerminal}
+                        </Box>
+                        <Box className={styles.airportNode}>
+                            <span className={styles.code}>{segment.arrivalAirport}</span>
+                            {segment.arrivalAirport} International Airport {segment.arrivalTerminal}
+                        </Box>
+                    </Box>
+                }>
                     <Typography
                         sx={{
                             position: 'absolute',
                             top: '6px',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            fontSize: '1em',
+                            fontSize: '1rem',
                             color: '#a0a4af',
                         }}
                     >
-                        Nonstop
+                        {
+                            segment.stops.length?
+                                'Stop'
+                                :
+                                'Nonstop'
+                        }
                     </Typography>
-                </Box>
-            </HtmlTooltip>
+                </HtmlTooltip>
+            </Box>
             <HtmlTooltip placement="bottom" title={
-                <div style={{fontSize: '1.4em',}}>Beijing Daxing International Airport</div>
+                <div style={{fontSize: '1.4em',}}>{segment.arrivalAirport} International Airport{segment.arrivalTerminal}</div>
             }>
                 {/* 右侧时间与机场 */}
                 <Box textAlign="center">
-                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>09:30</Typography>
+                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(segment.arrivalTime)}</Typography>
                     <Typography
                         className={'cursor-h'}
                         sx={{ color: '#a0a4af', fontSize: '1.1em', mt: 0.5 }}
                         lineHeight={1}
                     >
-                        PKX
+                        {segment.arrivalAirport}
                     </Typography>
                 </Box>
             </HtmlTooltip>
@@ -249,14 +269,78 @@ const FilterTab = memo(() => {
     )
 })
 
-const FilterItem = memo(() => {
+const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,contextId,resultType}:{
+    itinerarie:ResponseItinerary
+    channelCode:string
+    resultKey:string
+    policies: string[]
+    contextId: string
+    resultType: ResultType
+    currency:string
+}) => {
+    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
+    const itinerarieQuery = useSelector((state: RootState) => state.ordersInfo.query.itineraries[state.ordersInfo.airportActived])
+    const dispatch = useDispatch()
+
+    const navigate = useNavigate()
+
     const [open, setOpen] = useState(false)
+    const itineraryTypeMap = {
+        multi: 'Multi-city',
+        oneWay: 'One-way',
+        round: 'Round-trip',
+    } as const
 
     const openMore = () => {
-        setOpen(!open)
+        dispatch(setChannelCode(channelCode))
+        setOpen(true)
+    }
+    const handleClose = () => {
+        dispatch(setChannelCode(''))
+        dispatch(setResult(null))
+        setOpen(false)
+        setChooseAmount(null)
     }
 
-    return (
+    const lowestPrice = useMemo(() => {
+        if (!itinerarie?.amounts?.length) return 0;
+
+        const resultAmount = itinerarie.amounts.reduce((min, curr) => {
+            const minTotal = min.printAmount + min.taxesAmount;
+            const currTotal = curr.printAmount + curr.taxesAmount;
+            return currTotal < minTotal ? curr : min;
+        });
+
+        return resultAmount.printAmount as number + resultAmount.taxesAmount as number;
+    }, [itinerarie]);
+
+    const [chooseAmount, setChooseAmount] = useState<Amount[]|null>(null)
+    const handleChooseFnc = useCallback((amount: Amount) => {
+        setChooseAmount([{...amount}])
+    }, [itinerarie.amounts]);
+
+    const submitResult = () => {
+        if(!chooseAmount) return
+        const newItineraries = []
+        newItineraries.push({
+            amounts:chooseAmount,
+            itineraryNo:itinerarie.itineraryNo!,
+            subItineraryId: itinerarie.subItineraryId!,
+            segments: itinerarie.segments
+        })
+        const result = {
+            contextId,
+            policies,
+            resultType,
+            currency,
+            resultKey,
+            itineraries:newItineraries
+        } as Result
+        dispatch(setResult(result))
+        navigate('/passenger')
+    }
+
+    return  (
         <div className={styles.filterItem}>
             <div className={styles.filterItemBox}>
                 <div className={`${styles.filterTips} s-flex ai-ct`}>
@@ -305,7 +389,7 @@ const FilterItem = memo(() => {
                     </HtmlTooltip>
                 </div>
                 <div className={`${styles.airInfomation} s-flex ai-ct`}>
-                    <div className={`${styles.leftInfo} s-flex flex-1`}>
+                    <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
                         <div className={`${styles.leftInfoDetail} s-flex flex-1`}>
                             <div className={styles.picture}>
                                 <img src="https://static.tripcdn.com/packages/flight/airline-logo/latest/airline_logo/3x/ca.webp" alt=""/>
@@ -327,46 +411,113 @@ const FilterItem = memo(() => {
 
                             </div>
                         </div>
-                        <FlightTimeline />
+                        <Grid container className={'flex-1'} spacing={2}>
+                            {
+                                itinerarie.segments.map(segment => (
+                                    <Grid size={12} key={segment.flightNumber}>
+                                        <FlightTimeline segment={segment} />
+                                    </Grid>
+                                ))
+                            }
+                        </Grid>
                     </div>
                     <div className={`${styles.rightInfo} s-flex jc-fe ai-ct`}>
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
                                 <span>from</span>
-                                <div>US$235</div>
+                                <div>{currency}${lowestPrice}</div>
                             </div>
                             <div>
-                                <span>Round-trip</span>
+                                <span>{itineraryTypeMap[itineraryType]}</span>
                             </div>
                         </div>
-                        <Button variant='contained' endIcon={!open ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />} onClick={openMore} sx={{
-                            backgroundColor: !open ? 'var(--put-border-hover-color)' : 'transparent',
+                        <Button variant='contained' onClick={openMore} sx={{
+                            backgroundColor: 'var(--put-border-hover-color)',
                             fontWeight: 'bold',
                             fontSize: '1.2em',
-                            color: !open ? 'var(--vt-c-white)' : 'var(--active-color)',
+                            color: 'var(--vt-c-white)',
                             width: '110px'
 
                         }}>
-                            {!open?'Select':'Hide'}
+                            Select
                         </Button>
                     </div>
                 </div>
             </div>
-            <div style={{maxHeight: open ? 600: 0}} className={styles.filterItemMore}>
-                <FareCardsSlider />
-            </div>
+            <Dialog open={open} onClose={handleClose} maxWidth="lg" className={styles.dialogFirport} sx={{
+                '.MuiDialog-paperWidthLg': {
+                    width:'1024px'
+                }
+            }}>
+                <DialogTitle sx={{
+                    '&.MuiDialogTitle-root': {
+                        padding: '32px 32px 16px'
+                    }
+                }}>
+                    <div className={styles.firportTitle}>
+                        <span>Trip to {itinerarieQuery.departure}</span>
+                    </div>
+                </DialogTitle>
+                <DialogContent sx={{
+                    '&.MuiDialogContent-root':{
+                        backgroundColor:'#f6f7fa',
+                        p:0
+                    }
+                }}>
+                    <div className={`${styles.firportInfo}`}>
+                        <Grid container spacing={2}>
+                            {
+                                itinerarie.segments.map(segment => (
+                                    <Grid size={4} key={segment.flightNumber}>
+                                        <FirportInfomation segment={segment} />
+                                    </Grid>
+                                ))
+                            }
+                        </Grid>
+                    </div>
+                    <div style={{
+                        backgroundColor:'#f6f7fa',
+                        padding:'8px 32px 0'
+                    }}>
+                        <FareCardsSlider amounts={itinerarie.amounts} chooseFnc={handleChooseFnc} />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <div className={`s-flex jc-fe`}>
+                        <Button
+                            variant='contained'
+                            fullWidth
+                            size="large"
+                            sx={{
+                                mt: 4,
+                                backgroundColor: 'var(--active-color)',
+                                fontSize:20,
+                                fontWeight: 'bold',
+                                '&:hover': { backgroundColor: '#264fd3' },
+                            }}
+                            onClick={submitResult}
+                        >
+                            Continue
+                        </Button>
+                    </div>
+
+                </DialogActions>
+            </Dialog>
         </div>
     )
 })
 
 const FilterData = memo(() => {
+    const state = useSelector((state: RootState) => state)
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+
     return (
         <div className={`${styles.filterData} flex-1`}>
             <div className={styles.filterBox}>
                 <div className={styles.filterHeader}>
                     <div className={styles.stackedColor}></div>
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
-                        <h2>1. Departing to Shanghai</h2>
+                        <h2>{state.ordersInfo.airportActived + 1}. Departing to {state.ordersInfo.query.itineraries[state.ordersInfo.airportActived].departure}</h2>
                         <div className={`s-flex ai-fs cursor-p`}>
                             <span>*Last updated: 17:42:44</span>
                             <HtmlTooltip title={
@@ -383,9 +534,20 @@ const FilterData = memo(() => {
                 <FilterTab />
                 <div className={styles.filterContent}>
                     {
-                        Array.from({length: 30}).map((_, index) => (
-                            <FilterItem key={index} />
-                        ))
+                        state.ordersInfo.airportList.map((airport) => {
+                            return airport.results.map(result => {
+                                return result.itineraries.filter(itinerarie => itinerarie.itineraryNo === airportActived).map(itinerarie => (
+                                    <FilterItem key={`${airport.channelCode}-${result.resultKey}-${itinerarie.itineraryKey}`}
+                                                itinerarie={itinerarie}
+                                                channelCode={airport.channelCode}
+                                                resultType={result.resultType}
+                                                policies={result.policies}
+                                                contextId={result.contextId}
+                                                resultKey={result.resultKey}
+                                                currency={result.currency} />
+                                ))
+                            })
+                        })
                     }
                 </div>
             </div>

@@ -147,10 +147,10 @@ const RecommendedCheckboxList = () => (
 );
 
 // --- 新增组件: 时间滑块复用 ---
-const TimeRangeSlider = ({label,value,setValue,maxStart = 24,minEnd = 0}: {
+const TimeRangeSlider = ({label,value,setQueryValue,maxStart = 24,minEnd = 0}: {
     label: string;
     value: number[];
-    setValue: (v: number[]) => void;
+    setQueryValue: (v: number[]) => void;
     maxStart?: number;
     minEnd?: number;
 }) => {
@@ -171,7 +171,7 @@ const TimeRangeSlider = ({label,value,setValue,maxStart = 24,minEnd = 0}: {
                     start = Math.min(start, maxStart);
                     end = Math.max(end, minEnd);
                     if (start > end) start = end;
-                    setValue([start, end]);
+                    setQueryValue([start, end]);
                 }}
                 min={0}
                 max={24}
@@ -288,13 +288,13 @@ const FilterComponent = memo(() => {
                         <TimeRangeSlider
                             label="Departing from Beijing:"
                             value={statrtValue}
-                            setValue={setStatrtValue}
+                            setQueryValue={setStatrtValue}
                             maxStart={18}
                         />
                         <TimeRangeSlider
                             label="Departing from Shanghai:"
                             value={endValue}
-                            setValue={setEndValue}
+                            setQueryValue={setEndValue}
                             minEnd={6}
                         />
                     </>

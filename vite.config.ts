@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vite.dev/config/
-export default defineConfig(({mode}) => {
-    const env = loadEnv(mode, process.cwd())
+export default defineConfig((config) =>{
+    const env = loadEnv(config.mode, process.cwd(), '');
     return {
         plugins: [react()],
         base: env.VITE_BASE,
@@ -13,6 +13,23 @@ export default defineConfig(({mode}) => {
                 '@': path.resolve(__dirname, 'src')
             },
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.less', 'css']
+        },
+        server:{
+            '/identityApi': {
+                target: env.VITE_IDENTITY_API,
+                changeOrigin: true,
+                rewrite: (path:string) => path.replace(/^\/identityApi/, '')
+            },
+            '/groupApi': {
+                target: env.VITE_GROUP_API,
+                changeOrigin: true,
+                rewrite: (path:string) => path.replace(/^\/groupApi/, '')
+            },
+            '/agentApi': {
+                target: env.VITE_AGENT_API,
+                changeOrigin: true,
+                rewrite: (path:string) => path.replace(/^\/agentApi/, '')
+            },
         }
     }
 })

@@ -1,4 +1,5 @@
 import { format, addDays } from 'date-fns';
+import dayjs from 'dayjs';
 
 export function generateMonthlyDateRanges() {
     const today = new Date();
@@ -14,4 +15,36 @@ export function generateMonthlyDateRanges() {
     return ranges;
 }
 
+// 参数规范化：空字符串转为 null（递归处理嵌套对象）
+export function normalizeParams<T>(params?: T): T {
+    if (!params || typeof params !== 'object') return params as T
 
+    const result: any = Array.isArray(params) ? [] : {}
+    for (const key in params) {
+        const value = (params as any)[key]
+        result[key] =
+            value === ''
+                ? null
+                : typeof value === 'object'
+                    ? normalizeParams(value)
+                    : value
+    }
+    return result
+}
+
+// date获取时间
+export function extractTimeWithTimezone(datetimeStr:string) {
+    const date = new Date(datetimeStr);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+export function formatFlyingTime(timeStr:string) {
+    const [hours, minutes] = timeStr.split(':');
+    return `${parseInt(hours)}h ${parseInt(minutes)}m`;
+}
+
+export function formatDateToShortString(dateStr: string): string {
+    return dayjs(dateStr).format('ddd, MMM D');
+}

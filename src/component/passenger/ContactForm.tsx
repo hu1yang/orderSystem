@@ -20,7 +20,7 @@ const phoneCodes = [
     // 你可以继续补充更多区号
 ]
 const ContactForm = memo(() => {
-    const {control, handleSubmit, watch , setValue} = useForm<IFormInput>({
+    const {control, handleSubmit, watch , setQueryValue} = useForm<IFormInput>({
         mode: 'onChange',
         defaultValues: {
             contactName:'',
@@ -38,7 +38,7 @@ const ContactForm = memo(() => {
     }
 
     const handleCodeChange = (event: SelectChangeEvent) => {
-        setValue('phoneCode',event.target.value)
+        setQueryValue('phoneCode',event.target.value)
     }
 
     return (

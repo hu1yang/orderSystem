@@ -450,11 +450,7 @@
                         }
                     }
                 }
-                .filterItemMore{
-                    margin-top: var(--pm-16);
-                    overflow: hidden;
-                    transition: .5s ease-in-out max-height !important;
-                }
+
             }
         }
     }
@@ -481,6 +477,7 @@
 }
 
 .tooltipContent{
+    font-size: 1rem;
     .tooltipTitle{
         span{
             font-size: 1.1em;
@@ -509,6 +506,7 @@
 .airportLine {
     position: relative;
     padding-left: 14px;
+    font-size: 1rem;
 
     &::before {
         content: '';
@@ -524,6 +522,9 @@
         position: relative;
         margin-bottom: 8px;
         line-height: 1.5;
+        &:last-child{
+            margin-bottom: 0;
+        }
 
         &::before {
             content: '';
@@ -621,3 +622,18 @@
     }
 }
 
+.dialogFirport{
+    font-size: 1rem;
+    .firportTitle{
+        font-size: 1rem;
+        span{
+            color: var(--color-333);
+            font-size: 2em;
+            font-weight: 800;
+        }
+    }
+    .firportInfo{
+        background: #fff;
+        padding: 0 32px 24px;
+    }
+}

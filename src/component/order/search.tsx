@@ -21,13 +21,16 @@ import AddLocationIcon from '@mui/icons-material/AddLocation';
 import PersonIcon from '@mui/icons-material/Person';
 import { DateRange } from 'react-date-range';
 import SearchIcon from '@mui/icons-material/Search';
-import type {ITicketType} from "@/types/order.ts";
 import * as React from "react";
 import { enUS } from 'date-fns/locale';
 import { format } from 'date-fns';
 
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import type {ItineraryType, PassengerType} from "@/types/order.ts";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import {setTravelers, setQueryValue} from "@/store/orderInfo.ts";
 
 const regions = [
     {
@@ -132,6 +135,8 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
 ))
 
 const Airports = memo(() => {
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
     const popId = useMemo(() => open ? 'airportId':undefined ,[open])
@@ -151,14 +156,14 @@ const Airports = memo(() => {
 
     return (
         <div className={`s-flex s-flex ai-ct`}>
-            <InputModel openPop={(event) => openPop(event,'Beijing')}>
-                <AddressCard addressName={'Beijing'}  />
+            <InputModel openPop={(event) => openPop(event,query.itineraries[0].departure)}>
+                <AddressCard addressName={query.itineraries[0].departure} />
             </InputModel>
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`}>
                 <ConnectingAirportsIcon />
             </div>
-            <InputModel openPop={(event) => openPop(event,'Shanghai')}>
-                <AddressCard style={{marginLeft: '4px'}} addressName={'Shanghai'} />
+            <InputModel openPop={(event) => openPop(event,query.itineraries[0].arrival)}>
+                <AddressCard style={{marginLeft: '4px'}} addressName={query.itineraries[0].arrival} />
             </InputModel>
             <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
@@ -296,6 +301,9 @@ const TimerChoose = memo(() => {
 })
 
 const PersonChoose = memo(() => {
+    const dispatch = useDispatch()
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
     const popId = useMemo(() => anchorEl? 'timer-choose-pop': undefined,[anchorEl])
@@ -313,39 +321,64 @@ const PersonChoose = memo(() => {
         setAnchorEl(null)
     },[])
 
+    const countAll = useMemo(() => {
+        return query.travelers.reduce((sum, t) => sum + t.passengerCount, 0)
+    }, [query.travelers]);
+
     const PersonChild = memo(() => (
         <div className={`${styles.inputMessage} s-flex jc-ct ai-ct`}>
             <PersonIcon sx={{fontSize: 24}} />
-            <p>8 Passengers , Economy</p>
+            <p>{countAll} Passengers , Economy</p>
         </div>
     ))
 
-    const Counter = memo(() => {
-        const [count, setCount] = useState(4);
+    const Counter = memo(({value}:{
+        value:PassengerType;
+    }) => {
+        const traveler = useMemo(() => {
+            return query.travelers.find(a => a.passengerType === value)
+        }, [value]);
+
+        const setCount = (type: 'prev' | 'reduce') => {
+            if (!traveler) return
+
+            let count = traveler.passengerCount
+
+            if (type === 'prev') {
+                count = count + 1
+            } else {
+                count = Math.max(traveler.passengerType === 'adt' ? 1 : 0, count - 1)
+            }
+            dispatch(setTravelers({
+                ...traveler,
+                passengerCount: count,
+            }))
+        }
 
         return (
             <Stack direction="row" spacing={2} alignItems="center">
-                <IconButton color="primary" disabled={!count && true} onClick={() => setCount(prev => Math.max(0, prev - 1))}>
+                <IconButton color="primary" disabled={!traveler?.passengerCount && true} onClick={() => setCount('reduce')}>
                     <RemoveIcon />
                 </IconButton>
-                <Typography variant="h6">{count}</Typography>
-                <IconButton color="primary" onClick={() => setCount(prev => prev + 1)}>
+                <Typography variant="h6">{traveler?.passengerCount}</Typography>
+                <IconButton color="primary" onClick={() => setCount('prev')}>
                     <AddIcon />
                 </IconButton>
             </Stack>
         );
     })
 
-    const PersonCheck = memo(({title,tips}:{
+    const PersonCheck = memo(({title,tips,value}:{
         title:string;
         tips:string;
+        value:PassengerType;
     }) => (
         <div className={`${styles.personCheck} s-flex ai-ct jc-bt`}>
             <div className={styles.checkLabel}>
                 <span>{title}</span>
                 <p>{tips}</p>
             </div>
-            <Counter />
+            <Counter value={value} />
         </div>
     ))
 
@@ -366,9 +399,18 @@ const PersonChoose = memo(() => {
                             <span>Please select the exact number of passengers to view the best prices</span>
                         </div>
                         <div className={styles.checkBox}>
-                            <PersonCheck title='Adults' tips='12+ years old' />
-                            <PersonCheck title='Children' tips='2–11 years old' />
-                            <PersonCheck title='Infants on lap' tips='Under 2 years old' />
+                            {
+                                query.travelers.map(traveler => {
+                                    switch (traveler.passengerType){
+                                        case 'adt':
+                                            return <PersonCheck key={traveler.passengerType} title='Adults' tips='12+ years old' value={traveler.passengerType} />
+                                        case 'chd':
+                                            return <PersonCheck key={traveler.passengerType} title='Children' tips='2–11 years old' value={traveler.passengerType} />
+                                        case 'inf':
+                                            return <PersonCheck key={traveler.passengerType} title='Infants on lap' tips='Under 2 years old' value={traveler.passengerType} />
+                                    }
+                                })
+                            }
                         </div>
                         <FormControl sx={{  width: '100%' }}>
                             <Select labelId='Cabin' size='small' value={cabinValue} id='Cabin' sx={{ width: '100%' }}>
@@ -387,21 +429,26 @@ const PersonChoose = memo(() => {
 })
 
 const SearchComponent = memo(() => {
-    const [ticketType] = useState<ITicketType>('roundTrip')
+    const dispatch = useDispatch()
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
     return (
         <div className={styles.searchContainer}>
             <div>
-                <RadioGroup row value={ticketType} name="row-radio-buttons-group">
-                    <FormControlLabel label="Round-trip" control={<Radio/>} value={'roundTrip'}></FormControlLabel>
+                <RadioGroup row value={query.itineraryType} onChange={
+                    (event) => dispatch(setQueryValue({
+                        name:'itineraryType',
+                        values:event.target.value as ItineraryType
+                    }))
+                } name="row-radio-buttons-group">
+                    <FormControlLabel label="Round-trip" control={<Radio/>} value={'round'}></FormControlLabel>
                     <FormControlLabel label="One-way" control={<Radio/>} value={'oneWay'}></FormControlLabel>
-                    <FormControlLabel label="Multi-city" control={<Radio/>} value={'multiCity'}></FormControlLabel>
+                    <FormControlLabel label="Multi-city" control={<Radio/>} value={'multi'}></FormControlLabel>
                 </RadioGroup>
             </div>
             <div className={`s-flex ai-ct jc-bt`}>
                 <Airports />
                 <TimerChoose />
                 <PersonChoose />
-
                 <Button variant="contained" sx={{
                     width: '120px',
                     height: '54px',
