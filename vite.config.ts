@@ -15,21 +15,23 @@ export default defineConfig((config) =>{
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.less', 'css']
         },
         server:{
-            '/identityApi': {
-                target: env.VITE_IDENTITY_API,
-                changeOrigin: true,
-                rewrite: (path:string) => path.replace(/^\/identityApi/, '')
-            },
-            '/groupApi': {
-                target: env.VITE_GROUP_API,
-                changeOrigin: true,
-                rewrite: (path:string) => path.replace(/^\/groupApi/, '')
-            },
-            '/agentApi': {
-                target: env.VITE_AGENT_API,
-                changeOrigin: true,
-                rewrite: (path:string) => path.replace(/^\/agentApi/, '')
-            },
+            proxy:{
+                '/identityApi': {
+                    target: env.VITE_IDENTITY_API,
+                    changeOrigin: true,
+                    rewrite: (path:string) => path.replace(/^\/identityApi/, '')
+                },
+                '/groupApi': {
+                    target: env.VITE_GROUP_API,
+                    changeOrigin: true,
+                    rewrite: (path:string) => path.replace(/^\/groupApi/, '')
+                },
+                '/agentApi': {
+                    target: env.VITE_AGENT_API,
+                    changeOrigin: true,
+                    rewrite: (path:string) => path.replace(/^\/agentApi/, '')
+                },
+            }
         }
     }
 })

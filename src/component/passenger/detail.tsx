@@ -1,4 +1,4 @@
-import {memo, useState} from "react";
+import {memo, useRef, useState} from "react";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import {
@@ -15,13 +15,10 @@ import {
     Link, Snackbar, type SnackbarCloseReason,
     Typography
 } from "@mui/material";
+import type {IContact, OrderCreate, Passenger as IPassenger} from '@/types/order.ts'
 
-import BoltIcon from "@mui/icons-material/Bolt";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import WifiIcon from "@mui/icons-material/Wifi";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import AirTooltip from "@/component/defult/AirTooltip.tsx";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -34,76 +31,15 @@ import Passenger from "@/component/passenger/passenger.tsx";
 import PassengerForm from "./PassengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
 import {useNavigate} from "react-router";
-
-const FirportInfomation = memo(() => {
-    return (
-        <div className={styles.firportInfomation}>
-            <div className={`${styles.firportDate} s-flex ai-ct`}>
-                <Chip label="Depart" size={'small'} sx={{
-                    background: 'var(--active-color)',
-                    borderRadius: '4px',
-                    fontSize: '1rem',
-                    color: 'var(--vt-c-white)',
-                    fontWeight: 'bold',
-                    '.MuiChip-label': {
-                        fontSize: '1.2em',
-                    }
-                }}/>
-                <div className={`${styles.firportDateLabel} s-flex ai-ct`}>
-                    <span>Wed, May 21</span>
-                    <Divider orientation="vertical" sx={{
-                        height: 10
-                    }} flexItem/>
-                    <span>Duration 2h 10m</span>
-                </div>
-            </div>
-            <div className={styles.infoNew}>
-                <div className={`${styles.infoNewList} s-flex ai-ct`}>
-                    <div className={styles.infoLabel}>16:30</div>
-                    <div className={styles.infoValue}>
-                        <strong>PKX</strong> Beijing Daxing Intl.
-                    </div>
-                </div>
-                <div className={`${styles.firportDetails} s-flex ai-ct`}>
-                    <div className={`${styles.infoLabel} s-flex jc-ct`}>
-                        <div className={styles.firPicture}>
-                            <img
-                                src="https://static.tripcdn.com/packages/flight/airline-logo/latest/airline_logo/3x/fm.webp"
-                                alt=""/>
-                        </div>
-                    </div>
-                    <div className={`${styles.firTips} s-flex ai-ct`}>
-                        <div className={`${styles.tipsLabel} s-flex ai-ct`}>
-                            Shanghai Airlines
-                            FM9102
-                            Boeing 738
-                            Economy
-                        </div>
-                        <HtmlTooltip title={
-                            <AirTooltip/>
-                        }>
-                            <div className={`${styles.airIcon} s-flex ai-ct`}>
-                                <BoltIcon/>
-                                <RestaurantIcon/>
-                                <WifiIcon/>
-                                <PlayCircleIcon/>
-                            </div>
-                        </HtmlTooltip>
-                    </div>
-                </div>
-                <div className={`${styles.infoNewList} s-flex ai-ct`}>
-                    <div className={styles.infoLabel}>18:40</div>
-                    <div className={styles.infoValue}>
-                        SHA Shanghai Hongqiao Intl.T2
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    )
-})
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
+import {orderCreateAgent} from "@/utils/request/agetn.ts";
 
 const CardCom = memo(() => {
+
+    const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
+
 
     const [chipHide, setChipHide] = useState(false)
     const [priceHide, setPriceHide] = useState(false)
@@ -369,29 +305,19 @@ const CardCom = memo(() => {
     )
 })
 
-const NextStep = memo(() => {
-    const [open, setOpen] = useState(false)
+const NextStep = memo(({paySubmit}:{
+    paySubmit:() => void
+}) => {
     const [agree, setAgree] = useState(true)
-    const navigate  = useNavigate()
 
     const handleSetAgree = () => {
         setAgree(!agree)
     }
 
     const payTo = () => {
-        setOpen(true)
-        setTimeout(() => {
-            navigate('/mine')
-        },1000)
+        paySubmit()
     }
-    const handleClose = (_event?: React.SyntheticEvent | Event,
-                         reason?: SnackbarCloseReason,) => {
-        if (reason === 'clickaway') {
-            return;
-        }
 
-        setOpen(false);
-    }
 
     return (
         <div className={styles.nextContainer}>
@@ -445,22 +371,71 @@ const NextStep = memo(() => {
                     <span>Rewards for booking</span>
                 </div>
             </div>
-            <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
-                      onClose={handleClose}>
-                <Alert
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: '100%' , fontSize: 18 }}
-                >
-                    Payment successful! Redirecting soon~
-                </Alert>
-            </Snackbar>
+
         </div>
 
     )
 })
 
 const Detail = memo(() => {
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+
+
+    const [open, setOpen] = useState(false)
+
+    const handleClose = (_event?: React.SyntheticEvent | Event,
+                         reason?: SnackbarCloseReason,) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpen(false);
+    }
+
+    const passengerRef = useRef<{
+        triggerSubmit:() => Promise<IPassenger>
+    }>(null)
+    const contactRef = useRef<{
+        triggerSubmit:() => Promise<IContact>
+    }>()
+
+    const handlepaySubmit = async () => {
+        const passengerForm = [] as IPassenger[]
+        const contactForm = [] as IContact[]
+        let passengerResult = {} as IPassenger|null
+        let contactFormResult = {} as IContact|null
+        if(passengerRef.current){
+            passengerResult = await passengerRef.current.triggerSubmit()
+        }
+        if(passengerRef.current){
+            contactFormResult = await contactRef.current.triggerSubmit()
+        }
+        if(passengerResult && contactFormResult){
+            passengerForm.push(passengerResult)
+            contactForm.push(contactFormResult)
+            const result = {
+                ...airChoose,
+                request:{
+                    ...query
+                },
+                shuttleNumber:'',
+                tLimit:'',
+                remarks:'',
+                passengers:passengerForm,
+                contacts:contactForm
+            } as OrderCreate
+            orderCreateAgent(result).then(res => {
+                if(res.succeed){
+                    setOpen(true)
+
+                }
+            })
+
+
+        }
+    }
+
     return (
         <div className={`${styles.detailContainer} s-flex jc-bt ai-fs`}>
             <div className={`${styles.leftDetail} `}>
@@ -478,14 +453,19 @@ const Detail = memo(() => {
                         </div>
                     </div>
                     <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
-                        <FirportInfomation/>
-                        <FirportInfomation/>
+                        {
+                            airChoose.result?.itineraries.map(itinerarie => {
+                                return itinerarie.segments.map(segment => (
+                                    <FirportInfomation key={segment.flightNumber} segment={segment} />
+                                ))
+                            })
+                        }
                     </div>
-                    <Passenger/>
+                    <Passenger />
                 </div>
                 <div className={`s-flex flex-dir`}>
-                    <PassengerForm />
-                    <ContactForm />
+                    <PassengerForm ref={passengerRef} />
+                    <ContactForm ref={contactRef} />
                     <div className={styles.package}>
                         <div className={styles.packgaeTitle}>
                             Additional Baggage Allowanc
@@ -656,12 +636,22 @@ const Detail = memo(() => {
                             </Grid>
                         </div>
                     </div>
-                    <NextStep />
+                    <NextStep paySubmit={handlepaySubmit} />
                 </div>
             </div>
             <div className={styles.cardCom}>
                 <CardCom />
             </div>
+            <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
+                      onClose={handleClose}>
+                <Alert
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' , fontSize: 18 }}
+                >
+                    Payment successful! Redirecting soon~
+                </Alert>
+            </Snackbar>
         </div>
     )
 })

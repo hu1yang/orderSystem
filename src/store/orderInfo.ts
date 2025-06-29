@@ -174,9 +174,13 @@ const initialState: IOrder = {
         }
     ],
     airportActived:0,
+    // airChoose:{
+    //     result: null,
+    //     channelCode:'',
+    // }
     airChoose:{
-        result: null,
         channelCode:'',
+        result:{"contextId":"b547d081c803464da9d5f6273492dc21","policies":[],"resultType":"normal","currency":"USD","resultKey":"API-C6-V1","itineraries":[{"amounts":[{"familyName":"Comfort","familyCode":"P4|S3|Domes_S3","cabinLevel":"y","nextCodes":[],"passengerType":"adt","minimum":1,"maximum":215,"printAmount":852,"taxesAmount":0,"cancelNotes":[],"refundNotes":[],"changeNotes":[],"othersNotes":[],"luggages":[{"luggageType":"carry","luggageCount":23,"luggageNotes":"C6650","luggageSizeType":"kg"}],"amountKeys":["E5lSzegIKD+m0Bikgdsz+Oi7GbhW5+q1zAe/9wWc8VWNRogOjBxGKN9Nh2g5zLdD","E5lSzegIKD+m0Bikgdsz+Oi7GbhW5+q1zAe/9wWc8VWNRogOjBxGKN9Nh2g5zLdD"]}],"itineraryNo":0,"segments":[{"isLuggageChecked":false,"sequenceNo":0,"carrier":"C6","flightNumber":"C6650","shareToFlightNo":"","departureAirport":"CAN","arrivalAirport":"TAS","departureTime":"2025-07-04T00:35:00","arrivalTime":"2025-07-04T02:50:00","departureTerminal":"","arrivalTerminal":"","flightMealType":"","aircraftModel":"A21N","totalFlyingTime":"05:15:00","stops":[],"cabins":[{"cabinLevel":"y","quantity":215,"cabinName":"Domes_S3","cabinInfo":"461","cabinCode":"S3"},{"cabinLevel":"y","quantity":39,"cabinName":"TASDX_X","cabinInfo":"461","cabinCode":"X"},{"cabinLevel":"y","quantity":215,"cabinName":"DX_S2","cabinInfo":"461","cabinCode":"S2"}]}]}]}
     }
 }
 

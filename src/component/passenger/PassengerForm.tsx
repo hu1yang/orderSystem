@@ -1,47 +1,46 @@
-import {memo, useMemo, useState} from "react";
+import {forwardRef, memo, useImperativeHandle, useState} from "react";
 import styles from "@/component/passenger/styles.module.less";
 import {
     Grid, FormControl,
-    InputLabel, ListSubheader,
-    TextField, MenuItem, Select, Button, Chip, Popover, Typography
+    InputLabel,
+    TextField, MenuItem, Select, Button, Chip, Popover, Typography,
 } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {Controller, useForm} from "react-hook-form";
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import ErrorText from "../defult/ErrorText";
-
-interface IFormInput {
-    lastName: string;
-    givenName: string;
-    gender: string;
-    dob: Dayjs|null;
-    nationality: string;
-    idType: string;
-    idNumber: string;
-}
+import type {Passenger} from "@/types/order.ts";
 
 
-const PassengerForm = memo(() => {
+
+
+const PassengerForm = memo(forwardRef((_,ref) => {
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
     const open = Boolean(anchorEl);
 
-    const {control, handleSubmit, watch} = useForm<IFormInput>({
-        mode: 'onChange',
+
+
+    const {control, handleSubmit} = useForm<Passenger>({
+        mode: 'onBlur',
         defaultValues: {
-            lastName: '',
-            givenName: '',
-            gender: '',
-            dob: null,
-            nationality: '',
-            idType: '',
-            idNumber: '',
+            title:'',
+            fullName:'',
+            idNumber:'',
+            idCountry:'',
+            trCountry:'',
+            issuedDate:null,
+            birthday:null,
+            expiryDate:null,
+            phoneNumber:'',
+            emailAddress:'',
+            passengerIdType:'pp',
+            passengerType:'adt',
+            passengerSexType:'m',
         }
     });
 
-    const values = watch();
 
     const openPop = (event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget )
@@ -55,16 +54,19 @@ const PassengerForm = memo(() => {
     }
 
 
-    const onSubmit = (data: IFormInput) => {
+    const onSubmit = (data: Passenger) => {
         console.log(data)
     }
 
-    const renderPassenger = useMemo(() => {
-        const last = /\d/.test(values.lastName) ? '' : values.lastName;
-        const given = /\d/.test(values.givenName) ? '' : values.givenName;
-        const fullName = `${last} ${given}`.trim();
-        return fullName || 'Passenger';
-    }, [values]);
+    useImperativeHandle(ref,() => ({
+        triggerSubmit: () =>
+            new Promise((resolve, reject) => {
+                handleSubmit(
+                    (data) => resolve(data),
+                    () => reject(null)
+                )();
+            })
+    }))
 
 
     return (
@@ -75,179 +77,67 @@ const PassengerForm = memo(() => {
                 </div>
             </div>
             <div className={styles.commonBox}>
-                <div className={styles.cardName}>{renderPassenger}</div>
+                <div className={styles.cardName}></div>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                         <Grid size={6}>
                             <Controller
                                 control={control}
-                                name="lastName"
+                                name="title"
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
                                             return 'Please enter the passenger\'s last name';
                                         }
-                                        if (/\d/.test(value)) {
-                                            return 'Special characters and symbols such as 1 cannot be entered in this field. Please remove all special characters and enter your name using standard English letters only.';
-                                        }
-                                        if (value && value === values.givenName) {
-                                            return 'The "Last name" and "First & middle name" entered for this passenger are the same, please ensure you have entered them correctly.';
-                                        }
+
                                         return true;
                                     }
                                 }}
                                 render={({field, fieldState}) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="Last name (surname)"
-                                            error={!!fieldState.error}
-                                            slotProps={{
-                                                input: {
-                                                    endAdornment: <HelpOutlineIcon/>
-                                                }
-                                            }}
-                                        />
-
-                                        <ErrorText message={fieldState.error?.message} />
-                                    </FormControl>
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Passenger Title"
+                                        error={!!fieldState.error}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: <HelpOutlineIcon/>
+                                            }
+                                        }}
+                                    />
                                 )}
                             />
                         </Grid>
                         <Grid size={6}>
                             <Controller
                                 control={control}
-                                name="givenName"
+                                name="fullName"
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
                                             return 'Please enter the passenger\'s given names';
                                         }
-                                        if (/\d/.test(value)) {
-                                            return 'Special characters and symbols such as 1 cannot be entered in this field. Please remove all special characters and enter your name using standard English letters only.';
-                                        }
+
                                         return true;
                                     }
                                 }}
                                 render={({field, fieldState}) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="Given names"
-                                            error={!!fieldState.error}
-                                            slotProps={{
-                                                input: {
-                                                    endAdornment: <HelpOutlineIcon/>
-                                                }
-                                            }}
-                                        />
-                                        <ErrorText message={fieldState.error?.message} />
-
-                                    </FormControl>
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="fullName"
+                                        error={!!fieldState.error}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: <HelpOutlineIcon/>
+                                            }
+                                        }}
+                                    />
 
                                 )}
                             />
                         </Grid>
                         <Grid size={4}>
-                            <Controller
-                                name="gender"
-                                control={control}
-                                rules={{
-                                    validate: value => value ? true : 'Please select a gender'
-                                }}
-                                render={({ field, fieldState }) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <InputLabel>Gender on ID</InputLabel>
-                                        <Select {...field} label="Gender on ID">
-                                            <MenuItem value="male">Male</MenuItem>
-                                            <MenuItem value="female">Female</MenuItem>
-                                        </Select>
-                                        <ErrorText message={fieldState.error?.message} />
-
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-                        <Grid size={4}>
-                            <Controller
-                                name="dob"
-                                control={control}
-                                rules={{
-                                    validate: value => value ? true : 'Please provide a date of birth'
-                                }}
-                                render={({ field, fieldState }) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                                label="Date of birth"
-                                                value={field.value}
-                                                onChange={(date) => field.onChange(date)}
-                                                slotProps={{
-                                                    textField: {
-                                                        error: !!fieldState.error,
-                                                        fullWidth: true
-                                                    }
-                                                }}
-                                            />
-                                            <ErrorText message={fieldState.error?.message} />
-
-                                        </LocalizationProvider>
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-                        <Grid size={4}>
-                            <Controller
-                                name="nationality"
-                                control={control}
-                                rules={{
-                                    validate: value => value ? true : 'Please select a nationality'
-                                }}
-                                render={({ field, fieldState }) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <InputLabel htmlFor="grouped-select">Nationality (country/region)</InputLabel>
-                                        <Select {...field} id="grouped-select" label="Nationality (country/region)">
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
-                                            <ListSubheader>Category 1</ListSubheader>
-                                            <MenuItem value="1">Option 1</MenuItem>
-                                            <MenuItem value="2">Option 2</MenuItem>
-                                            <ListSubheader>Category 2</ListSubheader>
-                                            <MenuItem value="3">Option 3</MenuItem>
-                                            <MenuItem value="4">Option 4</MenuItem>
-                                        </Select>
-                                        <ErrorText message={fieldState.error?.message} />
-
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-                        <Grid size={6}>
-                            <Controller
-                                name="idType"
-                                control={control}
-                                rules={{
-                                    validate: value => value ? true : 'Please select an ID type'
-                                }}
-                                render={({ field, fieldState }) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <InputLabel htmlFor="grouped-select">ID type</InputLabel>
-                                        <Select {...field} id="grouped-select" label="ID type">
-                                            <MenuItem value="1">Option 1</MenuItem>
-                                            <MenuItem value="2">Option 2</MenuItem>
-                                            <MenuItem value="3">Option 3</MenuItem>
-                                            <MenuItem value="4">Option 4</MenuItem>
-                                        </Select>
-                                        <ErrorText message={fieldState.error?.message} />
-
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-                        <Grid size={6}>
                             <Controller
                                 name="idNumber"
                                 control={control}
@@ -255,15 +145,269 @@ const PassengerForm = memo(() => {
                                     validate: value => value ? true : 'Please provide an ID number'
                                 }}
                                 render={({ field, fieldState }) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="ID number"
-                                            error={!!fieldState.error}
-                                        />
-                                        <ErrorText message={fieldState.error?.message} />
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="ID number"
+                                        error={!!fieldState.error}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                control={control}
+                                name="idCountry"
+                                rules={{
+                                    validate: (value) => {
+                                        if (!value) {
+                                            return 'Please enter the passenger\'s idCountry';
+                                        }
+                                        if (value.length > 2) {
+                                            return 'Cannot be greater than two digits';
+                                        }
+                                        return true;
+                                    }
+                                }}
+                                render={({field, fieldState}) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="ID country"
+                                        error={!!fieldState.error}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: <HelpOutlineIcon/>
+                                            }
+                                        }}
+                                    />
 
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                control={control}
+                                name="trCountry"
+                                rules={{
+                                    validate: (value) => {
+                                        if (!value) {
+                                            return 'Please enter the passenger\'s trCountry';
+                                        }
+                                        if (value.length > 2) {
+                                            return 'Cannot be greater than two digits';
+                                        }
+                                        return true;
+                                    }
+                                }}
+                                render={({field, fieldState}) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="TR country"
+                                        error={!!fieldState.error}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: <HelpOutlineIcon/>
+                                            }
+                                        }}
+                                    />
+
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="issuedDate"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please provide a date of issuedDate'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label='Issued date'
+                                            value={field.value ? dayjs(field.value) : null}
+                                            onChange={(date) => {
+                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+                                                console.log(formatted)
+                                                field.onChange(formatted); // 存为字符串
+                                            }}
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    error: !!fieldState.error,
+                                                    helperText: fieldState.error?.message
+                                                }
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="birthday"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please provide a date of birthday'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Date of birth"
+                                            value={field.value ? dayjs(field.value) : null}
+                                            onChange={(date) => {
+                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+
+                                                field.onChange(formatted); // 存为字符串
+                                            }}
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    error: !!fieldState.error,
+                                                    helperText: fieldState.error?.message
+                                                }
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="expiryDate"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please provide a date of expiryDate'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Date of birth"
+                                            value={field.value ? dayjs(field.value) : null}
+                                            onChange={(date) => {
+                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+                                                field.onChange(formatted); // 存为字符串
+                                            }}
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    error: !!fieldState.error,
+                                                    helperText: fieldState.error?.message
+                                                }
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <Controller
+                                control={control}
+                                name="phoneNumber"
+                                rules={{
+                                    validate: (value) => {
+                                        if (!value) {
+                                            return 'Please enter the passenger\'s Phone number';
+                                        }
+                                        return true;
+                                    }
+                                }}
+                                render={({field, fieldState}) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Phone number"
+                                        error={!!fieldState.error}
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: <HelpOutlineIcon/>
+                                            }
+                                        }}
+                                    />
+
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <Controller
+                                control={control}
+                                name="emailAddress"
+                                rules={{
+                                    validate: (value) => {
+                                        if (!value) {
+                                            return 'Please provide an Email address.';
+                                        }
+                                        return true;
+                                    }
+                                }}
+                                render={({field, fieldState}) => (
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Email address"
+                                        error={!!fieldState.error}
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="passengerIdType"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please select a Passenger Id type'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <FormControl fullWidth error={!!fieldState.error}>
+                                        <InputLabel id="passengerIdType-label">Passenger Id type</InputLabel>
+                                        <Select
+                                            {...field}
+                                            labelId="passengerIdType-label"
+                                            label="Passenger Id type"
+                                        >
+                                            <MenuItem value="pp">pp</MenuItem>
+                                            <MenuItem value="ni">ni</MenuItem>
+                                            <MenuItem value="bd">bd</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="passengerType"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please select a passenger Type'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <FormControl fullWidth error={!!fieldState.error}>
+                                        <InputLabel htmlFor="passengerType-select">passenger Type</InputLabel>
+                                        <Select {...field} id="passengerType-select" label="passenger Type">
+                                            <MenuItem value="adt">Aldult</MenuItem>
+                                            <MenuItem value="chd">Child</MenuItem>
+                                            <MenuItem value="inf">infant</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                )}
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <Controller
+                                name="passengerSexType"
+                                control={control}
+                                rules={{
+                                    validate: value => value ? true : 'Please select a passengerSexType'
+                                }}
+                                render={({ field, fieldState }) => (
+                                    <FormControl fullWidth error={!!fieldState.error}>
+                                        <InputLabel htmlFor="passengerSexType-select">Passenger sex type</InputLabel>
+                                        <Select {...field} id="passengerSexType-select" label="passengerSexType">
+                                            <MenuItem value="m">male</MenuItem>
+                                            <MenuItem value="l">female</MenuItem>
+                                        </Select>
                                     </FormControl>
                                 )}
                             />
@@ -320,6 +464,6 @@ const PassengerForm = memo(() => {
             </Popover>
         </div>
     )
-})
+}))
 
 export default PassengerForm

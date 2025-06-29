@@ -1,15 +1,12 @@
-import {memo} from "react";
+import {forwardRef, memo, useImperativeHandle} from "react";
 
 import styles from './styles.module.less'
 import {Controller, useForm} from "react-hook-form";
 import {FormControl, Grid, InputAdornment, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
-import ErrorText from "@/component/defult/ErrorText.tsx";
+import type {IContact} from "@/types/order.ts";
 
-interface IFormInput {
-    contactName:string;
-    email:string;
-    mobilePhone:string | number;
-    phoneCode:string;
+type IContactMore = IContact & {
+    phoneCode:string
 }
 
 const phoneCodes = [
@@ -19,13 +16,13 @@ const phoneCodes = [
     { code: '+91', label: 'India' },
     // 你可以继续补充更多区号
 ]
-const ContactForm = memo(() => {
-    const {control, handleSubmit, watch , setQueryValue} = useForm<IFormInput>({
-        mode: 'onChange',
+const ContactForm = memo(forwardRef((_,ref) => {
+    const {control, handleSubmit, watch , setValue} = useForm<IContactMore>({
+        mode: 'onBlur',
         defaultValues: {
             contactName:'',
-            email:'',
-            mobilePhone: '',
+            emailAddress:'',
+            phoneNumber: '',
             phoneCode:'+91'
         }
     });
@@ -33,13 +30,30 @@ const ContactForm = memo(() => {
     const values = watch();
 
 
-    const onSubmit = (data: IFormInput) => {
+    const onSubmit = (data: IContactMore) => {
         console.log(data)
     }
 
     const handleCodeChange = (event: SelectChangeEvent) => {
-        setQueryValue('phoneCode',event.target.value)
+        setValue('phoneCode',event.target.value)
     }
+
+    useImperativeHandle(ref,() => ({
+        triggerSubmit: () =>
+            new Promise((resolve, reject) => {
+                handleSubmit(
+                    (data) => {
+                        const newData = {
+                            contactName:data.contactName,
+                            emailAddress:data.emailAddress,
+                            phoneNumber:data.phoneCode+"/"+data.phoneNumber
+                        }
+                        return resolve(newData)
+                    },
+                    () => reject(null)
+                )();
+            })
+    }))
 
     return (
         <div className={styles.contactFormContainer}>
@@ -62,24 +76,20 @@ const ContactForm = memo(() => {
                                     }
                                 }}
                                 render={({field, fieldState}) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="Contact name"
-                                            error={!!fieldState.error}
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Contact name"
+                                        error={!!fieldState.error}
 
-                                        />
-
-                                        <ErrorText message={fieldState.error?.message} />
-                                    </FormControl>
+                                    />
                                 )}
                             />
                         </Grid>
                         <Grid size={4}>
                             <Controller
                                 control={control}
-                                name="email"
+                                name="emailAddress"
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
@@ -89,23 +99,19 @@ const ContactForm = memo(() => {
                                     }
                                 }}
                                 render={({field, fieldState}) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="Email"
-                                            error={!!fieldState.error}
-                                        />
-
-                                        <ErrorText message={fieldState.error?.message} />
-                                    </FormControl>
+                                    <TextField
+                                        {...field}
+                                        fullWidth
+                                        label="Email"
+                                        error={!!fieldState.error}
+                                    />
                                 )}
                             />
                         </Grid>
                         <Grid size={4}>
                             <Controller
                                 control={control}
-                                name="mobilePhone"
+                                name="phoneNumber"
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
@@ -115,36 +121,34 @@ const ContactForm = memo(() => {
                                     }
                                 }}
                                 render={({field, fieldState}) => (
-                                    <FormControl fullWidth error={!!fieldState.error}>
-                                        <TextField
-                                            label="Mobile phone"
-                                            variant="outlined"
-                                            {...field}
-                                            placeholder="Mobile phone"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <FormControl variant="standard" sx={{ minWidth: 60 }}>
-                                                            <Select
-                                                                value={values.phoneCode}
-                                                                onChange={handleCodeChange}
-                                                                disableUnderline
-                                                                size="small"
-                                                                renderValue={(selected) => selected}
-                                                            >
-                                                                {phoneCodes.map(({ code, label }) => (
-                                                                    <MenuItem key={code} value={code}>
-                                                                        {code} {label}
-                                                                    </MenuItem>
-                                                                ))}
-                                                            </Select>
-                                                        </FormControl>
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                        <ErrorText message={fieldState.error?.message} />
-                                    </FormControl>
+                                    <TextField
+                                        label="Mobile phone"
+                                        variant="outlined"
+                                        {...field}
+                                        placeholder="Mobile phone"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <FormControl variant="standard" sx={{ minWidth: 60 }}>
+                                                        <Select
+                                                            value={values.phoneCode}
+                                                            onChange={handleCodeChange}
+                                                            disableUnderline
+                                                            size="small"
+                                                            renderValue={(selected) => selected}
+                                                            error={!!fieldState.error}
+                                                        >
+                                                            {phoneCodes.map(({ code, label }) => (
+                                                                <MenuItem key={code} value={code}>
+                                                                    {code} {label}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select>
+                                                    </FormControl>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
                                 )}
                             />
                         </Grid>
@@ -153,6 +157,6 @@ const ContactForm = memo(() => {
             </div>
         </div>
     )
-})
+}))
 
 export default ContactForm;

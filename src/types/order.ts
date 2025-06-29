@@ -1,3 +1,4 @@
+import type {Dayjs} from "dayjs";
 
 export type ItineraryType = 'oneWay'| 'round'| 'multi'
 export type CabinLevel = 'y'| 'c'| 'f'
@@ -5,6 +6,10 @@ export type PassengerType =  'adt'| 'chd'| 'inf'
 export type LuggageType = 'carry'| 'hand'| 'checked'
 export type LuggageSizeType = 'pc'| 'kg'| 'lb'
 export type ResultType = 'normal'|'teamed'
+
+type IPassengerIdType =  'pp'| 'ni'| 'bd' | unknown
+type ITravelerSex = 'm'| 'f'| null | unknown
+
 export interface Travelers {
     passengerCount: number
     passengerType: string
@@ -117,4 +122,53 @@ export interface AirChoose{
 
 export type AirChooseForm = AirChoose & {
     request:FQuery
+}
+
+export type OrderCreate = AirChooseForm & {
+    shuttleNumber: string
+    tLimit: string
+    remarks: string
+    passengers: Passenger[]
+    contacts: IContact[]
+}
+
+
+export interface Passenger {
+    title: string|null
+    fullName: string
+    idNumber: string
+    idCountry: string
+    trCountry: string
+    issuedDate: null|Dayjs
+    birthday: null|Dayjs
+    expiryDate: null|Dayjs
+    phoneNumber: string
+    emailAddress: string
+    passengerIdType: IPassengerIdType
+    passengerType: PassengerType
+    passengerSexType: ITravelerSex
+}
+
+export interface IContact {
+    contactName:string
+    phoneNumber: string|null
+    emailAddress: string
+}
+
+
+
+export interface IResponse{
+    currency: string,
+    sourceRate: number,
+    exchangeRate: number
+    targetRate: number
+    printAmount: number
+    taxesAmount: number
+    orderNumber: string
+}
+export interface CommonResponseGroup {
+    succeed: boolean
+    errorCode: string
+    errorMessage: string
+    "response": IResponse
 }
