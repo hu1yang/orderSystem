@@ -28,7 +28,6 @@ import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
 import {setChannelCode, setResult} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
-import {queryBookingAgent} from "@/utils/request/agetn.ts";
 
 
 

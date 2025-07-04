@@ -14,6 +14,7 @@ const Order = () => {
         dispatch(setChannelCode(''))
         dispatch(setResult(null))
     },[])
+
     return (
         <div className={styles.orderLayout}>
             <div className={styles.layoutWidth}>

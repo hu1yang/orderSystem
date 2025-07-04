@@ -1,4 +1,4 @@
-import {memo, useRef, useState} from "react";
+import {Fragment, memo, useRef, useState} from "react";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import {
@@ -34,15 +34,17 @@ import Passenger from "@/component/passenger/passenger.tsx";
 
 import PassengerForm from "./PassengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
-import {useNavigate} from "react-router";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
+import {selectTotalPrice} from "@/store/orderInfo.ts";
+import {useNavigate} from "react-router";
 
 const CardCom = memo(() => {
 
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
+    const totalPrice = useSelector(selectTotalPrice)
 
 
     const [chipHide, setChipHide] = useState(false)
@@ -70,45 +72,52 @@ const CardCom = memo(() => {
                 px: 2
             }}>
                 <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`}>
-                    <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
-                        <div className={`${styles.labels} s-flex ai-ct cursor-p`} onClick={setPirce}>
-                            <span>Tickets(1 Adult)</span>
-                            <ExpandMoreIcon sx={{
-                                transition: 'transform .2s ease-in-out',
-                                transform: !priceHide ? 'rotate(0deg)' : 'rotate(180deg)',
-                            }}/>
-                        </div>
-                        <div className={styles.values}>
-                            <span>US$349.30</span>
-                        </div>
-                    </div>
-                    <div className={`${styles.priceHeight} full-width`}
-                         style={{maxHeight: !priceHide ? '0px' : '1000px'}}>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                <span>Adults (Passenger 1)</span>
-                            </div>
-                            <div className={styles.values}>
-                                <span>US$349.30 × 1</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                <span style={{fontSize: 12}}>Fare</span>
-                            </div>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12}}>US$329.70 × 1</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                <span style={{fontSize: 12}}>Taxes & fees</span>
-                            </div>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12}}>US$19.60 × 1</span>
-                            </div>
-                        </div>
-                    </div>
+                    {
+                        resultAir?.itineraries[0].amounts.map(amount => (
+                            <Fragment key={`${amount.familyName}-${amount.familyCode}-c1`}>
+                                <div key={`${amount.familyName}-${amount.familyCode}-c1`} className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
+                                    <div className={`${styles.labels} s-flex ai-ct cursor-p`} onClick={setPirce}>
+                                        <span>Tickets(1 Adult)</span>
+                                        <ExpandMoreIcon sx={{
+                                            transition: 'transform .2s ease-in-out',
+                                            transform: !priceHide ? 'rotate(0deg)' : 'rotate(180deg)',
+                                        }}/>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{resultAir.currency}${amount.printAmount + amount.taxesAmount}</span>
+                                    </div>
+                                </div>
+                                <div key={`${amount.familyName}-${amount.familyCode}-c2`} className={`${styles.priceHeight} full-width`}
+                                     style={{maxHeight: !priceHide ? '0px' : '1000px'}}>
+                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
+                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                            <span>Adults (Passenger 1)</span>
+                                        </div>
+                                        <div className={styles.values}>
+                                            <span>{resultAir.currency}${amount.printAmount + amount.taxesAmount} × 1</span>
+                                        </div>
+                                    </div>
+                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
+                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                            <span style={{fontSize: 12}}>Fare</span>
+                                        </div>
+                                        <div className={styles.values}>
+                                            <span style={{fontSize: 12}}>{resultAir.currency}${amount.printAmount} × 1</span>
+                                        </div>
+                                    </div>
+                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
+                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                            <span style={{fontSize: 12}}>Taxes & fees</span>
+                                        </div>
+                                        <div className={styles.values}>
+                                            <span style={{fontSize: 12}}>{resultAir.currency}${amount.taxesAmount} × 1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Fragment>
+                        ))
+                    }
+
                 </div>
                 <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`}>
                     <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
@@ -205,7 +214,7 @@ const CardCom = memo(() => {
                 <div className={`s-flex flex-dir jc-fe ai-fe full-width`}>
                     <div className={`${styles.priceLine} s-flex jc-bt ai-ct full-width`}>
                         <div className={styles.labels}>Total</div>
-                        <div className={styles.prices}>US$440.60</div>
+                        <div className={styles.prices}>{resultAir?.currency}${totalPrice}</div>
                     </div>
                     <HtmlTooltip sx={{
                         '.MuiTooltip-tooltip': {
@@ -312,6 +321,9 @@ const CardCom = memo(() => {
 const NextStep = memo(({paySubmit}:{
     paySubmit:() => void
 }) => {
+    const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
+    const totalPrice = useSelector(selectTotalPrice)
+
     const [agree, setAgree] = useState(true)
 
     const handleSetAgree = () => {
@@ -351,7 +363,7 @@ const NextStep = memo(({paySubmit}:{
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
                         <div className={styles.payPriceLabels}>Total</div>
-                        <div className={styles.payPricevalue}>US$384.80</div>
+                        <div className={styles.payPricevalue}>{resultAir?.currency}${totalPrice}</div>
                     </div>
                     <Button type="submit" sx={{
                         backgroundColor: 'var(--active-color)',
@@ -382,16 +394,20 @@ const NextStep = memo(({paySubmit}:{
 })
 
 const Detail = memo(() => {
+    const navigate = useNavigate()
+
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+
 
 
     const [open, setOpen] = useState(false)
     const [dialogVisible, setDialogVisible] = useState(false)
     const [orderNumber, setOrderNumber] = useState('')
 
-    const handleClose = (_event?: React.SyntheticEvent | Event,
-                         reason?: SnackbarCloseReason,) => {
+    const handleClose = (
+        _event?: React.SyntheticEvent | Event,
+        reason?: SnackbarCloseReason,) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -436,6 +452,7 @@ const Detail = memo(() => {
             } as OrderCreate
             orderCreateAgent(result).then(res => {
                 if(res.succeed){
+                    setDialogVisible(true)
                     setOrderNumber(res.response.orderNumber)
                 }
             })
@@ -449,6 +466,10 @@ const Detail = memo(() => {
         paymentOrderAgent(orderNumber).then(res => {
             if(res.succeed){
                 setOpen(true)
+                setDialogVisible(false)
+                setTimeout(() => {
+                    navigate('/')
+                },500)
             }
         })
     }
@@ -457,27 +478,31 @@ const Detail = memo(() => {
         <div className={`${styles.detailContainer} s-flex jc-bt ai-fs`}>
             <div className={`${styles.leftDetail} `}>
                 <div className={`${styles.gap} s-flex flex-dir`}>
-                    <div className={`${styles.firportTitle} s-flex ai-fe`}>
-                        <span>Trip to Shanghai</span>
-                        <div className={`${styles.firportSet} cursor-p s-flex ai-ct`}>
-                            <span>Change Flight</span>
-                            <DriveFileRenameOutlineIcon sx={{
-                                color: 'var(--active-color)',
-                                fontSize: 12,
-                                fontWeight: 400,
-                                ml: 0.5,
-                            }}/>
-                        </div>
-                    </div>
-                    <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
+                    <Grid container spacing={2}>
                         {
                             airChoose.result?.itineraries.map(itinerarie => {
                                 return itinerarie.segments.map(segment => (
-                                    <FirportInfomation key={segment.flightNumber} segment={segment} />
+                                    <Grid size={6} key={`${itinerarie.itineraryKey}-${segment.flightNumber}`}>
+                                        <div className={`${styles.firportTitle} s-flex ai-fe`}>
+                                            <span>Trip to {segment.arrivalAirport}</span>
+                                            <div className={`${styles.firportSet} cursor-p s-flex ai-ct`}>
+                                                <span>Change Flight</span>
+                                                <DriveFileRenameOutlineIcon sx={{
+                                                    color: 'var(--active-color)',
+                                                    fontSize: 12,
+                                                    fontWeight: 400,
+                                                    ml: 0.5,
+                                                }}/>
+                                            </div>
+                                        </div>
+                                        <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
+                                            <FirportInfomation key={segment.flightNumber} segment={segment} />
+                                        </div>
+                                    </Grid>
                                 ))
                             })
                         }
-                    </div>
+                    </Grid>
                     <Passenger />
                 </div>
                 <div className={`s-flex flex-dir`}>

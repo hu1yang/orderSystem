@@ -25,6 +25,7 @@
     "less": "^4.3.0",
     "react": "^19.1.0",
     "react-date-range": "^2.0.1",
+    "react-day-picker": "^9.7.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
     "react-redux": "^9.2.0",

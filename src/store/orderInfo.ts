@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type {AirChoose, FQuery, FQueryResult, ResponseData, Result, Travelers} from '@/types/order'
 import dayjs from "dayjs";
-import {queryBookingAgent} from "@/utils/request/agetn.ts";
+import type {RootState} from "@/store/index.ts";
 
 type IOrder = {
     query:FQuery
@@ -62,26 +62,7 @@ const orderInfoSlice = createSlice({
             state.airChoose.channelCode = action.payload
         },
         setResult: (state, action: PayloadAction<Result|null>) => {
-            if(!action.payload) {
-                state.airChoose.result = null
-            }
             state.airChoose.result = action.payload
-            const newTravelers = state.query.travelers.filter(traveler => traveler.passengerCount>0)
-            queryBookingAgent({
-                ...state.airChoose,
-                request:{
-                    ...state.query,
-                    travelers:newTravelers
-                }
-            }).then(res => {
-                if(res.succeed){
-                    state.airChoose = {
-                        ...state.airChoose,
-                        result: res.response,
-                    }
-                }
-            })
-
         },
         updateItineraries: (state,action: PayloadAction<string[]>) => {
             state.query = {
@@ -91,10 +72,21 @@ const orderInfoSlice = createSlice({
                     departureDate: action.payload[itinerarieIndex]
                 }))
             }
-            console.log(state.query)
         }
     },
 })
+
+export const selectTotalPrice = (state: RootState) => {
+    const resultAir = state.ordersInfo.airChoose.result;
+    if (!resultAir?.itineraries) return 0;
+
+    return resultAir.itineraries.reduce((total, itinerary) => {
+        const itineraryTotal = itinerary.amounts.reduce((sum, amount) => {
+            return sum + amount.printAmount + amount.taxesAmount;
+        }, 0);
+        return total + itineraryTotal;
+    }, 0);
+};
 
 export const { setAirportList , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

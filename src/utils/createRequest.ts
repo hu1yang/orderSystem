@@ -7,6 +7,13 @@ import axios, {
 import Cookie from 'js-cookie'
 import {normalizeParams} from "@/utils/public.ts";
 
+const isProd = import.meta.env.MODE === 'production';
+const baseMap: Record<string, string> = {
+    '/identityApi': import.meta.env.VITE_IDENTITY_API,
+    '/groupApi': import.meta.env.VITE_GROUP_API,
+    '/agentApi': import.meta.env.VITE_AGENT_API,
+};
+
 const instance:AxiosInstance = axios.create({
     baseURL:'',
     timeout:5000,
@@ -17,9 +24,25 @@ const instance:AxiosInstance = axios.create({
 axios.defaults.headers.Accept = 'application/json'
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 
+
+
+
 // 请求拦截器
 instance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
+        if (isProd && config.url) {
+            const matchedPrefix = Object.keys(baseMap).find(prefix =>
+                config.url!.startsWith(prefix)
+            );
+
+            if (matchedPrefix) {
+                const base = baseMap[matchedPrefix];
+                config.baseURL = base;
+                config.url = config.url.replace(matchedPrefix, ''); // 去掉前缀
+            }
+        }
+
+
         const token = Cookie.get('token')
         if(token){
             config.headers['authorization'] = `Bearer ${token}`
