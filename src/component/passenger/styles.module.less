@@ -5,6 +5,7 @@
 .firportTitle{
     line-height: 1;
     font-size: 1rem;
+    margin-bottom: var(--pm-16);
     span{
         color: var(--text-color);
         font-size: 2.7em;
@@ -106,12 +107,35 @@
         }
     }
 }
+.whiteContainer{
+    background: var(--vt-c-white);
+}
+
+.setpContainer{
+    margin-bottom: 54px;
+    padding-top: 24px;
+}
+.wContainer{
+    width: 768px;
+}
+.wContainer100{
+    width: var(--main-width);
+    margin: 0 auto;
+}
+
+.detailHeader{
+    width: 100%;
+    .whiteContainer;
+    padding-bottom: var(--pm-16);
+}
 
 .detailContainer{
     font-size: 1rem;
+    width: 100%;
     .mb48;
     .leftDetail{
-        width: 768px;
+        .wContainer100;
+        padding-top: var(--pm-16);
         .commonTitle{
             color: var(--text-color);
             font-size: 2em;
@@ -132,49 +156,7 @@
             position: relative;
         }
 
-        .passengerContainer{
-            .tips{
-                font-size: 1.1em;
-                color: var(--text-color);
-                margin-bottom: 24px;
-            }
-            .cardContent{
-                gap: var(--pm-16);
-                .cardli{
-                    padding: var(--pm-16);
-                    border: 1px solid var(--put-border-color);
-                    border-radius: 8px;
-                    .picture{
-                        width: 56px;
-                        height: 56px;
-                        margin-right: var(--pm-16);
-                        img{
-                            max-height: 100%;
-                            max-width: 100%;
-                        }
-                    }
-                    .cardTitle{
-                        span{
-                            color: var(--text-color);
-                            font-weight: bold;
-                            font-size: 1.1em;
-                        }
 
-                    }
-                    .desc{
-                        span{
-                            color: var(--tips-gary-color);
-                        }
-                        .viewDetail{
-                            color: var(--active-color);
-                            font-size: 1em;
-
-                        }
-                    }
-                }
-            }
-
-        }
 
         .passengerFormContainer{
             .mb48;
@@ -374,7 +356,12 @@
         top: 20px;
         .priceBox{
             margin-top: 14px;
+            .priceCom{
+                margin-bottom: var(--pm-16);
+                width: 100%;
+            }
             .priceli{
+                width: 100%;
 
                 .labels , .values{
                     span{
@@ -426,6 +413,8 @@
     }
 
 }
+
+
 .tripBox{
     text-align: center;
 

@@ -23,11 +23,14 @@ import AirTooltip from "@/component/defult/AirTooltip.tsx";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import type {Amount, ResponseItinerary, Result, ResultType, Segment} from "@/types/order.ts";
+import type { ResponseItinerary, Result, ResultType, Segment} from "@/types/order.ts";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
-import {setChannelCode, setResult} from "@/store/orderInfo.ts";
+import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
+import dayjs from "dayjs";
+import PriceDetail from "@/component/order/priceDetail.tsx";
+import {getTotalPriceByFamilyCode, groupAmountByFamilyCodeFnc} from "@/utils/price.ts";
 
 
 
@@ -269,6 +272,11 @@ const FilterTab = memo(() => {
     )
 })
 
+const itineraryTypeMap = {
+    multi: 'Multi-city',
+    oneWay: 'One-way',
+    round: 'Round-trip',
+} as const
 const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,contextId,resultType}:{
     itinerarie:ResponseItinerary
     channelCode:string
@@ -278,68 +286,120 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     resultType: ResultType
     currency:string
 }) => {
+    const airportList = useSelector((state: RootState) => state.ordersInfo.airportList)
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-    const itinerarieQuery = useSelector((state: RootState) => state.ordersInfo.query.itineraries[state.ordersInfo.airportActived])
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const itinerarieQuery = useSelector((state: RootState) => state.ordersInfo.query.itineraries[airportActived])
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
 
+    const [disabledChoose, setDisabledChoose] = useState(false)
+
     const [open, setOpen] = useState(false)
-    const itineraryTypeMap = {
-        multi: 'Multi-city',
-        oneWay: 'One-way',
-        round: 'Round-trip',
-    } as const
+
 
     const openMore = () => {
-        dispatch(setChannelCode(channelCode))
         setOpen(true)
     }
     const handleClose = () => {
-        dispatch(setChannelCode(''))
-        dispatch(setResult(null))
         setOpen(false)
-        setChooseAmount(null)
+        setChooseAmountCode('')
     }
 
-    const lowestPrice = useMemo(() => {
-        if (!itinerarie?.amounts?.length) return 0;
+    const beforePrice = useMemo(() => {
+        if (airChoose.result) {
+            const prices = airChoose.result.itineraries?.flatMap(itinerarie =>
+                groupAmountByFamilyCodeFnc(itinerarie.amounts,query.travelers)
+            ) || [];
 
-        const resultAmount = itinerarie.amounts.reduce((min, curr) => {
-            const minTotal = min.printAmount + min.taxesAmount;
-            const currTotal = curr.printAmount + curr.taxesAmount;
-            return currTotal < minTotal ? curr : min;
-        });
+            return prices.reduce((sum, price) => sum + price, 0);
+        }
+        return 0;
+    },[airChoose])
 
-        return resultAmount.printAmount as number + resultAmount.taxesAmount as number;
-    }, [itinerarie]);
+    const totalPrice = useMemo(() => {
+        // 当前行程的最低价格（注意：也按 familyCode 分组）
+        const groupedCurrentPrices = groupAmountByFamilyCodeFnc(itinerarie.amounts,query.travelers);
+        const priceCurrent = Math.min(...groupedCurrentPrices);
 
-    const [chooseAmount, setChooseAmount] = useState<Amount[]|null>(null)
-    const handleChooseFnc = useCallback((amount: Amount) => {
-        setChooseAmount([{...amount}])
+        // 找到当前 airport
+        const airport = airportList.find(a => a.channelCode === channelCode);
+        const result = airport?.results.find(a => a.contextId === contextId);
+
+        // 后续行程
+        const itinerarieMore = result?.itineraries.filter(
+            a => Number(a?.itineraryNo) > airportActived
+        );
+
+        // 后续最低价（按 familyCode 分组后比较最低）
+        const morePrices = itinerarieMore?.flatMap(it =>
+            groupAmountByFamilyCodeFnc(it.amounts,query.travelers)
+        ) || [];
+
+        const minPrice = morePrices.length > 0
+            ? Math.min(...morePrices)
+            : Infinity;
+
+        // 总价 = 当前最低价 + 后续最低价（如有）+ 已选价格
+        const total = (isFinite(minPrice) ? priceCurrent + minPrice : priceCurrent) + beforePrice;
+
+        return Math.ceil(total * 100) / 100;
+    }, [channelCode, contextId, itinerarie, airportList, airportActived, airChoose, beforePrice]);
+
+
+    const [chooseAmountCode, setChooseAmountCode] = useState<string>('')
+    const handleChooseFnc = useCallback((code: string) => {
+        setChooseAmountCode(code)
     }, [itinerarie.amounts]);
 
     const submitResult = () => {
-        if(!chooseAmount) return
-        const newItineraries = []
-        newItineraries.push({
+        setDisabledChoose(true)
+        if(!chooseAmountCode) return
+        const chooseAmount = itinerarie.amounts.filter(amount => amount.familyCode === chooseAmountCode)
+
+        const newItinerarie = {
             amounts:chooseAmount,
             itineraryNo:itinerarie.itineraryNo!,
             itineraryKey: itinerarie.itineraryKey,
             subItineraryId: itinerarie.subItineraryId!,
             segments: itinerarie.segments
-        })
-        const result = {
-            contextId,
-            policies,
-            resultType,
-            currency,
-            resultKey,
-            itineraries:newItineraries
-        } as Result
-        dispatch(setResult(result))
-        navigate('/passenger')
+        }
+
+        if(airportActived === 0){
+            const result = {
+                contextId,
+                policies,
+                resultType,
+                currency,
+                resultKey,
+                itineraries:[{...newItinerarie}]
+            } as Result
+            dispatch(setChannelCode(channelCode))
+            dispatch(setResult(result))
+        }else{
+            dispatch(setResultItineraries(newItinerarie))
+        }
+        if(query.itineraries.length  === airportActived+1){
+            navigate('/passenger')
+        }
+        setDisabledChoose(false)
+        setOpen(false)
     }
+
+    const totalPriceChoose = useMemo(() => {
+        if (chooseAmountCode) {
+            const rawTotal = getTotalPriceByFamilyCode(chooseAmountCode, itinerarie.amounts, travelers) + beforePrice;
+
+            // 向上取整保留两位小数
+            return Math.ceil(rawTotal * 100) / 100;
+        }
+        return 0;
+    }, [chooseAmountCode]);
+
 
     return  (
         <div className={styles.filterItem}>
@@ -426,7 +486,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
                                 <span>from</span>
-                                <div>{currency}${lowestPrice}</div>
+                                <div>{currency}${totalPrice}</div>
                             </div>
                             <div>
                                 <span>{itineraryTypeMap[itineraryType]}</span>
@@ -480,19 +540,55 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                         backgroundColor:'#f6f7fa',
                         padding:'8px 32px 0'
                     }}>
-                        <FareCardsSlider amounts={itinerarie.amounts} chooseFnc={handleChooseFnc} />
+                        <FareCardsSlider amounts={itinerarie.amounts} disabledChoose={disabledChoose} currency={currency} chooseFnc={handleChooseFnc} />
                     </div>
                 </DialogContent>
-                <DialogActions>
-                    <div className={`s-flex jc-fe`}>
+                <DialogActions sx={{
+                    '&.MuiDialogActions-root':{
+                        backgroundColor:'#f6f7fa',
+                        p: '16px 32px'
+                    }
+                }}>
+                    <div className={`s-flex jc-fe ai-ct`}>
+                        {
+                            chooseAmountCode?
+                                <Box className={'s-flex flex-dir'}>
+                                    <div className={`s-flex ai-ct`}>
+                                        <HtmlTooltip placement="top" sx={{
+                                            width: 300,
+                                            'MuiTooltip-tooltip': {
+                                                padding: 'var(--pm-16)',
+                                            }
+                                        }} title={
+                                            <>
+
+                                                <PriceDetail amounts={itinerarie.amounts} familyCode={chooseAmountCode} currency={currency} />
+                                            </>
+                                        }>
+                                            <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
+                                                fontSize: 20,
+                                                color: 'var(--active-color)',
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    cursor: 'help',
+
+                                                }
+                                            }}>{currency}${totalPriceChoose}</Typography>
+                                        </HtmlTooltip>
+                                    </div>
+                                    <Typography variant="caption" color="text.secondary" ml={1}
+                                                sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>
+                                </Box>:
+                                <></>
+                        }
                         <Button
                             variant='contained'
                             fullWidth
                             size="large"
                             sx={{
-                                mt: 4,
                                 backgroundColor: 'var(--active-color)',
                                 fontSize:20,
+                                ml:'20px',
                                 fontWeight: 'bold',
                                 '&:hover': { backgroundColor: '#264fd3' },
                             }}
@@ -510,7 +606,16 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
 
 const FilterData = memo(() => {
     const state = useSelector((state: RootState) => state)
+    const airportList = useSelector((state: RootState) => state.ordersInfo.airportList)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const updatedTime = useMemo(() => {
+        if(!state.ordersInfo.airportList.length){
+            return ''
+        }
+        const time = state.ordersInfo.airportList[0].updatedTime
+        return dayjs(time).format('HH:mm:ss') || ''
+    }, [state.ordersInfo.airportList,airportActived]);
+
 
     return (
         <div className={`${styles.filterData} flex-1`}>
@@ -518,9 +623,15 @@ const FilterData = memo(() => {
                 <div className={styles.filterHeader}>
                     <div className={styles.stackedColor}></div>
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
-                        <h2>{state.ordersInfo.airportActived + 1}. Departing to {state.ordersInfo.query.itineraries[state.ordersInfo.airportActived].departure}</h2>
+                        <h2>
+                            {
+                                airportList.length && state.ordersInfo.query.itineraries.length?
+                                    `${airportActived + 1}. Departing to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
+                                    :<></>
+                            }
+                        </h2>
                         <div className={`s-flex ai-fs cursor-p`}>
-                            <span>*Last updated: 17:42:44</span>
+                            <span>*Last updated: {updatedTime}</span>
                             <HtmlTooltip title={
                                 <ul className={styles.tooplis}>
                                     <li>Ticket prices are determined by various factors, including seasonal demand, route popularity, booking time, and seat availability. Airlines adjust ticket prices in real-time, which can cause fluctuations.</li>

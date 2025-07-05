@@ -1,36 +1,28 @@
-import {Fragment, memo, useRef, useState} from "react";
+import {memo, useMemo, useRef, useState} from "react";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import {
     Alert,
-    Avatar, Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
+    Button,
     Checkbox,
-    Chip,
     Dialog, DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
     Divider, FormControlLabel,
     Grid,
-    Link, Snackbar, type SnackbarCloseReason,
+    Link, Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
-import type {IContact, OrderCreate, Passenger as IPassenger} from '@/types/order.ts'
+import type {IContact, OrderCreate, OrderPrice, Passenger as IPassenger, PriceSummary} from '@/types/order.ts'
 
 
-import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-import T from '@/assets/t.png'
-import C from '@/assets/c.png'
-import Passenger from "@/component/passenger/passenger.tsx";
+
 
 import PassengerForm from "./PassengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
@@ -38,291 +30,17 @@ import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
-import {selectTotalPrice} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
-
-const CardCom = memo(() => {
-
-    const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
-    const totalPrice = useSelector(selectTotalPrice)
+import CardCom from "@/component/passenger/cardCom.tsx";
+import {calculateTotalPriceSummary} from "@/utils/price.ts";
 
 
-    const [chipHide, setChipHide] = useState(false)
-    const [priceHide, setPriceHide] = useState(false)
 
-    const setChip = () => {
-        setChipHide(!chipHide)
-    }
-    const setPirce = () => {
-        setPriceHide(!priceHide)
-    }
-
-    return (
-        <Card sx={{minWidth: 376, boxShadow: '0 4px 16px 0 rgba(69,88,115,.2)'}}>
-            <CardHeader title="Price Details" sx={{
-                px: 2,
-                '.MuiTypography-root': {
-                    color: 'var(--text-color)',
-                    fontSize: 20,
-                    fontWeight: 'bold'
-                }
-            }}/>
-            <CardContent sx={{
-                pt: 0,
-                px: 2
-            }}>
-                <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`}>
-                    {
-                        resultAir?.itineraries[0].amounts.map(amount => (
-                            <Fragment key={`${amount.familyName}-${amount.familyCode}-c1`}>
-                                <div key={`${amount.familyName}-${amount.familyCode}-c1`} className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
-                                    <div className={`${styles.labels} s-flex ai-ct cursor-p`} onClick={setPirce}>
-                                        <span>Tickets(1 Adult)</span>
-                                        <ExpandMoreIcon sx={{
-                                            transition: 'transform .2s ease-in-out',
-                                            transform: !priceHide ? 'rotate(0deg)' : 'rotate(180deg)',
-                                        }}/>
-                                    </div>
-                                    <div className={styles.values}>
-                                        <span>{resultAir.currency}${amount.printAmount + amount.taxesAmount}</span>
-                                    </div>
-                                </div>
-                                <div key={`${amount.familyName}-${amount.familyCode}-c2`} className={`${styles.priceHeight} full-width`}
-                                     style={{maxHeight: !priceHide ? '0px' : '1000px'}}>
-                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                            <span>Adults (Passenger 1)</span>
-                                        </div>
-                                        <div className={styles.values}>
-                                            <span>{resultAir.currency}${amount.printAmount + amount.taxesAmount} × 1</span>
-                                        </div>
-                                    </div>
-                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                            <span style={{fontSize: 12}}>Fare</span>
-                                        </div>
-                                        <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${amount.printAmount} × 1</span>
-                                        </div>
-                                    </div>
-                                    <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                            <span style={{fontSize: 12}}>Taxes & fees</span>
-                                        </div>
-                                        <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${amount.taxesAmount} × 1</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Fragment>
-                        ))
-                    }
-
-                </div>
-                <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`}>
-                    <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
-                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                            <span>Baggage</span>
-                        </div>
-
-                    </div>
-                    <div className={`${styles.priceHeight} ${styles.baggage} full-width`}>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0
-                            }} title={
-                                <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                    Click to view baggage allowance details
-                                </Typography>
-                            }>
-                                <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Personal item</span>
-                                </div>
-                            </HtmlTooltip>
-
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12}}>Check with airline</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0,
-                                '& .MuiTooltip-tooltip': {
-                                    maxWidth: 600, // 或设置固定宽度 width: 300
-                                },
-                            }} title={
-                                <>
-                                    <Typography fontSize={14} color={'var(--text-color)'}>Free baggage
-                                        allowance: <strong
-                                            style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>20
-                                            kg</strong> per passenger</Typography>
-                                    <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                        Click to view baggage allowance details
-                                    </Typography>
-                                </>
-
-                            }>
-                                <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Carry-on baggage</span>
-                                </div>
-                            </HtmlTooltip>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0,
-                                '& .MuiTooltip-tooltip': {
-                                    maxWidth: 600, // 或设置固定宽度 width: 300
-                                },
-                            }} title={
-                                <>
-                                    <Typography fontSize={14} color={'var(--text-color)'}>Free baggage
-                                        allowance: <strong
-                                            style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>20
-                                            kg</strong> per passenger</Typography>
-                                    <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                        Click to view baggage allowance details
-                                    </Typography>
-                                </>
-                            }>
-                                <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Checked baggage</span>
-                                </div>
-                            </HtmlTooltip>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <Divider
-                    sx={{
-                        borderTopStyle: 'dashed',
-                        borderTopWidth: '1px',
-                        borderColor: 'var(--put-border-color)',
-                        borderBottomStyle: 'inherit',
-                        mt: 2
-                    }}
-                />
-            </CardContent>
-            <CardActions sx={{
-                px: 2,
-                pb: 3
-            }}>
-                <div className={`s-flex flex-dir jc-fe ai-fe full-width`}>
-                    <div className={`${styles.priceLine} s-flex jc-bt ai-ct full-width`}>
-                        <div className={styles.labels}>Total</div>
-                        <div className={styles.prices}>{resultAir?.currency}${totalPrice}</div>
-                    </div>
-                    <HtmlTooltip sx={{
-                        '.MuiTooltip-tooltip': {
-                            maxWidth: 400
-                        }
-                    }} title={
-                        <div className={styles.tripBox}>
-                            <div className={styles.tripTitle}>Start Earning Trip Coins</div>
-                            <Chip label="100 Trip Coins = US$1" size="medium" avatar={<Avatar src={T} sx={{
-                                width: '18px !important',
-                                height: '18px !important',
-                            }}/>} sx={{
-                                height: '25px',
-                                borderRadius: '2px',
-                                borderColor: 'rgba(255,111,0,.32)',
-                                background: '#f5f7fa',
-                                mt: '8px',
-                                '.MuiChip-label': {
-                                    color: 'var(--text-color)'
-                                }
-                            }}/>
-                            <div className={`${styles.tripBoxFor} s-flex flex-dir ai-fs`}>
-                                <div className={styles.tripBoxTitles}>
-                                    For this trip
-                                </div>
-                                <div className={`${styles.tripBoxContent} s-flex`}>
-                                    <CheckIcon sx={{
-                                        fontSize: 14,
-                                        color: 'var(--keynote-text)',
-                                        mt: '5px'
-                                    }}/>
-                                    <div className={`s-flex flex-dir`} style={{textAlign: 'left'}}>
-                                        <div className={styles.tripBoxContentText}>You'll earn Trip Coins
-                                            worth <strong> 0.25%</strong> of the booking total after your trip!
-                                        </div>
-                                        <div className={`${styles.tripBoxMore} s-flex ai-ct cursor-p`}
-                                             onClick={setChip}>
-                                            <div className={styles.tripBoxMoreText}>
-                                                Details
-                                            </div>
-                                            <ExpandMoreIcon sx={{
-                                                fontSize: 20,
-                                                color: 'var(--active-color)',
-                                                transition: 'transform .2s ease-in-out',
-                                                transform: chipHide ? 'rotate(0deg)' : 'rotate(180deg)',
-                                            }}/>
-                                        </div>
-                                        {
-                                            chipHide && <Chip avatar={<Avatar src={C} sx={{
-                                                width: '18px !important',
-                                                height: '18px !important',
-                                            }}/>} variant="outlined" sx={{
-                                                borderRadius: '2px',
-                                                background: 'var(--vt-c-white)'
-                                            }} label={
-                                                <div className={`${styles.tripBoxMoreBox} s-flex ai-ct`}>
-                                                    <div className={styles.ratio}>+10%</div>
-                                                    <span>Become a gold member and earn 10% more</span>
-                                                </div>
-                                            }/>
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                            <div className={styles.tripBoxEarn}>
-                                <div className={styles.tripBoxTitles}>
-                                    How to Earn Trip Coins
-                                </div>
-                                <div className={`${styles.tripBoxContent} s-flex`}>
-
-                                    <div className={styles.tripBoxContentText}>
-                                        You'll earn Trip Coins each time you book with us. Trip Coins can be used to
-                                        save on future bookings.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }>
-                        <Chip label="Trip Coins + 111" size="medium" avatar={<Avatar src={T} sx={{
-                            width: '18px !important',
-                            height: '18px !important',
-                        }}/>} variant="outlined" sx={{
-                            height: '25px',
-                            borderRadius: '2px',
-                            borderColor: 'rgba(255,111,0,.32)',
-                            background: 'rgba(255,111,0,.08)',
-                            mt: 1,
-                            '.MuiChip-label': {
-                                color: '#eb5600'
-                            }
-                        }}/>
-                    </HtmlTooltip>
-
-                </div>
-
-            </CardActions>
-        </Card>
-    )
-})
-
-const NextStep = memo(({paySubmit}:{
+const NextStep = memo(({paySubmit,totalPrice}:{
     paySubmit:() => void
+    totalPrice:PriceSummary
 }) => {
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
-    const totalPrice = useSelector(selectTotalPrice)
 
     const [agree, setAgree] = useState(true)
 
@@ -363,7 +81,7 @@ const NextStep = memo(({paySubmit}:{
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
                         <div className={styles.payPriceLabels}>Total</div>
-                        <div className={styles.payPricevalue}>{resultAir?.currency}${totalPrice}</div>
+                        <div className={styles.payPricevalue}>{resultAir?.currency}${totalPrice.totalPrice}</div>
                     </div>
                     <Button type="submit" sx={{
                         backgroundColor: 'var(--active-color)',
@@ -474,38 +192,87 @@ const Detail = memo(() => {
         })
     }
 
+    const totalPrice = useMemo(() => {
+        if(!airChoose.result) return 0
+        return calculateTotalPriceSummary(airChoose.result.itineraries,query.travelers)
+    },[airChoose,query.travelers])
+
+
     return (
-        <div className={`${styles.detailContainer} s-flex jc-bt ai-fs`}>
-            <div className={`${styles.leftDetail} `}>
-                <div className={`${styles.gap} s-flex flex-dir`}>
-                    <Grid container spacing={2}>
-                        {
-                            airChoose.result?.itineraries.map(itinerarie => {
-                                return itinerarie.segments.map(segment => (
-                                    <Grid size={6} key={`${itinerarie.itineraryKey}-${segment.flightNumber}`}>
-                                        <div className={`${styles.firportTitle} s-flex ai-fe`}>
-                                            <span>Trip to {segment.arrivalAirport}</span>
-                                            <div className={`${styles.firportSet} cursor-p s-flex ai-ct`}>
-                                                <span>Change Flight</span>
-                                                <DriveFileRenameOutlineIcon sx={{
-                                                    color: 'var(--active-color)',
-                                                    fontSize: 12,
-                                                    fontWeight: 400,
-                                                    ml: 0.5,
-                                                }}/>
+        <div className={`${styles.detailContainer} s-flex flex-dir`}>
+            <div className={styles.detailHeader}>
+                <div className={styles.wContainer100}>
+                    <div className={styles.setpContainer}>
+                        <Stepper activeStep={0} sx={{
+                            width: '100%',
+                            '.MuiSvgIcon-root': {
+                                width: '1.4em',
+                                height: '1.4em',
+                                '&.Mui-active':{
+                                    color: 'var(--active-color)',
+                                },
+                                '.MuiStepIcon-text':{
+                                    fontSize: 12,
+                                }
+                            },
+                            '.MuiStepLabel-iconContainer,.MuiStep-root':{
+                                p:0
+                            },
+                            '.MuiStepConnector-line':{
+                                borderWidth: 4,
+                                borderImage: 'linear-gradient(to right, var(--active-color) 50%, var(--put-border-color) 50%) 1 !important'
+                            }
+                        }}>
+                            <Step>
+                                <StepLabel />
+                            </Step>
+                            <Step>
+                                <StepLabel />
+                            </Step>
+                        </Stepper>
+                        <div className={`s-flex jc-bt ai-ct`}>
+                            <Typography fontWeight={400} fontSize={14} color={'var(--active-color)'}>Fill in your info</Typography>
+                            <Typography fontWeight={400} fontSize={14} color={'var(--text-color)'}>Finalize your payment</Typography>
+                        </div>
+                    </div>
+                    <div className={`s-flex jc-bt`}>
+                        <div className={`${styles.gap} ${styles.wContainer}`}>
+                            <div className={`s-flex flex-dir`}>
+                                {
+                                    airChoose.result?.itineraries.map(itinerarie => {
+                                        return itinerarie.segments.map(segment => (
+                                            <div key={`${itinerarie.itineraryKey}-${segment.flightNumber}`}>
+                                                <div className={`${styles.firportTitle} s-flex ai-fe`}>
+                                                    <span>Trip to {segment.arrivalAirport}</span>
+                                                    <div className={`${styles.firportSet} cursor-p s-flex ai-ct`}>
+                                                        <span>Change Flight</span>
+                                                        <DriveFileRenameOutlineIcon sx={{
+                                                            color: 'var(--active-color)',
+                                                            fontSize: 12,
+                                                            fontWeight: 400,
+                                                            ml: 0.5,
+                                                        }}/>
+                                                    </div>
+                                                </div>
+                                                <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
+                                                    <FirportInfomation key={segment.flightNumber} segment={segment} />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
-                                            <FirportInfomation key={segment.flightNumber} segment={segment} />
-                                        </div>
-                                    </Grid>
-                                ))
-                            })
-                        }
-                    </Grid>
-                    <Passenger />
+                                        ))
+                                    })
+                                }
+                            </div>
+                            {/*<Passenger />*/}
+                        </div>
+                        <div className={styles.cardCom}>
+                            <CardCom totalPrice={totalPrice} />
+                        </div>
+                    </div>
+
                 </div>
-                <div className={`s-flex flex-dir`}>
+            </div>
+            <div className={`${styles.leftDetail}`}>
+                <div className={`${styles.wContainer} s-flex flex-dir`}>
                     <PassengerForm ref={passengerRef} />
                     <ContactForm ref={contactRef} />
                     <div className={styles.package}>
@@ -641,7 +408,7 @@ const Detail = memo(() => {
                                         <div className={styles.stayDiscountsliPicture}>
                                             <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.30/images/complete/hotelCross/pic_coupon.png" alt=""/>
                                         </div>
-                                            <div className={`${styles.stayDiscountsliTitle} ellipsis-1`}>
+                                        <div className={`${styles.stayDiscountsliTitle} ellipsis-1`}>
                                             New Guest  Offer
                                         </div>
                                         <div className={`${styles.stayDiscountsliPrice}`}>
@@ -678,12 +445,10 @@ const Detail = memo(() => {
                             </Grid>
                         </div>
                     </div>
-                    <NextStep paySubmit={handlepaySubmit} />
+                    <NextStep totalPrice={totalPrice} paySubmit={handlepaySubmit} />
                 </div>
             </div>
-            <div className={styles.cardCom}>
-                <CardCom />
-            </div>
+
             <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
                       onClose={handleClose}>
                 <Alert

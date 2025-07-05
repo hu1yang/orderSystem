@@ -8,11 +8,13 @@ import 'slick-carousel/slick/slick-theme.css';
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 
 import styles from './styles.module.less'
-import {memo, useCallback, useMemo, useState} from "react";
+import {memo, useMemo, useState} from "react";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import type {Amount, Luggage} from "@/types/order.ts";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
+import PriceDetail from "@/component/order/priceDetail.tsx";
+import {getTotalPriceByFamilyCode} from "@/utils/price.ts";
 
 
 const itineraryTypeMap = {
@@ -21,11 +23,7 @@ const itineraryTypeMap = {
     round: 'Round-trip',
 } as const
 
-const passengerTypes = {
-    adt: 'adult',
-    chd: 'child',
-    inf: 'infant'
-}
+
 
 function NextArrow({onClick}: { onClick?: () => void }) {
     return (
@@ -70,52 +68,7 @@ function PrevArrow({onClick}: { onClick?: () => void }) {
 }
 
 
-const PriceDetail = memo(({amount}: {
-    amount: Amount
-}) => {
-    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
 
-    const stopPropagation = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        e.stopPropagation()
-    }, [])
-    const totalPrice = useMemo(() => {
-        return amount.printAmount + amount.taxesAmount
-    }, [amount])
-
-    return (
-        <div className={styles.priceDetail} onMouseDown={stopPropagation}>
-            <div className={styles.priceAbout}>
-                <div className={`${styles.priceTitle} s-flex ai-ct jc-fe`}>
-                    <div className={styles.priceFlight}>US${totalPrice}</div>
-                    <p>/{passengerTypes[amount.passengerType]}</p>
-                </div>
-                <div className={`${styles.priceTips} s-flex jc-fe`}>
-                    Avg. {itineraryTypeMap[itineraryType]} price per passenger
-                </div>
-                <Divider sx={{borderStyle: 'dashed', my: 1.5}}/>
-                <div className={styles.details}>
-                    <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
-                        <span>{passengerTypes[amount.passengerType]} Ticket </span>
-                        <span>US${totalPrice}</span>
-                    </div>
-                    <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
-                        <span>Fare  </span>
-                        <span>US${amount.printAmount}</span>
-                    </div>
-                    <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
-                        <span>Taxes & fees </span>
-                        <span>US${amount.taxesAmount}</span>
-                    </div>
-                    <Divider sx={{borderStyle: 'dashed', my: 1.5}}/>
-                    <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
-                        <span>{itineraryTypeMap[itineraryType]} Total</span>
-                        <span>US${totalPrice}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-})
 const settings = {
     dots: false,
     infinite: false,
@@ -163,29 +116,41 @@ function renderContent(luggage: Luggage) {
     }
 }
 
-const FareCardsSlider = memo(({amounts,chooseFnc}: {
+const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
     amounts: Amount[]
-    chooseFnc: (amount:Amount) => void
+    chooseFnc: (code: string) => void
+    currency:string
+    disabledChoose:boolean
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
+    const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
 
     const [chooseValue, setChooseValue] = useState('')
 
-    const chooseAmount = (amount: Amount) => {
-        setChooseValue(amount.familyCode)
-        chooseFnc(amount)
+    const chooseAmount = (code: string) => {
+        if(disabledChoose) return
+        setChooseValue(code)
+        chooseFnc(code)
+    }
+
+    const amountsMemo = useMemo(() => {
+        const newAmounts = amounts.filter(a => a.passengerType === 'adt')
+        return newAmounts
+    }, [amounts]);
+
+    const totalFare = (code:string) => {
+        return getTotalPriceByFamilyCode(code,amounts,travelers)
     }
 
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
             <Slider {...settings}>
-                {amounts.map((amount, amountIndex) => (
-                    <Box key={`${amount.familyCode}-${amountIndex}`} sx={{width: 320}}>
-                        <Card className={'cursor-p'} onClick={() => chooseAmount(amount)} sx={{
-                            width: 319, height: 390, borderRadius: '4px', padding: '16px 24px',
-                            boxShadow: chooseValue === amount.familyCode ? 'inset 0 0 0 1px var(--back-color)' : 0,
-                            border: chooseValue === amount.familyCode ? '1px solid var(--back-color)': '1px solid var(--vt-c-white)',
+                {amountsMemo.map((amount, amountIndex) => (
+                    <Box key={`${amount.familyCode}-${amount.familyName}-${amountIndex}`} sx={{width: 320}}>
+                        <Card className={'cursor-p'} onClick={() => chooseAmount(amount.familyCode)} sx={{
+                            width: 319, borderRadius: '4px', padding: '16px 24px',
+                            boxShadow: chooseValue === amount.familyCode ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
                             '.MuiCardContent-root': {
                                 padding: '0'
                             },
@@ -197,8 +162,9 @@ const FareCardsSlider = memo(({amounts,chooseFnc}: {
                                             gutterBottom>{amount.familyName}</Typography>
                             } action={
                                 <Radio
+                                    disabled={disabledChoose}
                                     checked={chooseValue === amount.familyCode}
-                                    onChange={() => chooseAmount(amount)}
+                                    onChange={() => chooseAmount(amount.familyCode)}
                                     value={amount.familyCode}
                                     color="primary"
                                     onClick={(e) => e.stopPropagation()}
@@ -274,14 +240,17 @@ const FareCardsSlider = memo(({amounts,chooseFnc}: {
                                             padding: 'var(--pm-16)',
                                         }
                                     }} title={
-                                        <PriceDetail amount={amount}/>
+                                        <PriceDetail amounts={amounts} familyCode={amount.familyCode} currency={currency} />
                                     }>
                                         <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
-                                            fontSize: 20, '&:hover': {
+                                            fontSize: 20,
+                                            color: 'var(--active-color)',
+                                            '&:hover': {
                                                 textDecoration: 'underline',
-                                                cursor: 'help'
+                                                cursor: 'help',
+
                                             }
-                                        }}>US${amount.printAmount + amount.taxesAmount}</Typography>
+                                        }}>{currency}${totalFare(amount.familyCode)}</Typography>
                                     </HtmlTooltip>
                                     <Typography variant="caption" color="text.secondary" ml={1}
                                                 sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>

@@ -1,4 +1,5 @@
 import type {Dayjs} from "dayjs";
+import PriceDetail from "@/component/order/priceDetail.tsx";
 
 export type ItineraryType = 'oneWay'| 'round'| 'multi'
 export type CabinLevel = 'y'| 'c'| 'f'
@@ -10,6 +11,10 @@ export type ISourceType = 'manual'| 'webApi'| 'import'
 export type ChangedType = 'income'|'outlay'|unknown; // 如有更多类型可在此扩展
 export type PaymentType = 'createTicket'| 'refundTicket'| 'changeTicket'| 'teamPayments'| 'teamRetracts'| 'assistIncome'| 'assistOutlay'| 'queryLimited'| 'queryReturns'| 'otherReasons'|unknown; // 如有固定枚举建议列出
 
+export interface PriceSum {
+    printAmount: number;
+    taxesAmount: number;
+}
 type IPassengerIdType =  'pp'| 'ni'| 'bd' | unknown
 type ITravelerSex = 'm'| 'f'| null | unknown
 interface ExpandsSetting {
@@ -236,3 +241,16 @@ export interface CommonResponseGroup {
     message: string;
     content?: null|string|IContent
 }
+
+export type PriceDetail = {
+    printAmount: number;
+    taxesAmount: number;
+    unitPrice: number;
+    totalPrice: number;
+    count: number;
+};
+
+export type PriceSummary = {
+    totalPrice: number;
+    perType: Record<PassengerType, PriceDetail>;
+};
