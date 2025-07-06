@@ -1,4 +1,4 @@
-import {memo, useMemo, useRef, useState} from "react";
+import {Fragment, memo, type ReactElement, useCallback, useMemo, useState} from "react";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import {
@@ -14,17 +14,16 @@ import {
     Link, Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
-import type {IContact, OrderCreate, OrderPrice, Passenger as IPassenger, PriceSummary} from '@/types/order.ts'
+import type {OrderCreate, PriceSummary} from '@/types/order.ts'
 
 
 
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 
 
-import PassengerForm from "./PassengerForm.tsx";
+import PassengerForm from "./passengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
@@ -33,12 +32,13 @@ import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
 import {useNavigate} from "react-router";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/price.ts";
+import * as React from "react";
 
 
 
-const NextStep = memo(({paySubmit,totalPrice}:{
+const NextStep = memo(({paySubmit,pirceResult}:{
     paySubmit:() => void
-    totalPrice:PriceSummary
+    pirceResult:PriceSummary
 }) => {
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
 
@@ -65,13 +65,7 @@ const NextStep = memo(({paySubmit,totalPrice}:{
                     }
                 }} label={
                     <div className={styles.agree}>
-                        I have read and agreed to the following Trip.com booking terms and conditions:
-                        <Link href="#" >Flight Booking Policies</Link>
-                        <Link href="#" >Privacy Statement</Link>
-                        <Link href="#" >China Eastern Airlines Corporation Limited General Conditions for Transportation of Passenger and Baggage</Link>
-                        <Link href="#" >Voluntary Changes and Refunds for China Eastern Domestic Flights Implementing Rules</Link>
-                        <Link href="#" >China Eastern Overbooking Service Plan</Link>
-                        <Link href="#" >Voluntary Changes and Refunds for China Eastern International Flights Implementing Rules</Link>
+                        I have read and agreed
                     </div>
                 } control={
                     <Checkbox checked={agree}  onChange={handleSetAgree} />
@@ -81,7 +75,7 @@ const NextStep = memo(({paySubmit,totalPrice}:{
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
                         <div className={styles.payPriceLabels}>Total</div>
-                        <div className={styles.payPricevalue}>{resultAir?.currency}${totalPrice.totalPrice}</div>
+                        <div className={styles.payPricevalue}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
                     <Button type="submit" sx={{
                         backgroundColor: 'var(--active-color)',
@@ -116,10 +110,13 @@ const Detail = memo(() => {
 
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
-
+    const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
+    const selectPassengers = useSelector((state: RootState)=> state.ordersInfo.selectPassengers)
+    const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
 
 
     const [open, setOpen] = useState(false)
+    const [snackbarCom, setSnackbarCom] = useState<ReactElement>()
     const [dialogVisible, setDialogVisible] = useState(false)
     const [orderNumber, setOrderNumber] = useState('')
 
@@ -133,49 +130,68 @@ const Detail = memo(() => {
         setOpen(false);
     }
 
-    const passengerRef = useRef<{
-        triggerSubmit:() => Promise<IPassenger>
-    }>(null)
-    const contactRef = useRef<{
-        triggerSubmit:() => Promise<IContact>
-    }>(null)
+    const choosePassengers = useMemo(() => {
+        return passengers.filter(passenger => selectPassengers.includes(passenger.idNumber))
+    }, [passengers,selectPassengers]);
 
-    const handlepaySubmit = async () => {
-        const passengerForm = [] as IPassenger[]
-        const contactForm = [] as IContact[]
-        let passengerResult = {} as IPassenger|null
-        let contactFormResult = {} as IContact|null
-        if(passengerRef.current){
-            passengerResult = await passengerRef.current.triggerSubmit()
-        }
-        if(contactRef.current){
-            contactFormResult = await contactRef.current.triggerSubmit()
-        }
-        if(passengerResult && contactFormResult){
-            passengerForm.push(passengerResult)
-            contactForm.push(contactFormResult)
-            const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+    const choosePengers = async () => {
+        const totalCount = query.travelers.reduce((sum, item) => sum + item.passengerCount, 0);
 
-            const result = {
-                ...airChoose,
-                request:{
-                    ...query,
-                    travelers:newTravelers
-                },
-                shuttleNumber:'',
-                tLimit:'',
-                remarks:'',
-                passengers:passengerForm,
-                contacts:contactForm
-            } as OrderCreate
-            orderCreateAgent(result).then(res => {
-                if(res.succeed){
-                    setDialogVisible(true)
-                    setOrderNumber(res.response.orderNumber)
-                }
-            })
+        if (totalCount !== choosePassengers.length) {
+            setOpen(true);
+            setSnackbarCom(
+                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                    Please select all passengers
+                </Alert>
+            );
+            return;
         }
-    }
+
+        // 对每种 passengerType 进行校验
+        const mismatch = query.travelers.find(traveler => {
+            const expected = traveler.passengerCount;
+            const actual = choosePassengers.filter(p => p.passengerType === traveler.passengerType).length;
+            return actual !== expected;
+        });
+
+        if (mismatch) {
+            setOpen(true);
+            setSnackbarCom(
+                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                    Please select {mismatch.passengerCount} {mismatch.passengerType.toUpperCase()} passenger(s)
+                </Alert>
+            );
+            return;
+        }
+
+        // ✅ 全部匹配，可以继续后续逻辑
+        console.log('✅ Passenger selection is valid');
+    };
+
+
+    const handlepaySubmit = useCallback(async () => {
+        await choosePengers()
+        const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+
+        const result = {
+            ...airChoose,
+            request:{
+                ...query,
+                travelers:newTravelers
+            },
+            shuttleNumber:'',
+            tLimit:'',
+            remarks:'',
+            passengers:choosePassengers,
+            contacts
+        } as OrderCreate
+        orderCreateAgent(result).then(res => {
+            if(res.succeed){
+                setDialogVisible(true)
+                setOrderNumber(res.response.orderNumber)
+            }
+        })
+    },[choosePassengers,query,airChoose]) // 条件
 
     const handleCloseVisible = () => {
         setDialogVisible(false)
@@ -184,6 +200,14 @@ const Detail = memo(() => {
         paymentOrderAgent(orderNumber).then(res => {
             if(res.succeed){
                 setOpen(true)
+                setSnackbarCom(<Alert
+                    severity="success"
+                    variant="filled"
+                    sx={{ width: '100%' , fontSize: 18 }}
+                >
+                    Payment successful! Redirecting soon~
+                </Alert>)
+
                 setDialogVisible(false)
                 setTimeout(() => {
                     navigate('/')
@@ -192,8 +216,8 @@ const Detail = memo(() => {
         })
     }
 
-    const totalPrice = useMemo(() => {
-        if(!airChoose.result) return 0
+    const pirceResult = useMemo(() => {
+        if(!airChoose.result) return null
         return calculateTotalPriceSummary(airChoose.result.itineraries,query.travelers)
     },[airChoose,query.travelers])
 
@@ -265,7 +289,9 @@ const Detail = memo(() => {
                             {/*<Passenger />*/}
                         </div>
                         <div className={styles.cardCom}>
-                            <CardCom totalPrice={totalPrice} />
+                            {
+                                pirceResult ? <CardCom pirceResult={pirceResult} /> : <></>
+                            }
                         </div>
                     </div>
 
@@ -273,8 +299,8 @@ const Detail = memo(() => {
             </div>
             <div className={`${styles.leftDetail}`}>
                 <div className={`${styles.wContainer} s-flex flex-dir`}>
-                    <PassengerForm ref={passengerRef} />
-                    <ContactForm ref={contactRef} />
+                    <PassengerForm />
+                    <ContactForm />
                     <div className={styles.package}>
                         <div className={styles.packgaeTitle}>
                             Additional Baggage Allowanc
@@ -334,47 +360,82 @@ const Detail = memo(() => {
                                 <Divider sx={{
                                     my:'20px'
                                 }} />
-                                <Grid container spacing={2}>
-                                    <Grid size={12}>
-                                        <div className={styles.cityText}>Beijing - Shanghai</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetail}>Passenger 1</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>Included in carry-on allowance</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>1 piece, 8 kg total</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>20 kg</div>
-                                    </Grid>
+                                {
+                                    airChoose.result ? airChoose.result.itineraries.map((itinerarie, index) => {
+                                        const {segments} = itinerarie;
 
-                                </Grid>
-                                <Divider sx={{
-                                    my:'20px'
-                                }} />
-                                <Grid container spacing={2}>
-                                    <Grid size={12}>
-                                        <div className={styles.cityText}>Shanghai - Beijing</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetail}>Passenger 1</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>Included in carry-on allowance</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>1 piece, 8 kg total</div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={styles.cityDetailSp}>20 kg</div>
-                                    </Grid>
+                                        // 处理城市显示逻辑
+                                        let cityText = '';
+                                        if (segments.length === 1) {
+                                            cityText = `${segments[0].departureAirport} - ${segments[0].arrivalAirport}`;
+                                        } else if (segments.length > 1) {
+                                            // 多段航班：起点 + 所有中间到达点
+                                            const stops = [
+                                                segments[0].departureAirport,
+                                                ...segments.map(seg => seg.arrivalAirport)
+                                            ];
+                                            cityText = stops.join(' - ');
+                                        }
 
-                                </Grid>
+                                        return (
+                                            <Fragment key={index}>
+                                                <Grid container spacing={2}>
+                                                    <Grid size={12}>
+                                                        <div className={styles.cityText}>{cityText}</div>
+                                                    </Grid>
+                                                    <Grid size={12}>
+                                                        {
+                                                            choosePassengers.length ? choosePassengers.map((choosePassenger) => (
+                                                                    <Grid container key={choosePassenger.idNumber}>
+                                                                        <Grid size={3}>
+                                                                            <div className={styles.cityDetail}>{choosePassenger.fullName}
+                                                                            </div>
+                                                                        </Grid>
+                                                                        <Grid size={3}>
+                                                                            <div className={styles.cityDetailSp}>Included in
+                                                                                carry-on allowance
+                                                                            </div>
+                                                                        </Grid>
+                                                                        <Grid size={3}>
+                                                                            <div className={styles.cityDetailSp}>1 piece, 8
+                                                                                kg total
+                                                                            </div>
+                                                                        </Grid>
+                                                                        <Grid size={3}>
+                                                                            <div className={styles.cityDetailSp}>20 kg</div>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                )) :
+                                                                <Grid container>
+                                                                    <Grid size={3}>
+                                                                        <div className={styles.cityDetail}>Passenger 1
+                                                                        </div>
+                                                                    </Grid>
+                                                                    <Grid size={3}>
+                                                                        <div className={styles.cityDetailSp}>Included in
+                                                                            carry-on allowance
+                                                                        </div>
+                                                                    </Grid>
+                                                                    <Grid size={3}>
+                                                                        <div className={styles.cityDetailSp}>1 piece, 8
+                                                                            kg total
+                                                                        </div>
+                                                                    </Grid>
+                                                                    <Grid size={3}>
+                                                                        <div className={styles.cityDetailSp}>20 kg</div>
+                                                                    </Grid>
+                                                                </Grid>
+                                                        }
+                                                    </Grid>
+                                                </Grid>
+                                                <Divider sx={{
+                                                    my: '20px'
+                                                }}/>
+                                            </Fragment>
+                                        );
+                                    }) : <></>
+                                }
                             </div>
-
                         </div>
                     </div>
                     <div className={styles.cancellation}>
@@ -393,71 +454,15 @@ const Detail = memo(() => {
                         </div>
 
                     </div>
-                    <div className={styles.stayDiscounts}>
-                        <div className={`${styles.stayDiscountsTitle} s-flex ai-ct`}>
-                            Stay Discounts
-                            <ErrorOutlineIcon sx={{
-                                fontSize: 18,
-                                ml: '10px'
-                            }} />
-                        </div>
-                        <div className={styles.commonBox}>
-                            <Grid container spacing={2}>
-                                <Grid size={4}>
-                                    <div className={`${styles.stayDiscountsli} s-flex flex-dir ai-ct`}>
-                                        <div className={styles.stayDiscountsliPicture}>
-                                            <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.30/images/complete/hotelCross/pic_coupon.png" alt=""/>
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliTitle} ellipsis-1`}>
-                                            New Guest  Offer
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliPrice}`}>
-                                            5% off (up to US$6.00)
-                                        </div>
-                                    </div>
-                                </Grid>
-                                <Grid size={4}>
-                                    <div className={`${styles.stayDiscountsli} s-flex flex-dir ai-ct`}>
-                                        <div className={styles.stayDiscountsliPicture}>
-                                            <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.30/images/complete/hotelCross/pic_tripcoins.png" alt=""/>
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliTitle} ellipsis-1`}>
-                                            Trip Coins
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliPrice}`}>
-                                            Worth 5% of Your Booking
-                                        </div>
-                                    </div>
-                                </Grid>
-                                <Grid size={4}>
-                                    <div className={`${styles.stayDiscountsli} s-flex flex-dir ai-ct`}>
-                                        <div className={styles.stayDiscountsliPicture}>
-                                            <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.30/images/complete/hotelCross/pic_exclsive.png" alt=""/>
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliTitle} ellipsis-1`}>
-                                            Flyer Exclusive Offer
-                                        </div>
-                                        <div className={`${styles.stayDiscountsliPrice}`}>
-                                            Up to 25% Off
-                                        </div>
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </div>
-                    <NextStep totalPrice={totalPrice} paySubmit={handlepaySubmit} />
+                    {
+                        pirceResult ? <NextStep pirceResult={pirceResult} paySubmit={handlepaySubmit} /> : <></>
+                    }
                 </div>
             </div>
 
             <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
                       onClose={handleClose}>
-                <Alert
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: '100%' , fontSize: 18 }}
-                >
-                    Payment successful! Redirecting soon~
-                </Alert>
+                {snackbarCom}
             </Snackbar>
             <Dialog
                 open={dialogVisible}

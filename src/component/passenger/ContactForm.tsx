@@ -1,59 +1,73 @@
-import {forwardRef, memo, useImperativeHandle} from "react";
+import {memo, useEffect, useMemo} from "react";
 
 import styles from './styles.module.less'
 import {Controller, useForm} from "react-hook-form";
-import {FormControl, Grid, InputAdornment, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
+import {
+    FormControl,
+    Grid,
+    InputAdornment,
+    ListSubheader,
+    MenuItem,
+    Select,
+    type SelectChangeEvent,
+    TextField
+} from "@mui/material";
 import type {IContact} from "@/types/order.ts";
+import phoneCodesGrouped from "@/assets/phone_codes_grouped.json";
+import {useDispatch} from "react-redux";
+import {setContacts} from "@/store/orderInfo.ts";
+import {debounce} from "@/utils/public.ts";
 
 type IContactMore = IContact & {
     phoneCode:string
 }
 
-const phoneCodes = [
-    { code: '+1', label: 'US' },
-    { code: '+44', label: 'UK' },
-    { code: '+86', label: 'China' },
-    { code: '+91', label: 'India' },
-    // 你可以继续补充更多区号
-]
-const ContactForm = memo(forwardRef((_,ref) => {
-    const {control, handleSubmit, watch , setValue} = useForm<IContactMore>({
+const ContactForm = memo(() => {
+    const dispatch = useDispatch()
+
+    const {control, watch , setValue} = useForm<IContactMore>({
         mode: 'onBlur',
         defaultValues: {
             contactName:'',
             emailAddress:'',
             phoneNumber: '',
-            phoneCode:'+91'
+            phoneCode:'+86'
         }
     });
 
-    const values = watch();
-
-
-    const onSubmit = (data: IContactMore) => {
-        console.log(data)
-    }
+    const watchFields = watch();
 
     const handleCodeChange = (event: SelectChangeEvent) => {
         setValue('phoneCode',event.target.value)
     }
 
-    useImperativeHandle(ref,() => ({
-        triggerSubmit: () =>
-            new Promise((resolve, reject) => {
-                handleSubmit(
-                    (data) => {
-                        const newData = {
-                            contactName:data.contactName,
-                            emailAddress:data.emailAddress,
-                            phoneNumber:data.phoneCode+"/"+data.phoneNumber
-                        }
-                        return resolve(newData)
-                    },
-                    () => reject(null)
-                )();
-            })
-    }))
+    useEffect(() => {
+        debounceValid()
+    }, [watchFields]);
+
+
+    const debounceValid = useMemo(() => debounce(() => {
+        const { contactName, emailAddress, phoneNumber, phoneCode } = watchFields;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d+$/;
+
+        const isValid =
+            contactName.trim() !== '' &&
+            emailRegex.test(emailAddress) &&
+            phoneRegex.test(phoneNumber!) &&
+            phoneCode;
+
+        if (isValid) {
+            dispatch(setContacts({
+                contactName,
+                emailAddress,
+                phoneNumber: `${phoneCode}/${phoneNumber}`,
+            }));
+        }
+    }, 300), [dispatch]); // ✅ 注意：不要依赖 watchFields！
+
+
 
     return (
         <div className={styles.contactFormContainer}>
@@ -61,7 +75,7 @@ const ContactForm = memo(forwardRef((_,ref) => {
                 Contact Details
             </div>
             <div className={styles.commonBox}>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form>
                     <Grid container spacing={2}>
                         <Grid size={4}>
                             <Controller
@@ -93,7 +107,11 @@ const ContactForm = memo(forwardRef((_,ref) => {
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
-                                            return 'Please provide an email address.';
+                                            return 'Please provide an Email address.';
+                                        }
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        if (!emailRegex.test(value)) {
+                                            return 'Please enter a valid Email address.';
                                         }
                                         return true;
                                     }
@@ -114,9 +132,8 @@ const ContactForm = memo(forwardRef((_,ref) => {
                                 name="phoneNumber"
                                 rules={{
                                     validate: (value) => {
-                                        if (!value) {
-                                            return 'Please provide a phone number';
-                                        }
+                                        if (!value) return 'Please enter the passenger\'s Phone number';
+                                        if (!/^\d+$/.test(value)) return 'Only numbers are allowed';
                                         return true;
                                     }
                                 }}
@@ -125,29 +142,51 @@ const ContactForm = memo(forwardRef((_,ref) => {
                                         label="Mobile phone"
                                         variant="outlined"
                                         {...field}
+                                        type={'tel'}
                                         placeholder="Mobile phone"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <FormControl variant="standard" sx={{ minWidth: 60 }}>
-                                                        <Select
-                                                            value={values.phoneCode}
-                                                            onChange={handleCodeChange}
-                                                            disableUnderline
-                                                            size="small"
-                                                            renderValue={(selected) => selected}
-                                                            error={!!fieldState.error}
-                                                        >
-                                                            {phoneCodes.map(({ code, label }) => (
-                                                                <MenuItem key={code} value={code}>
-                                                                    {code} {label}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </Select>
-                                                    </FormControl>
-                                                </InputAdornment>
-                                            ),
+                                        error={!!fieldState.error}
+                                        onChange={e => {
+                                            const val = e.target.value;
+                                            // 只允许数字
+                                            if (/^\d*$/.test(val)) {
+                                                field.onChange(val);
+                                            }
                                         }}
+                                        slotProps={{
+                                            input: {
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <FormControl variant="standard" sx={{ minWidth: 60 }}>
+                                                            <Select
+                                                                value={watchFields.phoneCode}
+                                                                onChange={handleCodeChange}
+                                                                disableUnderline
+                                                                size="small"
+                                                                renderValue={(selected) => selected}
+                                                                error={!!fieldState.error}
+                                                                MenuProps={{
+                                                                    PaperProps: {
+                                                                        sx: {
+                                                                            maxHeight: 300, // 👈 控制菜单高度
+                                                                        },
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {Object.entries(phoneCodesGrouped).sort().flatMap(([letter, items]) => [
+                                                                    <ListSubheader key={`header-${letter}`}>{letter}</ListSubheader>,
+                                                                    ...items.map(({ code, label }) => (
+                                                                        <MenuItem key={code + label} value={code}>
+                                                                            {code} {label}
+                                                                        </MenuItem>
+                                                                    ))
+                                                                ])}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </InputAdornment>
+                                                )
+                                            }
+                                        }}
+
                                     />
                                 )}
                             />
@@ -157,6 +196,6 @@ const ContactForm = memo(forwardRef((_,ref) => {
             </div>
         </div>
     )
-}))
+})
 
 export default ContactForm;

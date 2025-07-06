@@ -1,4 +1,4 @@
-import {Fragment, memo, useMemo, useState} from "react";
+import { memo, useState} from "react";
 import { useSelector } from "react-redux";
 import {Avatar, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography} from "@mui/material";
 
@@ -11,8 +11,7 @@ import C from '@/assets/c.png'
 import styles from './styles.module.less'
 import type { RootState } from "@/store";
 import CheckIcon from "@mui/icons-material/Check";
-import {sumAmountsByPassengerType} from "@/utils/price.ts";
-import type {PassengerType, PriceSummary} from "@/types/order.ts";
+import type {PriceSummary} from "@/types/order.ts";
 
 const passengerTypes = {
     adt: 'Adult',
@@ -20,11 +19,10 @@ const passengerTypes = {
     inf: 'Infant',
 } as const;
 
-const CardCom = memo(({totalPrice}:{
-    totalPrice: PriceSummary
+const CardCom = memo(({pirceResult}:{
+    pirceResult: PriceSummary
 }) => {
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
-    const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
 
 
     const [chipHide, setChipHide] = useState(false)
@@ -65,38 +63,37 @@ const CardCom = memo(({totalPrice}:{
                         resultAir?.itineraries[0].amounts.map((amount,amountIndex) => (
                             <div className={styles.priceCom} key={`${amount.familyName}-${amount.familyCode}-${amountIndex}`}>
                                 <div key={`${amount.familyName}-${amount.familyCode}-c1`} className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
-                                    <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                        <span>Tickets({totalPrice.perType[amount.passengerType].count} {passengerTypes[amount.passengerType]})</span>
-
+                                    <div className={`${styles.labels} s-flex ai-ct`}>
+                                        <span>Tickets({pirceResult.perType[amount.passengerType].count} {passengerTypes[amount.passengerType]})</span>
                                     </div>
                                     <div className={styles.values}>
-                                        <span>{resultAir.currency}${totalPrice.perType[amount.passengerType].totalPrice}</span>
+                                        <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].totalPrice}</span>
                                     </div>
                                 </div>
                                 <div key={`${amount.familyName}-${amount.familyCode}-c2`} className={`${styles.priceHeight} full-width`}
                                      style={{maxHeight: !priceHide ? '0px' : '1000px'}}>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                            <span>{passengerTypes[amount.passengerType]}s (Passenger {totalPrice.perType[amount.passengerType].count})</span>
+                                        <div className={`${styles.labels} s-flex ai-ct`}>
+                                            <span>{passengerTypes[amount.passengerType]}s (Passenger {pirceResult.perType[amount.passengerType].count})</span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span>{resultAir.currency}${totalPrice.perType[amount.passengerType].unitPrice} × {totalPrice.perType[amount.passengerType].count}</span>
+                                            <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].unitPrice} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                        <div className={`${styles.labels} s-flex ai-ct`}>
                                             <span style={{fontSize: 12}}>Fare</span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${totalPrice.perType[amount.passengerType].printAmount} × {totalPrice.perType[amount.passengerType].count}</span>
+                                            <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].printAmount} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                        <div className={`${styles.labels} s-flex ai-ct`}>
                                             <span style={{fontSize: 12}}>Taxes & fees</span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${totalPrice.perType[amount.passengerType].taxesAmount} × {totalPrice.perType[amount.passengerType].count}</span>
+                                            <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].taxesAmount} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +197,7 @@ const CardCom = memo(({totalPrice}:{
                 <div className={`s-flex flex-dir jc-fe ai-fe full-width`}>
                     <div className={`${styles.priceLine} s-flex jc-bt ai-ct full-width`}>
                         <div className={styles.labels}>Total</div>
-                        <div className={styles.prices}>{resultAir?.currency}${totalPrice.totalPrice}</div>
+                        <div className={styles.prices}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
                     <HtmlTooltip sx={{
                         '.MuiTooltip-tooltip': {

@@ -1,0 +1,454 @@
+{
+  "A": [
+    {
+      "label": "Afghanistan",
+      "code": "+93"
+    },
+    {
+      "label": "Albania",
+      "code": "+355"
+    },
+    {
+      "label": "Algeria",
+      "code": "+213"
+    },
+    {
+      "label": "Andorra",
+      "code": "+376"
+    },
+    {
+      "label": "Angola",
+      "code": "+244"
+    },
+    {
+      "label": "Argentina",
+      "code": "+54"
+    },
+    {
+      "label": "Armenia",
+      "code": "+374"
+    },
+    {
+      "label": "Australia",
+      "code": "+61"
+    },
+    {
+      "label": "Austria",
+      "code": "+43"
+    },
+    {
+      "label": "Azerbaijan",
+      "code": "+994"
+    }
+  ],
+  "B": [
+    {
+      "label": "Bahamas",
+      "code": "+1242"
+    },
+    {
+      "label": "Bahrain",
+      "code": "+973"
+    },
+    {
+      "label": "Bangladesh",
+      "code": "+880"
+    },
+    {
+      "label": "Belarus",
+      "code": "+375"
+    },
+    {
+      "label": "Belgium",
+      "code": "+32"
+    },
+    {
+      "label": "Belize",
+      "code": "+501"
+    },
+    {
+      "label": "Benin",
+      "code": "+229"
+    },
+    {
+      "label": "Bhutan",
+      "code": "+975"
+    },
+    {
+      "label": "Bolivia",
+      "code": "+591"
+    },
+    {
+      "label": "Bosnia and Herzegovina",
+      "code": "+387"
+    },
+    {
+      "label": "Botswana",
+      "code": "+267"
+    },
+    {
+      "label": "Brazil",
+      "code": "+55"
+    },
+    {
+      "label": "Brunei",
+      "code": "+673"
+    },
+    {
+      "label": "Bulgaria",
+      "code": "+359"
+    },
+    {
+      "label": "Burkina Faso",
+      "code": "+226"
+    }
+  ],
+  "C": [
+    {
+      "label": "Cambodia",
+      "code": "+855"
+    },
+    {
+      "label": "Cameroon",
+      "code": "+237"
+    },
+    {
+      "label": "Canada",
+      "code": "+1"
+    },
+    {
+      "label": "Chile",
+      "code": "+56"
+    },
+    {
+      "label": "China",
+      "code": "+86"
+    },
+    {
+      "label": "Colombia",
+      "code": "+57"
+    },
+    {
+      "label": "Costa Rica",
+      "code": "+506"
+    },
+    {
+      "label": "Croatia",
+      "code": "+385"
+    },
+    {
+      "label": "Cuba",
+      "code": "+53"
+    },
+    {
+      "label": "Cyprus",
+      "code": "+357"
+    },
+    {
+      "label": "Czech Republic",
+      "code": "+420"
+    }
+  ],
+  "D": [
+    {
+      "label": "Denmark",
+      "code": "+45"
+    },
+    {
+      "label": "Dominican Republic",
+      "code": "+1809"
+    }
+  ],
+  "E": [
+    {
+      "label": "Ecuador",
+      "code": "+593"
+    },
+    {
+      "label": "Egypt",
+      "code": "+20"
+    },
+    {
+      "label": "Estonia",
+      "code": "+372"
+    },
+    {
+      "label": "Ethiopia",
+      "code": "+251"
+    }
+  ],
+  "F": [
+    {
+      "label": "Finland",
+      "code": "+358"
+    },
+    {
+      "label": "France",
+      "code": "+33"
+    }
+  ],
+  "G": [
+    {
+      "label": "Germany",
+      "code": "+49"
+    },
+    {
+      "label": "Greece",
+      "code": "+30"
+    }
+  ],
+  "H": [
+    {
+      "label": "Hong Kong",
+      "code": "+852"
+    },
+    {
+      "label": "Hungary",
+      "code": "+36"
+    }
+  ],
+  "I": [
+    {
+      "label": "Iceland",
+      "code": "+354"
+    },
+    {
+      "label": "India",
+      "code": "+91"
+    },
+    {
+      "label": "Indonesia",
+      "code": "+62"
+    },
+    {
+      "label": "Iran",
+      "code": "+98"
+    },
+    {
+      "label": "Iraq",
+      "code": "+964"
+    },
+    {
+      "label": "Ireland",
+      "code": "+353"
+    },
+    {
+      "label": "Israel",
+      "code": "+972"
+    },
+    {
+      "label": "Italy",
+      "code": "+39"
+    }
+  ],
+  "J": [
+    {
+      "label": "Jamaica",
+      "code": "+1876"
+    },
+    {
+      "label": "Japan",
+      "code": "+81"
+    },
+    {
+      "label": "Jordan",
+      "code": "+962"
+    }
+  ],
+  "K": [
+    {
+      "label": "Kazakhstan",
+      "code": "+7"
+    },
+    {
+      "label": "Kenya",
+      "code": "+254"
+    },
+    {
+      "label": "Kuwait",
+      "code": "+965"
+    }
+  ],
+  "L": [
+    {
+      "label": "Laos",
+      "code": "+856"
+    },
+    {
+      "label": "Latvia",
+      "code": "+371"
+    },
+    {
+      "label": "Lebanon",
+      "code": "+961"
+    },
+    {
+      "label": "Lithuania",
+      "code": "+370"
+    },
+    {
+      "label": "Luxembourg",
+      "code": "+352"
+    }
+  ],
+  "M": [
+    {
+      "label": "Malaysia",
+      "code": "+60"
+    },
+    {
+      "label": "Mexico",
+      "code": "+52"
+    }
+  ],
+  "N": [
+    {
+      "label": "Netherlands",
+      "code": "+31"
+    },
+    {
+      "label": "New Zealand",
+      "code": "+64"
+    },
+    {
+      "label": "Nigeria",
+      "code": "+234"
+    },
+    {
+      "label": "Norway",
+      "code": "+47"
+    }
+  ],
+  "P": [
+    {
+      "label": "Pakistan",
+      "code": "+92"
+    },
+    {
+      "label": "Panama",
+      "code": "+507"
+    },
+    {
+      "label": "Peru",
+      "code": "+51"
+    },
+    {
+      "label": "Philippines",
+      "code": "+63"
+    },
+    {
+      "label": "Poland",
+      "code": "+48"
+    },
+    {
+      "label": "Portugal",
+      "code": "+351"
+    }
+  ],
+  "Q": [
+    {
+      "label": "Qatar",
+      "code": "+974"
+    }
+  ],
+  "R": [
+    {
+      "label": "Romania",
+      "code": "+40"
+    },
+    {
+      "label": "Russia",
+      "code": "+7"
+    }
+  ],
+  "S": [
+    {
+      "label": "Saudi Arabia",
+      "code": "+966"
+    },
+    {
+      "label": "Serbia",
+      "code": "+381"
+    },
+    {
+      "label": "Singapore",
+      "code": "+65"
+    },
+    {
+      "label": "Slovakia",
+      "code": "+421"
+    },
+    {
+      "label": "Slovenia",
+      "code": "+386"
+    },
+    {
+      "label": "South Africa",
+      "code": "+27"
+    },
+    {
+      "label": "South Korea",
+      "code": "+82"
+    },
+    {
+      "label": "Spain",
+      "code": "+34"
+    },
+    {
+      "label": "Sri Lanka",
+      "code": "+94"
+    },
+    {
+      "label": "Sweden",
+      "code": "+46"
+    },
+    {
+      "label": "Switzerland",
+      "code": "+41"
+    }
+  ],
+  "T": [
+    {
+      "label": "Taiwan",
+      "code": "+886"
+    },
+    {
+      "label": "Thailand",
+      "code": "+66"
+    },
+    {
+      "label": "Turkey",
+      "code": "+90"
+    }
+  ],
+  "U": [
+    {
+      "label": "Ukraine",
+      "code": "+380"
+    },
+    {
+      "label": "United Arab Emirates",
+      "code": "+971"
+    },
+    {
+      "label": "United Kingdom",
+      "code": "+44"
+    },
+    {
+      "label": "United States",
+      "code": "+1"
+    }
+  ],
+  "V": [
+    {
+      "label": "Vietnam",
+      "code": "+84"
+    }
+  ],
+  "Z": [
+    {
+      "label": "Zimbabwe",
+      "code": "+263"
+    }
+  ]
+}

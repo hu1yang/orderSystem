@@ -3,60 +3,39 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import type {
     AirChoose,
     FQuery,
-    FQueryResult,
-    ItineraryType,
+    FQueryResult, IContact,
+    ItineraryType, Passenger,
     ResponseData,
     ResponseItinerary,
     Result,
     Travelers
 } from '@/types/order'
 import dayjs from "dayjs";
-import type {RootState} from "@/store/index.ts";
 
 type IOrder = {
-    query:FQuery
-    airportList:ResponseData[],
-    airportActived:number
-    airChoose:AirChoose
+    query: FQuery
+    airportList: ResponseData[]
+    airportActived: number
+    airChoose: AirChoose
+    passengers: Passenger[]
+    selectPassengers: string[]
+    contacts: IContact[]
 }
 const initialState: IOrder = {
-    // query:{
-    //     itineraryType: 'oneWay',
-    //     cabinLevel: 'y',
-    //     travelers: [
-    //         { passengerCount: 2, passengerType: 'adt' },
-    //         { passengerCount: 2, passengerType: 'chd' },
-    //         { passengerCount: 2, passengerType: 'inf' },
-    //     ],
-    //     itineraries: [
-    //         {
-    //             itineraryNo: 0,
-    //             arrival: 'TAS',
-    //             departureDate: dayjs().format('YYYY-MM-DD'),
-    //             departure: 'CAN',
-    //         },
-    //     ],
-    // },
     query:{
-        itineraryType: 'round',
+        itineraryType: 'oneWay',
         cabinLevel: 'y',
         travelers: [
-            { passengerCount: 2, passengerType: 'adt' },
-            { passengerCount: 2, passengerType: 'chd' },
-            { passengerCount: 2, passengerType: 'inf' },
+            { passengerCount: 1, passengerType: 'adt' },
+            { passengerCount: 0, passengerType: 'chd' },
+            { passengerCount: 0, passengerType: 'inf' },
         ],
         itineraries: [
             {
                 itineraryNo: 0,
                 arrival: 'TAS',
-                departureDate: '2025-07-11',
+                departureDate: dayjs().format('YYYY-MM-DD'),
                 departure: 'CAN',
-            },
-            {
-                itineraryNo: 1,
-                arrival: 'CAN',
-                departureDate: '2025-07-12',
-                departure: 'TAS',
             },
         ],
     },
@@ -65,7 +44,16 @@ const initialState: IOrder = {
     airChoose:{
         result: null,
         channelCode:'',
-    }
+    },
+    passengers:[],
+    selectPassengers:[],
+    contacts:[
+        {
+            contactName:'',
+            emailAddress:'',
+            phoneNumber: '',
+        }
+    ]
 }
 
 const orderInfoSlice = createSlice({
@@ -155,21 +143,23 @@ const orderInfoSlice = createSlice({
             if (state.query.itineraries.length > state.airChoose.result.itineraries.length) {
                 state.airChoose.result.itineraries.push(action.payload);
             }
+        },
+        setPassenger: (state, action: PayloadAction<Passenger>) => {
+            state.passengers.push(action.payload);
+        },
+        setSelectPassengers: (state, action: PayloadAction<string>) => {
+            const prev = state.selectPassengers;
+            const idNumber = action.payload
+            state.selectPassengers =  prev.includes(idNumber)
+                ? prev.filter(id => id !== idNumber)
+                : [...prev, idNumber]
+        },
+        setContacts: (state, action: PayloadAction<IContact>) => {
+            state.contacts = [{...action.payload}];
         }
     },
 })
 
-export const selectTotalPrice = (state: RootState) => {
-    const resultAir = state.ordersInfo.airChoose.result;
-    if (!resultAir?.itineraries) return 0;
 
-    return resultAir.itineraries.reduce((total, itinerary) => {
-        const itineraryTotal = itinerary.amounts.reduce((sum, amount) => {
-            return sum + amount.printAmount + amount.taxesAmount;
-        }, 0);
-        return total + itineraryTotal;
-    }, 0);
-};
-
-export const { setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries } = orderInfoSlice.actions
+export const { setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries , setPassenger , setSelectPassengers , setContacts } = orderInfoSlice.actions
 export default orderInfoSlice.reducer
