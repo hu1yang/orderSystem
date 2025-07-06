@@ -89,7 +89,20 @@ instance.interceptors.response.use(
         // 错误处理（例如统一提示错误信息）
         if (error.response) {
             // 服务器返回的错误
-
+            switch (error.response.status) {
+                case 401:
+                    // 未登陆，跳转到登录页等操作
+                    window.location.href = 'https://www.orientalsky.speedpower.net.cn/manage/agent/login'
+                    break;
+                case 403:
+                    // 权限不足
+                    break;
+                case 500:
+                    // 服务器错误
+                    break;
+                default:
+                    break;
+            }
         } else if (error.request) {
             // 请求发出后没有收到响应
             console.error('Network error or no response received');

@@ -33,9 +33,9 @@ const initialState: IOrder = {
         itineraries: [
             {
                 itineraryNo: 0,
-                arrival: 'TAS',
-                departureDate: dayjs().format('YYYY-MM-DD'),
-                departure: 'CAN',
+                arrival: '',
+                departureDate: '',
+                departure: '',
             },
         ],
     },
@@ -60,6 +60,9 @@ const orderInfoSlice = createSlice({
     name: 'orderInfo',
     initialState,
     reducers: {
+        setQuery: (state, action: PayloadAction<FQuery>) => {
+            state.query = action.payload
+        },
         setQueryValue: <K extends keyof FQuery>(
             state: IOrder,
             action: PayloadAction<{ name: K; values: FQuery[K] }>
@@ -161,5 +164,5 @@ const orderInfoSlice = createSlice({
 })
 
 
-export const { setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries , setPassenger , setSelectPassengers , setContacts } = orderInfoSlice.actions
+export const { setQuery , setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries , setPassenger , setSelectPassengers , setContacts } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

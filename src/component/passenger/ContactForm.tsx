@@ -42,12 +42,14 @@ const ContactForm = memo(() => {
     }
 
     useEffect(() => {
-        debounceValid()
-    }, [watchFields]);
+        debounceValid(watchFields)
+    }, [watchFields])
 
 
-    const debounceValid = useMemo(() => debounce(() => {
-        const { contactName, emailAddress, phoneNumber, phoneCode } = watchFields;
+    const debounceValid = useMemo(() => debounce((
+        fields
+    ) => {
+        const { contactName, emailAddress, phoneNumber, phoneCode } = fields as IContactMore;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^\d+$/;
@@ -65,7 +67,13 @@ const ContactForm = memo(() => {
                 phoneNumber: `${phoneCode}/${phoneNumber}`,
             }));
         }
-    }, 300), [dispatch]); // ✅ 注意：不要依赖 watchFields！
+    }, 300), []) // ✅ debounce 函数只创建一次
+
+// 👇 使用时把最新字段传进去
+    useEffect(() => {
+        debounceValid(watchFields)
+    }, [watchFields])
+
 
 
 

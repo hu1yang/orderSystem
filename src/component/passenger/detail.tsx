@@ -134,7 +134,9 @@ const Detail = memo(() => {
         return passengers.filter(passenger => selectPassengers.includes(passenger.idNumber))
     }, [passengers,selectPassengers]);
 
-    const choosePengers = async () => {
+
+
+    const handlepaySubmit = useCallback(() => {
         const totalCount = query.travelers.reduce((sum, item) => sum + item.passengerCount, 0);
 
         if (totalCount !== choosePassengers.length) {
@@ -163,14 +165,6 @@ const Detail = memo(() => {
             );
             return;
         }
-
-        // ✅ 全部匹配，可以继续后续逻辑
-        console.log('✅ Passenger selection is valid');
-    };
-
-
-    const handlepaySubmit = useCallback(async () => {
-        await choosePengers()
         const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
 
         const result = {
@@ -189,9 +183,10 @@ const Detail = memo(() => {
             if(res.succeed){
                 setDialogVisible(true)
                 setOrderNumber(res.response.orderNumber)
+
             }
         })
-    },[choosePassengers,query,airChoose]) // 条件
+    },[choosePassengers,query,airChoose,contacts]) // 条件
 
     const handleCloseVisible = () => {
         setDialogVisible(false)
@@ -209,9 +204,10 @@ const Detail = memo(() => {
                 </Alert>)
 
                 setDialogVisible(false)
+
                 setTimeout(() => {
-                    navigate('/')
-                },500)
+                    history.go(-1)
+                },1000)
             }
         })
     }

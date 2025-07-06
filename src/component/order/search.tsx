@@ -7,11 +7,11 @@ import {
     MenuItem,
     Popover,
     Radio,
-    RadioGroup, Select, Stack,
+    RadioGroup, Select, Stack, TextField,
     Typography
 } from '@mui/material';
 import styles from './styles.module.less'
-import {memo, useCallback, useMemo, useState} from "react";
+import {type ChangeEvent, memo, useCallback, useEffect, useMemo, useState} from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,24 +21,25 @@ import AddLocationIcon from '@mui/icons-material/AddLocation';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
-import {format, parseISO} from 'date-fns';
+import {format} from 'date-fns';
 
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
 
-import type {ItineraryType, PassengerType} from "@/types/order.ts";
-import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "@/store";
+import type {CabinLevel, FQuery, ItineraryType, PassengerType, Travelers} from "@/types/order.ts";
+import {useDispatch} from "react-redux";
 import {
-    setTravelers,
-    updateItineraries,
     setAirportList,
-    setQueryType
+    setQuery
 } from "@/store/orderInfo.ts";
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
+import dayjs from "dayjs";
 
-
+interface IdaValue{
+    arrival: string
+    departure:string
+}
 
 const regions = [
     {
@@ -68,12 +69,9 @@ const regions = [
 ];
 
 const cabinOptions = [
-    { label: 'Economy', value: 'economy' },
-    { label: 'Economy/Premium Economy', value: 'economy_premium' },
-    { label: 'Premium Economy', value: 'premium_economy' },
-    { label: 'Business', value: 'business' },
-    { label: 'First/Business', value: 'first_business' },
-    { label: 'First', value: 'first' },
+    { label: 'Economy Class', value: 'y' },
+    { label: 'Business Class', value: 'c' },
+    { label: 'First Class', value: 'f' },
 ];
 
 const AddressCard = memo(({style,addressName}:{style?:React.CSSProperties,addressName:string}) => {
@@ -141,8 +139,10 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
     </>
 ))
 
-const Airports = memo(() => {
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
+const Airports = memo(({daValue,changeValue}:{
+    daValue: IdaValue
+    changeValue:(type:'departure'|'arrival',value:string) => void;
+}) => {
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
@@ -161,17 +161,26 @@ const Airports = memo(() => {
         setAnchorEl(null)
     },[])
 
+    const handleInput = (e: ChangeEvent<HTMLInputElement>,type:'departure'|'arrival') => {
+        const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3)
+        e.target.value = value
+        changeValue(type,value)
+    }
+
     return (
         <div className={`s-flex s-flex ai-ct`}>
-            <InputModel openPop={(event) => openPop(event,query.itineraries[0].departure)}>
-                <AddressCard addressName={query.itineraries[0].departure} />
-            </InputModel>
+            {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].departure)}>*/}
+            {/*    <AddressCard addressName={query.itineraries[0].departure} />*/}
+            {/*</InputModel>*/}
+            <TextField variant="outlined" value={daValue.departure} className={styles.inputModel} onInput={(e) => handleInput(e,'departure')} />
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`}>
                 <ConnectingAirportsIcon />
             </div>
-            <InputModel openPop={(event) => openPop(event,query.itineraries[0].arrival)}>
-                <AddressCard style={{marginLeft: '4px'}} addressName={query.itineraries[0].arrival} />
-            </InputModel>
+            <TextField variant="outlined" value={daValue.arrival} className={styles.inputModel} onInput={(e) => handleInput(e,'arrival')} />
+
+            {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].arrival)}>*/}
+            {/*    <AddressCard style={{marginLeft: '4px'}} addressName={query.itineraries[0].arrival} />*/}
+            {/*</InputModel>*/}
             <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
                     <div className={styles.popBoxSearch}>
@@ -230,36 +239,17 @@ const Airports = memo(() => {
     )
 })
 
-const TimerChoose = memo(() => {
-    const dispatch = useDispatch()
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const isRound = useMemo(() => query.itineraryType === 'round', [query.itineraryType])
-
-    const selectedSingle = useMemo(() => {
-        const dateStr = query.itineraries[0]?.departureDate
-        return dateStr ? new Date(dateStr) : undefined
-    }, [query.itineraries])
-
-    const selectedRange: DateRange | undefined = useMemo(() => {
-        const from = query.itineraries[0]?.departureDate
-        const to = query.itineraries[1]?.departureDate
-        if (isRound && from && to) {
-            return {
-                from: new Date(from),
-                to: new Date(to),
-            }
-        }
-        return undefined
-    }, [isRound, query.itineraries])
-
+const TimerChoose = memo(({localDate,isRound,setLocalDate}:{
+    localDate: DateRange | Date | undefined
+    isRound: boolean
+    setLocalDate: (date:DateRange | Date) => void
+}) => {
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
     const open = Boolean(anchorEl)
     const popId = open ? 'timer-choose-pop' : undefined
-
     const openPop = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget)
     }, [])
-
     const closePop = useCallback(() => {
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur()
@@ -267,43 +257,28 @@ const TimerChoose = memo(() => {
         setAnchorEl(null)
     }, [])
 
+
+
+
     const handleSelect = (val: DateRange | Date | undefined) => {
         if (!val) return
-
-        if (isRound) {
-            const range = val as DateRange
-            if (range.from && range.to) {
-                dispatch(updateItineraries([
-                    format(range.from, 'yyyy-MM-dd'),
-                    format(range.to, 'yyyy-MM-dd'),
-                ]))
-            }
-        } else {
-            const date = val as Date
-            dispatch(updateItineraries([
-                format(date, 'yyyy-MM-dd'),
-                '',
-            ]))
-        }
+        setLocalDate(val)
     }
 
     const formatRange = useMemo(() => {
-        const first = query.itineraries[0]?.departureDate
-        if (!first) return null
-
-        if (!isRound) {
-            return <p>{format(parseISO(first), 'EEE, MMM dd')}</p>
-        } else {
-            const second = query.itineraries[1]?.departureDate
+        if(!isRound){
+            if(localDate instanceof Date) return <p>{localDate && format(localDate as Date, 'EEE, MMM dd')}</p>
+        }else{
+            const {from,to} = localDate as DateRange
             return (
                 <>
-                    <p>{format(parseISO(first), 'EEE, MMM dd')}</p>
+                    <p>{from && format(from!, 'EEE, MMM dd')}</p>
                     <p>-</p>
-                    <p>{second ? format(parseISO(second), 'EEE, MMM dd') : ''}</p>
+                    <p>{to && format(to!, 'EEE, MMM dd')}</p>
                 </>
             )
         }
-    }, [isRound, query.itineraries])
+    }, [isRound, localDate])
 
     return (
         <>
@@ -318,7 +293,7 @@ const TimerChoose = memo(() => {
                         isRound ? (
                             <DayPicker
                                 mode="range"
-                                selected={selectedRange}
+                                selected={localDate as DateRange}
                                 onSelect={handleSelect}
                                 disabled={{ before: new Date() }}
                                 numberOfMonths={2}
@@ -327,7 +302,7 @@ const TimerChoose = memo(() => {
                         ) : (
                             <DayPicker
                                 mode="single"
-                                selected={selectedSingle}
+                                selected={localDate as Date}
                                 onSelect={handleSelect}
                                 disabled={{ before: new Date() }}
                                 numberOfMonths={1}
@@ -335,18 +310,18 @@ const TimerChoose = memo(() => {
                             />
                         )
                     }
-                    <div className="s-flex jc-fe">
-                        <Button variant="contained" onClick={closePop}>Confirm Date</Button>
-                    </div>
                 </div>
             </InputPop>
         </>
     )
 })
 
-const PersonChoose = memo(() => {
-    const dispatch = useDispatch()
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
+const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
+    travelers: Travelers[]
+    setTravelers: (traveler: Travelers) => void
+    cabinValue: CabinLevel
+    setCabinValue:(val:CabinLevel) => void
+}) => {
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
@@ -355,7 +330,6 @@ const PersonChoose = memo(() => {
         setAnchorEl(event.currentTarget)
     },[])
 
-    const [cabinValue] = useState<string>('economy')
 
     const closePop = useCallback(() => {
         // 移除焦点（失焦）
@@ -366,8 +340,8 @@ const PersonChoose = memo(() => {
     },[])
 
     const countAll = useMemo(() => {
-        return query.travelers.reduce((sum, t) => sum + t.passengerCount, 0)
-    }, [query.travelers]);
+        return travelers.reduce((sum, t) => sum + t.passengerCount, 0)
+    }, [travelers]);
 
     const PersonChild = memo(() => (
         <div className={`${styles.inputMessage} s-flex jc-ct ai-ct`}>
@@ -380,7 +354,7 @@ const PersonChoose = memo(() => {
         value:PassengerType;
     }) => {
         const traveler = useMemo(() => {
-            return query.travelers.find(a => a.passengerType === value)
+            return travelers.find(a => a.passengerType === value)
         }, [value]);
 
         const setCount = (type: 'prev' | 'reduce') => {
@@ -393,10 +367,10 @@ const PersonChoose = memo(() => {
             } else {
                 count = Math.max(traveler.passengerType === 'adt' ? 1 : 0, count - 1)
             }
-            dispatch(setTravelers({
+            setTravelers({
                 ...traveler,
                 passengerCount: count,
-            }))
+            })
         }
 
         return (
@@ -444,7 +418,7 @@ const PersonChoose = memo(() => {
                         </div>
                         <div className={styles.checkBox}>
                             {
-                                query.travelers.map(traveler => {
+                                travelers.map(traveler => {
                                     switch (traveler.passengerType){
                                         case 'adt':
                                             return <PersonCheck key={traveler.passengerType} title='Adults' tips='12+ years old' value={traveler.passengerType} />
@@ -457,7 +431,7 @@ const PersonChoose = memo(() => {
                             }
                         </div>
                         <FormControl sx={{  width: '100%' }}>
-                            <Select labelId='Cabin' size='small' value={cabinValue} id='Cabin' sx={{ width: '100%' }}>
+                            <Select labelId='Cabin' size='small' value={cabinValue} onChange={(event) => setCabinValue(event.target.value)} id='Cabin' sx={{ width: '100%' }}>
                                 {
                                     cabinOptions.map(option => (
                                         <MenuItem value={option.value} key={option.value}>{option.label}</MenuItem>
@@ -474,11 +448,111 @@ const PersonChoose = memo(() => {
 
 const SearchComponent = memo(() => {
     const dispatch = useDispatch()
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const [daValue, setDaValue] = useState<IdaValue>({
+        departure:'',
+        arrival:''
+    })
+    const [radioType, setRadioType] = useState<ItineraryType>('oneWay')
+    const isRound = useMemo(() => radioType === 'round', [radioType])
+    const lcaolDateValue = useMemo(() => {
+        if (isRound) {
+            const from = dayjs().format('YYYY-MM-DD')
+            const to = dayjs().add(1,'day').format('YYYY-MM-DD')
+            return from && to ? { from: new Date(from), to: new Date(to) } : undefined
+        } else {
+            const date = dayjs().format('YYYY-MM-DD')
+            return date ? new Date(date) : undefined
+        }
+    },[isRound])
+    const [localDate, setLocalDate] = useState<DateRange | Date | undefined>(lcaolDateValue)
+    const [travelers, setTravelers] = useState<Travelers[]>([
+        { passengerCount: 1, passengerType: 'adt' },
+        { passengerCount: 0, passengerType: 'chd' },
+        { passengerCount: 0, passengerType: 'inf' },
+    ])
+    const [cabinValue, setCabinValue] = useState<CabinLevel>('y')
+
+
+    useEffect(() => {
+        setLocalDate(lcaolDateValue)
+    },[isRound])
+
+
+    const handleSetLocalDate = useCallback((val:DateRange | Date) => {
+        setLocalDate(val)
+    }, [localDate]);
+
+    const handleChangeValue = useCallback((type:'departure'|'arrival',value:string) => {
+        setDaValue(prevState => {
+            return {
+                ...prevState,
+                [type]:value
+            }
+        })
+    }, [daValue]);
+
+    const handleSetTravelers = useCallback((traveler:Travelers) => {
+        setTravelers(prevState => {
+            const { passengerType, passengerCount } = traveler
+            const index = prevState.findIndex(t => t.passengerType === passengerType)
+
+            if (index === -1) return prevState // 没找到，不变
+
+            const newTravelers = [...prevState]
+            newTravelers[index] = {
+                ...newTravelers[index],
+                passengerCount, // 更新 count
+            }
+
+            return newTravelers
+        })
+
+    }, [travelers]);
+    const handleSetCabinValue = useCallback((val:CabinLevel) => {
+        setCabinValue(val)
+    },[cabinValue])
+
+
 
     const search = () => {
-        const newQuery = {...query}
-        newQuery.travelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+        const result: FQuery = {
+            itineraryType: radioType,
+            cabinLevel: cabinValue,
+            travelers,
+            itineraries: [],
+        }
+
+        if (radioType === 'oneWay') {
+            result.itineraries = [
+                {
+                    itineraryNo: 0,
+                    arrival: daValue.arrival,
+                    departure: daValue.departure,
+                    departureDate: dayjs(localDate as Date).format('YYYY-MM-DD'),
+                },
+            ]
+        } else if (radioType === 'round') {
+            const { from, to } = localDate as DateRange
+            result.itineraries = [
+                {
+                    itineraryNo: 0,
+                    arrival: daValue.arrival,
+                    departure: daValue.departure,
+                    departureDate: dayjs(from).format('YYYY-MM-DD'),
+                },
+                {
+                    itineraryNo: 1,
+                    arrival: daValue.departure,
+                    departure: daValue.arrival,
+                    departureDate: dayjs(to).format('YYYY-MM-DD'),
+                },
+            ]
+        }
+
+        dispatch(setQuery(result))
+
+        const newQuery = {...result}
+        newQuery.travelers = result.travelers.filter(traveler => traveler.passengerCount>0)
 
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
@@ -491,18 +565,18 @@ const SearchComponent = memo(() => {
     return (
         <div className={styles.searchContainer}>
             <div>
-                <RadioGroup row value={query.itineraryType} onChange={
-                    (event) => dispatch(setQueryType(event.target.value as ItineraryType))
+                <RadioGroup row value={radioType} onChange={
+                    (event) => setRadioType(event.target.value as ItineraryType)
                 } name="row-radio-buttons-group">
                     <FormControlLabel label="Round-trip" control={<Radio/>} value={'round'}></FormControlLabel>
                     <FormControlLabel label="One-way" control={<Radio/>} value={'oneWay'}></FormControlLabel>
-                    <FormControlLabel label="Multi-city" control={<Radio/>} value={'multi'}></FormControlLabel>
+                    <FormControlLabel label="Multi-city" disabled control={<Radio/>} value={'multi'}></FormControlLabel>
                 </RadioGroup>
             </div>
             <div className={`s-flex ai-ct jc-bt`}>
-                <Airports />
-                <TimerChoose />
-                <PersonChoose />
+                <Airports daValue={daValue} changeValue={handleChangeValue} />
+                <TimerChoose localDate={localDate} isRound={isRound} setLocalDate={handleSetLocalDate} />
+                <PersonChoose travelers={travelers} setTravelers={handleSetTravelers} cabinValue={cabinValue} setCabinValue={handleSetCabinValue} />
                 <Button variant="contained" onClick={search} sx={{
                     width: '120px',
                     height: '54px',

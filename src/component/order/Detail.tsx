@@ -149,7 +149,7 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
                 {amountsMemo.map((amount, amountIndex) => (
                     <Box key={`${amount.familyCode}-${amount.familyName}-${amountIndex}`} sx={{width: 320}}>
                         <Card className={'cursor-p'} onClick={() => chooseAmount(amount.familyCode)} sx={{
-                            width: 319, borderRadius: '4px', padding: '16px 24px',
+                            width: 319,height: 390, borderRadius: '4px', padding: '16px 24px',
                             boxShadow: chooseValue === amount.familyCode ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
                             '.MuiCardContent-root': {
                                 padding: '0'
