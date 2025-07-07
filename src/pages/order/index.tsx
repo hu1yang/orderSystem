@@ -21,7 +21,7 @@ const Order = () => {
                 <SearchComponent/>
                 {/*<DayChoose/>*/}
                 <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
-                    <FilterComponent/>
+                    {/*<FilterComponent/>*/}
                     <FilterData/>
                 </div>
             </div>

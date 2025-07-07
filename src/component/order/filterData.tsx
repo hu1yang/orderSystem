@@ -620,48 +620,54 @@ const FilterData = memo(() => {
     return (
         <div className={`${styles.filterData} flex-1`}>
             <div className={styles.filterBox}>
-                <div className={styles.filterHeader}>
-                    <div className={styles.stackedColor}></div>
-                    <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
-                        <h2>
-                            {
-                                airportList.length && state.ordersInfo.query.itineraries.length?
-                                    `${airportActived + 1}. Departing to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
-                                    :<></>
-                            }
-                        </h2>
-                        <div className={`s-flex ai-fs cursor-p`}>
-                            <span>*Last updated: {updatedTime}</span>
-                            <HtmlTooltip title={
-                                <ul className={styles.tooplis}>
-                                    <li>Ticket prices are determined by various factors, including seasonal demand, route popularity, booking time, and seat availability. Airlines adjust ticket prices in real-time, which can cause fluctuations.</li>
-                                    <li>We recommend booking soon to secure the current offer. We will do our best to continuously monitor the latest prices for you. For accurate information, please refer to the price on the payment page.</li>
-                                </ul>
-                            }>
-                                <HelpIcon sx={{fontSize: 12,margin: '5px 0 0 5px'}} />
-                            </HtmlTooltip>
-                        </div>
-                    </div>
-                </div>
-                <FilterTab />
-                <div className={styles.filterContent}>
-                    {
-                        state.ordersInfo.airportList.map((airport) => {
-                            return airport.results.map(result => {
-                                return result.itineraries.filter(itinerarie => itinerarie.itineraryNo === airportActived).map(itinerarie => (
-                                    <FilterItem key={`${airport.channelCode}-${result.resultKey}-${itinerarie.itineraryKey}`}
-                                                itinerarie={itinerarie}
-                                                channelCode={airport.channelCode}
-                                                resultType={result.resultType}
-                                                policies={result.policies}
-                                                contextId={result.contextId}
-                                                resultKey={result.resultKey}
-                                                currency={result.currency} />
-                                ))
-                            })
-                        })
-                    }
-                </div>
+                {
+                    airportList.length?
+                        <>
+                            <div className={styles.filterHeader}>
+                                <div className={styles.stackedColor}></div>
+                                <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
+                                    <h2>
+                                        {
+                                            airportList.length && state.ordersInfo.query.itineraries.length?
+                                                `${airportActived + 1}. Departing to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
+                                                :<></>
+                                        }
+                                    </h2>
+                                    <div className={`s-flex ai-fs cursor-p`}>
+                                        <span>*Last updated: {updatedTime}</span>
+                                        <HtmlTooltip title={
+                                            <ul className={styles.tooplis}>
+                                                <li>Ticket prices are determined by various factors, including seasonal demand, route popularity, booking time, and seat availability. Airlines adjust ticket prices in real-time, which can cause fluctuations.</li>
+                                                <li>We recommend booking soon to secure the current offer. We will do our best to continuously monitor the latest prices for you. For accurate information, please refer to the price on the payment page.</li>
+                                            </ul>
+                                        }>
+                                            <HelpIcon sx={{fontSize: 12,margin: '5px 0 0 5px'}} />
+                                        </HtmlTooltip>
+                                    </div>
+                                </div>
+                            </div>
+                            {/*<FilterTab />*/}
+                            <div className={styles.filterContent}>
+                                {
+                                    state.ordersInfo.airportList.map((airport) => {
+                                        return airport.results.map(result => {
+                                            return result.itineraries.filter(itinerarie => itinerarie.itineraryNo === airportActived).map(itinerarie => (
+                                                <FilterItem key={`${airport.channelCode}-${result.resultKey}-${itinerarie.itineraryKey}`}
+                                                            itinerarie={itinerarie}
+                                                            channelCode={airport.channelCode}
+                                                            resultType={result.resultType}
+                                                            policies={result.policies}
+                                                            contextId={result.contextId}
+                                                            resultKey={result.resultKey}
+                                                            currency={result.currency} />
+                                            ))
+                                        })
+                                    })
+                                }
+                            </div>
+                        </>:<></>
+                }
+
             </div>
         </div>
     )

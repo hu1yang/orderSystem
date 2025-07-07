@@ -141,7 +141,7 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
 
 const Airports = memo(({daValue,changeValue}:{
     daValue: IdaValue
-    changeValue:(type:'departure'|'arrival',value:string) => void;
+    changeValue:(type:'departure'|'arrival'|'journey',value:string|IdaValue) => void;
 }) => {
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
@@ -167,16 +167,55 @@ const Airports = memo(({daValue,changeValue}:{
         changeValue(type,value)
     }
 
+    const changeJourney = () => {
+        changeValue('journey', {
+            departure:daValue.arrival,
+            arrival:daValue.departure
+        })
+    }
+
     return (
         <div className={`s-flex s-flex ai-ct`}>
             {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].departure)}>*/}
             {/*    <AddressCard addressName={query.itineraries[0].departure} />*/}
             {/*</InputModel>*/}
-            <TextField variant="outlined" value={daValue.departure} className={styles.inputModel} onInput={(e) => handleInput(e,'departure')} />
-            <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`}>
+            <TextField variant="outlined" value={daValue.departure} sx={{
+                width: 'var(--put-width)',
+                height: 'var(--put-height)',
+                '& .MuiOutlinedInput-root': {
+                    height: '100%',       // 确保 input 区域也匹配 height
+                    '& fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                        borderRadius: 'var(--put-border-raduis)',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                    },
+                },
+            }} onInput={(e:ChangeEvent<HTMLInputElement>) => handleInput(e,'departure')} />
+            <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`} onClick={changeJourney}>
                 <ConnectingAirportsIcon />
             </div>
-            <TextField variant="outlined" value={daValue.arrival} className={styles.inputModel} onInput={(e) => handleInput(e,'arrival')} />
+            <TextField variant="outlined" value={daValue.arrival}  sx={{
+                width: 'var(--put-width)',
+                height: 'var(--put-height)',
+                '& .MuiOutlinedInput-root': {
+                    height: '100%',       // 确保 input 区域也匹配 height
+                    '& fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                        borderRadius: 'var(--put-border-raduis)',
+                    },
+                    '&:hover fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: 'var(--put-border-color)',
+                    },
+                },
+            }} onInput={(e:ChangeEvent<HTMLInputElement>) => handleInput(e,'arrival')} />
 
             {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].arrival)}>*/}
             {/*    <AddressCard style={{marginLeft: '4px'}} addressName={query.itineraries[0].arrival} />*/}
@@ -482,7 +521,11 @@ const SearchComponent = memo(() => {
         setLocalDate(val)
     }, [localDate]);
 
-    const handleChangeValue = useCallback((type:'departure'|'arrival',value:string) => {
+    const handleChangeValue = useCallback((type:'departure'|'arrival'|'journey',value:string|IdaValue) => {
+        if(type === 'journey'){
+            setDaValue(value as IdaValue)
+            return
+        }
         setDaValue(prevState => {
             return {
                 ...prevState,

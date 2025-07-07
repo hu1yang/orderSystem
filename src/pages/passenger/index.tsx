@@ -5,13 +5,21 @@ import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {queryBookingAgent} from "@/utils/request/agetn.ts";
 import {setResult} from "@/store/orderInfo.ts";
+import {useNavigate} from "react-router";
 
 const Passenger = () => {
+    const navigate = useNavigate()
+
+
     const state = useSelector((state: RootState) => state.ordersInfo)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        sendResult()
+        if(!state.airChoose.result){
+            navigate('/')
+        }else{
+            sendResult()
+        }
     },[])
 
     const sendResult = () => {

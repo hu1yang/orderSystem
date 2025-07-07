@@ -1,4 +1,4 @@
-import {memo, useRef, useState} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 import {
     Alert,
     Button,
@@ -219,6 +219,7 @@ const OrderDetail = () => {
     const detailRef = useRef<HTMLDivElement|null>(null)
     const [open, setOpen] = useState(false)
     const [status, setStatus] = useState<'awaiting'|'canceled'|'success'>('awaiting')
+
 
     const setPay = () => {
         console.log(detailRef.current)

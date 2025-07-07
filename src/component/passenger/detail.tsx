@@ -434,22 +434,22 @@ const Detail = memo(() => {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.cancellation}>
-                        <div className={styles.cancellationTitle}>Cancellation & Change Policies</div>
-                        <div className={styles.commonBox}>
-                            <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>
-                                <span>Cancellation fee</span>
-                                <span>From US$14.00</span>
-                                <ChevronRightIcon sx={{fontSize: 22}} />
-                            </div>
-                            <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>
-                                <span>Change fee</span>
-                                <span>From US$14.00</span>
-                                <ChevronRightIcon sx={{fontSize: 22}} />
-                            </div>
-                        </div>
+                    {/*<div className={styles.cancellation}>*/}
+                    {/*    <div className={styles.cancellationTitle}>Cancellation & Change Policies</div>*/}
+                    {/*    <div className={styles.commonBox}>*/}
+                    {/*        <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>*/}
+                    {/*            <span>Cancellation fee</span>*/}
+                    {/*            <span>From US$14.00</span>*/}
+                    {/*            <ChevronRightIcon sx={{fontSize: 22}} />*/}
+                    {/*        </div>*/}
+                    {/*        <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>*/}
+                    {/*            <span>Change fee</span>*/}
+                    {/*            <span>From US$14.00</span>*/}
+                    {/*            <ChevronRightIcon sx={{fontSize: 22}} />*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
 
-                    </div>
+                    {/*</div>*/}
                     {
                         pirceResult ? <NextStep pirceResult={pirceResult} paySubmit={handlepaySubmit} /> : <></>
                     }
@@ -463,10 +463,10 @@ const Detail = memo(() => {
             <Dialog
                 open={dialogVisible}
                 onClose={handleCloseVisible}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+                aria-labelledby="alert-dialog-title-payment"
+                aria-describedby="alert-dialog-description-payment"
             >
-                <DialogTitle id="alert-dialog-title">
+                <DialogTitle id="alert-dialog-title-payment">
                     {"The order is successfully placed, please pay in time"}
                 </DialogTitle>
                 <DialogContent>
@@ -475,7 +475,7 @@ const Detail = memo(() => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={handleCloseVisible}>Disagree</Button>
                     <Button onClick={handlePayment} autoFocus>
                         Payment
                     </Button>
