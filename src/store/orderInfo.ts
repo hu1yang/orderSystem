@@ -22,24 +22,287 @@ type IOrder = {
     contacts: IContact[]
 }
 const initialState: IOrder = {
-    query:{
-        itineraryType: 'oneWay',
-        cabinLevel: 'y',
-        travelers: [
-            { passengerCount: 1, passengerType: 'adt' },
-            { passengerCount: 0, passengerType: 'chd' },
-            { passengerCount: 0, passengerType: 'inf' },
-        ],
-        itineraries: [
-            {
-                itineraryNo: 0,
-                arrival: '',
-                departureDate: '',
-                departure: '',
-            },
-        ],
-    },
-    airportList:[],
+    // query:{
+    //     itineraryType: 'oneWay',
+    //     cabinLevel: 'y',
+    //     travelers: [
+    //         { passengerCount: 1, passengerType: 'adt' },
+    //         { passengerCount: 0, passengerType: 'chd' },
+    //         { passengerCount: 0, passengerType: 'inf' },
+    //     ],
+    //     itineraries: [
+    //         {
+    //             itineraryNo: 0,
+    //             arrival: '',
+    //             departureDate: '',
+    //             departure: '',
+    //         },
+    //     ],
+    // },
+    query:{"itineraryType":"round","cabinLevel":"y","travelers":[{"passengerCount":1,"passengerType":"adt"},{"passengerCount":0,"passengerType":"chd"},{"passengerCount":0,"passengerType":"inf"}],"itineraries":[{"itineraryNo":0,"arrival":"CAN","departure":"TAS","departureDate":"2025-07-11"},{"itineraryNo":1,"arrival":"TAS","departure":"CAN","departureDate":"2025-07-12"}]},
+    airportList:[
+        {
+            "channelCode":"API-C6-V1",
+            "updatedTime":"2025-07-07T11:52:16.4119708+08:00",
+            "isFromCaching":true,
+            "results":[
+                {
+                    "contextId":"e136796a2c4447209baef113895ae4ac",
+                    "policies":[ ],
+                    "resultType":"normal",
+                    "currency":"USD",
+                    "resultKey":"API-C6-V1",
+                    "itineraries":[
+                        {
+                            "amounts":[
+                                {
+                                    "familyName":"Base",
+                                    "familyCode":"P1|V|VRT",
+                                    "cabinLevel":"y",
+                                    "nextCodes":['P4|V3|TASDX_V3'],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":10,
+                                    "printAmount":156,
+                                    "taxesAmount":29.48,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[ ],
+                                    "amountKeys":[
+                                        "76uWyooj0e2RAadifyYXZZGufd6f1QQ5fz+xenlGIPPmv/r9cOteg5YZvwukLoL/",
+                                        "76uWyooj0e2RAadifyYXZZGufd6f1QQ5fz+xenlGIPPmv/r9cOteg5YZvwukLoL/"
+                                    ]
+                                },
+                                {
+                                    "familyName":"Optimal",
+                                    "familyCode":"P3|V2|DX_V2",
+                                    "cabinLevel":"y",
+                                    "nextCodes":[ ],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":20,
+                                    "printAmount":253,
+                                    "taxesAmount":29.48,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[
+                                        {
+                                            "luggageType":"carry",
+                                            "luggageCount":32,
+                                            "luggageNotes":"C6651",
+                                            "luggageSizeType":"kg"
+                                        }
+                                    ],
+                                    "amountKeys":[
+                                        "nvXCFPgnuyLD3Bu6v8HaI047nRmSAM05pOr7xw2+qKuxzK4777MVYlboG9jmxDal",
+                                        "nvXCFPgnuyLD3Bu6v8HaI047nRmSAM05pOr7xw2+qKuxzK4777MVYlboG9jmxDal"
+                                    ]
+                                },
+                                {
+                                    "familyName":"Comfort",
+                                    "familyCode":"P4|V3|TASDX_V3",
+                                    "cabinLevel":"y",
+                                    "nextCodes":[ ],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":30,
+                                    "printAmount":303,
+                                    "taxesAmount":29.48,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[
+                                        {
+                                            "luggageType":"carry",
+                                            "luggageCount":32,
+                                            "luggageNotes":"C6651",
+                                            "luggageSizeType":"kg"
+                                        }
+                                    ],
+                                    "amountKeys":[
+                                        "G8SQ/II+QecSubTJJFAlCTFj9mkkOena6cQqfw4iPmLLxrK4/y2bP+HtY67AW5A1",
+                                        "G8SQ/II+QecSubTJJFAlCTFj9mkkOena6cQqfw4iPmLLxrK4/y2bP+HtY67AW5A1"
+                                    ]
+                                }
+                            ],
+                            "itineraryNo":0,
+                            "itineraryKey":"TASCANC66512025-07-11",
+                            "segments":[
+                                {
+                                    "isLuggageChecked":false,
+                                    "sequenceNo":0,
+                                    "carrier":"C6",
+                                    "flightNumber":"C6651",
+                                    "shareToFlightNo":"",
+                                    "departureAirport":"TAS",
+                                    "arrivalAirport":"CAN",
+                                    "departureTime":"2025-07-11T14:35:00",
+                                    "arrivalTime":"2025-07-11T22:50:00",
+                                    "departureTerminal":"",
+                                    "arrivalTerminal":"",
+                                    "flightMealType":"",
+                                    "aircraftModel":"A21N",
+                                    "totalFlyingTime":"05:15:00",
+                                    "stops":[ ],
+                                    "cabins":[
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":10,
+                                            "cabinName":"VRT",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V"
+                                        },
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":20,
+                                            "cabinName":"DX_V2",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V2"
+                                        },
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":30,
+                                            "cabinName":"TASDX_V3",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "amounts":[
+                                {
+                                    "familyName":"Base",
+                                    "familyCode":"P1|V|VRT",
+                                    "cabinLevel":"y",
+                                    "nextCodes":[ ],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":10,
+                                    "printAmount":156,
+                                    "taxesAmount":0,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[ ],
+                                    "amountKeys":[
+                                        "76uWyooj0e2RAadifyYXZfqGHF6DSq3vZlT240gkF28=",
+                                        "76uWyooj0e2RAadifyYXZfqGHF6DSq3vZlT240gkF28="
+                                    ]
+                                },
+                                {
+                                    "familyName":"Optimal",
+                                    "familyCode":"P3|V2|DX_V2",
+                                    "cabinLevel":"y",
+                                    "nextCodes":[ ],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":20,
+                                    "printAmount":253,
+                                    "taxesAmount":0,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[
+                                        {
+                                            "luggageType":"carry",
+                                            "luggageCount":32,
+                                            "luggageNotes":"C6650",
+                                            "luggageSizeType":"kg"
+                                        }
+                                    ],
+                                    "amountKeys":[
+                                        "nvXCFPgnuyLD3Bu6v8HaI047nRmSAM05pOr7xw2+qKtHzvOZPg3MWAz48VRcDJ0g",
+                                        "nvXCFPgnuyLD3Bu6v8HaI047nRmSAM05pOr7xw2+qKtHzvOZPg3MWAz48VRcDJ0g"
+                                    ]
+                                },
+                                {
+                                    "familyName":"Comfort",
+                                    "familyCode":"P4|V3|TASDX_V3",
+                                    "cabinLevel":"y",
+                                    "nextCodes":[ ],
+                                    "passengerType":"adt",
+                                    "minimum":1,
+                                    "maximum":30,
+                                    "printAmount":303,
+                                    "taxesAmount":0,
+                                    "cancelNotes":[ ],
+                                    "refundNotes":[ ],
+                                    "changeNotes":[ ],
+                                    "othersNotes":[ ],
+                                    "luggages":[
+                                        {
+                                            "luggageType":"carry",
+                                            "luggageCount":32,
+                                            "luggageNotes":"C6650",
+                                            "luggageSizeType":"kg"
+                                        }
+                                    ],
+                                    "amountKeys":[
+                                        "G8SQ/II+QecSubTJJFAlCTFj9mkkOena6cQqfw4iPmJciN6sds7ksqH+bAICrY98",
+                                        "G8SQ/II+QecSubTJJFAlCTFj9mkkOena6cQqfw4iPmJciN6sds7ksqH+bAICrY98"
+                                    ]
+                                }
+                            ],
+                            "itineraryNo":1,
+                            "itineraryKey":"CANTASC66502025-07-12",
+                            "segments":[
+                                {
+                                    "isLuggageChecked":false,
+                                    "sequenceNo":0,
+                                    "carrier":"C6",
+                                    "flightNumber":"C6650",
+                                    "shareToFlightNo":"",
+                                    "departureAirport":"CAN",
+                                    "arrivalAirport":"TAS",
+                                    "departureTime":"2025-07-12T00:35:00",
+                                    "arrivalTime":"2025-07-12T02:50:00",
+                                    "departureTerminal":"",
+                                    "arrivalTerminal":"",
+                                    "flightMealType":"",
+                                    "aircraftModel":"A21N",
+                                    "totalFlyingTime":"05:15:00",
+                                    "stops":[ ],
+                                    "cabins":[
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":10,
+                                            "cabinName":"VRT",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V"
+                                        },
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":20,
+                                            "cabinName":"DX_V2",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V2"
+                                        },
+                                        {
+                                            "cabinLevel":"y",
+                                            "quantity":30,
+                                            "cabinName":"TASDX_V3",
+                                            "cabinInfo":"461",
+                                            "cabinCode":"V3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    // airportList:[],
     airportActived:0,
     airChoose:{
         result: null,
@@ -159,10 +422,22 @@ const orderInfoSlice = createSlice({
         },
         setContacts: (state, action: PayloadAction<IContact>) => {
             state.contacts = [{...action.payload}];
+        },
+        prevAirChoose: (state) => {
+            if(state.airportActived === 1){
+                state.airChoose.channelCode = ''
+                state.airportActived = 0
+                state.airChoose.result = null
+            }else{
+                if (state.airChoose.result) {
+                    state.airChoose.result.itineraries = state.airChoose.result.itineraries.slice(0, state.airportActived + 1);
+                }
+                state.airportActived = state.airportActived - 1
+            }
         }
     },
 })
 
 
-export const { setQuery , setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries , setPassenger , setSelectPassengers , setContacts } = orderInfoSlice.actions
+export const { setQuery , setAirportList ,setQueryType , setQueryValue , setTravelers , setChannelCode , setResult , updateItineraries, setQueryDate , setResultItineraries , setPassenger , setSelectPassengers , setContacts , prevAirChoose } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

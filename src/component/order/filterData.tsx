@@ -1,10 +1,10 @@
-import {memo, useCallback, useMemo, useState} from "react";
+import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import HelpIcon from '@mui/icons-material/Help';
 import styles from './styles.module.less'
 import {
     Box, Button,
     Card,
-    CardContent, Dialog, DialogActions, DialogContent, DialogTitle,
+    CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
     Divider, Grid,
     Link,
     Tab,
@@ -26,11 +26,12 @@ import type {RootState} from "@/store";
 import type { ResponseItinerary, Result, ResultType, Segment} from "@/types/order.ts";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
-import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
+import {setChannelCode, setResult, setResultItineraries , prevAirChoose} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
 import dayjs from "dayjs";
 import PriceDetail from "@/component/order/priceDetail.tsx";
 import {getTotalPriceByFamilyCode, groupAmountByFamilyCodeFnc} from "@/utils/price.ts";
+import {format} from "date-fns";
 
 
 
@@ -295,6 +296,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
     const dispatch = useDispatch()
 
+
     const navigate = useNavigate()
 
     const [disabledChoose, setDisabledChoose] = useState(false)
@@ -322,33 +324,55 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     },[airChoose])
 
     const totalPrice = useMemo(() => {
-        // 当前行程的最低价格（注意：也按 familyCode 分组）
-        const groupedCurrentPrices = groupAmountByFamilyCodeFnc(itinerarie.amounts,query.travelers);
-        const priceCurrent = Math.min(...groupedCurrentPrices);
+        // 当前行程价格
+        const groupedCurrentPrices = groupAmountByFamilyCodeFnc(itinerarie.amounts, query.travelers);
+        const priceCurrent = groupedCurrentPrices.length > 0
+            ? Math.min(...groupedCurrentPrices)
+            : Infinity;
 
-        // 找到当前 airport
+        // 获取当前 airport 和结果
         const airport = airportList.find(a => a.channelCode === channelCode);
-        const result = airport?.results.find(a => a.contextId === contextId);
+        if (!airport) return 0;
 
-        // 后续行程
-        const itinerarieMore = result?.itineraries.filter(
-            a => Number(a?.itineraryNo) > airportActived
-        );
+        const result = airport.results.find(a => a.contextId === contextId);
+        if (!result) return 0;
 
-        // 后续最低价（按 familyCode 分组后比较最低）
-        const morePrices = itinerarieMore?.flatMap(it =>
-            groupAmountByFamilyCodeFnc(it.amounts,query.travelers)
-        ) || [];
+        // 当前行程对象
+        const currentItinerary = result.itineraries.find(i => Number(i.itineraryNo) === airportActived);
+        if (!currentItinerary) return 0;
+
+        const allNextCodes = currentItinerary.amounts
+        .map(a => a.nextCodes)
+        .filter(arr => Array.isArray(arr) && arr.length > 0)
+        .flat();
+
+        // 是否存在 nextCodes
+        const hasNextCodes = allNextCodes.length > 0;
+
+        // 下一乘行程
+        const nextItinerary = result.itineraries.find(i => Number(i.itineraryNo) === airportActived + 1);
+
+        let morePrices: number[] = [];
+
+        if (nextItinerary) {
+            const amountsToUse = hasNextCodes
+                ? nextItinerary.amounts.filter(a => allNextCodes.includes(a.familyCode))
+                : nextItinerary.amounts;
+
+            morePrices = groupAmountByFamilyCodeFnc(amountsToUse, query.travelers);
+        }
 
         const minPrice = morePrices.length > 0
             ? Math.min(...morePrices)
             : Infinity;
 
-        // 总价 = 当前最低价 + 后续最低价（如有）+ 已选价格
-        const total = (isFinite(minPrice) ? priceCurrent + minPrice : priceCurrent) + beforePrice;
+        const total = (isFinite(priceCurrent) ? priceCurrent : 0) +
+            (isFinite(minPrice) ? minPrice : 0) +
+            (isFinite(beforePrice) ? beforePrice : 0);
 
         return Math.ceil(total * 100) / 100;
-    }, [channelCode, contextId, itinerarie, airportList, airportActived, airChoose, beforePrice]);
+    }, [channelCode, contextId, itinerarie, airportList, airportActived, airChoose, beforePrice, query.travelers]);
+
 
 
     const [chooseAmountCode, setChooseAmountCode] = useState<string>('')
@@ -608,6 +632,15 @@ const FilterData = memo(() => {
     const state = useSelector((state: RootState) => state)
     const airportList = useSelector((state: RootState) => state.ordersInfo.airportList)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const dispatch = useDispatch()
+
+    const prevAir = useMemo(() => {
+        if(!airChoose.result || airportActived < 1) return null
+        const segment = airChoose.result.itineraries[airportActived - 1].segments
+        return segment
+    }, [airChoose.result,airportActived]);
+
     const updatedTime = useMemo(() => {
         if(!state.ordersInfo.airportList.length){
             return ''
@@ -615,6 +648,10 @@ const FilterData = memo(() => {
         const time = state.ordersInfo.airportList[0].updatedTime
         return dayjs(time).format('HH:mm:ss') || ''
     }, [state.ordersInfo.airportList,airportActived]);
+
+    const prevChooseAir = () => {
+        dispatch(prevAirChoose())
+    }
 
 
     return (
@@ -635,16 +672,41 @@ const FilterData = memo(() => {
                                     </h2>
                                     <div className={`s-flex ai-fs cursor-p`}>
                                         <span>*Last updated: {updatedTime}</span>
-                                        <HtmlTooltip title={
-                                            <ul className={styles.tooplis}>
-                                                <li>Ticket prices are determined by various factors, including seasonal demand, route popularity, booking time, and seat availability. Airlines adjust ticket prices in real-time, which can cause fluctuations.</li>
-                                                <li>We recommend booking soon to secure the current offer. We will do our best to continuously monitor the latest prices for you. For accurate information, please refer to the price on the payment page.</li>
-                                            </ul>
-                                        }>
-                                            <HelpIcon sx={{fontSize: 12,margin: '5px 0 0 5px'}} />
-                                        </HtmlTooltip>
                                     </div>
                                 </div>
+                                {
+                                    prevAir ?
+                                        <div className={`${styles.prevCom} s-flex jc-bt ai-ct`}>
+                                            <div className={`${styles.prevComInfo} s-flex ai-ct`}>
+                                                <Chip label="Depart" size={'small'} sx={{
+                                                    background: 'var(--active-color)',
+                                                    borderRadius: '4px',
+                                                    fontSize: '1rem',
+                                                    color: 'var(--vt-c-white)',
+                                                    fontWeight: 'bold',
+                                                    '.MuiChip-label': {
+                                                        fontSize: '1.2em',
+                                                    }
+                                                }}/>
+                                                {
+                                                    prevAir.map(segment => (
+                                                        <div className={styles.airInfos} key={segment.flightNumber}>
+                                                            <span>{format(segment.departureTime, 'EEE, MMM dd')}</span>
+                                                            <span>{extractTimeWithTimezone(segment.departureTime)} – {extractTimeWithTimezone(segment.arrivalTime!)}</span>
+                                                            <span>{segment.departureAirport} – {segment.arrivalAirport}</span>
+                                                            <span>{formatFlyingTime(segment.totalFlyingTime!)}</span>
+
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
+                                            <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={prevChooseAir}>
+                                                <span>Change Flight</span>
+                                            </div>
+                                        </div>
+                                        :<></>
+                                }
+
                             </div>
                             {/*<FilterTab />*/}
                             <div className={styles.filterContent}>

@@ -43,7 +43,7 @@ export interface Amount {
     familyName: string;
     familyCode: string;
     cabinLevel: CabinLevel;
-    nextCodes: string[]|unknown;
+    nextCodes: string[];
     passengerType: PassengerType;
     minimum: number|string;
     maximum: number|string;
