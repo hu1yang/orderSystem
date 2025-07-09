@@ -42,6 +42,7 @@ function NextArrow({onClick,hidden}: { onClick?: () => void ,hidden:boolean}) {
             height: 48,
             opacity:hidden?0:1
         }} display={'flex'} alignItems={'center'} justifyContent={'center'} onClick={onClick}>
+
             <ArrowForwardIosIcon/>
         </Box>
     );
@@ -266,21 +267,31 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const isLast = currentSlide >= amountsMemo.length - 2.8;
+    const isDragging = useRef(false);
     const settings = {
         dots: false,
         infinite: false,
         speed: 300,
         alignItems:'',
         slidesToShow: 2.8,
-        slidesToScroll: 2.8,
-        afterChange: (index:number) => setCurrentSlide(index),
-        nextArrow:  <NextArrow hidden={!isLast && amountsMemo.length > 1} />,
-        prevArrow: <PrevArrow hidden={!isLast && amountsMemo.length > 1} />,
+        slidesToScroll: 1,
+        beforeChange: () => isDragging.current = true,
+        afterChange: (index:number) => {
+            setCurrentSlide(index)
+            setTimeout(() => {
+                isDragging.current = false;
+            }, 0)
+        },
+        nextArrow:  <NextArrow hidden={isLast} />,
+        prevArrow: <PrevArrow hidden={currentSlide < 1} />,
     };
 
     const [chooseValue, setChooseValue] = useState('')
 
     const handleChooseAmount = (code: string) => {
+        if(isDragging.current){
+            return;
+        }
         if(disabledChoose) return
         setChooseValue(code)
         chooseFnc(code)
@@ -288,6 +299,7 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
+
             {
                 amountsMemo.length > 2 ?
                     <Slider {...settings} ref={sliderRef}>
@@ -299,17 +311,16 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
                         <SliderBox chooseValue={chooseValue} chooseAmount={handleChooseAmount} key={`${amount.familyCode}-${amount.familyName}-${amountIndex}`} amounts={amounts} amount={amount} disabledChoose={disabledChoose} currency={currency} />
                     ))
             }
-
-            <div className={`${styles.fareCardsTips} s-flex ai-ct`}>
-                <img
-                    src="https://static.tripcdn.com/packages/flight/static-image-online/latest/flight_v2/hotel_cross/pic_popup_small.png"
-                    alt=""/>
-                <div className={`${styles.fareCardsTipsText} s-flex ai-ct`}>
-                    <span>Get up to </span>
-                    <strong>25% off</strong>
-                    <span> stays by booking a flight, plus free cancellation for your stay if your flight is rescheduled</span>
-                </div>
-            </div>
+            {/*<div className={`${styles.fareCardsTips} s-flex ai-ct`}>*/}
+            {/*    <img*/}
+            {/*        src="https://static.tripcdn.com/packages/flight/static-image-online/latest/flight_v2/hotel_cross/pic_popup_small.png"*/}
+            {/*        alt=""/>*/}
+            {/*    <div className={`${styles.fareCardsTipsText} s-flex ai-ct`}>*/}
+            {/*        <span>Get up to </span>*/}
+            {/*        <strong>25% off</strong>*/}
+            {/*        <span> stays by booking a flight, plus free cancellation for your stay if your flight is rescheduled</span>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </Box>
     );
 })

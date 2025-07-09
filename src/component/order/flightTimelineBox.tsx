@@ -32,6 +32,7 @@ const FlightTimelineBox = memo(({segments}:{
                                         segment.shareToFlightNo && <p>Share Flight number {segment.shareToFlightNo}</p>
                                     }
                                     <p>Flight time: {formatTotalDuration([segment.totalFlyingTime!])}</p>
+                                    <p>Aircraft Model: {segment.aircraftModel}</p>
                                 </div>
                             </div>
                             <div className={`${styles.airinfoLine} s-flex ai-ct`}>
@@ -56,8 +57,9 @@ const FlightTimelineBox = memo(({segments}:{
                                                 segments[segmentIndex + 1].departureTerminal !== segments[segmentIndex].arrivalTerminal) && (
                                                 <div className={`${styles.diffTerminal} s-flex ai-ct`}>
                                                     <DataUsageIcon sx={{
-                                                        fontSize: '1rem',
+                                                        fontSize: '1.2rem',
                                                         color: 'var(--price-color)',
+                                                        mr:'5px'
                                                     }} />
                                                     <span>Different Terminal</span>
                                                 </div>

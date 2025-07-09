@@ -496,7 +496,8 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
             </div>
             <Dialog open={open} onClose={handleClose} maxWidth="lg" className={styles.dialogFirport} sx={{
                 '.MuiDialog-paperWidthLg': {
-                    width:'1024px'
+                    width: '1024px',
+                    minWidth:'1000px'
                 }
             }}>
                 <DialogTitle sx={{
@@ -515,15 +516,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                     }
                 }}>
                     <div className={`${styles.firportInfo}`}>
-                        <Grid container spacing={2}>
-                            {
-                                itinerarie.segments.map(segment => (
-                                    <Grid size={4} key={segment.flightNumber}>
-                                        <FirportInfomation segment={segment} />
-                                    </Grid>
-                                ))
-                            }
-                        </Grid>
+                        <FirportInfomation segments={itinerarie.segments} />
                     </div>
                     <div style={{
                         backgroundColor:'#f6f7fa',
@@ -632,7 +625,7 @@ const FilterData = memo(() => {
                                     <h2>
                                         {
                                             airportList.length && state.ordersInfo.query.itineraries.length?
-                                                `${airportActived + 1}. Departing to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
+                                                `${airportActived + 1}. ${(airportActived === (airportList.length - 1)) ? 'Departing' : 'Returning'} to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
                                                 :<></>
                                         }
                                     </h2>
@@ -644,7 +637,7 @@ const FilterData = memo(() => {
                                     prevAir ?
                                         <div className={`${styles.prevCom} s-flex jc-bt ai-ct`}>
                                             <div className={`${styles.prevComInfo} s-flex ai-ct`}>
-                                                <Chip label="Depart" size={'small'} sx={{
+                                                <Chip label={(airportActived === (airportList.length - 1)) ? 'Depart':'Return'} size={'small'} sx={{
                                                     background: 'var(--active-color)',
                                                     borderRadius: '4px',
                                                     fontSize: '1rem',
@@ -654,17 +647,12 @@ const FilterData = memo(() => {
                                                         fontSize: '1.2em',
                                                     }
                                                 }}/>
-                                                {
-                                                    prevAir.map(segment => (
-                                                        <div className={styles.airInfos} key={segment.flightNumber}>
-                                                            <span>{format(segment.departureTime, 'EEE, MMM dd')}</span>
-                                                            <span>{extractTimeWithTimezone(segment.departureTime)} – {extractTimeWithTimezone(segment.arrivalTime!)}</span>
-                                                            <span>{segment.departureAirport} – {segment.arrivalAirport}</span>
-                                                            <span>{formatFlyingTime(segment.totalFlyingTime!)}</span>
-
-                                                        </div>
-                                                    ))
-                                                }
+                                                <div className={styles.airInfos}>
+                                                    <span>{format(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
+                                                    <span>{extractTimeWithTimezone(prevAir[0].departureTime)} – {extractTimeWithTimezone(prevAir.at(-1)?.arrivalTime as string)}</span>
+                                                    <span>{prevAir[0].departureAirport} – {prevAir.at(-1)?.arrivalAirport}</span>
+                                                    <span>{formatTotalDuration(prevAir.map(segment => segment.totalFlyingTime) as string[])}</span>
+                                                </div>
                                             </div>
                                             <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={prevChooseAir}>
                                                 <span>Change Flight</span>
