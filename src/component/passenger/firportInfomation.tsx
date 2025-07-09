@@ -7,21 +7,17 @@ import {
 import type {Segment} from "@/types/order.ts";
 import { formatDateToShortString, formatFlyingTime} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
-import {useSelector} from "react-redux";
-import type {RootState} from "@/store";
 
 
-const FirportInfomation = memo(({segments}:{
+const FirportInfomation = memo(({segments,labelPostion}:{
     segments:Segment[]
+    labelPostion:string
 }) => {
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const airportListLength = useSelector((state: RootState) => state.ordersInfo.airportList.length)
-
 
     return (
         <div className={styles.firportInfomation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
-                <Chip label={(airportActived === (airportListLength - 1)) ? 'Depart':'Return'} size={'small'} sx={{
+                <Chip label={labelPostion} size={'small'} sx={{
                     background: 'var(--active-color)',
                     borderRadius: '4px',
                     fontSize: '1rem',

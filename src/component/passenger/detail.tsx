@@ -1,39 +1,31 @@
-import {Fragment, memo, type ReactElement, useCallback, useMemo, useState} from "react";
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import React, {Fragment, memo, type ReactElement, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import styles from './styles.module.less'
 import {
     Alert,
     Button,
-    Checkbox,
     Dialog, DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Divider, FormControlLabel,
+    Divider,
     Grid,
-    Link, Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
+    Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
 import type {OrderCreate, PriceSummary} from '@/types/order.ts'
-
-
-
-import CheckIcon from '@mui/icons-material/Check';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-
+import type {RootState} from "@/store";
+import {useSelector} from "react-redux";
 
 import PassengerForm from "./passengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
-import {useSelector} from "react-redux";
-import type {RootState} from "@/store";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
-import {useNavigate} from "react-router";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/price.ts";
-import * as React from "react";
+import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
 
+import checkIn from "@/assets/checkIn.png_.webp"
+import carryOn from "@/assets/carryOn.png_.webp"
+import personal_no from "@/assets/personal_no.png_.webp"
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -41,36 +33,13 @@ const NextStep = memo(({paySubmit,pirceResult}:{
     pirceResult:PriceSummary
 }) => {
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
-
-    const [agree, setAgree] = useState(true)
-
-    const handleSetAgree = () => {
-        setAgree(!agree)
-    }
-
-    const payTo = () => {
+    const payNow = () => {
         paySubmit()
     }
 
 
     return (
         <div className={styles.nextContainer}>
-            <div className={styles.agreeContainer}>
-                <FormControlLabel sx={{
-                    '&.MuiFormControlLabel-root':{
-                        alignItems:'flex-start',
-                        '.MuiButtonBase-root':{
-                            padding: '3px 10px'
-                        }
-                    }
-                }} label={
-                    <div className={styles.agree}>
-                        I have read and agreed
-                    </div>
-                } control={
-                    <Checkbox checked={agree}  onChange={handleSetAgree} />
-                } />
-            </div>
             <div className={styles.payContainer}>
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
@@ -82,7 +51,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                         color:'var(--vt-c-white)',
                         fontWeight: 'bold',
                         fontSize: 18
-                    }} fullWidth onClick={payTo}>Pay Now</Button>
+                    }} fullWidth onClick={payNow}>Pay Now</Button>
                 </div>
             </div>
             <div className={`${styles.simple} s-flex ai-ct jc-ct`}>
@@ -106,8 +75,6 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 })
 
 const Detail = memo(() => {
-    const navigate = useNavigate()
-
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
@@ -217,6 +184,18 @@ const Detail = memo(() => {
         return calculateTotalPriceSummary(airChoose.result.itineraries,query.travelers)
     },[airChoose,query.travelers])
 
+    const luggages = useMemo(() => {
+        if (!airChoose.result) return [];
+
+        return airChoose.result.itineraries.map(itinerarie => {
+            const found = itinerarie.amounts.find(amount => amount.luggages && amount.luggages.length > 0);
+            return found?.luggages || [];
+        });
+    }, [airChoose.result]);
+
+
+
+
 
     return (
         <div className={`${styles.detailContainer} s-flex flex-dir`}>
@@ -257,37 +236,24 @@ const Detail = memo(() => {
                     </div>
                     <div className={`s-flex jc-bt`}>
                         <div className={`${styles.gap} ${styles.wContainer}`}>
-                            <div className={`s-flex flex-dir`}>
+                            <Grid container spacing={2}>
                                 {
-                                    airChoose.result?.itineraries.map(itinerarie => {
-                                        return itinerarie.segments.map(segment => (
-                                            <div key={`${itinerarie.itineraryKey}-${segment.flightNumber}`}>
-                                                <div className={`${styles.firportTitle} s-flex ai-fe`}>
-                                                    <span>Trip to {segment.arrivalAirport}</span>
-                                                    <div className={`${styles.firportSet} cursor-p s-flex ai-ct`}>
-                                                        <span>Change Flight</span>
-                                                        <DriveFileRenameOutlineIcon sx={{
-                                                            color: 'var(--active-color)',
-                                                            fontSize: 12,
-                                                            fontWeight: 400,
-                                                            ml: 0.5,
-                                                        }}/>
-                                                    </div>
-                                                </div>
-                                                <div className={`${styles.firportInfomationBox} s-flex flex-dir`}>
-                                                    <FirportInfomation key={segment.flightNumber} segment={segment} />
-                                                </div>
-                                            </div>
-                                        ))
-                                    })
+                                    !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
+                                        <Grid size={6} key={itinerarie.itineraryKey}>
+                                            <FirportInfomation segments={itinerarie.segments} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                            {/*<Passenger />*/}
+
+                        </div>
+                        <div>
+                            <div className={styles.cardCom}>
+                                {
+                                    pirceResult ? <CardCom pirceResult={pirceResult} /> : <></>
                                 }
                             </div>
-                            {/*<Passenger />*/}
-                        </div>
-                        <div className={styles.cardCom}>
-                            {
-                                pirceResult ? <CardCom pirceResult={pirceResult} /> : <></>
-                            }
                         </div>
                     </div>
 
@@ -301,19 +267,6 @@ const Detail = memo(() => {
                         <div className={styles.packgaeTitle}>
                             Additional Baggage Allowanc
                         </div>
-                        <div className={`${styles.packgaeTips} s-flex ai-ct`}>
-                            <Typography fontSize={14} display={'flex'} alignItems={'center'} sx={{
-                                color: 'var(--keynote-text)',
-                            }}>
-                                <CheckIcon sx={{
-                                    fontSize: 14,
-                                    color: 'var(--keynote-text)',
-                                }}/>
-                                Bring everything you need for your trip.</Typography>
-                            <Link href="#" fontSize={14} underline="hover">
-                                Baggage Allowance
-                            </Link>
-                        </div>
                         <div className={styles.commonBox}>
                             <div className={styles.packageContent}>
                                 <Grid container spacing={2}>
@@ -321,7 +274,7 @@ const Detail = memo(() => {
                                     <Grid size={3}>
                                         <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.49/images/baggage/personal_no.png_.webp" alt=""/>
+                                                <img src={personal_no} alt=""/>
                                             </div>
                                             <div className={styles.packageliNames}>Personal Item</div>
                                             <div className={styles.packageliTips}>
@@ -332,7 +285,7 @@ const Detail = memo(() => {
                                     <Grid size={3}>
                                         <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.49/images/baggage/carryOn.png_.webp" alt=""/>
+                                                <img src={carryOn} alt=""/>
                                             </div>
                                             <div className={styles.packageliNames}>Carry-on baggage</div>
 
@@ -344,7 +297,7 @@ const Detail = memo(() => {
                                     <Grid size={3}>
                                         <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src="https://static.tripcdn.com/packages/flight/flight-x-product/1.0.49/images/baggage/checkIn.png_.webp" alt=""/>
+                                                <img src={checkIn} alt=""/>
                                             </div>
                                             <div className={styles.packageliNames}>Checked baggage</div>
                                             <div className={styles.packageliTips}>
@@ -359,6 +312,10 @@ const Detail = memo(() => {
                                 {
                                     airChoose.result ? airChoose.result.itineraries.map((itinerarie, index) => {
                                         const {segments} = itinerarie;
+                                        const handLuggage = luggages[index]?.find(l => l.luggageType === 'hand');
+                                        const carryLuggage = luggages[index]?.find(l => l.luggageType === 'carry');
+                                        const checkedLuggage = luggages[index]?.find(l => l.luggageType === 'checked');
+
 
                                         // 处理城市显示逻辑
                                         let cityText = '';
@@ -380,6 +337,7 @@ const Detail = memo(() => {
                                                         <div className={styles.cityText}>{cityText}</div>
                                                     </Grid>
                                                     <Grid size={12}>
+
                                                         {
                                                             choosePassengers.length ? choosePassengers.map((choosePassenger) => (
                                                                     <Grid container key={choosePassenger.idNumber}>
@@ -388,17 +346,13 @@ const Detail = memo(() => {
                                                                             </div>
                                                                         </Grid>
                                                                         <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>Included in
-                                                                                carry-on allowance
-                                                                            </div>
+                                                                            <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
                                                                         </Grid>
                                                                         <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>1 piece, 8
-                                                                                kg total
-                                                                            </div>
+                                                                            <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
                                                                         </Grid>
                                                                         <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>20 kg</div>
+                                                                            <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
                                                                         </Grid>
                                                                     </Grid>
                                                                 )) :
@@ -408,17 +362,13 @@ const Detail = memo(() => {
                                                                         </div>
                                                                     </Grid>
                                                                     <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>Included in
-                                                                            carry-on allowance
-                                                                        </div>
+                                                                        <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
                                                                     </Grid>
                                                                     <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>1 piece, 8
-                                                                            kg total
-                                                                        </div>
+                                                                        <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
                                                                     </Grid>
                                                                     <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>20 kg</div>
+                                                                        <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
                                                                     </Grid>
                                                                 </Grid>
                                                         }

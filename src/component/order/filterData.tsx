@@ -1,5 +1,4 @@
-import React from "react";
-import {memo, useCallback, useMemo, useState} from "react";
+import React, {useMemo , memo, useCallback, useState} from "react";
 import styles from './styles.module.less'
 import {
     Box, Button,
@@ -419,7 +418,6 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     const totalPriceChoose = useMemo(() => {
         if (chooseAmountName) {
             const rawTotal = getTotalPriceByFamilyCode(chooseAmountName, itinerarie.amounts, travelers) + beforePrice;
-
             // 向上取整保留两位小数
             return Math.ceil(rawTotal * 100) / 100;
         }
@@ -513,7 +511,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                     }
                 }}>
                     <div className={`${styles.firportInfo}`}>
-                        <FirportInfomation segments={itinerarie.segments} />
+                        <FirportInfomation segments={itinerarie.segments} labelPostion={(airportActived === (airportList.length - 1)) ? 'Depart':'Return'} />
                     </div>
                     <div style={{
                         backgroundColor:'#f6f7fa',
@@ -605,6 +603,43 @@ const FilterData = memo(() => {
         dispatch(prevAirChoose())
     }
 
+    const airList = useMemo(() => {
+        if (airportActived === 0) {
+            // 所有机场所有result的第一程
+            return airportList.flatMap((airport) =>
+                airport.results.flatMap((result) =>
+                    result.itineraries
+                    .filter(itinerarie => itinerarie.itineraryNo === airportActived)
+                    .map(itinerarie => ({
+                        itinerarie,
+                        channelCode: airport.channelCode,
+                        resultType: result.resultType,
+                        policies: result.policies,
+                        contextId: result.contextId,
+                        resultKey: result.resultKey,
+                        currency: result.currency
+                    }))
+                )
+            );
+        } else {
+            // 后续程只看 airChoose 所在的 result
+            const airport = airportList.find(a => a.channelCode === airChoose.channelCode);
+            const result = airport?.results.find(r => r.contextId === airChoose.result?.contextId);
+            if (!result) return [];
+            return result.itineraries
+            .filter(itinerarie => itinerarie.itineraryNo === airportActived)
+            .map(itinerarie => ({
+                itinerarie,
+                channelCode: airport!.channelCode,
+                resultType: result.resultType,
+                policies: result.policies,
+                contextId: result.contextId,
+                resultKey: result.resultKey,
+                currency: result.currency
+            }));
+        }
+    }, [airportList, airportActived, airChoose]);
+
 
     return (
         <div className={`${styles.filterData} flex-1`}>
@@ -658,22 +693,30 @@ const FilterData = memo(() => {
                             </div>
                             {/*<FilterTab />*/}
                             <div className={styles.filterContent}>
+                                {/*{*/}
+                                {/*    state.ordersInfo.airportList.map((airport) => {*/}
+                                {/*        return airport.results.map(result => {*/}
+                                {/*            return result.itineraries.filter(itinerarie => itinerarie.itineraryNo === airportActived).map(itinerarie => (*/}
+                                {/*               */}
+                                {/*            ))*/}
+                                {/*        })*/}
+                                {/*    })*/}
+                                {/*}*/}
                                 {
-                                    state.ordersInfo.airportList.map((airport) => {
-                                        return airport.results.map(result => {
-                                            return result.itineraries.filter(itinerarie => itinerarie.itineraryNo === airportActived).map(itinerarie => (
-                                                <FilterItem key={`${airport.channelCode}-${result.resultKey}-${itinerarie.itineraryKey}`}
-                                                            itinerarie={itinerarie}
-                                                            channelCode={airport.channelCode}
-                                                            resultType={result.resultType}
-                                                            policies={result.policies}
-                                                            contextId={result.contextId}
-                                                            resultKey={result.resultKey}
-                                                            currency={result.currency} />
-                                            ))
-                                        })
-                                    })
+                                    airList.map(item => (
+                                        <FilterItem
+                                            key={`${item.channelCode}-${item.resultKey}-${item.itinerarie.itineraryKey}`}
+                                            itinerarie={item.itinerarie}
+                                            channelCode={item.channelCode}
+                                            resultType={item.resultType}
+                                            policies={item.policies}
+                                            contextId={item.contextId}
+                                            resultKey={item.resultKey}
+                                            currency={item.currency}
+                                        />
+                                    ))
                                 }
+
                             </div>
                         </>:<></>
                 }

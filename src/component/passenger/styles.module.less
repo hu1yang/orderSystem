@@ -144,9 +144,7 @@
             .packgaeTitle{
                 .commonTitle;
             }
-            .packgaeTips{
-                margin-bottom: var(--pm-16);
-            }
+
             .packageContent{
                 .packageli{
                     .packageliPicture{
@@ -221,14 +219,7 @@
 
         }
 
-        .agreeContainer{
-            margin-bottom: calc(var(--pm-16) / 2);
-            .agree{
-                color: var(--text-color);
-                font-size: 1.2em;
 
-            }
-        }
         .payContainer{
             .payPrice{
                 .payPriceLabels{
@@ -260,68 +251,71 @@
             }
         }
     }
-    .cardCom{
-        position: sticky;
-        top: 20px;
-        .priceBox{
-            margin-top: 14px;
-            .priceCom{
-                margin-bottom: var(--pm-16);
-                width: 100%;
-            }
-            .priceli{
-                width: 100%;
 
-                .labels , .values{
-                    span{
-                        color: var(--text-color);
-                        font-weight: bold;
-                        font-size: 1.2em;
-                    }
-
-                }
-            }
-
-            .priceHeight {
-                overflow: hidden;
-                transition: max-height 0.3s ease;
-
-                .labels, .values {
-                    line-height: 18px;
-                    padding-top: 8px;
-
-                    span {
-                        font-weight: 400;
-                        font-size: 1.2em;
-                    }
-                }
-
-            }
-            .baggage{
-                .labels{
-                    span{
-                        border: 1px #ced2d9;
-                        border-style: none none dashed;
-                    }
-                }
-            }
-
-        }
-        .priceLine{
-            .labels{
-                font-size: 1.6em;
-                color: var(--text-color);
-                font-weight: bold;
-            }
-            .prices{
-                font-size: 1.6em;
-                color: var(--active-color);
-
-            }
-        }
-    }
 
 }
+
+.cardCom{
+    position: sticky;
+    top: 20px;
+    .priceBox{
+        margin-top: 14px;
+        .priceCom{
+            margin-bottom: var(--pm-16);
+            width: 100%;
+        }
+        .priceli{
+            width: 100%;
+
+            .labels , .values{
+                span{
+                    color: var(--text-color);
+                    font-weight: bold;
+                    font-size: 1.2em;
+                }
+
+            }
+        }
+
+        .priceHeight {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+
+            .labels, .values {
+                line-height: 18px;
+                padding-top: 8px;
+
+                span {
+                    font-weight: 400;
+                    font-size: 1.2em;
+                }
+            }
+
+        }
+        .baggage{
+            .labels{
+                span{
+                    border: 1px #ced2d9;
+                    border-style: none none dashed;
+                }
+            }
+        }
+
+    }
+    .priceLine{
+        .labels{
+            font-size: 1.6em;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        .prices{
+            font-size: 1.6em;
+            color: var(--active-color);
+
+        }
+    }
+}
+
 .commonBox{
     background: var(--vt-c-white);
     border-radius: var(--border-radius);
