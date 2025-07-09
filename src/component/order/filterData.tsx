@@ -10,11 +10,8 @@ import {
     Typography
 } from "@mui/material";
 import LuggageIcon from "@mui/icons-material/Luggage";
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import BoltIcon from '@mui/icons-material/Bolt';
+import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import WifiIcon from '@mui/icons-material/Wifi';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import FareCardsSlider from "@/component/order/Detail.tsx";
 import HtmlTooltip from "../defult/Tooltip";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
@@ -23,7 +20,7 @@ import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import type { ResponseItinerary, Result, ResultType, Segment} from "@/types/order.ts";
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {extractTimeWithTimezone, formatFlyingTime} from "@/utils/public.ts";
+import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {setChannelCode, setResult, setResultItineraries , prevAirChoose} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
 import dayjs from "dayjs";
@@ -81,8 +78,6 @@ const FlightTimeline = memo(({segments}:{
 
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
-                {/* 左侧时间与机场 */}
-
             <Box textAlign="center">
                 <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.departureTime)}</Typography>
                 <Box
@@ -105,7 +100,7 @@ const FlightTimeline = memo(({segments}:{
             </Box>
             <HtmlTooltip placement="bottom" sx={{
                 p: 0,
-                '& .MuiTooltip-tooltip': {
+                '.MuiTooltip-tooltip': {
                     maxWidth: 600, // 或设置固定宽度 width: 300
                 },
             }} title={
@@ -317,7 +312,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     }
     const handleClose = () => {
         setOpen(false)
-        setChooseAmountCode('')
+        setChooseAmountName('')
     }
 
     const beforePrice = useMemo(() => {
@@ -382,15 +377,15 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     }, [channelCode, contextId, itinerarie, airportList, airportActived, airChoose, beforePrice, query.travelers]);
 
 
-    const [chooseAmountCode, setChooseAmountCode] = useState<string>('')
+    const [chooseAmountName, setChooseAmountName] = useState<string>('')
     const handleChooseFnc = useCallback((code: string) => {
-        setChooseAmountCode(code)
+        setChooseAmountName(code)
     }, [itinerarie.amounts]);
 
     const submitResult = () => {
         setDisabledChoose(true)
-        if(!chooseAmountCode) return
-        const chooseAmount = itinerarie.amounts.filter(amount => amount.familyCode === chooseAmountCode)
+        if(!chooseAmountName) return
+        const chooseAmount = itinerarie.amounts.filter(amount => amount.familyName === chooseAmountName)
 
         const newItinerarie = {
             amounts:chooseAmount,
@@ -422,14 +417,14 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     }
 
     const totalPriceChoose = useMemo(() => {
-        if (chooseAmountCode) {
-            const rawTotal = getTotalPriceByFamilyCode(chooseAmountCode, itinerarie.amounts, travelers) + beforePrice;
+        if (chooseAmountName) {
+            const rawTotal = getTotalPriceByFamilyCode(chooseAmountName, itinerarie.amounts, travelers) + beforePrice;
 
             // 向上取整保留两位小数
             return Math.ceil(rawTotal * 100) / 100;
         }
         return 0;
-    }, [chooseAmountCode]);
+    }, [chooseAmountName]);
 
 
     return  (
@@ -438,7 +433,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                 <div className={`${styles.filterTips} s-flex ai-ct`}>
                     <div className={`${styles.tipsIcon} s-flex ai-ct`}>
                         <LuggageIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
-                        <BusinessCenterIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        <AdfScannerIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
                         <span>Included</span>
                     </div>
                 </div>
@@ -453,16 +448,18 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                                         }
                                     </span>
                                 </div>
-                                <HtmlTooltip title={
-                                    <AirTooltip />
-                                }>
-                                    <div className={styles.airIcon}>
-                                        <BoltIcon />
-                                        <RestaurantIcon />
-                                        <WifiIcon />
-                                        <PlayCircleIcon />
-                                    </div>
-                                </HtmlTooltip>
+                                {
+                                    itinerarie.segments.some(segment => segment.flightMealType) && (
+                                        <HtmlTooltip title={
+                                            <AirTooltip />
+                                        }>
+                                            <div className={styles.airIcon}>
+                                                <RestaurantIcon />
+                                            </div>
+                                        </HtmlTooltip>
+                                    )
+                                }
+
                             </div>
                         </div>
                         <Grid container className={'flex-1'} spacing={2}>
@@ -533,19 +530,16 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                 }}>
                     <div className={`s-flex jc-fe ai-ct`}>
                         {
-                            chooseAmountCode?
+                            chooseAmountName?
                                 <Box className={'s-flex flex-dir'}>
                                     <div className={`s-flex ai-ct`}>
                                         <HtmlTooltip placement="top" sx={{
                                             width: 300,
-                                            'MuiTooltip-tooltip': {
+                                            '.MuiTooltip-tooltip': {
                                                 padding: 'var(--pm-16)',
                                             }
                                         }} title={
-                                            <>
-
-                                                <PriceDetail amounts={itinerarie.amounts} familyCode={chooseAmountCode} currency={currency} />
-                                            </>
+                                            <PriceDetail amounts={itinerarie.amounts} familyName={chooseAmountName} currency={currency} />
                                         }>
                                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                                 fontSize: 20,
@@ -559,7 +553,7 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                                         </HtmlTooltip>
                                     </div>
                                     <Typography variant="caption" color="text.secondary" ml={1}
-                                                sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>
+                                                sx={{fontSize: 14,lineHeight: 1}}>{itineraryTypeMap[itineraryType]}</Typography>
                                 </Box>:
                                 <></>
                         }

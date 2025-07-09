@@ -17,9 +17,9 @@ const itineraryTypeMap = {
     round: 'Round-trip',
 } as const;
 
-const PriceDetail = memo(({ amounts, familyCode, currency }: {
+const PriceDetail = memo(({ amounts, familyName, currency }: {
     amounts: Amount[];
-    familyCode: string;
+    familyName: string;
     currency: string;
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
@@ -33,8 +33,8 @@ const PriceDetail = memo(({ amounts, familyCode, currency }: {
         travelers.find(traveler => traveler.passengerType === passengerType)?.passengerCount || 0;
 
     const currentAmounts = useMemo(() => {
-        return amounts.filter((amount: Amount) => amount.familyCode === familyCode);
-    }, [amounts, familyCode]);
+        return amounts.filter((amount: Amount) => amount.familyName === familyName);
+    }, [amounts, familyName]);
 
     // 计算每项乘客的总价（含税）
     const amountTotal = (amount: Amount) => {

@@ -4,6 +4,9 @@ import type {Segment} from "@/types/order.ts";
 import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {formatTotalDuration , formatDuration} from "@/utils/price.ts";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
+import AdfScannerIcon from "@mui/icons-material/AdfScanner";
+import LuggageIcon from "@mui/icons-material/Luggage";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
 
 const FlightTimelineBox = memo(({segments}:{
     segments:Segment[]
@@ -23,11 +26,14 @@ const FlightTimelineBox = memo(({segments}:{
                                 </div>
                             </div>
                             <div className={`${styles.airInfomation} s-flex`}>
-                                <div className={styles.airInfomationPicture}>
-
+                                <div className={`${styles.airInfomationPicture} s-flex ai-ct jc-ct`}>
+                                    <LuggageIcon />
+                                    <AdfScannerIcon />
                                 </div>
                                 <div className={styles.airInfomationmains}>
-                                    <p>Flight number {segment.flightNumber}</p>
+                                    <p>Flight number {segment.flightNumber}
+                                        <RestaurantIcon sx={{fontSize: '1.3rem',ml:'10px'}} />
+                                    </p>
                                     {
                                         segment.shareToFlightNo && <p>Share Flight number {segment.shareToFlightNo}</p>
                                     }

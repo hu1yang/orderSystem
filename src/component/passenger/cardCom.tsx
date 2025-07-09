@@ -130,7 +130,7 @@ const CardCom = memo(({pirceResult}:{
                         <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
                             <HtmlTooltip placement={'top'} sx={{
                                 p: 0,
-                                '& .MuiTooltip-tooltip': {
+                                '.MuiTooltip-tooltip': {
                                     maxWidth: 600, // 或设置固定宽度 width: 300
                                 },
                             }} title={
@@ -156,7 +156,7 @@ const CardCom = memo(({pirceResult}:{
                         <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
                             <HtmlTooltip placement={'top'} sx={{
                                 p: 0,
-                                '& .MuiTooltip-tooltip': {
+                                '.MuiTooltip-tooltip': {
                                     maxWidth: 600, // 或设置固定宽度 width: 300
                                 },
                             }} title={

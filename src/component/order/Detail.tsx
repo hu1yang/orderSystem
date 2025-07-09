@@ -115,22 +115,22 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
     amounts: Amount[]
     currency:string
     chooseValue:string
-    chooseAmount:(code:string) => void
+    chooseAmount:(familyName:string) => void
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
     const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
 
 
 
-    const totalFare = (code:string) => {
-        return getTotalPriceByFamilyCode(code,amounts,travelers)
+    const totalFare = (familyName:string) => {
+        return getTotalPriceByFamilyCode(familyName,amounts,travelers)
     }
 
     return (
         <Box  sx={{width: 320}}>
-            <Card className={'cursor-p'} onClick={() => chooseAmount(amount.familyCode)} sx={{
+            <Card className={'cursor-p'} onClick={() => chooseAmount(amount.familyName)} sx={{
                 width: 319,height: 390, borderRadius: '4px', padding: '16px 24px',
-                boxShadow: chooseValue === amount.familyCode ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
+                boxShadow: chooseValue === amount.familyName ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
                 '.MuiCardContent-root': {
                     padding: '0'
                 },
@@ -143,9 +143,9 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                 } action={
                     <Radio
                         disabled={disabledChoose}
-                        checked={chooseValue === amount.familyCode}
-                        onChange={() => chooseAmount(amount.familyCode)}
-                        value={amount.familyCode}
+                        checked={chooseValue === amount.familyName}
+                        onChange={() => chooseAmount(amount.familyName)}
+                        value={amount.familyName}
                         color="primary"
                         onClick={(e) => e.stopPropagation()}
                         sx={{
@@ -174,42 +174,102 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
 
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
                     <div style={{height: '100px'}}>
-                        <Typography variant="body2" className={styles.detailText}
-                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                        {
+                            !!amount.refundNotes.length && (
+                                <HtmlTooltip placement="bottom" sx={{
+                                    '.MuiTooltip-tooltip':{
+                                        fontSize: '1rem',
+                                        p:{
+                                            fontSize: '1em',
+                                            color: 'var(--tips-color)'
+                                        }
+                                    }
+                                }} title={
+                                    amount.refundNotes.map(rule => <p>{rule}</p>)
+                                }>
+                                    <Typography variant="body2" className={styles.detailText}
+                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                        <span className={`${styles.texts} elli-1`}>Refund Policy:{amount.refundNotes.map(rule => rule).join(',')}</span>
+                                    </Typography>
+                                </HtmlTooltip>
+                            )
+                        }
+                        {
+                            !!amount.changeNotes.length && (
+                                <HtmlTooltip placement="bottom" sx={{
+                                    '.MuiTooltip-tooltip':{
+                                        fontSize: '1rem',
+                                        p:{
+                                            fontSize: '1em',
+                                            color: 'var(--tips-color)'
+                                        }
+                                    }
+                                }} title={
+                                    amount.changeNotes.map(rule => <p>{rule}</p>)
+                                }>
+                                    <Typography variant="body2" className={styles.detailText}
+                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
 
-                            <span className={`${styles.texts} elli-1`}>Refund Policy:{amount.refundNotes.map(rule => rule).join(',')}</span>
-                        </Typography>
-
-                        <Typography variant="body2" className={styles.detailText}
-                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-
-                            <span className={`${styles.texts} elli-1`}>Change Policy:{amount.changeNotes.map(rule => rule).join(',')}</span>
-                        </Typography>
-
-                        <Typography variant="body2" className={styles.detailText}
-                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                            <span className={`${styles.texts} elli-1`}>Cancellation Policy:{amount.cancelNotes.map(rule => rule).join(',')}</span>
-                        </Typography>
-
-                        <Typography variant="body2" className={styles.detailText}
-                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                            <span className={`${styles.texts} elli-1`}>Other Policy:{amount.othersNotes.map(rule => rule).join(',')}</span>
-                        </Typography>
+                                        <span className={`${styles.texts} elli-1`}>Change Policy:{amount.changeNotes.map(rule => rule).join(',')}</span>
+                                    </Typography>
+                                </HtmlTooltip>
+                            )
+                        }
+                        {
+                            !!amount.cancelNotes.length && (
+                                <HtmlTooltip placement="bottom" sx={{
+                                    '.MuiTooltip-tooltip':{
+                                        fontSize: '1rem',
+                                        p:{
+                                            fontSize: '1em',
+                                            color: 'var(--tips-color)'
+                                        }
+                                    }
+                                }} title={
+                                    amount.cancelNotes.map(rule => <p>{rule}</p>)
+                                }>
+                                    <Typography variant="body2" className={styles.detailText}
+                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                        <span className={`${styles.texts} elli-1`}>Cancellation Policy:{amount.cancelNotes.map(rule => rule).join(',')}</span>
+                                    </Typography>
+                                </HtmlTooltip>
+                            )
+                        }
+                        {
+                            !!amount.othersNotes.length && (
+                                <HtmlTooltip placement="bottom" sx={{
+                                    '.MuiTooltip-tooltip':{
+                                        fontSize: '1rem',
+                                        p:{
+                                            fontSize: '1em',
+                                            color: 'var(--tips-color)'
+                                        }
+                                    }
+                                }} title={
+                                    amount.othersNotes.map(rule => <p>{rule}</p>)
+                                }>
+                                    <Typography variant="body2" className={styles.detailText}
+                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                        <span className={`${styles.texts} elli-1`}>Other Policy:{amount.othersNotes.map(rule => rule).join(',')}</span>
+                                    </Typography>
+                                </HtmlTooltip>
+                            )
+                        }
                     </div>
 
 
                     <Box mt={2}>
                         <HtmlTooltip placement="top" sx={{
                             width: 300,
-                            'MuiTooltip-tooltip': {
+                            '.MuiTooltip-tooltip': {
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={amounts} familyCode={amount.familyCode} currency={currency} />
+                            <PriceDetail amounts={amounts} familyName={amount.familyName} currency={currency} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -219,7 +279,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                     cursor: 'help',
 
                                 }
-                            }}>{currency}${totalFare(amount.familyCode)}</Typography>
+                            }}>{currency}${totalFare(amount.familyName)}</Typography>
                         </HtmlTooltip>
                         <Typography variant="caption" color="text.secondary" ml={1}
                                     sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>
@@ -288,13 +348,13 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
 
     const [chooseValue, setChooseValue] = useState('')
 
-    const handleChooseAmount = (code: string) => {
+    const handleChooseAmount = (name: string) => {
         if(isDragging.current){
             return;
         }
         if(disabledChoose) return
-        setChooseValue(code)
-        chooseFnc(code)
+        setChooseValue(name)
+        chooseFnc(name)
     }
 
     return (

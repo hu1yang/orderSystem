@@ -18,19 +18,19 @@ export function groupAmountByFamilyCodeFnc(amounts: Amount[], travelers: Travele
         if (!traveler || traveler.passengerCount === 0) continue;
 
         const total = (amt.printAmount + amt.taxesAmount) * traveler.passengerCount;
-        groupMap.set(amt.familyCode, (groupMap.get(amt.familyCode) || 0) + total);
+        groupMap.set(amt.familyName, (groupMap.get(amt.familyName) || 0) + total);
     }
 
     return Array.from(groupMap.values()).map(val => Math.ceil(val * 100) / 100);
 }
 
 export function getTotalPriceByFamilyCode(
-    familyCode: string,
+    familyName: string,
     allAmounts: Amount[],
     travelers: Travelers[]
 ): number {
     const total = allAmounts
-    .filter(a => a.familyCode === familyCode)
+    .filter(a => a.familyName === familyName)
     .reduce((sum, amt) => {
         const traveler = travelers.find(t => t.passengerType === amt.passengerType);
         const count = traveler?.passengerCount || 0;
