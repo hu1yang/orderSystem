@@ -7,14 +7,6 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 const AirTooltip = () => {
     return (
         <div className={styles.airTooltipContent}>
-            <div className='s-flex ai-ct'>
-                <div className={styles.contentPicture}>
-                    <img src="https://static.tripcdn.com/packages/flight/airline-logo/latest/airline_logo/3x/ca.webp" alt=""/>
-                </div>
-                <div className={styles.contentAirTitle}>
-                    <span>Air China</span>
-                </div>
-            </div>
             <div className={styles.moreInfo}>
                 <div className={styles.moreTitle}>Economy class</div>
                 <div className={styles.moreIcon}>

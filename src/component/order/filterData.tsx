@@ -1,12 +1,10 @@
-import {memo, useCallback, useEffect, useMemo, useState} from "react";
-import HelpIcon from '@mui/icons-material/Help';
+import React from "react";
+import {memo, useCallback, useMemo, useState} from "react";
 import styles from './styles.module.less'
 import {
     Box, Button,
-    Card,
-    CardContent, Chip, Dialog, DialogActions, DialogContent, DialogTitle,
-    Divider, Grid,
-    Link,
+    Chip, Dialog, DialogActions, DialogContent, DialogTitle,
+    Grid,
     Tab,
     Tabs,
     Typography
@@ -30,116 +28,135 @@ import {setChannelCode, setResult, setResultItineraries , prevAirChoose} from "@
 import {useNavigate} from "react-router";
 import dayjs from "dayjs";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {getTotalPriceByFamilyCode, groupAmountByFamilyCodeFnc} from "@/utils/price.ts";
+import {
+    formatDuration,
+    formatTotalDuration,
+    getTotalPriceByFamilyCode,
+    groupAmountByFamilyCodeFnc
+} from "@/utils/price.ts";
 import {format} from "date-fns";
+import FlightTimelineBox from "./flightTimelineBox.tsx";
 
 
 
-const FlightTimeline = memo(({segment}:{
-    segment:Segment
+const FlightTimeline = memo(({segments}:{
+    segments:Segment[]
 }) => {
+
+    const flightSegment = useMemo(() => {
+
+        const departureAirport = segments[0]?.departureAirport
+        const arrivalAirport = segments.at(-1)?.arrivalAirport
+
+        const departureTime = segments[0]?.departureTime
+        const arrivalTime = segments.at(-1)?.arrivalTime
+
+        const departureTerminal = segments[0]?.departureTerminal
+        const arrivalTerminal = segments.at(-1)?.arrivalTerminal
+
+        const timer = segments.map(segment => segment.totalFlyingTime) as string[]
+
+        // ⏱️ 计算中转等待时间（只在多段航程时）
+        let transferTime = null
+        if (segments.length > 1) {
+            const prevArrival = segments[0].arrivalTime
+            const nextDeparture = segments[1].departureTime
+            if (prevArrival && nextDeparture) {
+                transferTime = formatDuration(nextDeparture,prevArrival)
+            }
+        }
+
+        return {
+            departureAirport,
+            departureTime,
+            arrivalTime,
+            arrivalAirport,
+            totalTime: formatTotalDuration(timer),
+            departureTerminal,
+            arrivalTerminal,
+            transferTime
+        }
+
+    }, [segments]);
+
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
                 {/* 左侧时间与机场 */}
-            <HtmlTooltip placement="bottom" title={
-                <div style={{fontSize: '1.4em',}}>{segment.departureAirport} - {segment.flightNumber}</div>
+
+            <Box textAlign="center">
+                <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.departureTime)}</Typography>
+                <Box
+                    lineHeight={1}
+                    className={'cursor-h'}
+                    sx={{
+                        display: 'inline-block',
+                        mt: 0.5,
+                        px: 1,
+                        py: 0.2,
+                        backgroundColor: '#fff2ec',
+                        color: '#f56c00',
+                        fontSize: '1.1em',
+                        borderRadius: '3px',
+                        fontWeight: 500,
+                    }}
+                >
+                    {flightSegment.departureAirport} {flightSegment.departureTerminal}
+                </Box>
+            </Box>
+            <HtmlTooltip placement="bottom" sx={{
+                p: 0,
+                '& .MuiTooltip-tooltip': {
+                    maxWidth: 600, // 或设置固定宽度 width: 300
+                },
+            }} title={
+                <FlightTimelineBox segments={segments} />
             }>
-                <Box textAlign="center">
-                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(segment.departureTime)}</Typography>
+                <Box flex="1" mx={2} position="relative" className={`cursor-p`}>
+                    {/* 线条 */}
                     <Box
-                        lineHeight={1}
-                        className={'cursor-h'}
                         sx={{
-                            display: 'inline-block',
-                            mt: 0.5,
-                            px: 1,
-                            py: 0.2,
-                            backgroundColor: '#fff2ec',
-                            color: '#f56c00',
-                            fontSize: '1.1em',
-                            borderRadius: '3px',
-                            fontWeight: 500,
+                            height: '2px',
+                            backgroundColor: '#d8dce5',
+                            position: 'relative',
+                            top: '50%',
+                            '&.MuiBox-root': {
+                                background: '#d8dce5',
+                                position: 'relative',
+                                '&::before': {
+                                    content: '""', // ✅ 必须用字符串
+                                    position: 'absolute',
+                                    width: '6px',
+                                    height: '6px',
+                                    top: '50%',
+                                    left: '0',
+                                    transform: 'translateY(-50%)',
+                                    backgroundColor: '#d8dce5',
+                                },
+                                '&::after': {
+                                    content: '""', // ✅ 必须用字符串
+                                    position: 'absolute',
+                                    width: '6px',
+                                    height: '6px',
+                                    top: '50%',
+                                    right: '0',
+                                    transform: 'translateY(-50%)',
+                                    backgroundColor: '#d8dce5',
+                                },
+                            }
+                        }}
+                    />
+                    <Typography
+                        sx={{
+                            position: 'absolute',
+                            top: '-18px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            fontSize: '1em',
+                            color: '#a0a4af',
                         }}
                     >
-                        {segment.departureAirport} {segment.departureTerminal}
-                    </Box>
-                </Box>
-            </HtmlTooltip>
-            {/* 中间线段与飞行信息 */}
-
-            <Box flex="1" mx={2} position="relative">
-                {/* 线条 */}
-                <Box
-                    sx={{
-                        height: '2px',
-                        backgroundColor: '#d8dce5',
-                        position: 'relative',
-                        top: '50%',
-                        '&.MuiBox-root': {
-                            background: '#d8dce5',
-                            position: 'relative',
-                            '&::before': {
-                                content: '""', // ✅ 必须用字符串
-                                position: 'absolute',
-                                width: '6px',
-                                height: '6px',
-                                top: '50%',
-                                left: '0',
-                                transform: 'translateY(-50%)',
-                                backgroundColor: '#d8dce5',
-                            },
-                            '&::after': {
-                                content: '""', // ✅ 必须用字符串
-                                position: 'absolute',
-                                width: '6px',
-                                height: '6px',
-                                top: '50%',
-                                right: '0',
-                                transform: 'translateY(-50%)',
-                                backgroundColor: '#d8dce5',
-                            },
-                        }
-                    }}
-                />
-                    {/* 飞行时长 */}
-                    <HtmlTooltip placement="bottom"  title={
-                        <Box className={styles.airportLine}>
-                            <Box className={styles.airportNode}>
-                                <span className={styles.code}>{segment.departureAirport}</span>
-                                {segment.departureAirport} International Airport {segment.departureTerminal}
-                            </Box>
-                            <Box className={styles.airportNode}>
-                                <span className={styles.code}>{segment.arrivalAirport}</span>
-                                {segment.arrivalAirport} International Airport {segment.arrivalTerminal}
-                            </Box>
-                        </Box>
-                    }>
-                        <Typography
-                            sx={{
-                                position: 'absolute',
-                                top: '-18px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                fontSize: '1em',
-                                color: '#a0a4af',
-                            }}
-                        >
-                            {formatFlyingTime(segment.totalFlyingTime!)}
-                        </Typography>
-                </HtmlTooltip>
-                {/* Nonstop 标签 */}
-                <HtmlTooltip placement="bottom"  title={
-                    <Box className={styles.airportLine}>
-                        <Box className={styles.airportNode}>
-                            <span className={styles.code}>{segment.departureAirport}</span>
-                            {segment.departureAirport} International Airport {segment.departureTerminal}
-                        </Box>
-                        <Box className={styles.airportNode}>
-                            <span className={styles.code}>{segment.arrivalAirport}</span>
-                            {segment.arrivalAirport} International Airport {segment.arrivalTerminal}
-                        </Box>
-                    </Box>
-                }>
+                        {flightSegment.totalTime}
+                    </Typography>
                     <Typography
                         sx={{
                             position: 'absolute',
@@ -151,30 +168,21 @@ const FlightTimeline = memo(({segment}:{
                         }}
                     >
                         {
-                            segment.stops.length?
-                                'Stop'
-                                :
-                                'Nonstop'
+                            segments.length < 2 ? 'Nonstop' : flightSegment.transferTime
                         }
-                    </Typography>
-                </HtmlTooltip>
-            </Box>
-            <HtmlTooltip placement="bottom" title={
-                <div style={{fontSize: '1.4em',}}>{segment.arrivalAirport} International Airport{segment.arrivalTerminal}</div>
-            }>
-                {/* 右侧时间与机场 */}
-                <Box textAlign="center">
-                    <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(segment.arrivalTime)}</Typography>
-                    <Typography
-                        className={'cursor-h'}
-                        sx={{ color: '#a0a4af', fontSize: '1.1em', mt: 0.5 }}
-                        lineHeight={1}
-                    >
-                        {segment.arrivalAirport}
                     </Typography>
                 </Box>
             </HtmlTooltip>
-
+            <Box textAlign="center">
+                <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.arrivalTime!)}</Typography>
+                <Typography
+                    className={'cursor-h'}
+                    sx={{ color: '#a0a4af', fontSize: '1.1em', mt: 0.5 }}
+                    lineHeight={1}
+                >
+                    {flightSegment.arrivalAirport} {flightSegment.arrivalTerminal}
+                </Typography>
+            </Box>
         </Box>
     );
 })
@@ -374,7 +382,6 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
     }, [channelCode, contextId, itinerarie, airportList, airportActived, airChoose, beforePrice, query.travelers]);
 
 
-
     const [chooseAmountCode, setChooseAmountCode] = useState<string>('')
     const handleChooseFnc = useCallback((code: string) => {
         setChooseAmountCode(code)
@@ -434,54 +441,17 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                         <BusinessCenterIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
                         <span>Included</span>
                     </div>
-                    <HtmlTooltip title={
-                        <div className={styles.tooltipContent}>
-                            <div className={styles.tooltipTitle}>
-                                <span>CO2e Emissions</span>
-                            </div>
-                            <Card sx={{
-                                boxShadow: 'none !important',
-                                border: '1px solid #ddd',
-                            }}>
-                                <CardContent sx={{
-                                    '&.MuiCardContent-root':{
-                                        padding: '10px',
-                                    }
-                                }}>
-                                    <div className={styles.cardBox}>
-                                        <div className={`${styles.cardLi} s-flex ai-ct jc-bt`}>
-                                            <div>This flight</div>
-                                            <div>102.75 kg CO2e</div>
-                                        </div>
-                                        <div className={`${styles.cardLi} s-flex ai-ct jc-bt`}>
-                                            <div>Typical for this route</div>
-                                            <div>134.29 kg CO2e</div>
-                                        </div>
-                                        <Divider />
-                                        <div className={`${styles.cardLi} s-flex ai-ct jc-bt`}>
-                                            <div>23% lower</div>
-                                            <div>- 31.54 kg CO2e</div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Link href="#">How are CO2e emissions calculated?</Link>
-                        </div>
-                    }>
-                        <div className={`${styles.tipsIcon} s-flex ai-ct`}>
-                            <span>- 12% CO2e</span>
-                        </div>
-                    </HtmlTooltip>
                 </div>
                 <div className={`${styles.airInfomation} s-flex ai-ct`}>
                     <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
-                        <div className={`${styles.leftInfoDetail} s-flex flex-1`}>
-                            <div className={styles.picture}>
-                                <img src="https://static.tripcdn.com/packages/flight/airline-logo/latest/airline_logo/3x/ca.webp" alt=""/>
-                            </div>
+                        <div className={`${styles.leftInfoDetail} s-flex`}>
                             <div className={`${styles.leftInfoDetailTitle}`}>
                                 <div className={styles.airTitle}>
-                                    <span>Air China</span>
+                                    <span>
+                                        {
+                                            itinerarie.segments.map((segment) => segment.flightNumber).join('/')
+                                        }
+                                    </span>
                                 </div>
                                 <HtmlTooltip title={
                                     <AirTooltip />
@@ -493,17 +463,12 @@ const FilterItem = memo(({itinerarie,channelCode,resultKey,currency,policies,con
                                         <PlayCircleIcon />
                                     </div>
                                 </HtmlTooltip>
-
                             </div>
                         </div>
                         <Grid container className={'flex-1'} spacing={2}>
-                            {
-                                itinerarie.segments.map(segment => (
-                                    <Grid size={12} key={segment.flightNumber}>
-                                        <FlightTimeline segment={segment} />
-                                    </Grid>
-                                ))
-                            }
+                            <Grid size={12}>
+                                <FlightTimeline segments={itinerarie.segments} />
+                            </Grid>
                         </Grid>
                     </div>
                     <div className={`${styles.rightInfo} s-flex jc-fe ai-ct`}>
@@ -656,6 +621,7 @@ const FilterData = memo(() => {
 
     return (
         <div className={`${styles.filterData} flex-1`}>
+
             <div className={styles.filterBox}>
                 {
                     airportList.length?

@@ -23,6 +23,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import {format} from 'date-fns';
 
+import airJSON from '@/air.json'
+
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
@@ -558,6 +560,8 @@ const SearchComponent = memo(() => {
 
 
     const search = () => {
+        dispatch(setAirportList(airJSON))
+        return
         const result: FQuery = {
             itineraryType: radioType,
             cabinLevel: cabinValue,
@@ -596,6 +600,8 @@ const SearchComponent = memo(() => {
 
         const newQuery = {...result}
         newQuery.travelers = result.travelers.filter(traveler => traveler.passengerCount>0)
+
+
 
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){

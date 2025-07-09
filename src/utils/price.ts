@@ -6,6 +6,9 @@ import type {
     ResponseItinerary,
     Travelers
 } from "@/types/order.ts";
+import dayjs from "dayjs";
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 export function groupAmountByFamilyCodeFnc(amounts: Amount[], travelers: Travelers[]) {
     const groupMap = new Map<string, number>();
@@ -105,4 +108,30 @@ export function calculateTotalPriceSummary(
         totalPrice: ceil2(total),
         perType
     };
+}
+
+export function formatTotalDuration(times: string[]): string {
+
+    const totalMs = times.reduce((acc, timeStr) => {
+        const [h, m, s] = timeStr.split(':').map(Number)
+        if (isNaN(h) || isNaN(m) || isNaN(s)) return acc // 跳过非法值
+        const d = dayjs.duration({ hours: h, minutes: m, seconds: s })
+        return acc + d.asMilliseconds()
+    }, 0)
+
+    const total = dayjs.duration(totalMs)
+    const hours = Math.floor(total.asHours()) // 用 asHours 得到小数再取整
+    const minutes = total.minutes()
+
+    return `${hours}h ${minutes}m`
+}
+
+export function formatDuration(start: string, end: string): string {
+    const diff = dayjs(start).diff(dayjs(end))
+    const dur = dayjs.duration(diff)
+
+    const hours = dur.hours()
+    const minutes = dur.minutes()
+
+    return `${hours}h ${minutes}m`
 }

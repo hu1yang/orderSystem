@@ -158,7 +158,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                     <Divider sx={{my: 1.5}}/>
 
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
-                    <div style={{height: '70px'}}>
+                    <div style={{height: '80px'}}>
                         {amount.luggages.map((luggage, luggageIndex) => (
                             <Typography key={luggageIndex} variant="body2" className={styles.detailText}
                                         sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
@@ -172,43 +172,32 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                     <Divider sx={{my: 1.5}}/>
 
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
-                    <div style={{height: '120px'}}>
-                        {amount.refundNotes.map((rule, i) => (
-                            <Typography key={i} variant="body2" className={styles.detailText}
-                                        sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts} dangerouslySetInnerHTML={{
-                                    __html: rule
-                                }}/>
-                            </Typography>
-                        ))}
-                        {amount.changeNotes.map((rule, i) => (
-                            <Typography key={i} variant="body2" className={styles.detailText}
-                                        sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts} dangerouslySetInnerHTML={{
-                                    __html: rule
-                                }}/>
-                            </Typography>
-                        ))}
-                        {amount.cancelNotes.map((rule, i) => (
-                            <Typography key={i} variant="body2" className={styles.detailText}
-                                        sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts} dangerouslySetInnerHTML={{
-                                    __html: rule
-                                }}/>
-                            </Typography>
-                        ))}
-                        {amount.othersNotes.map((rule, i) => (
-                            <Typography key={i} variant="body2" className={styles.detailText}
-                                        sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts} dangerouslySetInnerHTML={{
-                                    __html: rule
-                                }}/>
-                            </Typography>
-                        ))}
+                    <div style={{height: '100px'}}>
+                        <Typography variant="body2" className={styles.detailText}
+                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+
+                            <span className={`${styles.texts} elli-1`}>Refund Policy:{amount.refundNotes.map(rule => rule).join(',')}</span>
+                        </Typography>
+
+                        <Typography variant="body2" className={styles.detailText}
+                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+
+                            <span className={`${styles.texts} elli-1`}>Change Policy:{amount.changeNotes.map(rule => rule).join(',')}</span>
+                        </Typography>
+
+                        <Typography variant="body2" className={styles.detailText}
+                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={`${styles.texts} elli-1`}>Cancellation Policy:{amount.cancelNotes.map(rule => rule).join(',')}</span>
+                        </Typography>
+
+                        <Typography variant="body2" className={styles.detailText}
+                                    sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={`${styles.texts} elli-1`}>Other Policy:{amount.othersNotes.map(rule => rule).join(',')}</span>
+                        </Typography>
                     </div>
 
 

@@ -409,6 +409,7 @@
             margin-top: 4px;
             margin-bottom: 8px;
             .filterItem{
+                margin-bottom: var(--pm-16);
                 .filterItemBox{
                     padding: 0 var(--pm-16);
                     background: #fff;
@@ -672,5 +673,86 @@
     .firportInfo{
         background: #fff;
         padding: 0 32px 24px;
+    }
+}
+
+.flightTimelineBox{
+    font-size: 1rem;
+    .flightTimeline{
+        position: relative;
+        &::before{
+            content: '';
+            position: absolute;
+            height: 90%;
+            border-right: 2px solid var(--put-border-color);
+            left: 58px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .airinfoLine{
+            font-size: 1rem;
+            .timer{
+                font-size: 1.2em;
+                font-weight: 700;
+                color: var(--text-color);
+                width: 38px;
+                margin-right: 40px;
+            }
+            .airTitle{
+                span{
+                    font-size: 1.2em;
+                    font-weight: 700;
+                    color: var(--text-color);
+                }
+            }
+        }
+        .airInfomation{
+            font-size: 1rem;
+            padding: var(--pm-16) 0;
+            .airInfomationPicture{
+                width: 38px;
+                margin-right: 40px;
+            }
+            .airInfomationmains{
+                p{
+                    font-size: 1em;
+                    color: var(--tips-gary-color);
+                }
+            }
+        }
+    }
+    .transfer{
+        position: relative;
+        padding: var(--pm-16) 0;
+        &::before{
+            content: '';
+            position: absolute;
+            height: 100%;
+            border-right: 2px dashed var(--put-border-color);
+            left: 58px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .transferInfo{
+            display: inline-flex;
+            margin-left: 78px;
+            border: 1px solid var(--put-border-color);
+            border-radius: 4px;
+            padding: 8px;
+            position: relative;
+            font-size: 1rem;
+            span{
+                color: var(--tips-gary-color);
+                font-size: 1.1em;
+            }
+            .diffTerminal{
+                font-size: 1rem;
+                span{
+                    font-size: 1.1em;
+                    color: var(--price-color);
+                }
+
+            }
+        }
     }
 }

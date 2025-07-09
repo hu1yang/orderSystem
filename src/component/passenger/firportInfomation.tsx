@@ -78,7 +78,6 @@ const FirportInfomation = memo(({segment}:{
                     </div>
                 </div>
             </div>
-
         </div>
     )
 })
