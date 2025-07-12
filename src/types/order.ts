@@ -88,8 +88,8 @@ export interface Segment {
 }
 export interface ResponseItinerary {
     amounts: Amount[];
-    itineraryNo?: number|null;
-    subItineraryId?: string|null;
+    itineraryNo: number;
+    subItineraryId: string;
     itineraryKey: string;
     segments: Segment[];
 }
@@ -254,3 +254,17 @@ export type PriceSummary = {
     totalPrice: number;
     perType: Record<PassengerType, PriceDetail>;
 };
+
+export type CombinationResult = Result & {
+    channelCode: string
+}
+export type AirSearchData = {
+    combinationKey: string
+    combinationResult: CombinationResult[]
+    cheapAmount: LostPriceAmout
+}
+
+export type LostPriceAmout = {
+    minTotal: number
+    amounts: Amount[]
+}

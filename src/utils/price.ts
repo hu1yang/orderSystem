@@ -2,72 +2,13 @@ import type {
     Amount,
     PriceDetail,
     PassengerType,
-    PriceSum, PriceSummary,
+    PriceSummary,
     ResponseItinerary,
-    Travelers
+    Travelers, LostPriceAmout
 } from "@/types/order.ts";
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
 dayjs.extend(duration)
-
-export function groupAmountByFamilyCodeFnc(amounts: Amount[], travelers: Travelers[]) {
-    const groupMap = new Map<string, number>();
-
-    for (const amt of amounts) {
-        const traveler = travelers.find(t => t.passengerType === amt.passengerType);
-        if (!traveler || traveler.passengerCount === 0) continue;
-
-        const total = (amt.printAmount + amt.taxesAmount) * traveler.passengerCount;
-        groupMap.set(amt.familyName, (groupMap.get(amt.familyName) || 0) + total);
-    }
-
-    return Array.from(groupMap.values()).map(val => Math.ceil(val * 100) / 100);
-}
-
-export function getTotalPriceByFamilyCode(
-    familyName: string,
-    allAmounts: Amount[],
-    travelers: Travelers[]
-): number {
-    const total = allAmounts
-    .filter(a => a.familyName === familyName)
-    .reduce((sum, amt) => {
-        const traveler = travelers.find(t => t.passengerType === amt.passengerType);
-        const count = traveler?.passengerCount || 0;
-        return sum + (amt.printAmount + amt.taxesAmount) * count;
-    }, 0);
-
-    return Math.ceil(total * 100) / 100;
-}
-
-export function sumAmountsByPassengerType(itineraries: ResponseItinerary[]) {
-    const result: Record<string, PriceSum> = {};
-
-    for (const itinerary of itineraries) {
-        for (const amt of itinerary.amounts) {
-            const type = amt.passengerType;
-            if (!result[type]) {
-                result[type] = { printAmount: 0, taxesAmount: 0 };
-            }
-
-            result[type].printAmount += amt.printAmount;
-            result[type].taxesAmount += amt.taxesAmount;
-        }
-    }
-
-    // 保留两位小数并向上进一
-    for (const type in result) {
-        const val = result[type];
-        val.printAmount = Math.ceil(val.printAmount * 100) / 100;
-        val.taxesAmount = Math.ceil(val.taxesAmount * 100) / 100;
-    }
-
-    return result;
-}
-
-function ceil2(value: number): number {
-    return Math.ceil(value * 100) / 100;
-}
 
 export function calculateTotalPriceSummary(
     itineraries: { amounts: Amount[] }[],
@@ -97,15 +38,15 @@ export function calculateTotalPriceSummary(
 
     (['adt', 'chd', 'inf'] as PassengerType[]).forEach(type => {
         const item = perType[type];
-        item.printAmount = ceil2(item.printAmount);
-        item.taxesAmount = ceil2(item.taxesAmount);
-        item.unitPrice = ceil2(item.printAmount + item.taxesAmount);
-        item.totalPrice = ceil2(item.unitPrice * item.count);
+        item.printAmount = Number(item.printAmount);
+        item.taxesAmount = Number(item.taxesAmount);
+        item.unitPrice = (item.printAmount + item.taxesAmount);
+        item.totalPrice = (item.unitPrice * item.count);
         total += item.totalPrice;
     });
 
     return {
-        totalPrice: ceil2(total),
+        totalPrice: total,
         perType
     };
 }
@@ -135,3 +76,80 @@ export function formatDuration(start: string, end: string): string {
 
     return `${hours}h ${minutes}m`
 }
+
+
+export function getAdultAmountTotal(amount: Amount) {
+    return (amount.printAmount || 0) + (amount.taxesAmount || 0);
+}
+
+export function findLowestAdultCombo(
+    itineraryGroups: ResponseItinerary[][]
+): LostPriceAmout {
+    let result: LostPriceAmout = {
+        minTotal: Infinity,
+        amounts: [],
+    };
+
+    itineraryGroups.forEach(itineraries => {
+        const itineraryMap = new Map<number, ResponseItinerary>();
+        itineraries.forEach(it => itineraryMap.set(it.itineraryNo, it));
+
+        const baseItinerary = itineraryMap.get(0);
+        const returnItinerary = Array.from(itineraryMap.entries())
+        .filter(([no]) => no !== 0)
+        .map(([, it]) => it);
+
+
+        if (!baseItinerary || returnItinerary.length === 0) return;
+
+        const baseAdt = (baseItinerary.amounts || []).filter(a => a.passengerType === 'adt');
+        const returnAdtOptions = returnItinerary.map(it => (it.amounts || []).filter(a => a.passengerType === 'adt'));
+
+        if (!baseAdt.length || returnAdtOptions.some(list => list.length === 0)) return;
+
+        // 找出 base 最低价 & 随机取
+        const minBasePrice = Math.min(...baseAdt.map(getAdultAmountTotal));
+        const baseOptions = baseAdt.filter(a => getAdultAmountTotal(a) === minBasePrice);
+        const baseAmount = baseOptions[Math.floor(Math.random() * baseOptions.length)];
+
+        // 找出 return 每段最低价 & 随机取（如有多个回程）
+        const returnAmounts: Amount[] = [];
+        for (const list of returnAdtOptions) {
+            const min = Math.min(...list.map(getAdultAmountTotal));
+            const minOptions = list.filter(a => getAdultAmountTotal(a) === min);
+            returnAmounts.push(minOptions[Math.floor(Math.random() * minOptions.length)]);
+        }
+
+        const total = getAdultAmountTotal(baseAmount) + returnAmounts.reduce((sum, a) => sum + getAdultAmountTotal(a), 0);
+
+        if (total < result.minTotal) {
+            result = {
+                minTotal: total,
+                amounts: [baseAmount, ...returnAmounts],
+            };
+        }
+    });
+
+    return result;
+}
+
+
+export function applyNextCodeFilter(
+    itineraries: ResponseItinerary[],
+    nextCodes: string[] = []
+): ResponseItinerary[] {
+    return itineraries.map(it => {
+        if (it.itineraryNo !== 1) return it;
+
+        const filtered = (it.amounts || []).filter(a =>
+            a.passengerType === 'adt' &&
+            (nextCodes.length === 0 || nextCodes.includes(a.familyCode))
+        );
+
+        return { ...it, amounts: filtered };
+    });
+}
+
+
+
+

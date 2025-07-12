@@ -1,4 +1,4 @@
-import {memo, useMemo, useRef, useState} from "react";
+import {memo, useCallback, useMemo, useRef, useState} from "react";
 import Slider from 'react-slick';
 import {Box, Card, CardContent, Typography, Divider, CardHeader, Radio} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -10,11 +10,11 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 
 import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {Amount, Luggage} from "@/types/order.ts";
+import type {AirSearchData, Amount, LostPriceAmout, Luggage, ResponseItinerary} from "@/types/order.ts";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {getTotalPriceByFamilyCode} from "@/utils/price.ts";
+import {applyNextCodeFilter, findLowestAdultCombo} from "@/utils/price.ts";
 
 
 const itineraryTypeMap = {
@@ -109,28 +109,95 @@ function renderContent(luggage: Luggage) {
     }
 }
 
-const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,chooseValue}:{
+const SliderBox = memo(({amount,identification,disabledChoose,currency, chooseAmount,chooseAmountfnc,itineraries,lostPriceAmout,style}:{
+    lostPriceAmout: number
     amount: Amount
+    identification:{
+        channelCode: string
+        contextId:string
+        resultKey:string
+    }
     disabledChoose:boolean
-    amounts: Amount[]
     currency:string
-    chooseValue:string
-    chooseAmount:(familyName:string) => void
+    chooseAmount:{
+        name:string
+        code:string
+        channelCode: string
+        contextId:string
+        resultKey:string
+    }|null
+    chooseAmountfnc:(value:{
+        name:string
+        code:string
+        channelCode: string
+        contextId:string
+        resultKey:string
+    },lostPriceValue:LostPriceAmout) => void
+    itineraries: ResponseItinerary[]
+    style?: React.CSSProperties
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-    const travelers = useSelector((state: RootState) => state.ordersInfo.query.travelers)
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+
+    const lostPrice = useMemo(() => {
+        let itineraryList = itineraries;
+
+        if (airportActived === 1 && airChoose?.result?.itineraries) {
+            const chosenPrevItinerary = airChoose.result.itineraries.find(it => it.itineraryNo === 0);
+            const nextCodes = chosenPrevItinerary?.amounts?.[0]?.nextCodes || [];
+
+            itineraryList = itineraries.map(it => {
+                if (it.itineraryNo === 0) {
+                    return chosenPrevItinerary || it;
+                }
+                return it;
+            });
+
+            // 应用回程过滤
+            itineraryList = applyNextCodeFilter(itineraryList, nextCodes);
+        }
+
+        return findLowestAdultCombo([itineraryList]);
+    }, [itineraries, airportActived, airChoose?.result]);
 
 
 
-    const totalFare = (familyName:string) => {
-        return getTotalPriceByFamilyCode(familyName,amounts,travelers)
-    }
+
+    const formattedDiff = useMemo(() => {
+        const diff = lostPrice.minTotal - lostPriceAmout;
+        const sign = diff < 0 ? '' : '+'; // 负数原样，其它加 "+"
+        return `${sign}${diff.toFixed(2)}`;
+    }, [lostPrice, lostPriceAmout]);
+
+    const chooseBool = useMemo(() => {
+        return chooseAmount &&
+            chooseAmount.name === amount.familyName &&
+            chooseAmount.code === amount.familyCode &&
+            chooseAmount.channelCode === identification.channelCode &&
+            chooseAmount.contextId === identification.contextId &&
+            chooseAmount.resultKey === identification.resultKey;
+    }, [
+        amount,
+        chooseAmount,
+        identification
+    ]);
+
+    const chooseFnc = useCallback(() => {
+        chooseAmountfnc({
+            ...identification,
+            name: amount.familyName,
+            code: amount.familyCode,
+        },lostPrice);
+    }, [chooseAmountfnc, identification, amount,lostPrice]);
+
+
 
     return (
-        <Box  sx={{width: 320}}>
-            <Card className={'cursor-p'} onClick={() => chooseAmount(amount.familyName)} sx={{
+        <Box sx={{width: 320,...style}}>
+            <Card className={'cursor-p'} onClick={chooseFnc} sx={{
                 width: 319,height: 390, borderRadius: '4px', padding: '16px 24px',
-                boxShadow: chooseValue === amount.familyName ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
+                boxShadow: chooseBool ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
                 '.MuiCardContent-root': {
                     padding: '0'
                 },
@@ -143,9 +210,11 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                 } action={
                     <Radio
                         disabled={disabledChoose}
-                        checked={chooseValue === amount.familyName}
-                        onChange={() => chooseAmount(amount.familyName)}
-                        value={amount.familyName}
+                        checked={!!chooseBool}
+                        onChange={chooseFnc}
+                        value={
+                            `${amount.familyName} -${amount.familyCode} -${identification.channelCode} -${identification.contextId}-${identification.resultKey}`
+                        }
                         color="primary"
                         onClick={(e) => e.stopPropagation()}
                         sx={{
@@ -185,7 +254,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                         }
                                     }
                                 }} title={
-                                    amount.refundNotes.map(rule => <p>{rule}</p>)
+                                    amount.refundNotes.map(rule => <p key={rule}>{rule}</p>)
                                 }>
                                     <Typography variant="body2" className={styles.detailText}
                                                 sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
@@ -206,7 +275,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                         }
                                     }
                                 }} title={
-                                    amount.changeNotes.map(rule => <p>{rule}</p>)
+                                    amount.changeNotes.map(rule => <p key={rule}>{rule}</p>)
                                 }>
                                     <Typography variant="body2" className={styles.detailText}
                                                 sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
@@ -228,7 +297,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                         }
                                     }
                                 }} title={
-                                    amount.cancelNotes.map(rule => <p>{rule}</p>)
+                                    amount.cancelNotes.map(rule => <p key={rule}>{rule}</p>)
                                 }>
                                     <Typography variant="body2" className={styles.detailText}
                                                 sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
@@ -249,7 +318,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                         }
                                     }
                                 }} title={
-                                    amount.othersNotes.map(rule => <p>{rule}</p>)
+                                    amount.othersNotes.map(rule => <p key={rule}>{rule}</p>)
                                 }>
                                     <Typography variant="body2" className={styles.detailText}
                                                 sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
@@ -269,7 +338,7 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={amounts} familyName={amount.familyName} currency={currency} />
+                            <PriceDetail amounts={lostPrice.amounts} totalPrice={lostPrice.minTotal} currency={currency} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -277,9 +346,8 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
                                 '&:hover': {
                                     textDecoration: 'underline',
                                     cursor: 'help',
-
                                 }
-                            }}>{currency}${totalFare(amount.familyName)}</Typography>
+                            }}>{currency}${formattedDiff}</Typography>
                         </HtmlTooltip>
                         <Typography variant="caption" color="text.secondary" ml={1}
                                     sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>
@@ -292,33 +360,89 @@ const SliderBox = memo(({amount,disabledChoose,amounts,currency, chooseAmount,ch
     )
 })
 
-const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
-    amounts: Amount[]
-    chooseFnc: (code: string) => void
+const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,disabledChoose,lostPriceAmout,itineraryKey}: {
+    lostPriceAmout: number
+    amountsResult: AirSearchData
+    chooseAmount: {
+        name:string
+        code:string
+        channelCode: string
+        contextId:string
+        resultKey:string
+    }|null
+    chooseFnc: (value: {
+        name:string
+        code:string
+        channelCode: string
+        contextId:string
+        resultKey:string
+    },lostPriceValue:LostPriceAmout) => void
     currency:string
     disabledChoose:boolean
+    itineraryKey:string
 }) => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
 
-
     const amountsMemo = useMemo(() => {
-        if (airChoose.result) {
-            const prevItinerary = airChoose.result.itineraries[airportActived - 1];
-            if (prevItinerary) {
-                const prevAmount = prevItinerary.amounts.find(a => a.passengerType === 'adt');
-                if (prevAmount && prevAmount.nextCodes.length > 0) {
-                    return amounts.filter(
-                        amount =>
-                            prevAmount.nextCodes.includes(amount.familyCode) &&
-                            amount.passengerType === 'adt'
-                    );
-                }
-            }
-        }
+        const isReturn = airportActived === 1;
 
-        return amounts.filter(a => a.passengerType === 'adt');
-    }, [amounts, airChoose, airportActived]);
+        const nextCodes = isReturn
+            ? airChoose?.result?.itineraries?.[airportActived - 1]?.amounts?.[0]?.nextCodes || []
+            : [];
+        const result = amountsResult.combinationResult.filter(a => {
+            if(airChoose.result){
+                if(a.contextId === airChoose.result.contextId && a.resultKey === airChoose.result.resultKey){
+                    return true
+                }
+                return false
+            }
+            return true
+        }).flatMap(item => {
+            return item.itineraries
+            .filter(it =>
+                it.itineraryNo === airportActived &&
+                (!isReturn || it.itineraryKey === itineraryKey)
+            )
+            .flatMap(it => {
+                const adtAmounts = (it.amounts || []).filter(a => a.passengerType === 'adt');
+
+                const filteredAmounts = isReturn && nextCodes.length
+                    ? adtAmounts.filter(a => nextCodes.includes(a.familyCode))
+                    : adtAmounts;
+
+
+                return filteredAmounts.map(amount => ({
+                    amount,
+                    itineraryNo: it.itineraryNo,
+                    familyCode: amount.familyCode,
+                    segments: it.segments,
+                    channelCode: item.channelCode,
+                    resultKey: item.resultKey,
+                    currency: item.currency,
+                    sourceItinerary: it,
+                    sourceItem: {
+                        ...item,
+                        itineraries: item.itineraries.map(i => {
+                            if (i.itineraryNo === it.itineraryNo) {
+                                return {
+                                    ...i,
+                                    amounts: [amount],
+                                };
+                            }
+                            return i;
+                        }),
+                    }
+                    ,
+                }));
+            });
+        });
+
+        console.info('result----可以优化依赖',result);
+        return result;
+    }, []); // 后续依赖可优化
+
+
 
 
 
@@ -346,30 +470,55 @@ const FareCardsSlider = memo(({amounts,chooseFnc,currency,disabledChoose}: {
         prevArrow: <PrevArrow hidden={currentSlide < 1} />,
     };
 
-    const [chooseValue, setChooseValue] = useState('')
 
-    const handleChooseAmount = (name: string) => {
-        if(isDragging.current){
-            return;
-        }
-        if(disabledChoose) return
-        setChooseValue(name)
-        chooseFnc(name)
-    }
+    const handleChooseAmount = useCallback((value: {
+        name:string
+        code:string
+        channelCode: string
+        contextId:string
+        resultKey:string
+    },lostPriceValue:LostPriceAmout) => {
+        if (isDragging.current) return;
+        if (disabledChoose) return;
+        chooseFnc(value,lostPriceValue);
+    }, [disabledChoose, chooseFnc,chooseAmount]);
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
-
             {
                 amountsMemo.length > 2 ?
                     <Slider {...settings} ref={sliderRef}>
-                        {amountsMemo.map((amount, amountIndex) => (
-                            <SliderBox chooseValue={chooseValue} chooseAmount={handleChooseAmount} key={`${amount.familyCode}-${amount.familyName}-${amountIndex}`} amounts={amounts} amount={amount} disabledChoose={disabledChoose} currency={currency} />
+                        {amountsMemo.map((amountResult) => (
+                            <SliderBox lostPriceAmout={lostPriceAmout} chooseAmount={chooseAmount}
+                                       chooseAmountfnc={handleChooseAmount}
+                                       key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
+                                       identification={{
+                                           channelCode:amountResult.sourceItem.channelCode,
+                                           contextId:amountResult.sourceItem.contextId,
+                                           resultKey:amountResult.sourceItem.contextId,
+                                       }}
+                                       amount={amountResult.amount}
+                                       itineraries={amountResult.sourceItem.itineraries}
+                                       disabledChoose={disabledChoose} currency={currency}/>
                         ))}
-                    </Slider>  :
-                    amountsMemo.map((amount, amountIndex) => (
-                        <SliderBox chooseValue={chooseValue} chooseAmount={handleChooseAmount} key={`${amount.familyCode}-${amount.familyName}-${amountIndex}`} amounts={amounts} amount={amount} disabledChoose={disabledChoose} currency={currency} />
-                    ))
+                    </Slider> :
+                    <div className={`s-flex flex-row`}>
+                        {
+                            amountsMemo.map((amountResult) => (
+                                <SliderBox style={{marginRight:'23px'}} lostPriceAmout={lostPriceAmout} chooseAmount={chooseAmount}
+                                           chooseAmountfnc={handleChooseAmount}
+                                           key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
+                                           identification={{
+                                               channelCode:amountResult.sourceItem.channelCode,
+                                               contextId:amountResult.sourceItem.contextId,
+                                               resultKey:amountResult.sourceItem.contextId,
+                                           }}
+                                           amount={amountResult.amount} itineraries={amountResult.sourceItem.itineraries}
+                                           disabledChoose={disabledChoose} currency={currency}/>
+
+                            ))
+                        }
+                    </div>
             }
             {/*<div className={`${styles.fareCardsTips} s-flex ai-ct`}>*/}
             {/*    <img*/}

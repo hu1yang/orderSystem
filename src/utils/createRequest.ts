@@ -16,7 +16,7 @@ const baseMap: Record<string, string> = {
 
 const instance:AxiosInstance = axios.create({
     baseURL:'',
-    timeout:5000,
+    timeout:60000,
 })
 
 
@@ -92,7 +92,7 @@ instance.interceptors.response.use(
             switch (error.response.status) {
                 case 401:
                     // 未登陆，跳转到登录页等操作
-                    window.location.href = 'https://www.orientalsky.speedpower.net.cn/manage/agent/login'
+                    window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
                     break;
                 case 403:
                     // 权限不足

@@ -23,7 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import {format} from 'date-fns';
 
-import airJSON from '@/air.json'
+import {airJSON} from '@/air.ts'
 
 
 import {DayPicker, type DateRange} from "react-day-picker";
@@ -32,8 +32,7 @@ import "react-day-picker/style.css";
 import type {CabinLevel, FQuery, ItineraryType, PassengerType, Travelers} from "@/types/order.ts";
 import {useDispatch} from "react-redux";
 import {
-    setAirportList,
-    setQuery
+    setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
 import dayjs from "dayjs";
@@ -560,8 +559,6 @@ const SearchComponent = memo(() => {
 
 
     const search = () => {
-        dispatch(setAirportList(airJSON))
-        return
         const result: FQuery = {
             itineraryType: radioType,
             cabinLevel: cabinValue,
@@ -605,7 +602,7 @@ const SearchComponent = memo(() => {
 
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
-                dispatch(setAirportList(res))
+                dispatch(setSearchDate(res))
             }
         })
     }

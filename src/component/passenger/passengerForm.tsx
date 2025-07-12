@@ -460,7 +460,7 @@ const PassengerForm = memo(() => {
                                             <FormControl fullWidth error={!!fieldState.error}>
                                                 <InputLabel htmlFor="passengerType-select">passenger Type</InputLabel>
                                                 <Select {...field} id="passengerType-select" label="passenger Type">
-                                                    <MenuItem value="adt">Aldult</MenuItem>
+                                                    <MenuItem value="adt">Adult</MenuItem>
                                                     <MenuItem value="chd">Child</MenuItem>
                                                     <MenuItem value="inf">infant</MenuItem>
                                                 </Select>

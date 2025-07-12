@@ -13,7 +13,6 @@ const FirportInfomation = memo(({segments,labelPostion}:{
     segments:Segment[]
     labelPostion:string
 }) => {
-
     return (
         <div className={styles.firportInfomation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
