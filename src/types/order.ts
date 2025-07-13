@@ -268,3 +268,15 @@ export type LostPriceAmout = {
     minTotal: number
     amounts: Amount[]
 }
+
+
+export type ComboItem = {
+    amount: Amount;
+    itineraryNo: number;
+    familyCode: string;
+    channelCode: string;
+    resultKey: string;
+    currency: string;
+    lostPrice: LostPriceAmout;
+    sourceItem: CombinationResult;
+};

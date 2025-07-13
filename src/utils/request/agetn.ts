@@ -16,3 +16,5 @@ export const orderCreateAgent = (form:OrderCreate) => axios.post<CommonResponseO
 
 
 export const paymentOrderAgent = (id:string) => axios.patch<CommonResponseGroup>(`/agentApi/Orders/PaymentOrder/${id}`)
+
+export const getIdentityAgent = () => axios.get('/identityApi/AgentAccount/GetIdentity')

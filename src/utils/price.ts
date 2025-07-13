@@ -4,7 +4,7 @@ import type {
     PassengerType,
     PriceSummary,
     ResponseItinerary,
-    Travelers, LostPriceAmout
+    Travelers, LostPriceAmout, AirChoose, ComboItem, CombinationResult
 } from "@/types/order.ts";
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
@@ -95,38 +95,58 @@ export function findLowestAdultCombo(
         itineraries.forEach(it => itineraryMap.set(it.itineraryNo, it));
 
         const baseItinerary = itineraryMap.get(0);
-        const returnItinerary = Array.from(itineraryMap.entries())
+        const returnItineraries = Array.from(itineraryMap.entries())
         .filter(([no]) => no !== 0)
         .map(([, it]) => it);
 
-
-        if (!baseItinerary || returnItinerary.length === 0) return;
+        if (!baseItinerary) return;
 
         const baseAdt = (baseItinerary.amounts || []).filter(a => a.passengerType === 'adt');
-        const returnAdtOptions = returnItinerary.map(it => (it.amounts || []).filter(a => a.passengerType === 'adt'));
+        if (!baseAdt.length) return;
 
-        if (!baseAdt.length || returnAdtOptions.some(list => list.length === 0)) return;
+        // 单程逻辑
+        if (returnItineraries.length === 0) {
+            const minBasePrice = Math.min(...baseAdt.map(getAdultAmountTotal));
+            const baseOptions = baseAdt.filter(a => getAdultAmountTotal(a) === minBasePrice);
+            const baseAmount = baseOptions[Math.floor(Math.random() * baseOptions.length)];
 
-        // 找出 base 最低价 & 随机取
-        const minBasePrice = Math.min(...baseAdt.map(getAdultAmountTotal));
-        const baseOptions = baseAdt.filter(a => getAdultAmountTotal(a) === minBasePrice);
-        const baseAmount = baseOptions[Math.floor(Math.random() * baseOptions.length)];
+            const total = getAdultAmountTotal(baseAmount);
 
-        // 找出 return 每段最低价 & 随机取（如有多个回程）
-        const returnAmounts: Amount[] = [];
-        for (const list of returnAdtOptions) {
-            const min = Math.min(...list.map(getAdultAmountTotal));
-            const minOptions = list.filter(a => getAdultAmountTotal(a) === min);
-            returnAmounts.push(minOptions[Math.floor(Math.random() * minOptions.length)]);
+            if (total < result.minTotal) {
+                result = {
+                    minTotal: total,
+                    amounts: [baseAmount],
+                };
+            }
+            return;
         }
 
-        const total = getAdultAmountTotal(baseAmount) + returnAmounts.reduce((sum, a) => sum + getAdultAmountTotal(a), 0);
+        for (const baseAmount of baseAdt) {
 
-        if (total < result.minTotal) {
-            result = {
-                minTotal: total,
-                amounts: [baseAmount, ...returnAmounts],
-            };
+            const returnAdtOptions = returnItineraries.map(it =>
+                (it.amounts || []).filter(
+                    a => a.passengerType === 'adt'
+                )
+            );
+
+            if (returnAdtOptions.some(list => list.length === 0)) continue;
+
+            const returnAmounts: Amount[] = [];
+            for (const list of returnAdtOptions) {
+                const min = Math.min(...list.map(getAdultAmountTotal));
+                const minOptions = list.filter(a => getAdultAmountTotal(a) === min);
+                returnAmounts.push(minOptions[Math.floor(Math.random() * minOptions.length)]);
+            }
+
+            const total = getAdultAmountTotal(baseAmount) +
+                returnAmounts.reduce((sum, a) => sum + getAdultAmountTotal(a), 0);
+
+            if (total < result.minTotal) {
+                result = {
+                    minTotal: total,
+                    amounts: [baseAmount, ...returnAmounts],
+                };
+            }
         }
     });
 
@@ -134,16 +154,19 @@ export function findLowestAdultCombo(
 }
 
 
-export function applyNextCodeFilter(
+export function applyFilter(
     itineraries: ResponseItinerary[],
-    nextCodes: string[] = []
 ): ResponseItinerary[] {
+    // 检查是否存在回程段（itineraryNo > 0）
+    const hasReturn = itineraries.some(it => it.itineraryNo > 0);
+    if (!hasReturn) return itineraries;
+
+    // 只过滤回程段（itineraryNo > 0）
     return itineraries.map(it => {
-        if (it.itineraryNo !== 1) return it;
+        if (it.itineraryNo === 0) return it;
 
         const filtered = (it.amounts || []).filter(a =>
-            a.passengerType === 'adt' &&
-            (nextCodes.length === 0 || nextCodes.includes(a.familyCode))
+            a.passengerType === 'adt'
         );
 
         return { ...it, amounts: filtered };
@@ -151,5 +174,121 @@ export function applyNextCodeFilter(
 }
 
 
+function isSameContext(item: CombinationResult, airChoose: AirChoose): boolean {
+    if (!airChoose.result) return true;
+    return item.contextId === airChoose.result.contextId && item.resultKey === airChoose.result.resultKey;
+}
 
+function getFilteredAmounts(it: ResponseItinerary): Amount[] {
+    const adtAmounts = (it.amounts || []).filter(a => a.passengerType === 'adt');
+    return adtAmounts
+}
 
+function buildNewItineraries(
+    itineraries: ResponseItinerary[],
+    currentNo: number,
+    amount: Amount,
+    isReturn: boolean
+): ResponseItinerary[] {
+    return itineraries.map(i => {
+        if (i.itineraryNo === currentNo) {
+            return { ...i, amounts: [amount] };
+        } else if (!isReturn && i.itineraryNo === 1 && currentNo === 0) {
+            const nextFiltered = (i.amounts || [])
+            return { ...i, amounts: nextFiltered };
+        }
+        return i;
+    });
+}
+
+function calculateLostPrice(
+    newItineraries: ResponseItinerary[],
+    airChoose: AirChoose,
+    isReturn: boolean
+): LostPriceAmout {
+    if (!isReturn) {
+        // 去程组合
+        return findLowestAdultCombo([newItineraries]);
+    }
+
+    let retItineraries = newItineraries;
+
+    const chosenPrev = airChoose.result?.itineraries.find(it => it.itineraryNo === 0);
+
+    retItineraries = retItineraries.map(it => {
+        if (it.itineraryNo === 0 && chosenPrev) return chosenPrev;
+        return it;
+    });
+
+    retItineraries = applyFilter(retItineraries);
+
+    return findLowestAdultCombo([retItineraries]);
+}
+
+function flattenCombos(all: (Array<{ total: number; item: ComboItem }>)[]): ComboItem[] {
+    return all.flatMap(group => group.map(g => g.item));
+}
+
+function getTopLayeredCombos(
+    all: (Array<{ total: number; item: ComboItem }>)[],
+    layerCount: number
+): ComboItem[] {
+    const top: ComboItem[] = [];
+    for (let i = 0; i < layerCount; i++) {
+        let min: { total: number; item: ComboItem } | null = null;
+        for (const group of all) {
+            const candidate = group[i];
+            if (candidate && (!min || candidate.total < min.total)) {
+                min = candidate;
+            }
+        }
+        if (min) top.push(min.item);
+    }
+    return top;
+}
+
+export function getLayeredTopCombos(
+    combinationResult: CombinationResult[],
+    airportActived: number,
+    airChoose: AirChoose
+): ComboItem[] {
+    const isReturn = airportActived === 1;
+    const allLayerCombos: (Array<{ total: number; item: ComboItem }>)[] = [];
+
+    for (const item of combinationResult) {
+        if (!isSameContext(item, airChoose)) continue;
+
+        const itinerary = item.itineraries.find(it => it.itineraryNo === airportActived);
+        if (!itinerary) continue;
+
+        const filteredAmounts = getFilteredAmounts(itinerary);
+        const layerCombos: { total: number; item: ComboItem }[] = [];
+
+        for (const amount of filteredAmounts) {
+            const newItineraries = buildNewItineraries(item.itineraries, itinerary.itineraryNo, amount, isReturn);
+            const lostPrice = calculateLostPrice(newItineraries, airChoose, isReturn);
+            const total = lostPrice.minTotal;
+
+            layerCombos.push({
+                total,
+                item: {
+                    amount,
+                    itineraryNo: itinerary.itineraryNo,
+                    familyCode: amount.familyCode,
+                    lostPrice,
+                    channelCode: item.channelCode,
+                    resultKey: item.resultKey,
+                    currency: item.currency,
+                    sourceItem: {
+                        ...item,
+                        itineraries: newItineraries
+                    }
+                }
+            });
+        }
+
+        allLayerCombos.push(layerCombos.sort((a, b) => a.total - b.total).slice(0, 4));
+    }
+
+    return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 4);
+}

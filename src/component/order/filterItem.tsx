@@ -186,12 +186,11 @@ const itineraryTypeMap = {
     oneWay: 'One-way',
     round: 'Round-trip',
 } as const
-const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:{
+const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
     segments: Segment[]
     cheapAmount: LostPriceAmout
     currency:string
     searchKey: string
-    itineraryKey: string
 }) => {
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
@@ -247,16 +246,17 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
 
     const submitResult = () => {
         setDisabledChoose(true)
-        if(!chooseAmount) return
-        const result = amountsResult?.combinationResult.find(result => result.contextId === chooseAmount.contextId)
+        if(!chooseAmount) {
+            setDisabledChoose(false)
+            return
+        }
+        const result = amountsResult?.combinationResult.find(result => result.contextId === chooseAmount.contextId && result.resultKey === chooseAmount.resultKey)
         if(!result) return
+        const amountResult = result.itineraries[airportActived].amounts.filter(amount => amount.familyName === chooseAmount.name)
         const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived)
-        console.log(priceChooseAmout)
-        const amount = priceChooseAmout.amounts[airportActived]
-        if(chooseAmount.name !== amount.familyName ||  chooseAmount.code !== amount.familyCode) return
         if(!itinerarie) return
         const newItinerarie = {
-            amounts:[{...amount}],
+            amounts:[...amountResult],
             itineraryNo:itinerarie.itineraryNo,
             itineraryKey: itinerarie.itineraryKey,
             subItineraryId: itinerarie.subItineraryId!,
@@ -380,7 +380,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
                         padding:'8px 32px 0'
                     }}>
                         {
-                            <FareCardsSlider itineraryKey={itineraryKey} lostPriceAmout={priceChooseAmout.minTotal} amountsResult={amountsResult!} disabledChoose={disabledChoose} currency={currency} chooseAmount={chooseAmount} chooseFnc={handleChooseFnc} />
+                            <FareCardsSlider lostPriceAmout={priceChooseAmout.minTotal} amountsResult={amountsResult!} disabledChoose={disabledChoose} currency={currency} chooseAmount={chooseAmount} chooseFnc={handleChooseFnc} />
                         }
                     </div>
                 </DialogContent>

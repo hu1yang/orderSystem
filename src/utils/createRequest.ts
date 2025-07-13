@@ -5,7 +5,7 @@ import axios, {
     type InternalAxiosRequestConfig
 } from 'axios';
 import Cookie from 'js-cookie'
-import {normalizeParams} from "@/utils/public.ts";
+import {normalizeParams, toLogin} from "@/utils/public.ts";
 
 const isProd = import.meta.env.MODE === 'production';
 const baseMap: Record<string, string> = {
@@ -92,7 +92,7 @@ instance.interceptors.response.use(
             switch (error.response.status) {
                 case 401:
                     // 未登陆，跳转到登录页等操作
-                    window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
+                    toLogin()
                     break;
                 case 403:
                     // 权限不足

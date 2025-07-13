@@ -23,8 +23,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import {format} from 'date-fns';
 
-import {airJSON} from '@/air.ts'
-
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";

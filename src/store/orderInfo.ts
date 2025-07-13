@@ -11,7 +11,7 @@ import type {
     Travelers
 } from '@/types/order'
 import dayjs from "dayjs";
-import {applyNextCodeFilter, findLowestAdultCombo} from "@/utils/price.ts";
+import { findLowestAdultCombo} from "@/utils/price.ts";
 
 type IOrder = {
     query: FQuery
@@ -192,33 +192,34 @@ const orderInfoSlice = createSlice({
             }
         },
         setSearchDate: (state, action: PayloadAction<FQueryResult[]>) => {
-            const originalData = action.payload.flatMap(li => li.succeed ? [li.response] : []);
+            const originalData = action.payload
+            .filter(item => item.succeed)
+            .map(item => item.response);
 
+            const getFlightKey = (segments: Segment[]) =>
+                segments.map(seg => `${seg.flightNumber}-${seg.departureAirport}-${seg.arrivalAirport}`).join('|');
+
+            // 构建以去程航班为 key 的分组 map
             const zeroMap = new Map<string, {
-                key: string,
-                contexts: { base: ResponseItinerary, original: ResponseData, result: Result }[]
+                key: string;
+                contexts: {
+                    original: ResponseData;
+                    result: Result;
+                }[];
             }>();
-
-            const getFlightKey = (segments: Segment[]) => {
-                return segments.map(seg => `${seg.flightNumber}-${seg.departureAirport}-${seg.arrivalAirport}`).join('|');
-            };
 
             originalData.forEach(original => {
                 original.results.forEach(result => {
-                    const zeros = result.itineraries.filter(it => it.itineraryNo === 0);
-
-                    zeros.forEach(zero => {
-                        const flightKey = getFlightKey(zero.segments || []);
-
-                        if (!zeroMap.has(flightKey)) {
-                            zeroMap.set(flightKey, {
-                                key: flightKey,
+                    const zeroItineraries = result.itineraries.filter(it => it.itineraryNo === 0);
+                    zeroItineraries.forEach(zero => {
+                        const key = getFlightKey(zero.segments || []);
+                        if (!zeroMap.has(key)) {
+                            zeroMap.set(key, {
+                                key,
                                 contexts: []
                             });
                         }
-
-                        zeroMap.get(flightKey)!.contexts.push({
-                            base: zero, // ✅ 每个 context 拥有自己的 base
+                        zeroMap.get(key)!.contexts.push({
                             original,
                             result
                         });
@@ -227,41 +228,20 @@ const orderInfoSlice = createSlice({
             });
 
             const groupedResults = Array.from(zeroMap.values()).map(({ key, contexts }) => {
-                const combinationResult = contexts.map(({ base, original, result }) => {
-                    const others = result.itineraries.filter((it:ResponseItinerary) => it.itineraryNo !== 0);
-                    const filteredOthers = others.map((it:ResponseItinerary) => {
-                        if (it.itineraryNo !== 1) return it;
+                const combinationResult = contexts.map(({ original, result }) => ({
+                    channelCode: original.channelCode,
+                    resultType: result.resultType,
+                    policies: result.policies,
+                    contextId: result.contextId,
+                    resultKey: result.resultKey,
+                    currency: result.currency,
+                    itineraries: result.itineraries
+                }));
 
-                        const filteredAmounts = (it.amounts || []).filter(a => a.passengerType === 'adt');
-
-                        return {
-                            ...it,
-                            amounts: filteredAmounts
-                        };
-                    });
-
-
-                    return {
-                        channelCode: original.channelCode,
-                        resultType: result.resultType,
-                        policies: result.policies,
-                        contextId: result.contextId,
-                        resultKey: result.resultKey,
-                        currency: result.currency,
-                        itineraries: [{...base}, ...filteredOthers]
-                    };
-                });
-
-
+                // 找出最便宜的组合
                 const cheapest = findLowestAdultCombo(
-                    combinationResult.map(r => {
-                        const base = r.itineraries.find(i => i.itineraryNo === 0)!;
-                        const nextCodes = base.amounts?.[0]?.nextCodes || [];
-
-                        return applyNextCodeFilter(r.itineraries, nextCodes);
-                    })
+                    combinationResult.map(r => r.itineraries)
                 );
-
 
                 return {
                     combinationKey: key,
@@ -271,7 +251,7 @@ const orderInfoSlice = createSlice({
             });
 
             state.airSearchData = groupedResults;
-        }
+        },
     },
 })
 

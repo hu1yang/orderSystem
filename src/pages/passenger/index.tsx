@@ -18,7 +18,7 @@ const Passenger = () => {
         if(!state.airChoose.result){
             navigate('/')
         }else{
-            // sendResult()
+            sendResult()
         }
     },[])
 

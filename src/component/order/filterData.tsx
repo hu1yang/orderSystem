@@ -14,7 +14,7 @@ import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
 import dayjs from "dayjs";
 import {
-    applyNextCodeFilter,
+    applyFilter,
     findLowestAdultCombo,
     formatTotalDuration,
 } from "@/utils/price.ts";
@@ -170,11 +170,8 @@ const FilterData = memo(() => {
 
                     // 回程：需要筛选符合 nextCodes 的回程票价
                     if (it.itineraryNo === airportActived) {
-                        const prevAmounts = chooseResult.itineraries.find(i => i.itineraryNo === airportActived - 1)?.amounts;
-                        const nextCodes = prevAmounts?.[0]?.nextCodes || [];
 
-
-                        const [itineraryWithFilteredAmounts] = applyNextCodeFilter([it], nextCodes);
+                        const [itineraryWithFilteredAmounts] = applyFilter([it]);
                         const filteredAmounts = itineraryWithFilteredAmounts.amounts || [];
 
 
@@ -214,16 +211,9 @@ const FilterData = memo(() => {
 
             return [];
         }
+
         return airSearchData.map(item => {
             const conRe = item.combinationResult[0];
-            console.log({
-                key: item.combinationKey,
-                segments: conRe?.itineraries.find(it => it.itineraryNo === airportActived)?.segments || [],
-                cheapAmount: item.cheapAmount,
-                currency: conRe?.currency,
-                itineraryKey: item.combinationKey,
-            })
-
             return {
                 key: item.combinationKey,
                 segments: conRe?.itineraries.find(it => it.itineraryNo === airportActived)?.segments || [],
@@ -299,7 +289,6 @@ const FilterData = memo(() => {
                                             cheapAmount={searchData.cheapAmount}
                                             currency={searchData.currency!}
                                             searchKey={searchData.key}
-                                            itineraryKey={searchData.itineraryKey}
                                             />
                                     ))
                                 }

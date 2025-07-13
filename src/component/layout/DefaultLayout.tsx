@@ -1,6 +1,18 @@
 import { Outlet } from "react-router";
+import {useEffect} from "react";
+import Cookie from "js-cookie";
+import {toLogin} from "@/utils/public.ts";
+import {getIdentityAgent} from "@/utils/request/agetn.ts";
 
 const DefaultLayout = () => {
+    useEffect(() => {
+        const isToken = Cookie.get('token')
+        if(!isToken){
+            toLogin()
+        }else{
+            getIdentityAgent()
+        }
+    }, []);
     return (
         <div>
             <div style={{backgroundColor: 'var(--active-color)',height: '120px', textAlign: 'center'}}>

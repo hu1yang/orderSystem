@@ -10,11 +10,11 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 
 import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {AirSearchData, Amount, LostPriceAmout, Luggage, ResponseItinerary} from "@/types/order.ts";
+import type {AirSearchData, Amount, LostPriceAmout, Luggage} from "@/types/order.ts";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {applyNextCodeFilter, findLowestAdultCombo} from "@/utils/price.ts";
+import {getLayeredTopCombos} from "@/utils/price.ts";
 
 
 const itineraryTypeMap = {
@@ -109,7 +109,7 @@ function renderContent(luggage: Luggage) {
     }
 }
 
-const SliderBox = memo(({amount,identification,disabledChoose,currency, chooseAmount,chooseAmountfnc,itineraries,lostPriceAmout,style}:{
+const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency, chooseAmount,chooseAmountfnc,lostPriceAmout,style}:{
     lostPriceAmout: number
     amount: Amount
     identification:{
@@ -133,36 +133,10 @@ const SliderBox = memo(({amount,identification,disabledChoose,currency, chooseAm
         contextId:string
         resultKey:string
     },lostPriceValue:LostPriceAmout) => void
-    itineraries: ResponseItinerary[]
     style?: React.CSSProperties
+    lostPrice: LostPriceAmout
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-
-    const lostPrice = useMemo(() => {
-        let itineraryList = itineraries;
-
-        if (airportActived === 1 && airChoose?.result?.itineraries) {
-            const chosenPrevItinerary = airChoose.result.itineraries.find(it => it.itineraryNo === 0);
-            const nextCodes = chosenPrevItinerary?.amounts?.[0]?.nextCodes || [];
-
-            itineraryList = itineraries.map(it => {
-                if (it.itineraryNo === 0) {
-                    return chosenPrevItinerary || it;
-                }
-                return it;
-            });
-
-            // 应用回程过滤
-            itineraryList = applyNextCodeFilter(itineraryList, nextCodes);
-        }
-
-        return findLowestAdultCombo([itineraryList]);
-    }, [itineraries, airportActived, airChoose?.result]);
-
-
-
 
     const formattedDiff = useMemo(() => {
         const diff = lostPrice.minTotal - lostPriceAmout;
@@ -360,7 +334,7 @@ const SliderBox = memo(({amount,identification,disabledChoose,currency, chooseAm
     )
 })
 
-const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,disabledChoose,lostPriceAmout,itineraryKey}: {
+const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,disabledChoose,lostPriceAmout}: {
     lostPriceAmout: number
     amountsResult: AirSearchData
     chooseAmount: {
@@ -379,73 +353,17 @@ const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,dis
     },lostPriceValue:LostPriceAmout) => void
     currency:string
     disabledChoose:boolean
-    itineraryKey:string
 }) => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
 
     const amountsMemo = useMemo(() => {
-        const isReturn = airportActived === 1;
-
-        const nextCodes = isReturn
-            ? airChoose?.result?.itineraries?.[airportActived - 1]?.amounts?.[0]?.nextCodes || []
-            : [];
-        const result = amountsResult.combinationResult.filter(a => {
-            if(airChoose.result){
-                if(a.contextId === airChoose.result.contextId && a.resultKey === airChoose.result.resultKey){
-                    return true
-                }
-                return false
-            }
-            return true
-        }).flatMap(item => {
-            return item.itineraries
-            .filter(it =>
-                it.itineraryNo === airportActived &&
-                (!isReturn || it.itineraryKey === itineraryKey)
-            )
-            .flatMap(it => {
-                const adtAmounts = (it.amounts || []).filter(a => a.passengerType === 'adt');
-
-                const filteredAmounts = isReturn && nextCodes.length
-                    ? adtAmounts.filter(a => nextCodes.includes(a.familyCode))
-                    : adtAmounts;
-
-
-                return filteredAmounts.map(amount => ({
-                    amount,
-                    itineraryNo: it.itineraryNo,
-                    familyCode: amount.familyCode,
-                    segments: it.segments,
-                    channelCode: item.channelCode,
-                    resultKey: item.resultKey,
-                    currency: item.currency,
-                    sourceItinerary: it,
-                    sourceItem: {
-                        ...item,
-                        itineraries: item.itineraries.map(i => {
-                            if (i.itineraryNo === it.itineraryNo) {
-                                return {
-                                    ...i,
-                                    amounts: [amount],
-                                };
-                            }
-                            return i;
-                        }),
-                    }
-                    ,
-                }));
-            });
-        });
-
-        console.info('result----可以优化依赖',result);
-        return result;
-    }, []); // 后续依赖可优化
-
-
-
-
-
+        const result = getLayeredTopCombos(
+            amountsResult.combinationResult,
+            airportActived,
+            airChoose)
+        return result
+    }, []);
 
     const sliderRef = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -459,6 +377,7 @@ const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,dis
         alignItems:'',
         slidesToShow: 2.8,
         slidesToScroll: 1,
+        swipeToSlide:true,
         beforeChange: () => isDragging.current = true,
         afterChange: (index:number) => {
             setCurrentSlide(index)
@@ -495,10 +414,10 @@ const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,dis
                                        identification={{
                                            channelCode:amountResult.sourceItem.channelCode,
                                            contextId:amountResult.sourceItem.contextId,
-                                           resultKey:amountResult.sourceItem.contextId,
+                                           resultKey:amountResult.sourceItem.resultKey,
                                        }}
+                                       lostPrice={amountResult.lostPrice}
                                        amount={amountResult.amount}
-                                       itineraries={amountResult.sourceItem.itineraries}
                                        disabledChoose={disabledChoose} currency={currency}/>
                         ))}
                     </Slider> :
@@ -511,9 +430,10 @@ const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,dis
                                            identification={{
                                                channelCode:amountResult.sourceItem.channelCode,
                                                contextId:amountResult.sourceItem.contextId,
-                                               resultKey:amountResult.sourceItem.contextId,
+                                               resultKey:amountResult.sourceItem.resultKey,
                                            }}
-                                           amount={amountResult.amount} itineraries={amountResult.sourceItem.itineraries}
+                                           lostPrice={amountResult.lostPrice}
+                                           amount={amountResult.amount}
                                            disabledChoose={disabledChoose} currency={currency}/>
 
                             ))
