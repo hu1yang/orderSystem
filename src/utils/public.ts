@@ -69,5 +69,5 @@ export function debounce<T extends (...args: unknown[]) => void>(
 
 
 export function toLogin () {
-    window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
+    // window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
 }

@@ -7,6 +7,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import LuggageIcon from '@mui/icons-material/Luggage';
+import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 
 import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
@@ -14,7 +16,7 @@ import type {AirSearchData, Amount, LostPriceAmout, Luggage} from "@/types/order
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {getLayeredTopCombos} from "@/utils/price.ts";
+import {getLayeredTopCombos} from "@/utils/order.ts";
 
 
 const itineraryTypeMap = {
@@ -70,27 +72,51 @@ function PrevArrow({onClick,hidden}: { onClick?: () => void,hidden:boolean }) {
     );
 }
 
-
+function ruleContent(value:string[],type:string) {
+    return <>
+        {
+            !!value.length && (
+                <HtmlTooltip placement="bottom" sx={{
+                    '.MuiTooltip-tooltip':{
+                        fontSize: '1rem',
+                        p:{
+                            fontSize: '1em',
+                            color: 'var(--tips-color)'
+                        }
+                    }
+                }} title={
+                    value.map(rule => <p key={rule}>{rule}</p>)
+                }>
+                    <Typography variant="body2" className={styles.detailText}
+                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
+                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                        <span className={`${styles.texts} elli-1`}>{type}:{value.map(rule => rule).join(',')}</span>
+                    </Typography>
+                </HtmlTooltip>
+            )
+        }
+    </>
+}
 
 function renderContent(luggage: Luggage) {
     switch (luggage.luggageType) {
         case 'carry':
             return (
                 <>
-                    <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                    <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                     <span className={styles.texts}>
-                            Carry-on baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                        </span>
+                        Carry-on baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
+                    </span>
                 </>
             )
             break;
         case 'checked':
             return (
                 <>
-                    <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                    <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                     <span className={styles.texts}>
-                            Checked baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                        </span>
+                        Checked baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
+                    </span>
                 </>
             )
             break;
@@ -99,8 +125,8 @@ function renderContent(luggage: Luggage) {
                 <>
                     <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                     <span className={styles.texts}>
-                            Handed baggage:<strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                        </span>
+                        Handed baggage:<strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
+                    </span>
                 </>
             )
         default:
@@ -218,90 +244,19 @@ const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
                     <div style={{height: '100px'}}>
                         {
-                            !!amount.refundNotes.length && (
-                                <HtmlTooltip placement="bottom" sx={{
-                                    '.MuiTooltip-tooltip':{
-                                        fontSize: '1rem',
-                                        p:{
-                                            fontSize: '1em',
-                                            color: 'var(--tips-color)'
-                                        }
-                                    }
-                                }} title={
-                                    amount.refundNotes.map(rule => <p key={rule}>{rule}</p>)
-                                }>
-                                    <Typography variant="body2" className={styles.detailText}
-                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                        <span className={`${styles.texts} elli-1`}>Refund Policy:{amount.refundNotes.map(rule => rule).join(',')}</span>
-                                    </Typography>
-                                </HtmlTooltip>
-                            )
+                            ruleContent(amount.refundNotes as string[],'Refund Policy')
                         }
-                        {
-                            !!amount.changeNotes.length && (
-                                <HtmlTooltip placement="bottom" sx={{
-                                    '.MuiTooltip-tooltip':{
-                                        fontSize: '1rem',
-                                        p:{
-                                            fontSize: '1em',
-                                            color: 'var(--tips-color)'
-                                        }
-                                    }
-                                }} title={
-                                    amount.changeNotes.map(rule => <p key={rule}>{rule}</p>)
-                                }>
-                                    <Typography variant="body2" className={styles.detailText}
-                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
 
-                                        <span className={`${styles.texts} elli-1`}>Change Policy:{amount.changeNotes.map(rule => rule).join(',')}</span>
-                                    </Typography>
-                                </HtmlTooltip>
-                            )
+                        {
+                            ruleContent(amount.changeNotes as string[],'Change Policy')
                         }
                         {
-                            !!amount.cancelNotes.length && (
-                                <HtmlTooltip placement="bottom" sx={{
-                                    '.MuiTooltip-tooltip':{
-                                        fontSize: '1rem',
-                                        p:{
-                                            fontSize: '1em',
-                                            color: 'var(--tips-color)'
-                                        }
-                                    }
-                                }} title={
-                                    amount.cancelNotes.map(rule => <p key={rule}>{rule}</p>)
-                                }>
-                                    <Typography variant="body2" className={styles.detailText}
-                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                        <span className={`${styles.texts} elli-1`}>Cancellation Policy:{amount.cancelNotes.map(rule => rule).join(',')}</span>
-                                    </Typography>
-                                </HtmlTooltip>
-                            )
+                            ruleContent(amount.cancelNotes as string[],'Cancellation Policy')
                         }
                         {
-                            !!amount.othersNotes.length && (
-                                <HtmlTooltip placement="bottom" sx={{
-                                    '.MuiTooltip-tooltip':{
-                                        fontSize: '1rem',
-                                        p:{
-                                            fontSize: '1em',
-                                            color: 'var(--tips-color)'
-                                        }
-                                    }
-                                }} title={
-                                    amount.othersNotes.map(rule => <p key={rule}>{rule}</p>)
-                                }>
-                                    <Typography variant="body2" className={styles.detailText}
-                                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                        <span className={`${styles.texts} elli-1`}>Other Policy:{amount.othersNotes.map(rule => rule).join(',')}</span>
-                                    </Typography>
-                                </HtmlTooltip>
-                            )
+                            ruleContent(amount.othersNotes as string[],'Other Policy')
                         }
+
                     </div>
 
 

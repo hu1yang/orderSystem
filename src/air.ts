@@ -6089,6 +6089,6084 @@ export const airJSON =
                     }
                 ]
             }
+        },
+        {
+            "succeed": true,
+            "errorCode": null,
+            "errorMessage": null,
+            "response": {
+                "channelCode": "API-C6-V1",
+                "updatedTime": "2025-07-13T20:42:28.7892621+08:00",
+                "isFromCaching": true,
+                "results": [
+                    {
+                        "contextId": "33427b0a041f452b9ab8b120e0d0c07ec6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087715#181485^16087699#181460c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_25_c6",
+                                        "familyCode": "25_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 5,
+                                        "taxesAmount": 8,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 65,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087715#181485",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1133",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T01:55:00",
+                                        "arrivalTime": "2025-07-19T08:00:00",
+                                        "departureTerminal": "Terminal 3",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:20:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087699#181460",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1134",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T09:00:00",
+                                        "arrivalTime": "2025-07-23T12:00:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 3",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "bf866067e2994dd6864abf9a8dd810a9c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087715#181485^17185409#188316c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 65,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 65,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_2",
+                                        "familyCode": "2_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_3",
+                                        "familyCode": "3_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087715#181485",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1133",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T01:55:00",
+                                        "arrivalTime": "2025-07-19T08:00:00",
+                                        "departureTerminal": "Terminal 3",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:20:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "17185409#188316",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ540",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T15:35:00",
+                                        "arrivalTime": "2025-07-23T18:35:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "5c1e5ade79fa45e5b52d5f49a15321c8c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087715#181485^16087435#181196c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 65,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_32",
+                                        "familyCode": "32_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_ADT4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_36",
+                                        "familyCode": "36_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 91,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 65,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_32",
+                                        "familyCode": "32_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_CHD4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 75,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_36",
+                                        "familyCode": "36_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 91,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_25",
+                                        "familyCode": "25_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_32",
+                                        "familyCode": "32_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_INFbd9d2cd6f43e70e0VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_36",
+                                        "familyCode": "36_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087715#181485",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1133",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T01:55:00",
+                                        "arrivalTime": "2025-07-19T08:00:00",
+                                        "departureTerminal": "Terminal 3",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:20:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_ADT0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_ADT4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_ADT9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_CHD0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_CHD4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_CHD9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_INF44f705ebfc59a542LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_INFbd9d2cd6f43e70e0VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_INF0ee590a579352508FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087435#181196",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ574",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T23:55:00",
+                                        "arrivalTime": "2025-07-24T02:55:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "012cca1ba9e4499393dbe2c1deab3262c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "17185407#188314^16087699#181460c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "17185407#188314",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ539",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T08:35:00",
+                                        "arrivalTime": "2025-07-19T14:35:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:15:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087699#181460",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1134",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T09:00:00",
+                                        "arrivalTime": "2025-07-23T12:00:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 3",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "21d90da9f49b45a29a23a937f1050476c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "17185407#188314^17185409#188316c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_6",
+                                        "familyCode": "6_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_7",
+                                        "familyCode": "7_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "17185407#188314",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ539",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T08:35:00",
+                                        "arrivalTime": "2025-07-19T14:35:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:15:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "17185409#188316",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ540",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T15:35:00",
+                                        "arrivalTime": "2025-07-23T18:35:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "b647f422e3284de8af28cf667ae2e8d8c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "17185407#188314^16087435#181196c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_48",
+                                        "familyCode": "48_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_ADT4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_52",
+                                        "familyCode": "52_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 85,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_48",
+                                        "familyCode": "48_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_CHD4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_52",
+                                        "familyCode": "52_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 85,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_41",
+                                        "familyCode": "41_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_48",
+                                        "familyCode": "48_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_INFbd9d2cd6f43e70e0VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_52",
+                                        "familyCode": "52_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "17185407#188314",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ539",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T08:35:00",
+                                        "arrivalTime": "2025-07-19T14:35:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:15:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_ADT0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_ADT4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_ADT9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_CHD0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_CHD4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_CHD9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_INF44f705ebfc59a542LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_INFbd9d2cd6f43e70e0VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_INF0ee590a579352508FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087435#181196",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ574",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T23:55:00",
+                                        "arrivalTime": "2025-07-24T02:55:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "014e9926ca814862a73dd6a155f6dd65c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087448#181159^16087699#181460c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087448#181159",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ573",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T16:55:00",
+                                        "arrivalTime": "2025-07-19T23:05:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:25:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 66,
+                                        "taxesAmount": 76,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 76,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 92,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_13",
+                                        "familyCode": "13_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_14",
+                                        "familyCode": "14_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_15",
+                                        "familyCode": "15_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087699#181460",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ1134",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T09:00:00",
+                                        "arrivalTime": "2025-07-23T12:00:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 3",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73X",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "f005278c384649e9bcc90c08b896877cc6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087448#181159^17185409#188316c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_ADT42ec925c0c93037aLITE",
+                                            "17_ADT42ec925c0c93037aLITE",
+                                            "21_ADT0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_CHD42ec925c0c93037aLITE",
+                                            "17_CHD42ec925c0c93037aLITE",
+                                            "21_CHD0134f9aa95ad39b5LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_10",
+                                        "familyCode": "10_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_11",
+                                        "familyCode": "11_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "13_INF542eb509e2300364LITE",
+                                            "17_INF542eb509e2300364LITE",
+                                            "21_INF44f705ebfc59a542LITE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087448#181159",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ573",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T16:55:00",
+                                        "arrivalTime": "2025-07-19T23:05:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:25:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_ADT42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_ADTcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_ADTca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_CHD42ec925c0c93037aLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 62,
+                                        "taxesAmount": 75,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_CHDcc3bb6cfe9d5088fVALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 71,
+                                        "taxesAmount": 77,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_CHDca83eae934c27333FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 86,
+                                        "taxesAmount": 79,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_17",
+                                        "familyCode": "17_INF542eb509e2300364LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_18",
+                                        "familyCode": "18_INFa6d644179bd95ee6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_19",
+                                        "familyCode": "19_INF57ca83aeb2a6d16cFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "17185409#188316",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ540",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T15:35:00",
+                                        "arrivalTime": "2025-07-23T18:35:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "contextId": "7483aba0e4a24fcdaeee9a03ecb6da01c6",
+                        "teamedKey": null,
+                        "patterns": [],
+                        "resultType": "normal",
+                        "currency": "USD",
+                        "resultKey": "16087448#181159^16087435#181196c6",
+                        "itineraries": [
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_ADT8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_ADTcc3bb6cfe9d5088fVALUE",
+                                            "18_ADTcc3bb6cfe9d5088fVALUE",
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_64",
+                                        "familyCode": "64_ADT56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_ADT4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_68",
+                                        "familyCode": "68_ADT5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_ADT9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 85,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_CHD8754482a8afa1111LITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_CHDcc3bb6cfe9d5088fVALUE",
+                                            "18_CHDcc3bb6cfe9d5088fVALUE",
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 60,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_64",
+                                        "familyCode": "64_CHD56b577fa844e5995VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_CHD4f43a7ad2b8190a6VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 70,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 30,
+                                                "luggageNotes": "30kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_68",
+                                        "familyCode": "68_CHD5319960f4eb926aeFLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_CHD9e27d961b1604580FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 85,
+                                        "taxesAmount": 68,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_57",
+                                        "familyCode": "57_INFc1793d5cebe2975eLITE",
+                                        "amountNotes": "21|LITE|LITE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "14_INFa6d644179bd95ee6VALUE",
+                                            "18_INFa6d644179bd95ee6VALUE",
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_64",
+                                        "familyCode": "64_INF2ba936e146b64121VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "22_INFbd9d2cd6f43e70e0VALUE"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_68",
+                                        "familyCode": "68_INFdea22fc28132c9e0FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~Q|ECONOMY|Y",
+                                        "nextCodes": [
+                                            "23_INF0ee590a579352508FLEX"
+                                        ],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 9,
+                                        "printAmount": 23,
+                                        "taxesAmount": 7,
+                                        "cabinCodes": [
+                                            "Q"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 0,
+                                "itineraryKey": "16087448#181159",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ573",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "DXB",
+                                        "arrivalAirport": "KTM",
+                                        "departureTime": "2025-07-19T16:55:00",
+                                        "arrivalTime": "2025-07-19T23:05:00",
+                                        "departureTerminal": "Terminal 2",
+                                        "arrivalTerminal": "",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:25:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            },
+                            {
+                                "amounts": [
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_ADT0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_ADT4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_ADT9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "adt",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_CHD0134f9aa95ad39b5LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 594,
+                                        "taxesAmount": 145,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_CHD4f43a7ad2b8190a6VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 606,
+                                        "taxesAmount": 146,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: AED 200.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: AED 150.0 penalty",
+                                            "Less than 24 hrs before departure: 100% penalty",
+                                            "No-show: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 20,
+                                                "luggageNotes": "20kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_CHD9e27d961b1604580FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "chd",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 623,
+                                        "taxesAmount": 148,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: AED 400.0 penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: AED 400.0 penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 100% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 40,
+                                                "luggageNotes": "40kg BAG INCLUDED IN FARE",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "LITE_21",
+                                        "familyCode": "21_INF44f705ebfc59a542LITE",
+                                        "amountNotes": "21|LITE|LITE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": []
+                                    },
+                                    {
+                                        "familyName": "VALUE_22",
+                                        "familyCode": "22_INFbd9d2cd6f43e70e0VALUE",
+                                        "amountNotes": "22|VALUE|VALUE~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "familyName": "FLEX_23",
+                                        "familyCode": "23_INF0ee590a579352508FLEX",
+                                        "amountNotes": "23|FLEX|FLEX~E|ECONOMY|Y",
+                                        "nextCodes": [],
+                                        "cabinLevel": "y",
+                                        "passengerType": "inf",
+                                        "minimum": 1,
+                                        "maximum": 2,
+                                        "printAmount": 23,
+                                        "taxesAmount": 10,
+                                        "cabinCodes": [
+                                            "E"
+                                        ],
+                                        "cancelNotes": [],
+                                        "refundNotes": [
+                                            "More than 24 hrs before departure: 0% penalty",
+                                            "Less than 24 hrs before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "changeNotes": [
+                                            "Any time before departure: 0% penalty",
+                                            "No-show less than 720 hrs (30 days) after departure: 0% penalty",
+                                            "No-show more than 720 hrs (30 days) after departure: 0% penalty"
+                                        ],
+                                        "othersNotes": [],
+                                        "luggages": [
+                                            {
+                                                "luggageType": "checked",
+                                                "luggageCount": 10,
+                                                "luggageNotes": "10kg baggage INCLUDED in fare",
+                                                "luggageSizeType": "kg"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "itineraryNo": 1,
+                                "itineraryKey": "16087435#181196",
+                                "segments": [
+                                    {
+                                        "isLuggageChecked": null,
+                                        "sequenceNo": 0,
+                                        "carrier": "FZ",
+                                        "flightNumber": "FZ574",
+                                        "shareToFlightNo": null,
+                                        "departureAirport": "KTM",
+                                        "arrivalAirport": "DXB",
+                                        "departureTime": "2025-07-23T23:55:00",
+                                        "arrivalTime": "2025-07-24T02:55:00",
+                                        "departureTerminal": "",
+                                        "arrivalTerminal": "Terminal 2",
+                                        "flightMealType": null,
+                                        "aircraftModel": "73D",
+                                        "totalFlyingTime": "04:45:00",
+                                        "stops": [],
+                                        "cabins": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     ]
 

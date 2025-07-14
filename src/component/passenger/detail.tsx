@@ -20,7 +20,7 @@ import PassengerForm from "./passengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import CardCom from "@/component/passenger/cardCom.tsx";
-import {calculateTotalPriceSummary} from "@/utils/price.ts";
+import {calculateTotalPriceSummary} from "@/utils/order.ts";
 import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
 
 import checkIn from "@/assets/checkIn.png_.webp"

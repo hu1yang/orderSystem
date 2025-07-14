@@ -4,7 +4,7 @@ import type {RootState} from "@/store";
 import {useNavigate} from "react-router";
 import {
     formatDuration, formatTotalDuration,
-} from "@/utils/price.ts";
+} from "@/utils/order.ts";
 import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
 

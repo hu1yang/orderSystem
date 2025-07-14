@@ -34,6 +34,8 @@ import {
 } from "@/store/orderInfo.ts";
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
 import dayjs from "dayjs";
+import {deduplicateByChannelCode} from "@/utils/order.ts";
+import {airJSON} from "@/air.ts";
 
 interface IdaValue{
     arrival: string
@@ -557,6 +559,9 @@ const SearchComponent = memo(() => {
 
 
     const search = () => {
+        const results = deduplicateByChannelCode(airJSON)
+        dispatch(setSearchDate(results))
+        return
         const result: FQuery = {
             itineraryType: radioType,
             cabinLevel: cabinValue,
@@ -600,7 +605,9 @@ const SearchComponent = memo(() => {
 
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
-                dispatch(setSearchDate(res))
+                const result = deduplicateByChannelCode(res)
+
+                dispatch(setSearchDate(result))
             }
         })
     }

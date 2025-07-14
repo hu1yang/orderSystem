@@ -5,13 +5,12 @@ import type {
     FQuery,
     FQueryResult, IContact,
     ItineraryType, Passenger,
-    ResponseData,
     ResponseItinerary,
-    Result, Segment,
+    Result,
     Travelers
 } from '@/types/order'
 import dayjs from "dayjs";
-import { findLowestAdultCombo} from "@/utils/price.ts";
+import {setSearchDateFnc} from "@/utils/order.ts";
 
 type IOrder = {
     query: FQuery
@@ -192,65 +191,8 @@ const orderInfoSlice = createSlice({
             }
         },
         setSearchDate: (state, action: PayloadAction<FQueryResult[]>) => {
-            const originalData = action.payload
-            .filter(item => item.succeed)
-            .map(item => item.response);
-
-            const getFlightKey = (segments: Segment[]) =>
-                segments.map(seg => `${seg.flightNumber}-${seg.departureAirport}-${seg.arrivalAirport}`).join('|');
-
-            // 构建以去程航班为 key 的分组 map
-            const zeroMap = new Map<string, {
-                key: string;
-                contexts: {
-                    original: ResponseData;
-                    result: Result;
-                }[];
-            }>();
-
-            originalData.forEach(original => {
-                original.results.forEach(result => {
-                    const zeroItineraries = result.itineraries.filter(it => it.itineraryNo === 0);
-                    zeroItineraries.forEach(zero => {
-                        const key = getFlightKey(zero.segments || []);
-                        if (!zeroMap.has(key)) {
-                            zeroMap.set(key, {
-                                key,
-                                contexts: []
-                            });
-                        }
-                        zeroMap.get(key)!.contexts.push({
-                            original,
-                            result
-                        });
-                    });
-                });
-            });
-
-            const groupedResults = Array.from(zeroMap.values()).map(({ key, contexts }) => {
-                const combinationResult = contexts.map(({ original, result }) => ({
-                    channelCode: original.channelCode,
-                    resultType: result.resultType,
-                    policies: result.policies,
-                    contextId: result.contextId,
-                    resultKey: result.resultKey,
-                    currency: result.currency,
-                    itineraries: result.itineraries
-                }));
-
-                // 找出最便宜的组合
-                const cheapest = findLowestAdultCombo(
-                    combinationResult.map(r => r.itineraries)
-                );
-
-                return {
-                    combinationKey: key,
-                    combinationResult,
-                    cheapAmount: cheapest
-                };
-            });
-
-            state.airSearchData = groupedResults;
+            const result = setSearchDateFnc(action.payload)
+            state.airSearchData = result;
         },
     },
 })

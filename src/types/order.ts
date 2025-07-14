@@ -128,10 +128,6 @@ export type FQueryResultForm = Omit<FQueryResult, 'response'> & {
     response: Result
 }
 
-export interface AirChoose{
-    result: Result | null
-    channelCode: string
-}
 
 export type AirChooseForm = AirChoose & {
     request:FQuery
@@ -258,6 +254,11 @@ export type PriceSummary = {
 export type CombinationResult = Result & {
     channelCode: string
 }
+export interface AirChoose{
+    result: Result | null
+    channelCode: string
+}
+
 export type AirSearchData = {
     combinationKey: string
     combinationResult: CombinationResult[]

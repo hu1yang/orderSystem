@@ -16,8 +16,8 @@ import dayjs from "dayjs";
 import {
     applyFilter,
     findLowestAdultCombo,
-    formatTotalDuration,
-} from "@/utils/price.ts";
+    formatTotalDuration, getAirResultList,
+} from "@/utils/order.ts";
 import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
 
@@ -139,89 +139,7 @@ const FilterData = memo(() => {
     // }, [state.ordersInfo.airportList,airportActived]);
 
     const airResultList = useMemo(() => {
-        const chooseResult = airChoose.result;
-
-        if (chooseResult) {
-
-            const matchedItem = airSearchData.find(item =>
-                item.combinationResult.some(
-                    a =>
-                        a.resultKey === chooseResult.resultKey &&
-                        a.contextId === chooseResult.contextId
-                )
-            );
-
-            if (matchedItem) {
-
-                const conRe = matchedItem.combinationResult.find(
-                    a =>
-                        a.resultKey === chooseResult.resultKey &&
-                        a.contextId === chooseResult.contextId
-                );
-
-                if (!conRe) return [];
-
-                const baseItineraries = conRe.itineraries.map(it => {
-                    // 如果是前一段（比如去程是 0，回程是 1），直接用 chooseResult 替换
-                    if (it.itineraryNo === airportActived - 1) {
-                        const matchedPrev = chooseResult.itineraries.find(i => i.itineraryNo === airportActived - 1);
-                        return matchedPrev || it;
-                    }
-
-                    // 回程：需要筛选符合 nextCodes 的回程票价
-                    if (it.itineraryNo === airportActived) {
-
-                        const [itineraryWithFilteredAmounts] = applyFilter([it]);
-                        const filteredAmounts = itineraryWithFilteredAmounts.amounts || [];
-
-
-                        return {
-                            ...it,
-                            amounts: filteredAmounts
-                        };
-                    }
-
-                    // 其他行程不处理
-                    return it;
-                });
-
-
-                return baseItineraries
-                    .filter(it => it.itineraryNo === airportActived)
-                    .map(returnItinerary => {
-                        const comboItineraries = baseItineraries.map(i => {
-                            if (i.itineraryNo === airportActived) {
-                                return returnItinerary; // 只替换当前这个回程
-                            }
-                            return i;
-                        });
-
-                        const cheapest = findLowestAdultCombo([comboItineraries]);
-                        return {
-                            key: matchedItem.combinationKey,
-                            segments: returnItinerary.segments || [],
-                            cheapAmount: cheapest,
-                            currency: conRe.currency,
-                            itineraryKey:returnItinerary.itineraryKey
-                        };
-                    });
-
-
-            }
-
-            return [];
-        }
-
-        return airSearchData.map(item => {
-            const conRe = item.combinationResult[0];
-            return {
-                key: item.combinationKey,
-                segments: conRe?.itineraries.find(it => it.itineraryNo === airportActived)?.segments || [],
-                cheapAmount: item.cheapAmount,
-                currency: conRe?.currency,
-                itineraryKey: item.combinationKey,
-            };
-        });
+        return getAirResultList({airSearchData, airportActived, airChoose})
     }, [airSearchData, airportActived, airChoose.result]);
 
 

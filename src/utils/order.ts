@@ -4,7 +4,15 @@ import type {
     PassengerType,
     PriceSummary,
     ResponseItinerary,
-    Travelers, LostPriceAmout, AirChoose, ComboItem, CombinationResult
+    Travelers,
+    LostPriceAmout,
+    AirChoose,
+    ComboItem,
+    CombinationResult,
+    FQueryResult,
+    AirSearchData,
+    ResponseData,
+    Result, Segment
 } from "@/types/order.ts";
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
@@ -291,4 +299,170 @@ export function getLayeredTopCombos(
     }
 
     return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 4);
+}
+
+// 筛选相同渠道缓存数据
+export function deduplicateByChannelCode(data: FQueryResult[]):FQueryResult[] {
+    const map = new Map();
+
+    for (const item of data) {
+        if (!item.succeed || !item.response?.channelCode || !item.response?.updatedTime) continue;
+
+        const key = item.response.channelCode;
+        const existing = map.get(key);
+
+        if (!existing || new Date(item.response.updatedTime) > new Date(existing.response.updatedTime)) {
+            map.set(key, item);
+        }
+    }
+
+    return Array.from(map.values());
+}
+
+export function setSearchDateFnc(data:FQueryResult[]):AirSearchData[]{
+    const originalData = data
+    .filter(item => item.succeed)
+    .map(item => item.response);
+
+    const getFlightKey = (segments: Segment[]) =>
+        segments.map(seg => `${seg.flightNumber}-${seg.departureAirport}-${seg.arrivalAirport}`).join('|');
+
+    // 构建以去程航班为 key 的分组 map
+    const zeroMap = new Map<string, {
+        key: string;
+        contexts: {
+            original: ResponseData;
+            result: Result;
+        }[];
+    }>();
+
+    originalData.forEach(original => {
+        original.results.forEach(result => {
+            const zeroItineraries = result.itineraries.filter(it => it.itineraryNo === 0);
+            zeroItineraries.forEach(zero => {
+                const key = getFlightKey(zero.segments || []);
+                if (!zeroMap.has(key)) {
+                    zeroMap.set(key, {
+                        key,
+                        contexts: []
+                    });
+                }
+                zeroMap.get(key)!.contexts.push({
+                    original,
+                    result
+                });
+            });
+        });
+    });
+
+    const groupedResults = Array.from(zeroMap.values()).map(({ key, contexts }) => {
+        const combinationResult = contexts.map(({ original, result }) => ({
+            channelCode: original.channelCode,
+            resultType: result.resultType,
+            policies: result.policies,
+            contextId: result.contextId,
+            resultKey: result.resultKey,
+            currency: result.currency,
+            itineraries: result.itineraries
+        }));
+
+        // 找出最便宜的组合
+        const cheapest = findLowestAdultCombo(
+            combinationResult.map(r => r.itineraries)
+        );
+
+        return {
+            combinationKey: key,
+            combinationResult,
+            cheapAmount: cheapest
+        };
+    });
+    return groupedResults
+}
+
+interface GetAirResultListParams {
+    airSearchData: AirSearchData[];
+    airportActived: number;
+    airChoose: AirChoose;
+}
+
+export function getAirResultList({
+                                     airSearchData,
+                                     airportActived,
+                                     airChoose,
+                                 }: GetAirResultListParams) {
+    const chooseResult = airChoose.result;
+
+    if (chooseResult) {
+        const matchedItem = airSearchData.find(item =>
+            item.combinationResult.some(
+                a =>
+                    a.resultKey === chooseResult.resultKey &&
+                    a.contextId === chooseResult.contextId
+            )
+        );
+
+        if (matchedItem) {
+            const conRe = matchedItem.combinationResult.find(
+                a =>
+                    a.resultKey === chooseResult.resultKey &&
+                    a.contextId === chooseResult.contextId
+            );
+
+            if (!conRe) return [];
+
+            const baseItineraries = conRe.itineraries.map(it => {
+                if (it.itineraryNo === airportActived - 1) {
+                    const matchedPrev = chooseResult.itineraries.find(i => i.itineraryNo === airportActived - 1);
+                    return matchedPrev || it;
+                }
+
+                if (it.itineraryNo === airportActived) {
+                    const [itineraryWithFilteredAmounts] = applyFilter([it]);
+                    const filteredAmounts = itineraryWithFilteredAmounts.amounts || [];
+
+                    return {
+                        ...it,
+                        amounts: filteredAmounts
+                    };
+                }
+
+                return it;
+            });
+
+            return baseItineraries
+            .filter(it => it.itineraryNo === airportActived)
+            .map(returnItinerary => {
+                const comboItineraries = baseItineraries.map(i => {
+                    if (i.itineraryNo === airportActived) {
+                        return returnItinerary;
+                    }
+                    return i;
+                });
+
+                const cheapest = findLowestAdultCombo([comboItineraries]);
+
+                return {
+                    key: matchedItem.combinationKey,
+                    segments: returnItinerary.segments || [],
+                    cheapAmount: cheapest,
+                    currency: conRe.currency,
+                    itineraryKey: returnItinerary.itineraryKey
+                };
+            });
+        }
+
+        return [];
+    }
+
+    return airSearchData.map(item => {
+        const conRe = item.combinationResult[0];
+        return {
+            key: item.combinationKey,
+            segments: conRe?.itineraries.find(it => it.itineraryNo === airportActived)?.segments || [],
+            cheapAmount: item.cheapAmount,
+            currency: conRe?.currency,
+            itineraryKey: item.combinationKey
+        };
+    });
 }

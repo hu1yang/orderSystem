@@ -2,7 +2,7 @@ import React , {memo} from "react";
 import styles from './styles.module.less'
 import type {Segment} from "@/types/order.ts";
 import {extractTimeWithTimezone} from "@/utils/public.ts";
-import {formatTotalDuration , formatDuration} from "@/utils/price.ts";
+import {formatTotalDuration , formatDuration} from "@/utils/order.ts";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import LuggageIcon from "@mui/icons-material/Luggage";

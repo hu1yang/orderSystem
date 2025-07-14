@@ -71,7 +71,7 @@ const PassengerForm = memo(() => {
         }
         const passengerValue = {
             ...data,
-            phoneNumber: data.phoneCode +'/'+ data.phoneNumber,
+            phoneNumber: (data.phoneCode +'/'+ data.phoneNumber).replace(/^\+/, ''),
         }
         delete passengerValue.phoneCode
         dispatch(setPassenger(passengerValue))

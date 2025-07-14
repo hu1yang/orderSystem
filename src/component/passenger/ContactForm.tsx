@@ -64,7 +64,7 @@ const ContactForm = memo(() => {
             dispatch(setContacts({
                 contactName,
                 emailAddress,
-                phoneNumber: `${phoneCode}/${phoneNumber}`,
+                phoneNumber: (`${phoneCode}/${phoneNumber}`).replace(/^\+/, ''),
             }));
         }
     }, 300), []) // ✅ debounce 函数只创建一次
