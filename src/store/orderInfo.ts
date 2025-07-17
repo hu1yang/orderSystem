@@ -150,7 +150,7 @@ const orderInfoSlice = createSlice({
         },
         setResult: (state, action: PayloadAction<Result|null>) => {
             state.airChoose.result = action.payload;
-            if(action.payload && state.query.travelers.length > state.airportActived + 1){
+            if(action.payload && state.query.itineraries.length > state.airportActived + 1){
                 state.airportActived += 1;
             }
         },
@@ -165,8 +165,13 @@ const orderInfoSlice = createSlice({
                 state.airChoose.result.itineraries.push(action.payload);
             }
         },
-        setPassenger: (state, action: PayloadAction<Passenger>) => {
-            state.passengers.push(action.payload);
+        setPassenger: (state, action: PayloadAction<{passenger:Passenger,index:number}>) => {
+            const {passenger,index} = action.payload
+            if(index !== -1) {
+                state.passengers.splice(index, 1,passenger)
+                return
+            }
+            state.passengers.push(passenger);
         },
         setSelectPassengers: (state, action: PayloadAction<string>) => {
             const prev = state.selectPassengers;

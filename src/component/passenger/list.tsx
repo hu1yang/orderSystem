@@ -16,8 +16,9 @@ const passengerTypes = {
     chd: 'Child',
     inf: 'Infant',
 } as const;
-const PassengerList = memo(({passenger}:{
+const PassengerList = memo(({passenger,editPassenger}:{
     passenger:Passenger
+    editPassenger:(idNumber:string) => void
 }) => {
     const selectPassengers = useSelector((state: RootState)=> state.ordersInfo.selectPassengers)
     const dispatch = useDispatch()
@@ -42,7 +43,10 @@ const PassengerList = memo(({passenger}:{
                     </div>
                 </Grid>
                 <Grid size={1} className={`s-flex jc-fe`}>
-                    <BorderColorIcon sx={{
+                    <BorderColorIcon onClick={(event) => {
+                        event.stopPropagation()
+                        editPassenger(passenger.idNumber)
+                    }} sx={{
                         color: 'var(--color-999)'
                     }} />
                 </Grid>

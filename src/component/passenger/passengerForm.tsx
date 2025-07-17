@@ -1,4 +1,4 @@
-import {memo, useState} from "react";
+import {memo, useCallback, useRef, useState} from "react";
 import styles from "@/component/passenger/styles.module.less";
 import {
     Grid, FormControl,
@@ -20,6 +20,7 @@ import PassengerList from "@/component/passenger/list.tsx";
 import type {RootState} from "@/store";
 
 
+const passengerTitle:string[]=['Mr','Mrs','MS','Master','Miss']
 const PassengerForm = memo(() => {
     const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
 
@@ -27,13 +28,16 @@ const PassengerForm = memo(() => {
 
     const [openPassenger, setOpenPassenger] = useState(false)
 
+    const formType = useRef<number>(-1);
+
     const {control, handleSubmit , reset , setValue , watch , setError} = useForm<Passenger & {
         phoneCode?: string
     }>({
         mode: 'onBlur',
         defaultValues: {
             title:'',
-            fullName:'',
+            firstName:'',
+            lastName:'',
             idNumber:'',
             idCountry:'',
             trCountry:'',
@@ -54,6 +58,7 @@ const PassengerForm = memo(() => {
         setOpenPassenger(true)
     }
     const handleClose = () => {
+        formType.current === -1
         reset()
         setOpenPassenger(false)
     }
@@ -62,25 +67,101 @@ const PassengerForm = memo(() => {
     const onSubmit = (data: Passenger & {
         phoneCode?: string
     }) => {
-        const index = passengers.findIndex((passenger) => passenger.idNumber === data.idNumber)
-        if(index > -1) {
-            setError('idNumber', {
-                message: 'Duplicate user ID number',
-            })
-            return
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (data.passengerType === 'adt' && data.birthday) {
+            const birthDate = dayjs(data.birthday).toDate();
+            const today = new Date();
+
+            const age =
+                today.getFullYear() - birthDate.getFullYear() -
+                (today.getMonth() < birthDate.getMonth() ||
+                (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()) ? 1 : 0);
+
+            if (age < 18) {
+                setError('birthday', {
+                    type: 'manual',
+                    message: 'Passenger must be at least 18 years old for adult type.',
+                });
+                return;
+            }
+        }
+        if (data.issuedDate) {
+            const issuedDate = dayjs(data.issuedDate).toDate();
+            if (issuedDate > today) {
+                setError('issuedDate', {
+                    type: 'manual',
+                    message: 'Release date cannot be later than today',
+                });
+                return;
+            }
+        }
+        if (data.expiryDate) {
+            const expiryDate = dayjs(data.expiryDate).toDate();
+            if (expiryDate < today) {
+                setError('expiryDate', {
+                    type: 'manual',
+                    message: 'The certificate expiration date cannot be less than today',
+                });
+                return;
+            }
+        }
+
+
+        if(formType.current === -1){
+            const index = passengers.findIndex((passenger) => passenger.idNumber === data.idNumber)
+            if(index > -1) {
+                setError('idNumber', {
+                    message: 'Duplicate user ID number',
+                })
+                return
+            }
         }
         const passengerValue = {
             ...data,
+            fullName: data.firstName +'/'+ data.lastName,
             phoneNumber: (data.phoneCode +'/'+ data.phoneNumber).replace(/^\+/, ''),
         }
         delete passengerValue.phoneCode
-        dispatch(setPassenger(passengerValue))
+        delete passengerValue.firstName
+        delete passengerValue.lastName
+        dispatch(setPassenger({
+            passenger:passengerValue,
+            idnex:formType.current
+        }))
         handleClose()
     }
 
     const handleCodeChange = (event: SelectChangeEvent) => {
         setValue('phoneCode',event.target.value)
     }
+
+    const handleEditPassenger = useCallback((idNumber:string) => {
+        const resultForm = passengers.find(a => a.idNumber === idNumber)
+        const index = passengers.findIndex(a => a.idNumber === idNumber)
+        formType.current = index
+        if(!resultForm) return
+        const names = typeof resultForm.fullName === 'string' ? resultForm.fullName.split('/') : [];
+        const phone = typeof resultForm.phoneNumber === 'string' ? resultForm.phoneNumber.split('/') : [];
+        reset({
+            title:resultForm.title,
+            firstName:names.length ? names[0]:'',
+            lastName:names.length ? names[1]:'',
+            idNumber:resultForm.idNumber,
+            idCountry:resultForm.idCountry,
+            trCountry:resultForm.trCountry,
+            issuedDate:resultForm.issuedDate,
+            birthday:resultForm.birthday,
+            expiryDate:resultForm.expiryDate,
+            phoneNumber:phone.length ? phone[1]:'',
+            emailAddress:resultForm.emailAddress,
+            passengerIdType: resultForm.passengerIdType,
+            passengerType:resultForm.passengerType,
+            passengerSexType:resultForm.passengerSexType,
+            phoneCode: phone.length ? `+${phone[0]}`:'',
+        })
+        openPop()
+    }, [passengers]);
 
 
     return (
@@ -95,7 +176,7 @@ const PassengerForm = memo(() => {
                     <div className={styles.commonBox}>
                         <div className={styles.passengerBox}>
                             {
-                                passengers.map((passenger,passengerIndex) => <PassengerList key={`${passenger.idNumber}-${passengerIndex}`} passenger={passenger} />)
+                                passengers.map((passenger,passengerIndex) => <PassengerList key={`${passenger.idNumber}-${passengerIndex}`} editPassenger={handleEditPassenger} passenger={passenger} />)
                             }
                         </div>
                     </div>:<></>
@@ -121,38 +202,35 @@ const PassengerForm = memo(() => {
                     <div className={styles.commonBox}>
                         <form>
                             <Grid container spacing={2}>
-                                <Grid size={6}>
+                                <Grid size={4}>
                                     <Controller
                                         control={control}
                                         name="title"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) {
-                                                    return 'Please enter the passenger\'s last name';
-                                                }
+                                        render={({field}) => (
+                                            <FormControl fullWidth>
+                                                <InputLabel id="passengerIdType-Title">Passenger Title</InputLabel>
+                                                <Select
+                                                    {...field}
+                                                    labelId="passenger Title"
+                                                    label="Passenger Title"
+                                                >
+                                                    {
+                                                        passengerTitle.map(pt => <MenuItem value={pt} key={pt}>{pt}</MenuItem>)
 
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="Passenger Title"
-                                                error={!!fieldState.error}
-
-                                            />
+                                                    }
+                                                </Select>
+                                            </FormControl>
                                         )}
                                     />
                                 </Grid>
-                                <Grid size={6}>
+                                <Grid size={4}>
                                     <Controller
                                         control={control}
-                                        name="fullName"
+                                        name="firstName"
                                         rules={{
                                             validate: (value) => {
                                                 if (!value) {
-                                                    return 'Please enter the passenger\'s given names';
+                                                    return 'Please enter your first name';
                                                 }
 
                                                 return true;
@@ -162,7 +240,32 @@ const PassengerForm = memo(() => {
                                             <TextField
                                                 {...field}
                                                 fullWidth
-                                                label="fullName"
+                                                label="First name"
+                                                error={!!fieldState.error}
+
+                                            />
+
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid size={4}>
+                                    <Controller
+                                        control={control}
+                                        name="lastName"
+                                        rules={{
+                                            validate: (value) => {
+                                                if (!value) {
+                                                    return 'Please enter your last name';
+                                                }
+
+                                                return true;
+                                            }
+                                        }}
+                                        render={({field, fieldState}) => (
+                                            <TextField
+                                                {...field}
+                                                fullWidth
+                                                label="Last name"
                                                 error={!!fieldState.error}
 
                                             />
@@ -264,7 +367,6 @@ const PassengerForm = memo(() => {
                                                     value={field.value ? dayjs(field.value) : null}
                                                     onChange={(date) => {
                                                         const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-                                                        console.log(formatted)
                                                         field.onChange(formatted); // 存为字符串
                                                     }}
                                                     slotProps={{

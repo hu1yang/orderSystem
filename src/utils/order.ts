@@ -295,10 +295,10 @@ export function getLayeredTopCombos(
             });
         }
 
-        allLayerCombos.push(layerCombos.sort((a, b) => a.total - b.total).slice(0, 4));
+        allLayerCombos.push(layerCombos.sort((a, b) => a.total - b.total).slice(0, 8));
     }
 
-    return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 4);
+    return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 8);
 }
 
 // 筛选相同渠道缓存数据

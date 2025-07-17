@@ -277,9 +277,7 @@ const Detail = memo(() => {
                                                 <img src={personal_no} alt=""/>
                                             </div>
                                             <div className={styles.packageliNames}>Personal Item</div>
-                                            <div className={styles.packageliTips}>
-                                                View Details
-                                            </div>
+
                                         </div>
                                     </Grid>
                                     <Grid size={3}>
@@ -289,9 +287,7 @@ const Detail = memo(() => {
                                             </div>
                                             <div className={styles.packageliNames}>Carry-on baggage</div>
 
-                                            <div className={styles.packageliTips}>
-                                                (20 × 40 × 55 cm)
-                                            </div>
+
                                         </div>
                                     </Grid>
                                     <Grid size={3}>
@@ -300,9 +296,7 @@ const Detail = memo(() => {
                                                 <img src={checkIn} alt=""/>
                                             </div>
                                             <div className={styles.packageliNames}>Checked baggage</div>
-                                            <div className={styles.packageliTips}>
-                                                (40 × 60 × 100 cm)
-                                            </div>
+
                                         </div>
                                     </Grid>
                                 </Grid>

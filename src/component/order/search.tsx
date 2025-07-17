@@ -492,6 +492,7 @@ const SearchComponent = memo(() => {
         departure:'',
         arrival:''
     })
+    const [searchLoad, setSearchLoad] = useState<boolean>(false)
     const [radioType, setRadioType] = useState<ItineraryType>('oneWay')
     const isRound = useMemo(() => radioType === 'round', [radioType])
     const lcaolDateValue = useMemo(() => {
@@ -559,9 +560,8 @@ const SearchComponent = memo(() => {
 
 
     const search = () => {
-        const results = deduplicateByChannelCode(airJSON)
-        dispatch(setSearchDate(results))
-        return
+        if(searchLoad) return
+        setSearchLoad(true)
         const result: FQuery = {
             itineraryType: radioType,
             cabinLevel: cabinValue,
@@ -606,9 +606,9 @@ const SearchComponent = memo(() => {
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
                 const result = deduplicateByChannelCode(res)
-
                 dispatch(setSearchDate(result))
             }
+            setSearchLoad(true)
         })
     }
 

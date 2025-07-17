@@ -145,7 +145,9 @@ export type OrderCreate = AirChooseForm & {
 
 export interface Passenger {
     title: string|null
-    fullName: string
+    firstName?: string
+    lastName?: string
+    fullName?: string
     idNumber: string
     idCountry: string
     trCountry: string
