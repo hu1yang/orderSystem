@@ -58,7 +58,7 @@ const PassengerForm = memo(() => {
         setOpenPassenger(true)
     }
     const handleClose = () => {
-        formType.current === -1
+        formType.current = -1
         reset()
         setOpenPassenger(false)
     }
@@ -127,7 +127,7 @@ const PassengerForm = memo(() => {
         delete passengerValue.lastName
         dispatch(setPassenger({
             passenger:passengerValue,
-            idnex:formType.current
+            index:formType.current
         }))
         handleClose()
     }

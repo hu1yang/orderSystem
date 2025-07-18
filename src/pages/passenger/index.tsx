@@ -20,7 +20,7 @@ const Passenger = () => {
 
     useEffect(() => {
         if(!state.airChoose.result){
-            // navigate('/')
+            navigate('/')
         }else{
             sendResult()
         }

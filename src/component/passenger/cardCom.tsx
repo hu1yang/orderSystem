@@ -1,4 +1,4 @@
-import { memo, useState} from "react";
+import {memo, useMemo, useState} from "react";
 import { useSelector } from "react-redux";
 import {Avatar, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography} from "@mui/material";
 
@@ -24,13 +24,14 @@ const CardCom = memo(({pirceResult}:{
 }) => {
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
 
+    const buggaegs = useMemo(() => {
+        if(!resultAir) return []
+        console.log(resultAir.itineraries.map(it => it.amounts.filter(am => am.luggages.length)))
+        return resultAir.itineraries.map(it => it.amounts.filter(am => am.luggages.length))
+    }, []);
 
-    const [chipHide, setChipHide] = useState(false)
     const [priceHide, setPriceHide] = useState(false)
 
-    const setChip = () => {
-        setChipHide(!chipHide)
-    }
     const setPirce = () => {
         setPriceHide(!priceHide)
     }
@@ -102,84 +103,50 @@ const CardCom = memo(({pirceResult}:{
                     }
 
                 </div>
-                <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`}>
-                    <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
-                        <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                            <span>Baggage</span>
-                        </div>
-
-                    </div>
-                    <div className={`${styles.priceHeight} ${styles.baggage} full-width`}>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0
-                            }} title={
-                                <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                    Click to view baggage allowance details
-                                </Typography>
-                            }>
+                {
+                    buggaegs.map((buggaeg,buggaegIndex) => (
+                        <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`} key={buggaegIndex}>
+                            <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
                                 <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Personal item</span>
+                                    <span>Baggage-{buggaegIndex + 1}</span>
                                 </div>
-                            </HtmlTooltip>
 
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12}}>Check with airline</span>
+                            </div>
+                            <div className={`${styles.priceHeight} ${styles.baggage} full-width`}>
+                                {
+                                    buggaeg.map(amount => (
+                                        amount.luggages.map((luggage,luggageIndex) => (
+                                            <div className={`${styles.priceli} s-flex ai-ct jc-bt`} key={`${amount.familyCode}-${luggageIndex}`}>
+                                                <HtmlTooltip placement={'top'} sx={{
+                                                    p: 0,
+                                                    '.MuiTooltip-tooltip': {
+                                                        maxWidth: 600, // 或设置固定宽度 width: 300
+                                                    },
+                                                }} title={
+                                                    <>
+                                                        <Typography fontSize={14} color={'var(--text-color)'}>({amount.passengerType})Free baggage
+                                                            allowance: <strong
+                                                                style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>{luggage.luggageCount}
+                                                                {luggage.luggageSizeType}</strong> per passenger</Typography>
+                                                    </>
+
+                                                }>
+                                                    <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
+                                                        <span style={{fontSize: 12}}>{amount.familyName}: {luggage.luggageType} baggage</span>
+                                                    </div>
+                                                </HtmlTooltip>
+                                                <div className={styles.values}>
+                                                    <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ))
+                                }
                             </div>
                         </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0,
-                                '.MuiTooltip-tooltip': {
-                                    maxWidth: 600, // 或设置固定宽度 width: 300
-                                },
-                            }} title={
-                                <>
-                                    <Typography fontSize={14} color={'var(--text-color)'}>Free baggage
-                                        allowance: <strong
-                                            style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>20
-                                            kg</strong> per passenger</Typography>
-                                    <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                        Click to view baggage allowance details
-                                    </Typography>
-                                </>
+                    ))
+                }
 
-                            }>
-                                <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Carry-on baggage</span>
-                                </div>
-                            </HtmlTooltip>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
-                            <HtmlTooltip placement={'top'} sx={{
-                                p: 0,
-                                '.MuiTooltip-tooltip': {
-                                    maxWidth: 600, // 或设置固定宽度 width: 300
-                                },
-                            }} title={
-                                <>
-                                    <Typography fontSize={14} color={'var(--text-color)'}>Free baggage
-                                        allowance: <strong
-                                            style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>20
-                                            kg</strong> per passenger</Typography>
-                                    <Typography fontSize={14} color={'var(--tips-gary-color)'}>
-                                        Click to view baggage allowance details
-                                    </Typography>
-                                </>
-                            }>
-                                <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span style={{fontSize: 12}}>Checked baggage</span>
-                                </div>
-                            </HtmlTooltip>
-                            <div className={styles.values}>
-                                <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <Divider
                     sx={{
                         borderTopStyle: 'dashed',
@@ -199,100 +166,6 @@ const CardCom = memo(({pirceResult}:{
                         <div className={styles.labels}>Total</div>
                         <div className={styles.prices}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
-                    {/*<HtmlTooltip sx={{*/}
-                    {/*    '.MuiTooltip-tooltip': {*/}
-                    {/*        maxWidth: 400*/}
-                    {/*    }*/}
-                    {/*}} title={*/}
-                    {/*    <div className={styles.tripBox}>*/}
-                    {/*        <div className={styles.tripTitle}>Start Earning Trip Coins</div>*/}
-                    {/*        <Chip label="100 Trip Coins = US$1" size="medium" avatar={<Avatar src={T} sx={{*/}
-                    {/*            width: '18px !important',*/}
-                    {/*            height: '18px !important',*/}
-                    {/*        }}/>} sx={{*/}
-                    {/*            height: '25px',*/}
-                    {/*            borderRadius: '2px',*/}
-                    {/*            borderColor: 'rgba(255,111,0,.32)',*/}
-                    {/*            background: '#f5f7fa',*/}
-                    {/*            mt: '8px',*/}
-                    {/*            '.MuiChip-label': {*/}
-                    {/*                color: 'var(--text-color)'*/}
-                    {/*            }*/}
-                    {/*        }}/>*/}
-                    {/*        <div className={`${styles.tripBoxFor} s-flex flex-dir ai-fs`}>*/}
-                    {/*            <div className={styles.tripBoxTitles}>*/}
-                    {/*                For this trip*/}
-                    {/*            </div>*/}
-                    {/*            <div className={`${styles.tripBoxContent} s-flex`}>*/}
-                    {/*                <CheckIcon sx={{*/}
-                    {/*                    fontSize: 14,*/}
-                    {/*                    color: 'var(--keynote-text)',*/}
-                    {/*                    mt: '5px'*/}
-                    {/*                }}/>*/}
-                    {/*                <div className={`s-flex flex-dir`} style={{textAlign: 'left'}}>*/}
-                    {/*                    <div className={styles.tripBoxContentText}>You'll earn Trip Coins*/}
-                    {/*                        worth <strong> 0.25%</strong> of the booking total after your trip!*/}
-                    {/*                    </div>*/}
-                    {/*                    <div className={`${styles.tripBoxMore} s-flex ai-ct cursor-p`}*/}
-                    {/*                         onClick={setChip}>*/}
-                    {/*                        <div className={styles.tripBoxMoreText}>*/}
-                    {/*                            Details*/}
-                    {/*                        </div>*/}
-                    {/*                        <ExpandMoreIcon sx={{*/}
-                    {/*                            fontSize: 20,*/}
-                    {/*                            color: 'var(--active-color)',*/}
-                    {/*                            transition: 'transform .2s ease-in-out',*/}
-                    {/*                            transform: chipHide ? 'rotate(0deg)' : 'rotate(180deg)',*/}
-                    {/*                        }}/>*/}
-                    {/*                    </div>*/}
-                    {/*                    {*/}
-                    {/*                        chipHide && <Chip avatar={<Avatar src={C} sx={{*/}
-                    {/*                            width: '18px !important',*/}
-                    {/*                            height: '18px !important',*/}
-                    {/*                        }}/>} variant="outlined" sx={{*/}
-                    {/*                            borderRadius: '2px',*/}
-                    {/*                            background: 'var(--vt-c-white)'*/}
-                    {/*                        }} label={*/}
-                    {/*                            <div className={`${styles.tripBoxMoreBox} s-flex ai-ct`}>*/}
-                    {/*                                <div className={styles.ratio}>+10%</div>*/}
-                    {/*                                <span>Become a gold member and earn 10% more</span>*/}
-                    {/*                            </div>*/}
-                    {/*                        }/>*/}
-                    {/*                    }*/}
-
-                    {/*                </div>*/}
-
-                    {/*            </div>*/}
-
-                    {/*        </div>*/}
-                    {/*        <div className={styles.tripBoxEarn}>*/}
-                    {/*            <div className={styles.tripBoxTitles}>*/}
-                    {/*                How to Earn Trip Coins*/}
-                    {/*            </div>*/}
-                    {/*            <div className={`${styles.tripBoxContent} s-flex`}>*/}
-
-                    {/*                <div className={styles.tripBoxContentText}>*/}
-                    {/*                    You'll earn Trip Coins each time you book with us. Trip Coins can be used to*/}
-                    {/*                    save on future bookings.*/}
-                    {/*                </div>*/}
-                    {/*            </div>*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*}>*/}
-                    {/*    <Chip label="Trip Coins + 111" size="medium" avatar={<Avatar src={T} sx={{*/}
-                    {/*        width: '18px !important',*/}
-                    {/*        height: '18px !important',*/}
-                    {/*    }}/>} variant="outlined" sx={{*/}
-                    {/*        height: '25px',*/}
-                    {/*        borderRadius: '2px',*/}
-                    {/*        borderColor: 'rgba(255,111,0,.32)',*/}
-                    {/*        background: 'rgba(255,111,0,.08)',*/}
-                    {/*        mt: 1,*/}
-                    {/*        '.MuiChip-label': {*/}
-                    {/*            color: '#eb5600'*/}
-                    {/*        }*/}
-                    {/*    }}/>*/}
-                    {/*</HtmlTooltip>*/}
                 </div>
             </CardActions>
         </Card>

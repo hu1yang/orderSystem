@@ -1,5 +1,5 @@
 import { format, addDays } from 'date-fns';
-import dayjs from 'dayjs';
+import dayjs, {type Dayjs} from 'dayjs';
 
 export function generateMonthlyDateRanges() {
     const today = new Date();
@@ -45,7 +45,7 @@ export function formatFlyingTime(timeStr:string) {
     return `${parseInt(hours)}h ${parseInt(minutes)}m`;
 }
 
-export function formatDateToShortString(dateStr: string): string {
+export function formatDateToShortString(dateStr: string|Dayjs): string {
     return dayjs(dateStr).format('ddd, MMM D');
 }
 

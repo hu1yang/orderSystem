@@ -22,43 +22,20 @@ type IOrder = {
     airSearchData: AirSearchData[]
 }
 const initialState: IOrder = {
-    // query:{
-    //     itineraryType: 'oneWay',
-    //     cabinLevel: 'y',
-    //     travelers: [
-    //         { passengerCount: 1, passengerType: 'adt' },
-    //         { passengerCount: 0, passengerType: 'chd' },
-    //         { passengerCount: 0, passengerType: 'inf' },
-    //     ],
-    //     itineraries: [
-    //         {
-    //             itineraryNo: 0,
-    //             arrival: '',
-    //             departureDate: '',
-    //             departure: '',
-    //         },
-    //     ],
-    // },
     query:{
-        itineraryType: 'round',
+        itineraryType: 'oneWay',
         cabinLevel: 'y',
         travelers: [
             { passengerCount: 1, passengerType: 'adt' },
-            { passengerCount: 1, passengerType: 'chd' },
-            { passengerCount: 1, passengerType: 'inf' },
+            { passengerCount: 0, passengerType: 'chd' },
+            { passengerCount: 0, passengerType: 'inf' },
         ],
         itineraries: [
             {
                 itineraryNo: 0,
-                arrival: 'KWI',
-                departureDate: '2025-07-24',
-                departure: 'KTM',
-            },
-            {
-                itineraryNo: 1,
-                arrival: 'KTM',
-                departureDate: '2025-07-29',
-                departure: 'KWI',
+                arrival: '',
+                departureDate: '',
+                departure: '',
             },
         ],
     },
@@ -147,6 +124,9 @@ const orderInfoSlice = createSlice({
         },
         setChannelCode: (state,action: PayloadAction<string>) => {
             state.airChoose.channelCode = action.payload
+            if(!action.payload){
+                state.airChoose.channelCode = action.payload
+            }
         },
         setResult: (state, action: PayloadAction<Result|null>) => {
             state.airChoose.result = action.payload;
@@ -197,6 +177,7 @@ const orderInfoSlice = createSlice({
         },
         setSearchDate: (state, action: PayloadAction<FQueryResult[]>) => {
             const result = setSearchDateFnc(action.payload)
+            console.log(result)
             state.airSearchData = result;
         },
     },

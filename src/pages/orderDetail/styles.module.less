@@ -21,7 +21,7 @@
         width: var(--main-width);
         padding: var(--pm-16) 0;
         .leftContent{
-            width: 0;
+            width: 768px;
             font-size: 1rem;
             .orderStatus{
                 padding: var(--pm-16);
@@ -43,6 +43,7 @@
                     margin-top: var(--pm-16);
                 }
                 .orderTips{
+                    margin-top: var(--pm-16);
                     padding: var(--pm-16);
                     background: rgba(255, 111, 0, 0.08);
                     span{
@@ -70,124 +71,6 @@
                         color: var(--tips-color);
                         font-size: 1em;
                         margin-bottom: 5px;
-                    }
-                    .flightCom{
-                        font-size: 1rem;
-                        margin-bottom: var(--pm-16);
-                        .flightComTitle{
-                            span{
-                                font-size: 1.4em;
-                                font-weight: bold;
-                            }
-                            .tipX{
-                                border-radius: 1px;
-                                background-color: var(--active-color);
-                                font-weight: 600;
-                                font-size: 1em;
-                                padding: 2px 8px;
-                                display: inline-block;
-                                margin-right: 5px;
-                                span{
-                                    color: var(--vt-c-white);
-                                    font-size: 1em;
-                                }
-                            }
-                        }
-                        .flightDetail{
-                            font-size: 1rem;
-                            margin-top: 10px;
-                            .tripBox{
-                                position: relative;
-                                .tripli{
-                                    .timer{
-                                        width: 68px;
-                                        margin-right: 40px;
-                                        margin-left: 12px;
-                                        display: inline-block;
-                                        text-align: right;
-                                        color: var(--text-color);
-
-                                        position: relative;
-                                        font-weight: 400;
-                                        font-size: 1.2em;
-                                    }
-                                    .info{
-                                        margin-right: 8px;
-                                        flex: 1 1 0%;
-                                        color: var(--text-color);
-                                        font-size: 1.2em;
-                                    }
-                                }
-                                .timeConsuming{
-                                    color: #707f94;
-                                    font-size: 1em;
-                                    margin: 8px 0px;
-                                    width: 88px;
-                                    text-align: right;
-                                }
-                                .lines{
-                                    position: absolute;
-                                    height: 90%;
-                                    width: 3px;
-                                    background: var(--put-border-color);
-                                    top: 50%;
-                                    left: 100px;
-                                    transform: translateY(-50%);
-                                    &::before{
-                                        position: absolute;
-                                        width: 8px;
-                                        height: 8px;
-                                        background: var(--put-border-color);
-                                        content: '';
-                                        top: 0;
-                                        left: 50%;
-                                        transform: translateX(-50%);
-                                    }
-                                    &::after{
-                                        position: absolute;
-                                        width: 8px;
-                                        height: 8px;
-                                        background: var(--put-border-color);
-                                        content: '';
-                                        bottom: 0;
-                                        left: 50%;
-                                        transform: translateX(-50%);
-                                    }
-                                }
-                            }
-                            .airT{
-                                font-size: 1rem;
-                                .titles{
-                                    img{
-                                        width: 16px;
-                                        height: 16px;
-                                    }
-                                    span{
-                                        font-size: 1.2em;
-                                        font-weight: 400;
-                                        color: var(--text-color);
-                                    }
-                                }
-                                .airTtips{
-                                    .airl{
-                                        color: var(--tips-color);
-                                        font-size: 1.2em;
-                                        padding-right: 8px;
-                                        margin-right: 8px;
-                                        position: relative;
-                                        &:after{
-                                            content: "";
-                                            position: absolute;
-                                            width: 1px;
-                                            top: 4px;
-                                            bottom: 3px;
-                                            right: 0px;
-                                            background: var(--put-border-color);
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -241,66 +124,6 @@
                     }
                 }
             }
-        }
-        .detailInfo{
-            width: 376px;
-            font-size: 1rem;
-            margin-left: 20px;
-            .priceT{
-                color: var(--text-color);
-                font-size: 1.5rem;
-                font-weight: bold;
-            }
-            .priceV{
-                color: var(--active-color);
-                font-size: 1.5rem;
-                font-weight: bold;
-            }
-            .priceBox{
-                padding: var(--pm-16) 0 0;
-                font-size: 1rem;
-                .priceBTitle{
-                    .price {
-                        font-size: 1.35em;
-                        font-weight: bold;
-                    }
-                    .bookingTitle {
-                        span{
-                            .price;
-                        }
-                        p{
-                            color: var(--tips-color);
-                            font-size: 1em;
-                        }
-                    }
-                }
-                .tips{
-                    color: var(--status-color);
-                    font-size: 1em;
-                    margin-top: 6px;
-
-                }
-                .about{
-                    margin-top: 8px;
-                    padding: var(--pm-16);
-                    background: var(--layout-back-color);
-                    .aboutF{
-                        span{
-                            color: var(--text-color);
-                            font-size: 1.2em;
-                        }
-                    }
-                    .aboutFC{
-                        .aboutF;
-                        span{
-
-                            color: var(--tips-gary-color);
-                        }
-                    }
-                }
-
-            }
-
         }
     }
 }

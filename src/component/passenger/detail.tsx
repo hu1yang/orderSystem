@@ -246,7 +246,6 @@ const Detail = memo(() => {
                                 }
                             </Grid>
                             {/*<Passenger />*/}
-
                         </div>
                         <div>
                             <div className={styles.cardCom}>

@@ -1,4 +1,4 @@
-import {memo, useEffect, useRef, useState} from "react";
+import React, {memo, useEffect, useMemo, useRef, useState} from "react";
 import {
     Alert,
     Button,
@@ -14,6 +14,14 @@ import {
 } from "@mui/material";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
+import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import CardCom from "@/component/passenger/cardCom.tsx";
+import {calculateTotalPriceSummary} from "@/utils/order.ts";
+import stylesPass from '@/component/passenger/styles.module.less'
+import {formatDateToShortString} from "@/utils/public.ts";
+import type {Dayjs} from "dayjs";
 
 const FlightCom = memo(({
                             type,data
@@ -66,160 +74,145 @@ const FlightCom = memo(({
 })
 
 const Flight = memo(() => {
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     return (
         <div className={styles.flightContent}>
             <div className={styles.flightTitle}>Flight Details</div>
             <div className={styles.flightBox}>
                 <div className={styles.flightTips}>All times are in local time</div>
-                <FlightCom type={'Depart'} data={
+                <Grid container spacing={2}>
                     {
-                        "trip_type": "depart",
-                        "date": "Fri, May 30",
-                        "route": "Beijing - Shanghai",
-                        "departure_time": "07:00",
-                        "arrival_time": "09:15",
-                        "departure_airport": "PKX",
-                        "departure_airport_full": "Beijing Daxing Intl.",
-                        "arrival_airport": "SHA",
-                        "arrival_airport_full": "Shanghai Hongqiao Intl. T2",
-                        "duration": "2h 15m",
-                        "airline": "China Eastern Airlines",
-                        "flight_number": "MU6865",
-                        "class": "Economy class",
-                        "aircraft": "Airbus A320 (Mid-sized)",
-                        "meal": true
+                        !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
+                            <Grid size={6} key={itinerarie.itineraryKey}>
+                                <FirportInfomation segments={itinerarie.segments} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                            </Grid>
+                        ))
                     }
-                } />
-                <FlightCom type={'Return'} data={
-                    {
-                        "trip_type": "return",
-                        "date": "Sat, May 31",
-                        "route": "Shanghai - Beijing",
-                        "departure_time": "19:00",
-                        "arrival_time": "21:15",
-                        "departure_airport": "SHA",
-                        "departure_airport_full": "Shanghai Hongqiao Intl. T2",
-                        "arrival_airport": "PEK",
-                        "arrival_airport_full": "Beijing Capital Intl. T2",
-                        "duration": "2h 15m",
-                        "airline": "China Eastern Airlines",
-                        "flight_number": "MU5123",
-                        "class": "Economy class",
-                        "aircraft": "Airbus A330 (Large)",
-                        "meal": true
-                    }
-                } />
+                </Grid>
             </div>
-
         </div>
     )
 })
 
 const Passenger = memo(() => {
+    const passengers = useSelector((state: RootState) => state.ordersInfo.passengers)
+
+
     return (
         <div className={styles.passengerContent}>
             <div className={styles.passengerTitle}>Passenger Information</div>
             <div className={styles.passengerBox}>
-                <div className={styles.passengerLi}>
-                    <div className={`${styles.passengerName} s-flex ai-ct`}>
-                        <span>Jesen</span>
-                        <div className={styles.write}>
-                            <span>Request Update</span>
-                            <DriveFileRenameOutlineIcon sx={{
-                                color: 'var(--active-color)',
-                                fontSize: 18
-                            }} />
-                        </div>
-                    </div>
-                    <div className={styles.liBox}>
-                        <div className={`${styles.lis} s-flex ai-ct`}>
-                            <div className={styles.label}>
-                                <span>ID type: </span>
+                {
+                    passengers.map(passenger => (
+                        <div key={passenger.idNumber} className={styles.passengerLi}>
+                            <div className={`${styles.passengerName} s-flex ai-ct`}>
+                                <span>{passenger.title} {passenger.fullName}</span>
                             </div>
-                            <div className={styles.values}>
-                                <span>Mainland Chinese ID Card</span>
-                            </div>
-                        </div>
-                        <div className={`${styles.lis} s-flex ai-ct`}>
-                            <div className={styles.label}>
-                                <span>ID number: </span>
-                            </div>
-                            <div className={styles.values}>
-                                <span>12314354351231</span>
-                            </div>
+                            <div className={styles.liBox}>
+                                <div className={`${styles.lis} s-flex ai-ct`}>
+                                    <div className={styles.label}>
+                                        <span>ID type: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>Mainland Chinese ID Card</span>
+                                    </div>
+                                </div>
+                                <div className={`${styles.lis} s-flex ai-ct`}>
+                                    <div className={styles.label}>
+                                        <span>ID number: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{passenger.idNumber}</span>
+                                    </div>
 
-                        </div>
-                        <div className={`${styles.lis} s-flex ai-ct`}>
-                            <div className={styles.label}>
-                                <span>Nationality: </span>
-                            </div>
-                            <div className={styles.values}>
-                                <span>China</span>
-                            </div>
+                                </div>
+                                <div className={`${styles.lis} s-flex ai-ct`}>
+                                    <div className={styles.label}>
+                                        <span>Nationality: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{passenger.idCountry}</span>
+                                    </div>
 
-                        </div>
-                        <div className={`${styles.lis} s-flex ai-ct`}>
-                            <div className={styles.label}>
-                                <span>Gender: </span>
-                            </div>
-                            <div className={styles.values}>
-                                <span>Male | Adult</span>
-                            </div>
+                                </div>
+                                <div className={`${styles.lis} s-flex ai-ct`}>
+                                    <div className={styles.label}>
+                                        <span>Gender: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{passenger.passengerSexType} | {passenger.passengerType}</span>
+                                    </div>
 
-                        </div>
-                        <div className={`${styles.lis} s-flex ai-ct`}>
-                            <div className={styles.label}>
-                                <span>Date of birth: </span>
+                                </div>
+                                <div className={`${styles.lis} s-flex ai-ct`}>
+                                    <div className={styles.label}>
+                                        <span>Date of birth: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{formatDateToShortString(passenger.birthday as Dayjs)}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className={styles.values}>
-                                <span>Aug 24, 1998</span>
-                            </div>
                         </div>
-                    </div>
-                </div>
+                    ))
+                }
+
             </div>
         </div>
     )
 })
 
 const Contact = memo(() => {
+    const contacts = useSelector((state: RootState) => state.ordersInfo.contacts)
     return (
         <div className={styles.passengerContent}>
             <div className={styles.passengerTitle}>Contact Information</div>
             <div className={styles.passengerBox}>
-                <div className={styles.passengerLi}>
-                    <div className={`${styles.passengerName} s-flex ai-ct`}>
-                        <span>Jesen</span>
-                    </div>
-                    <div className={styles.liBox}>
-                        <div className={`${styles.lis} s-flex ai-ct`} style={{marginTop: 'var(--pm-16)'}}>
-                            <div className={styles.label} style={{maxWidth: '80px'}}>
-                                <span>Phone: </span>
+                {
+                    contacts.map(contact => (
+                        <div className={styles.passengerLi}>
+                            <div className={`${styles.passengerName} s-flex ai-ct`}>
+                                <span>{contact.contactName}</span>
                             </div>
-                            <div className={styles.values}>
-                                <span>+86 18391283710</span>
+                            <div className={styles.liBox}>
+                                <div className={`${styles.lis} s-flex ai-ct`} style={{marginTop: 'var(--pm-16)'}}>
+                                    <div className={styles.label} style={{maxWidth: '80px'}}>
+                                        <span>Phone: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{contact.phoneNumber}</span>
+                                    </div>
+                                </div>
+                                <div className={`${styles.lis} s-flex ai-ct`} style={{marginTop: 'var(--pm-16)'}}>
+                                    <div className={styles.label} style={{maxWidth: '80px'}}>
+                                        <span>Email: </span>
+                                    </div>
+                                    <div className={styles.values}>
+                                        <span>{contact.emailAddress}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className={`${styles.lis} s-flex ai-ct`} style={{marginTop: 'var(--pm-16)'}}>
-                            <div className={styles.label} style={{maxWidth: '80px'}}>
-                                <span>Email: </span>
-                            </div>
-                            <div className={styles.values}>
-                                <span>test@gmail.com</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    ))
+                }
+
             </div>
         </div>
     )
 })
 
 const OrderDetail = () => {
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+
     const detailRef = useRef<HTMLDivElement|null>(null)
     const [open, setOpen] = useState(false)
     const [status, setStatus] = useState<'awaiting'|'canceled'|'success'>('awaiting')
 
+    const pirceResult = useMemo(() => {
+        if(!airChoose.result) return null
+        return calculateTotalPriceSummary(airChoose.result.itineraries,query.travelers)
+    },[airChoose,query.travelers])
 
     const setPay = () => {
         console.log(detailRef.current)
@@ -242,7 +235,7 @@ const OrderDetail = () => {
     return (
         <div className={styles.orderDetailContainer} ref={detailRef}>
             <div className={`${styles.orderDetailMain} s-flex ai-fs jc-bt`}>
-                <div className={`${styles.leftContent} flex-1`}>
+                <div className={`${styles.leftContent}`}>
                     <div className={styles.orderStatus}>
                         <div className={`${styles.orderStatusT}`}>
                             {
@@ -261,27 +254,21 @@ const OrderDetail = () => {
                                             backgroundColor: 'rgb(255, 149, 0)',
                                             boxShadow: 'none',
                                             borderRadius: 0,
+                                            width: '120px',
+                                            fontSize: '1.2rem'
                                         }} onClick={setPay}>Pay</Button>
                                         <Button variant="outlined" sx={{
                                             borderColor: 'var(--active-color)',
                                             boxShadow: 'none',
+                                            width: '120px',
                                             borderRadius: 0,
+                                            fontSize: '1.2rem',
                                             ml: 'var(--pm-16)'
-                                        }}>Cancel Booking</Button>
+                                        }}>Cancel</Button>
                                     </div>
-                                    <Typography sx={{
-                                        fontSize: 12,
-                                        mt: '5px',
-                                        color: 'var(--text-color)'
-                                    }}>
-                                        Stay informed and never miss a flight! Download
-                                        <Link href="#" underline="hover">
-                                            our mobile app
-                                        </Link>
-                                        for instant updates.
-                                    </Typography>
+
                                 </div>
-                                    <div className={`${styles.orderTips} s-flex ai-ct`}>
+                                <div className={`${styles.orderTips} s-flex ai-ct`}>
                                     <span>
                                         <i>[Penalties for Skipping a Flight in Your Booking]</i>According to the airline's policy, skipping flights is not permitted for some flights in your booking. If you skip a flight that is subject to these restrictions, you may be denied boarding for subsequent flights or charged additional fees.
                                         <Link href="#" underline="hover">
@@ -299,56 +286,10 @@ const OrderDetail = () => {
                     <Contact />
 
                 </div>
-                <div className={styles.detailInfo}>
-                    <Card sx={{
-                        mb:'var(--pm-16)',
-                        cursor: 'pointer',
-                    }}>
-                        <CardHeader title={
-                            <div className={`s-flex ai-ct jc-bt`}>
-                                <div className={styles.priceT}>Total Amount</div>
-                                <div className={styles.priceV}>US$159.30</div>
-                            </div>
-                        } />
-                        <CardContent sx={{
-                            pt:0
-                        }}>
-                            <Divider variant="middle" flexItem sx={{
-                                m:0,
-                            }} />
-                            <div className={styles.priceBox}>
-                                <div className={`${styles.priceBTitle} s-flex ai-fs jc-bt`}>
-                                    <div className={styles.bookingTitle}>
-                                        <span>Booking Total</span>
-                                        <p>16:42, May 26, 2025</p>
-                                    </div>
-                                    <div className={styles.price}>US$159.30</div>
-                                </div>
-                                <div className={styles.tips}>
-                                    Please note that the payment method cannot be changed once the transaction has been completed
-                                </div>
-                                <div className={styles.about}>
-                                    <div className={`${styles.aboutF} s-flex jc-bt ai-ct`}>
-                                        <span>Adults</span>
-                                        <span>US$159.30 × 1</span>
-                                    </div>
-                                    <div className={`${styles.aboutFC} s-flex jc-bt ai-ct`}>
-                                        <span>Ticket fare</span>
-                                        <span>US$139.70 × 1</span>
-                                    </div>
-                                    <div className={`${styles.aboutFC} s-flex jc-bt ai-ct`}>
-                                        <span>Civil aviation development fund</span>
-                                        <span>US$14.00 × 1</span>
-                                    </div>
-                                    <div className={`${styles.aboutFC} s-flex jc-bt ai-ct`}>
-                                        <span>Fuel surcharge</span>
-                                        <span>US$5.60 × 1</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-
-                    </Card>
+                <div className={stylesPass.cardCom}>
+                    {
+                        pirceResult ? <CardCom pirceResult={pirceResult} /> : <></>
+                    }
                 </div>
             </div>
             <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}

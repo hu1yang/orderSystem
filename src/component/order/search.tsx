@@ -601,12 +601,13 @@ const SearchComponent = memo(() => {
         const newQuery = {...result}
         newQuery.travelers = result.travelers.filter(traveler => traveler.passengerCount>0)
 
-
+        // const objResult = deduplicateByChannelCode(airJSON)
+        // dispatch(setSearchDate(objResult))
 
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
-                const result = deduplicateByChannelCode(res)
-                dispatch(setSearchDate(result))
+                const objResult = deduplicateByChannelCode(res)
+                dispatch(setSearchDate(objResult))
             }
             setSearchLoad(true)
         })

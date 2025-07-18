@@ -15,8 +15,8 @@ export interface PriceSum {
     printAmount: number;
     taxesAmount: number;
 }
-type IPassengerIdType =  'pp'| 'ni'| 'bd' | unknown
-type ITravelerSex = 'm'| 'f'| null | unknown
+type IPassengerIdType =  'pp'| 'ni'| 'bd'
+type ITravelerSex = 'm'| 'f'
 interface ExpandsSetting {
     indexId: string;
     value: string;

@@ -301,7 +301,6 @@ export function getLayeredTopCombos(
     return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 8);
 }
 
-// 筛选相同渠道缓存数据
 export function deduplicateByChannelCode(data: FQueryResult[]):FQueryResult[] {
     const map = new Map();
 
@@ -316,18 +315,22 @@ export function deduplicateByChannelCode(data: FQueryResult[]):FQueryResult[] {
         }
     }
 
+
     return Array.from(map.values());
 }
 
-export function setSearchDateFnc(data:FQueryResult[]):AirSearchData[]{
+export function setSearchDateFnc(data: FQueryResult[]): AirSearchData[] {
     const originalData = data
     .filter(item => item.succeed)
     .map(item => item.response);
 
-    const getFlightKey = (segments: Segment[]) =>
-        segments.map(seg => `${seg.flightNumber}-${seg.departureAirport}-${seg.arrivalAirport}`).join('|');
+    const getFlightKey = (segments: Segment[]): string => {
+        return segments
+        .map(seg => `${seg.departureAirport}-${seg.flightNumber}-${seg.arrivalAirport}`)
+        .join('|');
+    };
 
-    // 构建以去程航班为 key 的分组 map
+    // 以去程结构为 key 做 map
     const zeroMap = new Map<string, {
         key: string;
         contexts: {
@@ -355,29 +358,41 @@ export function setSearchDateFnc(data:FQueryResult[]):AirSearchData[]{
         });
     });
 
-    const groupedResults = Array.from(zeroMap.values()).map(({ key, contexts }) => {
-        const combinationResult = contexts.map(({ original, result }) => ({
-            channelCode: original.channelCode,
-            resultType: result.resultType,
-            policies: result.policies,
-            contextId: result.contextId,
-            resultKey: result.resultKey,
-            currency: result.currency,
-            itineraries: result.itineraries
-        }));
+    // 分组后的组合
+    const groupedResults = Array.from(zeroMap.values()).map(({ key: currentKey, contexts }) => {
+        const combinationResult = contexts.map(({ original, result }) => {
+            const filteredItineraries = result.itineraries.filter(it => {
+                // 回程保留
+                if (it.itineraryNo !== 0) return true;
 
-        // 找出最便宜的组合
+                // 去程需要结构一致
+                const thisKey = getFlightKey(it.segments || []);
+                return thisKey === currentKey;
+            });
+
+            return {
+                channelCode: original.channelCode,
+                resultType: result.resultType,
+                policies: result.policies,
+                contextId: result.contextId,
+                resultKey: result.resultKey,
+                currency: result.currency,
+                itineraries: filteredItineraries
+            };
+        });
+
         const cheapest = findLowestAdultCombo(
             combinationResult.map(r => r.itineraries)
         );
 
         return {
-            combinationKey: key,
+            combinationKey: currentKey,
             combinationResult,
             cheapAmount: cheapest
         };
     });
-    return groupedResults
+
+    return groupedResults;
 }
 
 interface GetAirResultListParams {
