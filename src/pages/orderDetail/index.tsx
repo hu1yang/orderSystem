@@ -15,13 +15,16 @@ import {
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
 import stylesPass from '@/component/passenger/styles.module.less'
 import {formatDateToShortString} from "@/utils/public.ts";
 import type {Dayjs} from "dayjs";
+import {useNavigate, useParams, useSearchParams} from "react-router";
+import {paymentOrderAgent} from "@/utils/request/agetn.ts";
+import {resetChoose} from "@/store/orderInfo.ts";
 
 const FlightCom = memo(({
                             type,data
@@ -202,12 +205,26 @@ const Contact = memo(() => {
 })
 
 const OrderDetail = () => {
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const {payid} = useParams()
+    const navigate = useNavigate()
+
+    const dispatch = useDispatch()
+
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+
+
+    const [payLoad, setPayLoad] = useState(false)
 
     const detailRef = useRef<HTMLDivElement|null>(null)
     const [open, setOpen] = useState(false)
     const [status, setStatus] = useState<'awaiting'|'canceled'|'success'>('awaiting')
+
+    useEffect(() => {
+        if(!payid){
+            navigate('/')
+        }
+    }, [payid]);
 
     const pirceResult = useMemo(() => {
         if(!airChoose.result) return null
@@ -215,12 +232,34 @@ const OrderDetail = () => {
     },[airChoose,query.travelers])
 
     const setPay = () => {
-        console.log(detailRef.current)
-        if(detailRef.current){
-            detailRef.current.style.setProperty('--status-color', 'var(--active-color)');
+        if(payLoad) return
+        setPayLoad(true)
+        paymentOrderAgent(payid as string).then(res => {
+            if(res.succeed){
+                if(detailRef.current){
+                    detailRef.current.style.setProperty('--status-color', 'var(--active-color)');
+                }
+                setStatus('success')
+                setOpen(true)
+                backOrder()
+            }
+        })
+    }
+
+    const backOrder = () => {
+        const referrer = document.referrer
+        if(referrer){
+            const origin = new URL(referrer).origin;
+            window.parent.postMessage({
+                type:'orderPaySuccess',
+                data:{orderid:payid}
+            },origin)
         }
-        setStatus('success')
-        setOpen(true)
+
+        dispatch(resetChoose())
+        setTimeout(() => {
+            navigate('/')
+        },500)
     }
 
     const handleClose = (_event?: React.SyntheticEvent | Event,
@@ -228,7 +267,7 @@ const OrderDetail = () => {
         if (reason === 'clickaway') {
             return;
         }
-
+        backOrder()
         setOpen(false);
     }
 
@@ -243,14 +282,14 @@ const OrderDetail = () => {
                             }
                         </div>
                         <div className={styles.orderStatusP}>
-                            <p>Please complete payment before 16:57, May 26, 2025</p>
-                            <p>Booking No. 1688890540449587</p>
+                            {/*<p>Please complete payment before 16:57, May 26, 2025</p>*/}
+                            <p>Booking No. {payid}</p>
                         </div>
                         {
                             status === 'awaiting' && <>
                                 <div className={`${styles.orderPay} s-flex flex-dir ai-fe`}>
                                     <div>
-                                        <Button variant="contained" sx={{
+                                        <Button variant="contained" loading={payLoad} sx={{
                                             backgroundColor: 'rgb(255, 149, 0)',
                                             boxShadow: 'none',
                                             borderRadius: 0,
@@ -266,15 +305,6 @@ const OrderDetail = () => {
                                             ml: 'var(--pm-16)'
                                         }}>Cancel</Button>
                                     </div>
-
-                                </div>
-                                <div className={`${styles.orderTips} s-flex ai-ct`}>
-                                    <span>
-                                        <i>[Penalties for Skipping a Flight in Your Booking]</i>According to the airline's policy, skipping flights is not permitted for some flights in your booking. If you skip a flight that is subject to these restrictions, you may be denied boarding for subsequent flights or charged additional fees.
-                                        <Link href="#" underline="hover">
-                                            View Details
-                                        </Link>
-                                    </span>
 
                                 </div>
                             </>

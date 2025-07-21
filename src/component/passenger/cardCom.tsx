@@ -26,7 +26,6 @@ const CardCom = memo(({pirceResult}:{
 
     const buggaegs = useMemo(() => {
         if(!resultAir) return []
-        console.log(resultAir.itineraries.map(it => it.amounts.filter(am => am.luggages.length)))
         return resultAir.itineraries.map(it => it.amounts.filter(am => am.luggages.length))
     }, []);
 

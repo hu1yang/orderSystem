@@ -609,7 +609,9 @@ const SearchComponent = memo(() => {
                 const objResult = deduplicateByChannelCode(res)
                 dispatch(setSearchDate(objResult))
             }
-            setSearchLoad(true)
+            setSearchLoad(false)
+        }).catch(() => {
+            setSearchLoad(false)
         })
     }
 
@@ -629,7 +631,7 @@ const SearchComponent = memo(() => {
                 <Airports daValue={daValue} changeValue={handleChangeValue} />
                 <TimerChoose localDate={localDate} isRound={isRound} setLocalDate={handleSetLocalDate} />
                 <PersonChoose travelers={travelers} setTravelers={handleSetTravelers} cabinValue={cabinValue} setCabinValue={handleSetCabinValue} />
-                <Button variant="contained" onClick={search} sx={{
+                <Button variant="contained" onClick={search} loading={searchLoad} loadingPosition="end" sx={{
                     width: '120px',
                     height: '54px',
                     color: 'white',

@@ -177,9 +177,9 @@ const orderInfoSlice = createSlice({
         },
         setSearchDate: (state, action: PayloadAction<FQueryResult[]>) => {
             const result = setSearchDateFnc(action.payload)
-            console.log(result)
             state.airSearchData = result;
         },
+        resetChoose: () => initialState
     },
 })
 
@@ -198,6 +198,7 @@ export const {
     setSelectPassengers,
     setContacts,
     prevAirChoose,
-    setSearchDate
+    setSearchDate,
+    resetChoose
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

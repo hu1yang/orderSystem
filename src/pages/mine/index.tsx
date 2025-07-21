@@ -1,10 +1,10 @@
-import {memo} from "react";
+import {memo, useState} from "react";
 import {Tabs, Tab, Card, CardHeader, Divider, CardContent, Grid, CardActions, Button} from "@mui/material";
 import FlightIcon from '@mui/icons-material/Flight';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import styles from './styles.module.less'
-import {useNavigate} from "react-router";
+import {useNavigate, useSearchParams} from "react-router";
 
 interface IOrderProps {
     departure:string;
@@ -77,8 +77,11 @@ const OrderLi = memo(({
 
 const Mine = () => {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const [payLoad, setPayLoad] = useState(false)
     const toPay = () => {
-        navigate('/mine/orderDetail')
+        if(payLoad) return
+        setPayLoad(true)
     }
 
     return (
@@ -169,7 +172,7 @@ const Mine = () => {
                                 </div>
                             </CardContent>
                             <CardActions disableSpacing>
-                                <Button variant="contained" size={'large'} sx={{
+                                <Button variant="contained" size={'large'} loading={payLoad} sx={{
                                     ml: 'auto',
                                     backgroundColor: '#f66f03',
                                     fontSize: 14

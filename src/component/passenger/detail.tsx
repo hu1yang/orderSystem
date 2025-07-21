@@ -26,6 +26,7 @@ import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
 import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
+import {useNavigate} from "react-router";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -80,6 +81,7 @@ const Detail = memo(() => {
     const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
     const selectPassengers = useSelector((state: RootState)=> state.ordersInfo.selectPassengers)
     const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
+    const navigate = useNavigate()
 
 
     const [open, setOpen] = useState(false)
@@ -148,8 +150,11 @@ const Detail = memo(() => {
         } as OrderCreate
         orderCreateAgent(result).then(res => {
             if(res.succeed){
+                navigate(`/mine/orderDetail/${res.response.orderNumber}`)
+                return
                 setDialogVisible(true)
                 setOrderNumber(res.response.orderNumber)
+
 
             }
         })

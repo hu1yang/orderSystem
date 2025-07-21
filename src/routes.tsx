@@ -12,7 +12,7 @@ const AppRoutes:React.FC = () => (
         <Route path={'/'} Component={DefaultLayout} children={[
             <Route index={true} element={<LazyOrder />} />,
             <Route path={'/mine'} element={<LazyMine />} />,
-            <Route path='/mine/orderDetail' element={<LazyOrderDetail />} />,
+            <Route path='/mine/orderDetail/:payid' element={<LazyOrderDetail />} />,
             <Route path={'/passenger'} element={<LazyPassenger />} />,
         ]} />
     </Routes>

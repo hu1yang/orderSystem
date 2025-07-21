@@ -51,6 +51,7 @@ const Passenger = () => {
             navigate('/')
         },200)
     }
+
     return (
         <div className={styles.passengerLayout}>
             <Detail />
