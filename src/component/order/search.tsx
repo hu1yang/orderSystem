@@ -631,7 +631,7 @@ const SearchComponent = memo(() => {
                 <Airports daValue={daValue} changeValue={handleChangeValue} />
                 <TimerChoose localDate={localDate} isRound={isRound} setLocalDate={handleSetLocalDate} />
                 <PersonChoose travelers={travelers} setTravelers={handleSetTravelers} cabinValue={cabinValue} setCabinValue={handleSetCabinValue} />
-                <Button variant="contained" onClick={search} loading={searchLoad} loadingPosition="end" sx={{
+                <Button variant="contained" onClick={search} loading={searchLoad} sx={{
                     width: '120px',
                     height: '54px',
                     color: 'white',

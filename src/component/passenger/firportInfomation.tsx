@@ -27,7 +27,7 @@ const FirportInfomation = memo(({segments,labelPostion}:{
                     }
                 }}/>
                 <div className={`${styles.firportDateLabel} s-flex ai-ct`}>
-                    <span>{formatDateToShortString(segments[0].arrivalTime)}</span>
+                    <span>{formatDateToShortString(segments[0].departureTime)}</span>
                     <Divider orientation="vertical" sx={{
                         height: 10
                     }} flexItem/>

@@ -59,7 +59,23 @@ const PassengerForm = memo(() => {
     }
     const handleClose = () => {
         formType.current = -1
-        reset()
+        reset({
+            title:'',
+            firstName:'',
+            lastName:'',
+            idNumber:'',
+            idCountry:'',
+            trCountry:'',
+            issuedDate:null,
+            birthday:null,
+            expiryDate:null,
+            phoneNumber:'',
+            emailAddress:'',
+            passengerIdType:'pp',
+            passengerType:'adt',
+            passengerSexType:'m',
+            phoneCode: '+86',
+        })
         setOpenPassenger(false)
     }
 
@@ -119,7 +135,7 @@ const PassengerForm = memo(() => {
         }
         const passengerValue = {
             ...data,
-            fullName: data.firstName +'/'+ data.lastName,
+            fullName: data.lastName +'/'+ data.firstName,
             phoneNumber: (data.phoneCode +'/'+ data.phoneNumber).replace(/^\+/, ''),
         }
         delete passengerValue.phoneCode
@@ -137,6 +153,7 @@ const PassengerForm = memo(() => {
     }
 
     const handleEditPassenger = useCallback((idNumber:string) => {
+        openPop()
         const resultForm = passengers.find(a => a.idNumber === idNumber)
         const index = passengers.findIndex(a => a.idNumber === idNumber)
         formType.current = index
@@ -145,8 +162,8 @@ const PassengerForm = memo(() => {
         const phone = typeof resultForm.phoneNumber === 'string' ? resultForm.phoneNumber.split('/') : [];
         reset({
             title:resultForm.title,
-            firstName:names.length ? names[0]:'',
-            lastName:names.length ? names[1]:'',
+            firstName:names.length ? names[1]:'',
+            lastName:names.length ? names[0]:'',
             idNumber:resultForm.idNumber,
             idCountry:resultForm.idCountry,
             trCountry:resultForm.trCountry,
@@ -160,7 +177,6 @@ const PassengerForm = memo(() => {
             passengerSexType:resultForm.passengerSexType,
             phoneCode: phone.length ? `+${phone[0]}`:'',
         })
-        openPop()
     }, [passengers]);
 
 
@@ -230,7 +246,7 @@ const PassengerForm = memo(() => {
                                         rules={{
                                             validate: (value) => {
                                                 if (!value) {
-                                                    return 'Please enter your first name';
+                                                    return 'Please enter your Given Name';
                                                 }
 
                                                 return true;
@@ -240,9 +256,13 @@ const PassengerForm = memo(() => {
                                             <TextField
                                                 {...field}
                                                 fullWidth
-                                                label="First name"
+                                                label="Given Name"
                                                 error={!!fieldState.error}
-
+                                                onChange={(e) => {
+                                                    // 将输入转换为大写并过滤非字母
+                                                    const val = e.target.value.toUpperCase();
+                                                    field.onChange(val);
+                                                }}
                                             />
 
                                         )}
@@ -255,7 +275,7 @@ const PassengerForm = memo(() => {
                                         rules={{
                                             validate: (value) => {
                                                 if (!value) {
-                                                    return 'Please enter your last name';
+                                                    return 'Please enter your Last name';
                                                 }
 
                                                 return true;
@@ -267,6 +287,11 @@ const PassengerForm = memo(() => {
                                                 fullWidth
                                                 label="Last name"
                                                 error={!!fieldState.error}
+                                                onChange={(e) => {
+                                                    // 将输入转换为大写并过滤非字母
+                                                    const val = e.target.value.toUpperCase();
+                                                    field.onChange(val);
+                                                }}
 
                                             />
 
@@ -376,6 +401,7 @@ const PassengerForm = memo(() => {
                                                             helperText: fieldState.error?.message
                                                         }
                                                     }}
+
                                                 />
                                             </LocalizationProvider>
                                         )}

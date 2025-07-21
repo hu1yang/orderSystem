@@ -16,7 +16,7 @@ const baseMap: Record<string, string> = {
 
 const instance:AxiosInstance = axios.create({
     baseURL:'',
-    timeout:60000,
+    timeout:1000000,
 })
 
 

@@ -125,7 +125,7 @@ const orderInfoSlice = createSlice({
         setChannelCode: (state,action: PayloadAction<string>) => {
             state.airChoose.channelCode = action.payload
             if(!action.payload){
-                state.airChoose.channelCode = action.payload
+                state.airportActived = 0
             }
         },
         setResult: (state, action: PayloadAction<Result|null>) => {
