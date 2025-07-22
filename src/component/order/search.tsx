@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     Divider, FormControl,
     FormControlLabel,
@@ -7,7 +8,7 @@ import {
     MenuItem,
     Popover,
     Radio,
-    RadioGroup, Select, Stack, TextField,
+    RadioGroup, Select, Snackbar, Stack, TextField,
     Typography
 } from '@mui/material';
 import styles from './styles.module.less'
@@ -512,6 +513,8 @@ const SearchComponent = memo(() => {
         { passengerCount: 0, passengerType: 'inf' },
     ])
     const [cabinValue, setCabinValue] = useState<CabinLevel>('y')
+    const [errOpen, setErrOpen] = useState(false)
+    const [errMessage, setErrMessage] = useState('')
 
 
     useEffect(() => {
@@ -608,12 +611,33 @@ const SearchComponent = memo(() => {
             if(res.length){
                 const objResult = deduplicateByChannelCode(res)
                 dispatch(setSearchDate(objResult))
+                const allFailed = objResult.every(a => a.succeed !== true)
+                setSearchLoad(false)
+
+                if(allFailed){
+                    errHandleOpen('No suitable data')
+                }
+            }else{
+                setSearchLoad(false)
+                errHandleOpen('No suitable data')
             }
-            setSearchLoad(false)
+
         }).catch(() => {
             setSearchLoad(false)
+            errHandleOpen('Interface error')
         })
     }
+
+    const errHandleOpen = (message:string) => {
+        setErrOpen(true)
+        setErrMessage(message)
+    }
+    const errClose = () => {
+        setErrOpen(false)
+        setErrMessage('')
+    }
+
+
 
 
     return (
@@ -641,6 +665,21 @@ const SearchComponent = memo(() => {
                     Search
                 </Button>
             </div>
+            <Snackbar
+                anchorOrigin={{ vertical:'top', horizontal:'right' }}
+                open={errOpen}
+                autoHideDuration={2000}
+                onClose={errClose}
+            >
+                <Alert
+                    onClose={errClose}
+                    severity="error"
+                    variant="filled"
+                    sx={{ fontSize: '1.3rem', fontWeight: 'bold' }}
+                >
+                    {errMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 })

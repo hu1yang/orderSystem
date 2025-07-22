@@ -1,6 +1,6 @@
 import styles from './styles.module.less'
 import Detail from "@/component/passenger/detail.tsx";
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {queryBookingAgent} from "@/utils/request/agetn.ts";

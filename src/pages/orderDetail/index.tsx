@@ -172,8 +172,8 @@ const Contact = memo(() => {
             <div className={styles.passengerTitle}>Contact Information</div>
             <div className={styles.passengerBox}>
                 {
-                    contacts.map(contact => (
-                        <div className={styles.passengerLi}>
+                    contacts.map((contact,index) => (
+                        <div className={styles.passengerLi} key={index}>
                             <div className={`${styles.passengerName} s-flex ai-ct`}>
                                 <span>{contact.contactName}</span>
                             </div>

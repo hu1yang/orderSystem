@@ -389,6 +389,7 @@ const PassengerForm = memo(() => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     label='Date of issued'
+                                                    format="DD/MM/YYYY"
                                                     value={field.value ? dayjs(field.value) : null}
                                                     onChange={(date) => {
                                                         const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
@@ -399,9 +400,8 @@ const PassengerForm = memo(() => {
                                                             fullWidth: true,
                                                             error: !!fieldState.error,
                                                             helperText: fieldState.error?.message
-                                                        }
+                                                        },
                                                     }}
-
                                                 />
                                             </LocalizationProvider>
                                         )}
@@ -418,6 +418,7 @@ const PassengerForm = memo(() => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     label="Date of birth"
+                                                    format="DD/MM/YYYY"
                                                     value={field.value ? dayjs(field.value) : null}
                                                     onChange={(date) => {
                                                         const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
@@ -447,6 +448,7 @@ const PassengerForm = memo(() => {
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     label="Date of expiry"
+                                                    format="DD/MM/YYYY"
                                                     value={field.value ? dayjs(field.value) : null}
                                                     onChange={(date) => {
                                                         const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
@@ -456,9 +458,10 @@ const PassengerForm = memo(() => {
                                                         textField: {
                                                             fullWidth: true,
                                                             error: !!fieldState.error,
-                                                            helperText: fieldState.error?.message
+                                                            helperText: fieldState.error?.message,
                                                         }
                                                     }}
+
                                                 />
                                             </LocalizationProvider>
                                         )}
@@ -608,7 +611,7 @@ const PassengerForm = memo(() => {
                                                 <InputLabel htmlFor="passengerSexType-select">Passenger sex type</InputLabel>
                                                 <Select {...field} id="passengerSexType-select" label="passengerSexType">
                                                     <MenuItem value="m">male</MenuItem>
-                                                    <MenuItem value="l">female</MenuItem>
+                                                    <MenuItem value="f">female</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         )}
