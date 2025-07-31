@@ -246,6 +246,10 @@ const OrderDetail = () => {
         })
     }
 
+    const cancelPay = () => {
+
+    }
+
     const backOrder = () => {
         const referrer = document.referrer
         if(referrer){
@@ -303,7 +307,7 @@ const OrderDetail = () => {
                                             borderRadius: 0,
                                             fontSize: '1.2rem',
                                             ml: 'var(--pm-16)'
-                                        }}>Cancel</Button>
+                                        }} onClick={cancelPay}>Cancel</Button>
                                     </div>
 
                                 </div>

@@ -145,13 +145,8 @@ const orderInfoSlice = createSlice({
                 state.airChoose.result.itineraries.push(action.payload);
             }
         },
-        setPassenger: (state, action: PayloadAction<{passenger:Passenger,index:number}>) => {
-            const {passenger,index} = action.payload
-            if(index !== -1) {
-                state.passengers.splice(index, 1,passenger)
-                return
-            }
-            state.passengers.push(passenger);
+        setPassengers: (state, action: PayloadAction<{passengers:Passenger[]}>) => {
+            state.passengers = action.payload.passengers
         },
         setSelectPassengers: (state, action: PayloadAction<string>) => {
             const prev = state.selectPassengers;
@@ -194,7 +189,7 @@ export const {
     updateItineraries,
     setQueryDate,
     setResultItineraries,
-    setPassenger,
+    setPassengers,
     setSelectPassengers,
     setContacts,
     prevAirChoose,

@@ -16,7 +16,7 @@ export interface PriceSum {
     taxesAmount: number;
 }
 type IPassengerIdType =  'pp'| 'ni'| 'bd'
-type ITravelerSex = 'm'| 'f'
+export type ITravelerSex = 'm'| 'f'
 interface ExpandsSetting {
     indexId: string;
     value: string;
@@ -283,3 +283,44 @@ export type ComboItem = {
     lostPrice: LostPriceAmout;
     sourceItem: CombinationResult;
 };
+
+export interface QueryGlobalAirports {
+    countryEName: string,
+    countryCName: string,
+    countryCode: string,
+    timeZone: number,
+    cityEName: string,
+    cityCName: string,
+    cityCode: string,
+    airports:  {
+        airportEName: string,
+        airportCName: string,
+        airportCode: string
+    }[]
+}
+
+export interface IAirport {
+    airportEName: string,
+    airportCName: string,
+    airportCode: string
+    cityCName:string
+    cityCode: string,
+    cityEName: string,
+}
+export interface FilterAirport {
+    countryCName:string
+    countryCode:string
+    countryEName:string
+    timeZone:number
+    airports:IAirport[]
+
+}
+
+export type ITem = Omit<FQuery, 'itineraries'> & {
+    itineraries: {
+        itineraryNo: number
+        arrival: IAirport
+        departureDate: string
+        departure: IAirport
+    }[]
+}

@@ -1,184 +1,265 @@
-import {memo, useCallback, useRef, useState} from "react";
+import {forwardRef, memo, useEffect, useImperativeHandle, useRef} from "react";
 import styles from "@/component/passenger/styles.module.less";
 import {
     Grid, FormControl,
     InputLabel,
-    TextField, MenuItem, Select, Button, Chip, Dialog, DialogTitle,
-    DialogContent, DialogActions, InputAdornment, type SelectChangeEvent, ListSubheader,
+    TextField, MenuItem, Select,  Chip,
+    InputAdornment, type SelectChangeEvent, ListSubheader, Divider,
 } from "@mui/material";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Controller, useForm} from "react-hook-form";
+import {Controller, useFieldArray, useForm, useWatch} from "react-hook-form";
 import dayjs from 'dayjs';
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import type {Passenger} from "@/types/order.ts";
+import type {ITravelerSex, Passenger, PassengerType} from "@/types/order.ts";
 import phoneCodesGrouped from '@/assets/phone_codes_grouped.json'
 import {useDispatch, useSelector} from "react-redux";
-import {setPassenger} from "@/store/orderInfo.ts";
-import PassengerList from "@/component/passenger/list.tsx";
 import type {RootState} from "@/store";
+import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
+import type {Control} from "react-hook-form/dist/types/form";
+import {setPassengers} from "@/store/orderInfo.ts";
 
+type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'MS'
+const titleMapping = {
+    'Master': { type: 'chd', sex: 'm' },
+    'Miss': { type: 'chd', sex: 'f' },
+    'Mr': { type: 'adt', sex: 'm' },
+    'Mrs': { type: 'adt', sex: 'f' },
+    'MS': { type: 'adt', sex: 'f' },
+    // 可以添加更多映射
+};
 
-const passengerTitle:string[]=['Mr','Mrs','MS','Master','Miss']
-const PassengerForm = memo(() => {
-    const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
+const PhoneCodeCom = memo(({handleCodeChangeCom,fieldState,index,control}:{
+    handleCodeChangeCom:(event:SelectChangeEvent,index:number) => void
+    fieldState:ControllerFieldState
+    index:number
+    control:Control
+}) => {
+    const phoneCode = useWatch({
+        control,
+        name: `passengers.${index}.phoneCode`,
+    });
+    return (
+        <Select
+            value={phoneCode}
+            onChange={(event:SelectChangeEvent) => handleCodeChangeCom(event,index)}
+            disableUnderline
+            size="small"
+            renderValue={(selected) => selected}
+            error={!!fieldState.error}
+            MenuProps={{
+                PaperProps: {
+                    sx: {
+                        maxHeight: 300, // 👈 控制菜单高度
+                    },
+                },
+            }}
+        >
+            {Object.entries(phoneCodesGrouped).sort().flatMap(([letter, items]) => [
+                <ListSubheader key={`header-${letter}`}>{letter}</ListSubheader>,
+                ...items.map(({ code, label }) => (
+                    <MenuItem key={code + label} value={code}>
+                        {code} {label}
+                    </MenuItem>
+                ))
+            ])}
+        </Select>
+    )
+})
+
+const PassengerForm = forwardRef((_,ref) => {
+    const travelers = useSelector((state: RootState)=> state.ordersInfo.query.travelers)
+
+    useEffect(() => {
+        const newPassengers: (
+            Passenger & {
+            phoneCode?: string
+        })[] = []
+        travelers.forEach(traveler => {
+            for (let i = 0; i < traveler.passengerCount; i++) {
+                newPassengers.push({
+                    title:'',
+                    firstName:'',
+                    lastName:'',
+                    idNumber:'',
+                    idCountry:'',
+                    trCountry:'',
+                    issuedDate:null,
+                    birthday:null,
+                    expiryDate:null,
+                    phoneNumber:'',
+                    emailAddress:'',
+                    passengerIdType:'pp',
+                    passengerType: traveler.passengerType as PassengerType,
+                    passengerSexType:'m',
+                    phoneCode: '+86',
+                })
+            }
+        })
+
+        replace(newPassengers) // 替换已有的 passengers
+    }, [travelers]);
+
+    useImperativeHandle(ref, () => ({
+        submit: () => {
+            return new Promise<boolean>((resolve, reject) => {
+                handleSubmit(
+                    (data) => {
+                        onSubmit(data)
+                        .then(() => resolve(true))
+                        .catch((err) => reject(err));
+                    },
+                    () => {
+                        reject(new Error('Form validation failed'));
+                    }
+                )();
+            });
+        }
+    }));
+
 
     const dispatch = useDispatch()
 
-    const [openPassenger, setOpenPassenger] = useState(false)
 
-    const formType = useRef<number>(-1);
 
-    const {control, handleSubmit , reset , setValue , watch , setError} = useForm<Passenger & {
-        phoneCode?: string
+    const {control , setValue , handleSubmit , setError} = useForm<{
+        passengers:(
+            Passenger & {
+            phoneCode?: string
+        })[]
     }>({
         mode: 'onBlur',
         defaultValues: {
-            title:'',
-            firstName:'',
-            lastName:'',
-            idNumber:'',
-            idCountry:'',
-            trCountry:'',
-            issuedDate:null,
-            birthday:null,
-            expiryDate:null,
-            phoneNumber:'',
-            emailAddress:'',
-            passengerIdType:'pp',
-            passengerType:'adt',
-            passengerSexType:'m',
-            phoneCode: '+86',
+            passengers:[
+
+            ]
+
         }
     });
-    const phoneCode = watch('phoneCode');
 
-    const openPop = () => {
-        setOpenPassenger(true)
-    }
-    const handleClose = () => {
-        formType.current = -1
-        reset({
-            title:'',
-            firstName:'',
-            lastName:'',
-            idNumber:'',
-            idCountry:'',
-            trCountry:'',
-            issuedDate:null,
-            birthday:null,
-            expiryDate:null,
-            phoneNumber:'',
-            emailAddress:'',
-            passengerIdType:'pp',
-            passengerType:'adt',
-            passengerSexType:'m',
-            phoneCode: '+86',
-        })
-        setOpenPassenger(false)
-    }
+    const { fields, replace } = useFieldArray({
+        control,
+        name: 'passengers',
+    })
 
 
-    const onSubmit = (data: Passenger & {
-        phoneCode?: string
-    }) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (data.passengerType === 'adt' && data.birthday) {
-            const birthDate = dayjs(data.birthday).toDate();
+    const onSubmit = (data: { passengers: (Passenger & { phoneCode?: string })[] }) => {
+        return new Promise<void>((resolve, reject) => {
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-            const age =
-                today.getFullYear() - birthDate.getFullYear() -
-                (today.getMonth() < birthDate.getMonth() ||
-                (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate()) ? 1 : 0);
+            const idNumberMap = new Map<string, number>();
 
-            if (age < 18) {
-                setError('birthday', {
-                    type: 'manual',
-                    message: 'Passenger must be at least 18 years old for adult type.',
-                });
-                return;
+            for (let i = 0; i < data.passengers.length; i++) {
+                const passenger = data.passengers[i];
+
+                if (passenger.idNumber) {
+                    if (idNumberMap.has(passenger.idNumber)) {
+                        const duplicateIndex = idNumberMap.get(passenger.idNumber)!;
+                        setError(`passengers.${i}.idNumber`, {
+                            type: 'manual',
+                            message: 'Duplicate ID number with another passenger.',
+                        });
+                        setError(`passengers.${duplicateIndex}.idNumber`, {
+                            type: 'manual',
+                            message: 'Duplicate ID number with another passenger.',
+                        });
+                        reject(new Error('Duplicate ID number in form'));
+                        return;
+                    }
+                    idNumberMap.set(passenger.idNumber, i);
+                }
+
+                if (passenger.birthday) {
+                    const birthDate = dayjs(passenger.birthday).toDate();
+
+                    if (birthDate > today) {
+                        setError(`passengers.${i}.birthday`, {
+                            type: 'manual',
+                            message: 'Birthday cannot be in the future.',
+                        });
+                        reject(new Error('Birthday cannot be in the future.'));
+                        return;
+                    }
+
+                    const age =
+                        today.getFullYear() - birthDate.getFullYear() -
+                        (today.getMonth() < birthDate.getMonth() ||
+                        (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
+                            ? 1
+                            : 0);
+
+                    if (passenger.passengerType === 'adt' && age < 18) {
+                        setError(`passengers.${i}.birthday`, {
+                            type: 'manual',
+                            message: 'Adult must be at least 18 years old.',
+                        });
+                        reject(new Error('Adult must be at least 18 years old.'));
+                        return;
+                    }
+
+                    if (passenger.passengerType === 'chd' && (age < 2 || age >= 12)) {
+                        setError(`passengers.${i}.birthday`, {
+                            type: 'manual',
+                            message: 'Children must be between 2 and 11 years old.',
+                        });
+                        reject(new Error('Children must be between 2 and 11 years old.'));
+                        return;
+                    }
+
+                    if (passenger.passengerType === 'inf' && age >= 2) {
+                        setError(`passengers.${i}.birthday`, {
+                            type: 'manual',
+                            message: 'Infants must be under 2 years old.',
+                        });
+                        reject(new Error('Infants must be under 2 years old.'));
+                        return;
+                    }
+                }
+
+                if (passenger.issuedDate) {
+                    const issuedDate = dayjs(passenger.issuedDate).toDate();
+                    if (issuedDate > today) {
+                        setError(`passengers.${i}.issuedDate`, {
+                            type: 'manual',
+                            message: 'Release date cannot be later than today',
+                        });
+                        reject(new Error('Release date cannot be later than today'));
+                        return;
+                    }
+                }
+
+                if (passenger.expiryDate) {
+                    const expiryDate = dayjs(passenger.expiryDate).toDate();
+                    if (expiryDate < today) {
+                        setError(`passengers.${i}.expiryDate`, {
+                            type: 'manual',
+                            message: 'The certificate expiration date cannot be less than today',
+                        });
+                        reject(new Error('The certificate expiration date cannot be less than today'));
+                        return;
+                    }
+                }
+
+                passenger.fullName = `${passenger.lastName}/${passenger.firstName}`;
+                passenger.phoneNumber = (passenger.phoneCode + '/' + passenger.phoneNumber).replace(/^\+/, '');
+                delete passenger.phoneCode;
+                delete passenger.firstName;
+                delete passenger.lastName;
             }
-        }
-        if (data.issuedDate) {
-            const issuedDate = dayjs(data.issuedDate).toDate();
-            if (issuedDate > today) {
-                setError('issuedDate', {
-                    type: 'manual',
-                    message: 'Release date cannot be later than today',
-                });
-                return;
-            }
-        }
-        if (data.expiryDate) {
-            const expiryDate = dayjs(data.expiryDate).toDate();
-            if (expiryDate < today) {
-                setError('expiryDate', {
-                    type: 'manual',
-                    message: 'The certificate expiration date cannot be less than today',
-                });
-                return;
-            }
-        }
+
+            dispatch(setPassengers(data));
+
+            resolve();
+        });
+    };
 
 
-        if(formType.current === -1){
-            const index = passengers.findIndex((passenger) => passenger.idNumber === data.idNumber)
-            if(index > -1) {
-                setError('idNumber', {
-                    message: 'Duplicate user ID number',
-                })
-                return
-            }
-        }
-        const passengerValue = {
-            ...data,
-            fullName: data.lastName +'/'+ data.firstName,
-            phoneNumber: (data.phoneCode +'/'+ data.phoneNumber).replace(/^\+/, ''),
-        }
-        delete passengerValue.phoneCode
-        delete passengerValue.firstName
-        delete passengerValue.lastName
-        dispatch(setPassenger({
-            passenger:passengerValue,
-            index:formType.current
-        }))
-        handleClose()
+
+
+
+    const handleCodeChange = (event: SelectChangeEvent,index:number) => {
+        setValue(`passengers.${index}.phoneCode`,event.target.value)
     }
-
-    const handleCodeChange = (event: SelectChangeEvent) => {
-        setValue('phoneCode',event.target.value)
-    }
-
-    const handleEditPassenger = useCallback((idNumber:string) => {
-        openPop()
-        const resultForm = passengers.find(a => a.idNumber === idNumber)
-        const index = passengers.findIndex(a => a.idNumber === idNumber)
-        formType.current = index
-        if(!resultForm) return
-        const names = typeof resultForm.fullName === 'string' ? resultForm.fullName.split('/') : [];
-        const phone = typeof resultForm.phoneNumber === 'string' ? resultForm.phoneNumber.split('/') : [];
-        reset({
-            title:resultForm.title,
-            firstName:names.length ? names[1]:'',
-            lastName:names.length ? names[0]:'',
-            idNumber:resultForm.idNumber,
-            idCountry:resultForm.idCountry,
-            trCountry:resultForm.trCountry,
-            issuedDate:resultForm.issuedDate,
-            birthday:resultForm.birthday,
-            expiryDate:resultForm.expiryDate,
-            phoneNumber:phone.length ? phone[1]:'',
-            emailAddress:resultForm.emailAddress,
-            passengerIdType: resultForm.passengerIdType,
-            passengerType:resultForm.passengerType,
-            passengerSexType:resultForm.passengerSexType,
-            phoneCode: phone.length ? `+${phone[0]}`:'',
-        })
-    }, [passengers]);
-
 
     return (
         <div className={`${styles.passengerFormContainer} full-width`}>
@@ -187,469 +268,432 @@ const PassengerForm = memo(() => {
                     Who's Traveling?
                 </div>
             </div>
-            {
-                passengers.length ?
-                    <div className={styles.commonBox}>
-                        <div className={styles.passengerBox}>
-                            {
-                                passengers.map((passenger,passengerIndex) => <PassengerList key={`${passenger.idNumber}-${passengerIndex}`} editPassenger={handleEditPassenger} passenger={passenger} />)
+            <div className={styles.commonBox}>
+                <form>
+                    {
+                        fields.map((field,index) => {
+                            let passengerTitleFilter:PassengerTitle|string[] = []
+                            switch (field.passengerType) {
+                                case "adt":
+                                    passengerTitleFilter = ['Mr','Mrs','MS']
+                                    break
+                                case 'chd':
+                                    passengerTitleFilter = ['Master','Miss']
+                                    break
+                                case 'inf':
+                                    passengerTitleFilter = ['']
+                                    break
+
                             }
-                        </div>
-                    </div>:<></>
-            }
+                            return (
+                                <div key={field.id} style={{margin:'30px 0'}}>
+                                    <Divider style={{marginBottom:'30px'}}>Passenger ({field.passengerType})</Divider>
+                                    <Grid container spacing={2}>
+                                        <Grid size={4}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.title`}
+                                                render={({field}) => (
+                                                    <FormControl fullWidth>
+                                                        <InputLabel id="passengerIdType-Title">Passenger Title</InputLabel>
+                                                        <Select
+                                                            {...field}
+                                                            labelId="passenger Title"
+                                                            label="Passenger Title"
+                                                            onChange={(e) => {
+                                                                field.onChange(e)
+                                                                const {value} = e.target
+                                                                const mapping = titleMapping[value as PassengerTitle] || { type: 'inf', sex: '' };
+                                                                setValue(`passengers.${index}.passengerType`, mapping.type as PassengerType);
+                                                                setValue(`passengers.${index}.passengerSexType`, mapping.sex as ITravelerSex);
+                                                            }}
+                                                        >
+                                                            {
+                                                                passengerTitleFilter.map(pt => <MenuItem value={pt} key={pt}>{pt||'none'}</MenuItem>)
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.firstName`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) {
+                                                            return 'Please enter your Given Name';
+                                                        }
 
-            <div className={`${styles.addForm} cursor-p `} onClick={openPop}>
-                <div className={`${styles.textA} s-flex ai-ct jc-ct`}>
-                    <span>Add Passengers</span>
-                    <ControlPointIcon sx={{
-                        fontSize: 18,
-                        ml: 1,
-                    }}/>
-                </div>
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({field, fieldState}) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="Given Name"
+                                                        error={!!fieldState.error}
+                                                        onChange={(e) => {
+                                                            // 将输入转换为大写并过滤非字母
+                                                            const val = e.target.value.toUpperCase();
+                                                            field.onChange(val);
+                                                        }}
+                                                    />
+
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.lastName`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) {
+                                                            return 'Please enter your Last name';
+                                                        }
+
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({field, fieldState}) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="Last name"
+                                                        error={!!fieldState.error}
+                                                        onChange={(e) => {
+                                                            // 将输入转换为大写并过滤非字母
+                                                            const val = e.target.value.toUpperCase();
+                                                            field.onChange(val);
+                                                        }}
+
+                                                    />
+
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.idNumber`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please provide an ID number'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="ID number"
+                                                        error={!!fieldState.error}
+                                                        helperText={fieldState.error?.message}
+                                                        onChange={(e) => {
+                                                            // 将输入转换为大写并过滤非字母
+                                                            const val = e.target.value.toUpperCase();
+                                                            field.onChange(val);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.idCountry`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) return "Please enter the passenger's Id country";
+                                                        if (!/^[A-Z]{2}$/.test(value)) return 'Must be exactly 2 uppercase letters';
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({field, fieldState}) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="ID country"
+                                                        error={!!fieldState.error}
+                                                        helperText={fieldState.error?.message}
+                                                        onChange={(e) => {
+                                                            // 将输入转换为大写并过滤非字母
+                                                            let val = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                                                            if (val.length > 2) val = val.slice(0, 2);
+                                                            field.onChange(val);
+                                                        }}
+                                                    />
+
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.trCountry`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) return "Please enter the passenger's Issue country";
+                                                        if (!/^[A-Z]{2}$/.test(value)) return 'Must be exactly 2 uppercase letters';
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="Issue country"
+                                                        error={!!fieldState.error}
+                                                        helperText={fieldState.error?.message}
+                                                        onChange={(e) => {
+                                                            // 将输入转换为大写并过滤非字母
+                                                            let val = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+                                                            if (val.length > 2) val = val.slice(0, 2);
+                                                            field.onChange(val);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.birthday`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please provide a date of birthday'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label="Date of birth"
+                                                            format="DD/MM/YYYY"
+                                                            value={field.value ? dayjs(field.value) : null}
+                                                            onChange={(date) => {
+                                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+
+                                                                field.onChange(formatted); // 存为字符串
+                                                            }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    error: !!fieldState.error,
+                                                                    helperText: fieldState.error?.message
+                                                                }
+                                                            }}
+                                                        />
+                                                    </LocalizationProvider>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.issuedDate`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please provide a date of issuedDate'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label='Date of issued'
+                                                            format="DD/MM/YYYY"
+                                                            value={field.value ? dayjs(field.value) : null}
+                                                            onChange={(date) => {
+                                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+                                                                field.onChange(formatted); // 存为字符串
+                                                            }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    error: !!fieldState.error,
+                                                                    helperText: fieldState.error?.message
+                                                                },
+                                                            }}
+                                                        />
+                                                    </LocalizationProvider>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.expiryDate`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please provide a date of expiryDate'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label="Date of expiry"
+                                                            format="DD/MM/YYYY"
+                                                            value={field.value ? dayjs(field.value) : null}
+                                                            onChange={(date) => {
+                                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+                                                                field.onChange(formatted); // 存为字符串
+                                                            }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    error: !!fieldState.error,
+                                                                    helperText: fieldState.error?.message,
+                                                                }
+                                                            }}
+
+                                                        />
+                                                    </LocalizationProvider>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={6}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.phoneNumber`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) return 'Please enter the passenger\'s Phone number';
+                                                        if (!/^\d+$/.test(value)) return 'Only numbers are allowed';
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({field, fieldState}) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="Phone number"
+                                                        type={'tel'}
+                                                        error={!!fieldState.error}
+                                                        onChange={e => {
+                                                            const val = e.target.value;
+                                                            // 只允许数字
+                                                            if (/^\d*$/.test(val)) {
+                                                                field.onChange(val);
+                                                            }
+                                                        }}
+                                                        slotProps={{
+                                                            input: {
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <FormControl variant="standard" sx={{ minWidth: 60 }}>
+                                                                            <PhoneCodeCom handleCodeChangeCom={handleCodeChange} control={control} index={index} fieldState={fieldState} />
+                                                                        </FormControl>
+                                                                    </InputAdornment>
+                                                                )
+                                                            }
+                                                        }}
+                                                    />
+
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={6}>
+                                            <Controller
+                                                control={control}
+                                                name={`passengers.${index}.emailAddress`}
+                                                rules={{
+                                                    validate: (value) => {
+                                                        if (!value) {
+                                                            return 'Please provide an Email address.';
+                                                        }
+                                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                        if (!emailRegex.test(value)) {
+                                                            return 'Please enter a valid Email address.';
+                                                        }
+                                                        return true;
+                                                    }
+                                                }}
+                                                render={({field, fieldState}) => (
+                                                    <TextField
+                                                        {...field}
+                                                        fullWidth
+                                                        label="Email address"
+                                                        error={!!fieldState.error}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.passengerIdType`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please select a Passenger Id type'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <FormControl fullWidth error={!!fieldState.error}>
+                                                        <InputLabel id="passengerIdType-label">Passenger Id type</InputLabel>
+                                                        <Select
+                                                            {...field}
+                                                            labelId="passengerIdType-label"
+                                                            label="Passenger Id type"
+                                                        >
+                                                            <MenuItem value="pp">pp</MenuItem>
+                                                            <MenuItem value="ni">ni</MenuItem>
+                                                            <MenuItem value="bd">bd</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.passengerType`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please select a passenger Type'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <FormControl fullWidth error={!!fieldState.error}>
+                                                        <InputLabel htmlFor="passengerType-select">passenger Type</InputLabel>
+                                                        <Select {...field} id="passengerType-select" disabled label="passenger Type">
+                                                            <MenuItem value="adt">Adult</MenuItem>
+                                                            <MenuItem value="chd">Child</MenuItem>
+                                                            <MenuItem value="inf">infant</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.passengerSexType`}
+                                                control={control}
+                                                rules={{
+                                                    validate: value => value ? true : 'Please select a passengerSexType'
+                                                }}
+                                                render={({ field, fieldState }) => (
+                                                    <FormControl fullWidth error={!!fieldState.error}>
+                                                        <InputLabel htmlFor="passengerSexType-select">Passenger sex type</InputLabel>
+                                                        <Select {...field} id="passengerSexType-select" label="passengerSexType">
+                                                            <MenuItem value="m">male</MenuItem>
+                                                            <MenuItem value="f">female</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            )
+                        })
+                    }
+                </form>
+                <Chip label={
+                    <span>Please enter the name exactly as it appears on your travel documents for check-in. If the name is incorrect, you may not be able to board your flight and a cancellation fee will be charged.</span>
+                } sx={{
+                    borderRadius: 0,
+                    fontSize: 12,
+                    backgroundColor: '#f5f7fa',
+                    color: 'var(--text-color)',
+                    height: 'auto',
+                    padding: 'var(--pm-16) !important',
+                    '& .MuiChip-label': {
+                        display: 'block',
+                        whiteSpace: 'normal',
+                    },
+                }} />
             </div>
-            <Dialog
-                open={openPassenger}
-                maxWidth={'md'}
-                onClose={handleClose}>
-                <DialogTitle>
-                    Passenger
-                </DialogTitle>
-                <DialogContent>
-                    <div className={styles.commonBox}>
-                        <form>
-                            <Grid container spacing={2}>
-                                <Grid size={4}>
-                                    <Controller
-                                        control={control}
-                                        name="title"
-                                        render={({field}) => (
-                                            <FormControl fullWidth>
-                                                <InputLabel id="passengerIdType-Title">Passenger Title</InputLabel>
-                                                <Select
-                                                    {...field}
-                                                    labelId="passenger Title"
-                                                    label="Passenger Title"
-                                                >
-                                                    {
-                                                        passengerTitle.map(pt => <MenuItem value={pt} key={pt}>{pt}</MenuItem>)
-
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        control={control}
-                                        name="firstName"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) {
-                                                    return 'Please enter your Given Name';
-                                                }
-
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="Given Name"
-                                                error={!!fieldState.error}
-                                                onChange={(e) => {
-                                                    // 将输入转换为大写并过滤非字母
-                                                    const val = e.target.value.toUpperCase();
-                                                    field.onChange(val);
-                                                }}
-                                            />
-
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        control={control}
-                                        name="lastName"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) {
-                                                    return 'Please enter your Last name';
-                                                }
-
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="Last name"
-                                                error={!!fieldState.error}
-                                                onChange={(e) => {
-                                                    // 将输入转换为大写并过滤非字母
-                                                    const val = e.target.value.toUpperCase();
-                                                    field.onChange(val);
-                                                }}
-
-                                            />
-
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="idNumber"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please provide an ID number'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="ID number"
-                                                error={!!fieldState.error}
-                                                helperText={fieldState.error?.message}
-                                                slotProps={{
-                                                    input: {
-                                                        endAdornment: <HelpOutlineIcon/>
-                                                    }
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        control={control}
-                                        name="idCountry"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) return "Please enter the passenger's Id country";
-                                                if (!/^[A-Z]{2}$/.test(value)) return 'Must be exactly 2 uppercase letters';
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="ID country"
-                                                error={!!fieldState.error}
-                                                helperText={fieldState.error?.message}
-                                                onChange={(e) => {
-                                                    // 将输入转换为大写并过滤非字母
-                                                    let val = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
-                                                    if (val.length > 2) val = val.slice(0, 2);
-                                                    field.onChange(val);
-                                                }}
-                                            />
-
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        control={control}
-                                        name="trCountry"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) return "Please enter the passenger's TR country";
-                                                if (!/^[A-Z]{2}$/.test(value)) return 'Must be exactly 2 uppercase letters';
-                                                return true;
-                                            }
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="TR country"
-                                                error={!!fieldState.error}
-                                                helperText={fieldState.error?.message}
-                                                onChange={(e) => {
-                                                    // 将输入转换为大写并过滤非字母
-                                                    let val = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
-                                                    if (val.length > 2) val = val.slice(0, 2);
-                                                    field.onChange(val);
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="issuedDate"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please provide a date of issuedDate'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    label='Date of issued'
-                                                    format="DD/MM/YYYY"
-                                                    value={field.value ? dayjs(field.value) : null}
-                                                    onChange={(date) => {
-                                                        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-                                                        field.onChange(formatted); // 存为字符串
-                                                    }}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            error: !!fieldState.error,
-                                                            helperText: fieldState.error?.message
-                                                        },
-                                                    }}
-                                                />
-                                            </LocalizationProvider>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="birthday"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please provide a date of birthday'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    label="Date of birth"
-                                                    format="DD/MM/YYYY"
-                                                    value={field.value ? dayjs(field.value) : null}
-                                                    onChange={(date) => {
-                                                        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-
-                                                        field.onChange(formatted); // 存为字符串
-                                                    }}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            error: !!fieldState.error,
-                                                            helperText: fieldState.error?.message
-                                                        }
-                                                    }}
-                                                />
-                                            </LocalizationProvider>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="expiryDate"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please provide a date of expiryDate'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DatePicker
-                                                    label="Date of expiry"
-                                                    format="DD/MM/YYYY"
-                                                    value={field.value ? dayjs(field.value) : null}
-                                                    onChange={(date) => {
-                                                        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-                                                        field.onChange(formatted); // 存为字符串
-                                                    }}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            error: !!fieldState.error,
-                                                            helperText: fieldState.error?.message,
-                                                        }
-                                                    }}
-
-                                                />
-                                            </LocalizationProvider>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={6}>
-                                    <Controller
-                                        control={control}
-                                        name="phoneNumber"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) return 'Please enter the passenger\'s Phone number';
-                                                if (!/^\d+$/.test(value)) return 'Only numbers are allowed';
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="Phone number"
-                                                type={'tel'}
-                                                error={!!fieldState.error}
-                                                onChange={e => {
-                                                    const val = e.target.value;
-                                                    // 只允许数字
-                                                    if (/^\d*$/.test(val)) {
-                                                        field.onChange(val);
-                                                    }
-                                                }}
-                                                slotProps={{
-                                                    input: {
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <FormControl variant="standard" sx={{ minWidth: 60 }}>
-                                                                    <Select
-                                                                        value={phoneCode}
-                                                                        onChange={handleCodeChange}
-                                                                        disableUnderline
-                                                                        size="small"
-                                                                        renderValue={(selected) => selected}
-                                                                        error={!!fieldState.error}
-                                                                        MenuProps={{
-                                                                            PaperProps: {
-                                                                                sx: {
-                                                                                    maxHeight: 300, // 👈 控制菜单高度
-                                                                                },
-                                                                            },
-                                                                        }}
-                                                                    >
-                                                                        {Object.entries(phoneCodesGrouped).sort().flatMap(([letter, items]) => [
-                                                                            <ListSubheader key={`header-${letter}`}>{letter}</ListSubheader>,
-                                                                            ...items.map(({ code, label }) => (
-                                                                                <MenuItem key={code + label} value={code}>
-                                                                                    {code} {label}
-                                                                                </MenuItem>
-                                                                            ))
-                                                                        ])}
-                                                                    </Select>
-                                                                </FormControl>
-                                                            </InputAdornment>
-                                                        )
-                                                    }
-                                                }}
-                                            />
-
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={6}>
-                                    <Controller
-                                        control={control}
-                                        name="emailAddress"
-                                        rules={{
-                                            validate: (value) => {
-                                                if (!value) {
-                                                    return 'Please provide an Email address.';
-                                                }
-                                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                                                if (!emailRegex.test(value)) {
-                                                    return 'Please enter a valid Email address.';
-                                                }
-                                                return true;
-                                            }
-                                        }}
-                                        render={({field, fieldState}) => (
-                                            <TextField
-                                                {...field}
-                                                fullWidth
-                                                label="Email address"
-                                                error={!!fieldState.error}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="passengerIdType"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please select a Passenger Id type'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <FormControl fullWidth error={!!fieldState.error}>
-                                                <InputLabel id="passengerIdType-label">Passenger Id type</InputLabel>
-                                                <Select
-                                                    {...field}
-                                                    labelId="passengerIdType-label"
-                                                    label="Passenger Id type"
-                                                >
-                                                    <MenuItem value="pp">pp</MenuItem>
-                                                    <MenuItem value="ni">ni</MenuItem>
-                                                    <MenuItem value="bd">bd</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="passengerType"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please select a passenger Type'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <FormControl fullWidth error={!!fieldState.error}>
-                                                <InputLabel htmlFor="passengerType-select">passenger Type</InputLabel>
-                                                <Select {...field} id="passengerType-select" label="passenger Type">
-                                                    <MenuItem value="adt">Adult</MenuItem>
-                                                    <MenuItem value="chd">Child</MenuItem>
-                                                    <MenuItem value="inf">infant</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={4}>
-                                    <Controller
-                                        name="passengerSexType"
-                                        control={control}
-                                        rules={{
-                                            validate: value => value ? true : 'Please select a passengerSexType'
-                                        }}
-                                        render={({ field, fieldState }) => (
-                                            <FormControl fullWidth error={!!fieldState.error}>
-                                                <InputLabel htmlFor="passengerSexType-select">Passenger sex type</InputLabel>
-                                                <Select {...field} id="passengerSexType-select" label="passengerSexType">
-                                                    <MenuItem value="m">male</MenuItem>
-                                                    <MenuItem value="f">female</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={12}>
-                                    <Chip label={
-                                        <span>Please enter the name exactly as it appears on your travel documents for check-in. If the name is incorrect, you may not be able to board your flight and a cancellation fee will be charged.</span>
-                                    } sx={{
-                                        borderRadius: 0,
-                                        fontSize: 12,
-                                        backgroundColor: '#f5f7fa',
-                                        color: 'var(--text-color)',
-                                        height: 'auto',
-                                        padding: 'var(--pm-16) !important',
-                                        '& .MuiChip-label': {
-                                            display: 'block',
-                                            whiteSpace: 'normal',
-                                        },
-                                    }} />
-                                </Grid>
-                                <Grid size={12}>
-
-                                </Grid>
-                            </Grid>
-                        </form>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button type="submit" onClick={handleSubmit(onSubmit)} sx={{
-                        backgroundColor: 'var(--active-color)',
-                        color:'var(--vt-c-white)',
-                        fontSize: 14
-                    }} fullWidth>Save</Button>
-                </DialogActions>
-            </Dialog>
         </div>
     )
 })
 
-export default PassengerForm
+export default memo(PassengerForm)

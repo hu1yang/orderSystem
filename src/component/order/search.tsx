@@ -8,17 +8,15 @@ import {
     MenuItem,
     Popover,
     Radio,
-    RadioGroup, Select, Snackbar, Stack, TextField,
+    RadioGroup, Select, Snackbar, Stack,
     Typography
 } from '@mui/material';
 import styles from './styles.module.less'
-import {type ChangeEvent, memo, useCallback, useEffect, useMemo, useState} from "react";
+import {memo, useCallback, useMemo, useRef, useState} from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import ConnectingAirportsIcon from '@mui/icons-material/ConnectingAirports';
-import AddLocationIcon from '@mui/icons-material/AddLocation';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
@@ -28,47 +26,23 @@ import {format} from 'date-fns';
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
 
-import type {CabinLevel, FQuery, ItineraryType, PassengerType, Travelers} from "@/types/order.ts";
-import {useDispatch} from "react-redux";
+import type {
+    FilterAirport,
+    FQuery, IAirport, ITem,
+    ItineraryType,
+    PassengerType,
+} from "@/types/order.ts";
+import {useDispatch, useSelector} from "react-redux";
 import {
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
-import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
+import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
 import dayjs from "dayjs";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
-import {airJSON} from "@/air.ts";
+import {debounce, flattenByCountry} from "@/utils/public.ts";
+import type {RootState} from "@/store";
+import {setCabinValue, setDaValue, setLocalDate, setRadioType, setTravelers} from "@/store/searchInfo.ts";
 
-interface IdaValue{
-    arrival: string
-    departure:string
-}
-
-const regions = [
-    {
-        title: 'Asia',
-        cities: ['Shanghai', 'Beijing', 'Chengdu', 'Guangzhou', 'Urumqi', 'Shenzhen'],
-    },
-    {
-        title: 'Europe',
-        cities: ['London', 'Paris', 'Rome', 'Milan', 'Barcelona', 'Madrid'],
-    },
-    {
-        title: 'North America',
-        cities: ['Los Angeles', 'New York', 'San Francisco', 'Boston', 'Toronto', 'Vancouver'],
-    },
-    {
-        title: 'South America',
-        cities: ['Sao Paulo', 'Rio de Janeiro', 'Buenos Aires', 'Santiago', 'Lima', 'Bogota'],
-    },
-    {
-        title: 'Africa',
-        cities: ['Cairo', 'Nairobi', 'Casablanca', 'Dar es salaam', 'Johannesburg', 'Mauritius'],
-    },
-    {
-        title: 'Oceania',
-        cities: ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Auckland', 'Christchurch'],
-    },
-];
 
 const cabinOptions = [
     { label: 'Economy Class', value: 'y' },
@@ -76,14 +50,16 @@ const cabinOptions = [
     { label: 'First Class', value: 'f' },
 ];
 
-const AddressCard = memo(({style,addressName}:{style?:React.CSSProperties,addressName:string}) => {
+
+const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IAirport}) => {
     return (
         <div className={`${styles.addressCard} cursor-p`} style={style}>
-            <div>
-                <span>{addressName}</span>
-                <p>All airports</p>
-            </div>
-            <CancelIcon className='cursor-p' />
+            {
+                !!address &&  <div>
+                    <span>{address.cityEName}</span>
+                    <p>{address.airportEName}</p>
+                </div>
+            }
         </div>
     )
 })
@@ -141,134 +117,122 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
     </>
 ))
 
-const Airports = memo(({daValue,changeValue}:{
-    daValue: IdaValue
-    changeValue:(type:'departure'|'arrival'|'journey',value:string|IdaValue) => void;
-}) => {
+const Airports = () => {
+    const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
+
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
-    const popId = useMemo(() => open ? 'airportId':undefined ,[open])
-    const [addressChoose, setAddressChoose] = useState('')
-    const openPop = useCallback((event:React.MouseEvent<HTMLDivElement>,name:string) => {
-        setAddressChoose(name)
+    const [types, setTypes] = useState<'departure'|'arrival'>('departure')
+
+
+    const inputRef = useRef<HTMLInputElement|null>(null);
+
+    const openPop = useCallback((event:React.MouseEvent<HTMLDivElement>,type:'departure'|'arrival') => {
+        setTypes(type)
         setAnchorEl(event.currentTarget)
+        setTimeout(() => {
+            if(inputRef.current){
+                inputRef.current.focus();
+            }
+        },0)
     },[])
 
     const closePop = useCallback(() => {
-        // 移除焦点（失焦）
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
         }
         setAnchorEl(null)
+        setTypes('departure')
     },[])
 
-    const handleInput = (e: ChangeEvent<HTMLInputElement>,type:'departure'|'arrival') => {
-        const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3)
-        e.target.value = value
-        changeValue(type,value)
+    const handleInput = (airport: IAirport) => {
+        dispatch(setDaValue({
+            ...daValue,
+            [types]:airport
+        }))
+        closePop()
     }
 
-    const changeJourney = () => {
-        changeValue('journey', {
-            departure:daValue.arrival,
-            arrival:daValue.departure
+    const [searchList, setSearchList] = useState<FilterAirport[]>([])
+
+    const searchCity = debounce((value: string) => {
+        fuzzyQueryGlobalAirportsAgent(value).then(res => {
+            setSearchList(flattenByCountry(res))
         })
-    }
+    }, 300)
+
 
     return (
         <div className={`s-flex s-flex ai-ct`}>
-            {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].departure)}>*/}
-            {/*    <AddressCard addressName={query.itineraries[0].departure} />*/}
-            {/*</InputModel>*/}
-            <TextField variant="outlined" value={daValue.departure} sx={{
-                width: 'var(--put-width)',
-                height: 'var(--put-height)',
-                '& .MuiOutlinedInput-root': {
-                    height: '100%',       // 确保 input 区域也匹配 height
-                    '& fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                        borderRadius: 'var(--put-border-raduis)',
-                    },
-                    '&:hover fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                    },
-                },
-            }} onInput={(e:ChangeEvent<HTMLInputElement>) => handleInput(e,'departure')} />
-            <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`} onClick={changeJourney}>
+            <InputModel openPop={(event) => openPop(event,'departure')}>
+                {
+                    !!daValue.departure && <AddressCard address={daValue.departure} />
+                }
+            </InputModel>
+            <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`} onClick={() =>  dispatch(setDaValue({
+                departure:daValue.arrival || null,
+                arrival:daValue.departure || null
+            }))}>
                 <ConnectingAirportsIcon />
             </div>
-            <TextField variant="outlined" value={daValue.arrival}  sx={{
-                width: 'var(--put-width)',
-                height: 'var(--put-height)',
-                '& .MuiOutlinedInput-root': {
-                    height: '100%',       // 确保 input 区域也匹配 height
-                    '& fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                        borderRadius: 'var(--put-border-raduis)',
-                    },
-                    '&:hover fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: 'var(--put-border-color)',
-                    },
-                },
-            }} onInput={(e:ChangeEvent<HTMLInputElement>) => handleInput(e,'arrival')} />
-
-            {/*<InputModel openPop={(event) => openPop(event,query.itineraries[0].arrival)}>*/}
-            {/*    <AddressCard style={{marginLeft: '4px'}} addressName={query.itineraries[0].arrival} />*/}
-            {/*</InputModel>*/}
-            <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
+            <InputModel openPop={(event) => openPop(event,'arrival')}>
+                {
+                    !!daValue.arrival && <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} />
+                }
+            </InputModel>
+            <InputPop id='searchInputPop' open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
                     <div className={styles.popBoxSearch}>
-                        <InputModel style={{width: '100%',}}>
-                            <AddressCard  addressName={addressChoose} />
-                            <input type="text" className={styles.inputBox}/>
+                        <InputModel style={{width: '100%'}}>
+                            <input type="text" ref={inputRef} onChange={(e) => searchCity(e.currentTarget.value)}
+                                   className={`${styles.inputBox} flex-1`}/>
                         </InputModel>
                     </div>
                     <Divider />
                     <div className={styles.popScroll}>
-                        <div className={styles.currentAddress}>
-                            <div className={styles.currentAddressTitle}>
-                                <span>Current Location / Recent Searches</span>
-                            </div>
-                            <div className={styles.addressBox}>
-                                <Grid container spacing={2}>
-                                    <Grid size={4}>
-                                        <div className={`${styles.addressItem} s-flex ai-ct jc-ct cursor-p`}>
-                                            <AddLocationIcon />
-                                            <span>Beijing</span>
-                                        </div>
-                                    </Grid>
+                        {/*<div className={styles.currentAddress}>*/}
+                        {/*    <div className={styles.currentAddressTitle}>*/}
+                        {/*        <span>Recent Searches</span>*/}
+                        {/*    </div>*/}
+                        {/*    <div className={styles.addressBox}>*/}
+                        {/*        <Grid container spacing={2}>*/}
+                        {/*            <Grid size={4}>*/}
+                        {/*                <div className={`${styles.addressItem} s-flex ai-ct jc-ct cursor-p`}>*/}
+                        {/*                    <AddLocationIcon />*/}
+                        {/*                    <span>Beijing</span>*/}
+                        {/*                </div>*/}
+                        {/*            </Grid>*/}
 
-                                </Grid>
-                            </div>
-                        </div>
-                        <Divider />
+                        {/*        </Grid>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        {/*<Divider />*/}
                         {
-                            regions.map((region) => {
+                            searchList.map((region) => {
                                 return (
-                                    <div key={region.title}>
+                                    <div key={region.countryCode}>
                                         <div className={styles.addressArea}>
-                                            <span>{region.title}</span>
+                                            <span>{region.countryEName}</span>
                                         </div>
                                         <div className={styles.addressBox}>
                                             <Grid container spacing={2}>
                                                 {
-                                                    region.cities.map(citie => (
-                                                        <Grid size={4} key={citie}>
-                                                            <div className={`${styles.addressItem} s-flex ai-ct jc-ct cursor-p`}>
-                                                                <span>{citie}</span>
+                                                    region.airports.map(airport => (
+                                                        <Grid key={airport.airportCode}>
+                                                            <div
+                                                                onClick={() => handleInput(airport)}
+                                                                className={`${styles.addressItem} s-flex flex-dir ai-fs jc-ct cursor-p`}>
+                                                                <span>{airport.cityEName}</span>
+                                                                <span>{airport.airportEName}</span>
                                                             </div>
                                                         </Grid>
                                                     ))
                                                 }
                                             </Grid>
                                         </div>
+
                                     </div>
                                 )
                             })
@@ -278,32 +242,53 @@ const Airports = memo(({daValue,changeValue}:{
             </InputPop>
         </div>
     )
-})
+}
 
-const TimerChoose = memo(({localDate,isRound,setLocalDate}:{
-    localDate: DateRange | Date | undefined
+const TimerChoose = memo(({isRound}:{
     isRound: boolean
-    setLocalDate: (date:DateRange | Date) => void
 }) => {
+    const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
+
+    const dispatch = useDispatch()
+
+    const [dataChoose, setDataChoose] = useState<1|2>(1)
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
     const open = Boolean(anchorEl)
-    const popId = open ? 'timer-choose-pop' : undefined
+    const [dateLocal, setDateLocal] = useState<DateRange | Date | undefined>(localDate)
+
     const openPop = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget)
-    }, [])
+        setDateLocal(undefined)
+    }, [isRound])
+
     const closePop = useCallback(() => {
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur()
         }
         setAnchorEl(null)
-    }, [])
+        if(!dateLocal){
+            setDateLocal(localDate)
+        }
+    }, [localDate,dateLocal])
 
 
 
 
     const handleSelect = (val: DateRange | Date | undefined) => {
         if (!val) return
-        setLocalDate(val)
+        setDateLocal(val)
+        if(isRound){
+            if(dataChoose === 1){
+                setDataChoose(2)
+            }else{
+                setDataChoose(1)
+                dispatch(setLocalDate(val))
+                closePop()
+            }
+        }else{
+            dispatch(setLocalDate(val))
+            closePop()
+        }
     }
 
     const formatRange = useMemo(() => {
@@ -328,13 +313,13 @@ const TimerChoose = memo(({localDate,isRound,setLocalDate}:{
                     {formatRange}
                 </div>
             </InputModel>
-            <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
+            <InputPop id={'dayPicker'} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.dateClass}>
                     {
                         isRound ? (
                             <DayPicker
                                 mode="range"
-                                selected={localDate as DateRange}
+                                selected={dateLocal as DateRange}
                                 onSelect={handleSelect}
                                 disabled={{ before: new Date() }}
                                 numberOfMonths={2}
@@ -357,16 +342,14 @@ const TimerChoose = memo(({localDate,isRound,setLocalDate}:{
     )
 })
 
-const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
-    travelers: Travelers[]
-    setTravelers: (traveler: Travelers) => void
-    cabinValue: CabinLevel
-    setCabinValue:(val:CabinLevel) => void
-}) => {
+const PersonChoose = () => {
+    const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
+    const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
+
+    const dispatch = useDispatch()
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement|null>(null)
     const open = useMemo(() => Boolean(anchorEl),[anchorEl])
-    const popId = useMemo(() => anchorEl? 'timer-choose-pop': undefined,[anchorEl])
     const openPop = useCallback((event:React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget)
     },[])
@@ -408,10 +391,10 @@ const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
             } else {
                 count = Math.max(traveler.passengerType === 'adt' ? 1 : 0, count - 1)
             }
-            setTravelers({
+            dispatch(setTravelers({
                 ...traveler,
                 passengerCount: count,
-            })
+            }))
         }
 
         return (
@@ -447,7 +430,7 @@ const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
                 <PersonChild />
                 <KeyboardArrowDownIcon sx={{fontSize: 24}} className={`${styles.arrowDownIcon} ${open && styles.open}`} />
             </InputModel>
-            <InputPop id={popId} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
+            <InputPop id={'person'} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
                 <div className={styles.popBox}>
                     <div className={`${styles.popTitle} s-flex jc-fe`}>
                         <PersonChild />
@@ -472,7 +455,7 @@ const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
                             }
                         </div>
                         <FormControl sx={{  width: '100%' }}>
-                            <Select labelId='Cabin' size='small' value={cabinValue} onChange={(event) => setCabinValue(event.target.value)} id='Cabin' sx={{ width: '100%' }}>
+                            <Select labelId='Cabin' size='small' value={cabinValue} onChange={(event) => dispatch(setCabinValue(event.target.value))} id='Cabin' sx={{ width: '100%' }}>
                                 {
                                     cabinOptions.map(option => (
                                         <MenuItem value={option.value} key={option.value}>{option.label}</MenuItem>
@@ -485,80 +468,56 @@ const PersonChoose = memo(({travelers,setTravelers,cabinValue,setCabinValue}:{
             </InputPop>
         </>
     )
-})
+}
 
-const SearchComponent = memo(() => {
+const SearchComponent = () => {
     const dispatch = useDispatch()
-    const [daValue, setDaValue] = useState<IdaValue>({
-        departure:'',
-        arrival:''
-    })
+    const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
+    const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
+    const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
+    const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
+    const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
+
     const [searchLoad, setSearchLoad] = useState<boolean>(false)
-    const [radioType, setRadioType] = useState<ItineraryType>('oneWay')
     const isRound = useMemo(() => radioType === 'round', [radioType])
-    const lcaolDateValue = useMemo(() => {
-        if (isRound) {
-            const from = dayjs().format('YYYY-MM-DD')
-            const to = dayjs().add(1,'day').format('YYYY-MM-DD')
-            return from && to ? { from: new Date(from), to: new Date(to) } : undefined
-        } else {
-            const date = dayjs().format('YYYY-MM-DD')
-            return date ? new Date(date) : undefined
-        }
-    },[isRound])
-    const [localDate, setLocalDate] = useState<DateRange | Date | undefined>(lcaolDateValue)
-    const [travelers, setTravelers] = useState<Travelers[]>([
-        { passengerCount: 1, passengerType: 'adt' },
-        { passengerCount: 0, passengerType: 'chd' },
-        { passengerCount: 0, passengerType: 'inf' },
-    ])
-    const [cabinValue, setCabinValue] = useState<CabinLevel>('y')
     const [errOpen, setErrOpen] = useState(false)
     const [errMessage, setErrMessage] = useState('')
 
 
-    useEffect(() => {
-        setLocalDate(lcaolDateValue)
-    },[isRound])
+    function setHistorySearch(newItem: ITem) {
+        const key = 'historySearch';
+        const stored = localStorage.getItem(key);
+        let history: typeof newItem[] = [];
 
-
-    const handleSetLocalDate = useCallback((val:DateRange | Date) => {
-        setLocalDate(val)
-    }, [localDate]);
-
-    const handleChangeValue = useCallback((type:'departure'|'arrival'|'journey',value:string|IdaValue) => {
-        if(type === 'journey'){
-            setDaValue(value as IdaValue)
-            return
+        if (stored) {
+            try {
+                history = JSON.parse(stored);
+            } catch {
+                history = [];
+            }
         }
-        setDaValue(prevState => {
-            return {
-                ...prevState,
-                [type]:value
-            }
-        })
-    }, [daValue]);
 
-    const handleSetTravelers = useCallback((traveler:Travelers) => {
-        setTravelers(prevState => {
-            const { passengerType, passengerCount } = traveler
-            const index = prevState.findIndex(t => t.passengerType === passengerType)
+        const newDeparture = newItem.itineraries[0].departure.airportCode;
+        const newArrival = newItem.itineraries[0].arrival.airportCode;
 
-            if (index === -1) return prevState // 没找到，不变
+        // 去重：如果已有同样出发地 + 到达地 的记录，先移除旧的
+        history = history.filter(item => {
+            const oldDeparture = item.itineraries[0].departure.airportCode;
+            const oldArrival = item.itineraries[0].arrival.airportCode;
+            return !(oldDeparture === newDeparture && oldArrival === newArrival);
+        });
 
-            const newTravelers = [...prevState]
-            newTravelers[index] = {
-                ...newTravelers[index],
-                passengerCount, // 更新 count
-            }
+        // 插入新项到最前
+        history.unshift(newItem);
 
-            return newTravelers
-        })
+        // 限制最多 3 项
+        if (history.length > 3) {
+            history = history.slice(0, 3);
+        }
 
-    }, [travelers]);
-    const handleSetCabinValue = useCallback((val:CabinLevel) => {
-        setCabinValue(val)
-    },[cabinValue])
+        localStorage.setItem(key, JSON.stringify(history));
+    }
+
 
 
 
@@ -572,12 +531,13 @@ const SearchComponent = memo(() => {
             itineraries: [],
         }
 
+
         if (radioType === 'oneWay') {
             result.itineraries = [
                 {
                     itineraryNo: 0,
-                    arrival: daValue.arrival,
-                    departure: daValue.departure,
+                    arrival: daValue.arrival?.airportCode as string,
+                    departure: daValue.departure?.airportCode as string,
                     departureDate: dayjs(localDate as Date).format('YYYY-MM-DD'),
                 },
             ]
@@ -586,14 +546,14 @@ const SearchComponent = memo(() => {
             result.itineraries = [
                 {
                     itineraryNo: 0,
-                    arrival: daValue.arrival,
-                    departure: daValue.departure,
+                    arrival: daValue.arrival?.airportCode as string,
+                    departure: daValue.departure?.airportCode as string,
                     departureDate: dayjs(from).format('YYYY-MM-DD'),
                 },
                 {
                     itineraryNo: 1,
-                    arrival: daValue.departure,
-                    departure: daValue.arrival,
+                    arrival: daValue.departure?.airportCode as string,
+                    departure: daValue.arrival?.airportCode as string,
                     departureDate: dayjs(to).format('YYYY-MM-DD'),
                 },
             ]
@@ -604,11 +564,14 @@ const SearchComponent = memo(() => {
         const newQuery = {...result}
         newQuery.travelers = result.travelers.filter(traveler => traveler.passengerCount>0)
 
-        // const objResult = deduplicateByChannelCode(airJSON)
-        // dispatch(setSearchDate(objResult))
-
         getAuthorizableRoutingGroupAgent(newQuery).then(res => {
             if(res.length){
+                setHistorySearch({
+                    ...newQuery,
+                    itineraries:newQuery.itineraries.map(it => ({...it,departure:daValue.departure as IAirport,
+                        arrival:daValue.arrival as IAirport}))
+                })
+
                 const objResult = deduplicateByChannelCode(res)
                 dispatch(setSearchDate(objResult))
                 const allFailed = objResult.every(a => a.succeed !== true)
@@ -637,14 +600,11 @@ const SearchComponent = memo(() => {
         setErrMessage('')
     }
 
-
-
-
     return (
         <div className={styles.searchContainer}>
             <div>
                 <RadioGroup row value={radioType} onChange={
-                    (event) => setRadioType(event.target.value as ItineraryType)
+                    (event) => dispatch(setRadioType(event.target.value as ItineraryType))
                 } name="row-radio-buttons-group">
                     <FormControlLabel label="Round-trip" control={<Radio/>} value={'round'}></FormControlLabel>
                     <FormControlLabel label="One-way" control={<Radio/>} value={'oneWay'}></FormControlLabel>
@@ -652,9 +612,9 @@ const SearchComponent = memo(() => {
                 </RadioGroup>
             </div>
             <div className={`s-flex ai-ct jc-bt`}>
-                <Airports daValue={daValue} changeValue={handleChangeValue} />
-                <TimerChoose localDate={localDate} isRound={isRound} setLocalDate={handleSetLocalDate} />
-                <PersonChoose travelers={travelers} setTravelers={handleSetTravelers} cabinValue={cabinValue} setCabinValue={handleSetCabinValue} />
+                <Airports />
+                <TimerChoose isRound={isRound} />
+                <PersonChoose />
                 <Button variant="contained" onClick={search} loading={searchLoad} sx={{
                     width: '120px',
                     height: '54px',
@@ -682,6 +642,6 @@ const SearchComponent = memo(() => {
             </Snackbar>
         </div>
     );
-})
+}
 
 export default SearchComponent;

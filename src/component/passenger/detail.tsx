@@ -1,4 +1,4 @@
-import React, {Fragment, memo, type ReactElement, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {Fragment, memo, type ReactElement, useCallback, useMemo, useRef, useState} from "react";
 import styles from './styles.module.less'
 import {
     Alert,
@@ -83,6 +83,9 @@ const Detail = memo(() => {
     const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
     const navigate = useNavigate()
 
+    const passengersRef = useRef<{
+        submit: () => Promise<boolean>;
+    }>(null)
 
     const [open, setOpen] = useState(false)
     const [snackbarCom, setSnackbarCom] = useState<ReactElement>()
@@ -105,7 +108,10 @@ const Detail = memo(() => {
 
 
 
-    const handlepaySubmit = useCallback(() => {
+    const handlepaySubmit = useCallback(async () => {
+        if(!passengersRef.current)return false
+        const passengerResult = await passengersRef.current.submit()
+        if (!passengerResult) return false
         const totalCount = query.travelers.reduce((sum, item) => sum + item.passengerCount, 0);
 
         if (totalCount !== choosePassengers.length) {
@@ -154,7 +160,21 @@ const Detail = memo(() => {
                 return
                 setDialogVisible(true)
                 setOrderNumber(res.response.orderNumber)
+            }else{
+                setOpen(true);
+                setSnackbarCom(
+                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                        {res.errorMessage}
+                    </Alert>
+                );
             }
+        }).catch(() => {
+            setOpen(true);
+            setSnackbarCom(
+                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                    {'Interface error'}
+                </Alert>
+            );
         })
     },[choosePassengers,query,airChoose,contacts]) // 条件
 
@@ -162,6 +182,7 @@ const Detail = memo(() => {
         setDialogVisible(false)
     }
     const handlePayment = () => {
+
         paymentOrderAgent(orderNumber).then(res => {
             if(res.succeed){
                 setOpen(true)
@@ -263,7 +284,7 @@ const Detail = memo(() => {
             </div>
             <div className={`${styles.leftDetail}`}>
                 <div className={`${styles.wContainer} s-flex flex-dir`}>
-                    <PassengerForm />
+                    <PassengerForm ref={passengersRef} />
                     <ContactForm />
                     <div className={styles.package}>
                         <div className={styles.packgaeTitle}>

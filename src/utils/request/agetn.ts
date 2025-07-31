@@ -5,7 +5,7 @@ import type {
     FQuery,
     FQueryResult,
     FQueryResultForm,
-    OrderCreate
+    OrderCreate, QueryGlobalAirports
 } from "@/types/order.ts";
 
 export const getAuthorizableRoutingGroupAgent = (form:FQuery)  => axios.post<FQueryResult[],FQuery>('/agentApi/Service/FlightQuery',form)
@@ -18,3 +18,5 @@ export const orderCreateAgent = (form:OrderCreate) => axios.post<CommonResponseO
 export const paymentOrderAgent = (id:string) => axios.patch<CommonResponseGroup>(`/agentApi/Orders/PaymentOrder/${id}`)
 
 export const getIdentityAgent = () => axios.get('/identityApi/AgentAccount/GetIdentity')
+
+export const fuzzyQueryGlobalAirportsAgent = (content:string) => axios.get<QueryGlobalAirports[]>(`/agentApi/Configs/FuzzyQueryGlobalAirports/${content}/20`)
