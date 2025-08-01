@@ -8,8 +8,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import Brightness2Icon from '@mui/icons-material/Brightness2';
 import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import styles from './styles.module.less'
-import {memo, useState} from "react";
+import {memo, useMemo, useState} from "react";
 import * as React from "react";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
 
 
 const recommendedArr = [
@@ -82,7 +84,6 @@ const FilterAccordion = memo(({title, render}: {
                 </div>
                 <div className={`s-flex ai-ct cursor-p`}>
                     <Box
-                        onClick={() => console.log('clicked')}
                         sx={{
                             cursor: 'pointer', color: 'var(--active-color)', '&:hover': {
                                 textDecoration: 'underline',
@@ -116,6 +117,7 @@ const RecommendedCheckboxList = () => (
                 key={item.value}
                 control={
                     <Checkbox
+                        disabled={true}
                         defaultChecked
                         value={item.value}
                         sx={{
@@ -165,6 +167,7 @@ const TimeRangeSlider = ({label,value,setQueryValue,maxStart = 24,minEnd = 0}: {
                 </span>
             </Typography>
             <Slider
+                disabled
                 value={value}
                 onChange={(_, newValue) => {
                     let [start, end] = newValue as number[];
@@ -224,6 +227,13 @@ const TimeRangeSlider = ({label,value,setQueryValue,maxStart = 24,minEnd = 0}: {
 };
 
 const FilterComponent = memo(() => {
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+
+    const arrival = useMemo(() => {
+        return query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
+    }, [query,airportActived]);
+
     const [statrtValue, setStatrtValue] = useState([0, 24]);
     const [endValue, setEndValue] = useState([0, 24]);
 
@@ -233,47 +243,41 @@ const FilterComponent = memo(() => {
                 <div className={`${styles.titleBox} s-flex ai-ct jc-bt`}>
                     <div className={styles.title}>
                         <span>Filters (Departure)</span>
-                        <p>43 flights found</p>
+                        {/*<p>43 flights found</p>*/}
                     </div>
-                    <Box
-                        onClick={() => console.log('clicked')}
-                        sx={{
-                            cursor: 'pointer',
-                            color: 'var(--active-color)',
-                            '&:hover': {
-                                textDecoration: 'underline',
-                            },
-                        }}
-                    >
-                        Clear All
-                    </Box>
+                    {/*<Box*/}
+                    {/*    sx={{*/}
+                    {/*        cursor: 'pointer',*/}
+                    {/*        color: 'var(--active-color)',*/}
+                    {/*        '&:hover': {*/}
+                    {/*            textDecoration: 'underline',*/}
+                    {/*        },*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    Clear All*/}
+                    {/*</Box>*/}
                 </div>
                 <div className={`${styles.filterLiBox} s-flex flex-wrap`}>
                     <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
                         <div className={styles.label}>
-                            <span>Carry-on baggage included</span>
+                            <span>Departing to {arrival}</span>
                         </div>
-                        <CloseIcon/>
+                        {/*<CloseIcon/>*/}
                     </div>
-                    <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
-                        <div className={styles.label}>
-                            <span>Nonstop</span>
-                        </div>
-                        <CloseIcon/>
-                    </div>
+
+                    {/*<div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>*/}
+                    {/*    <div className={styles.label}>*/}
+                    {/*        <span>Nonstop</span>*/}
+                    {/*    </div>*/}
+                    {/*    <CloseIcon/>*/}
+                    {/*</div>*/}
                     <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
                         <div className={styles.label}>
                             <span>All Airlines</span>
                         </div>
-                        <CloseIcon/>
+                        {/*<CloseIcon/>*/}
                     </div>
-                    <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
-                        <div className={styles.label}>
-                            <span>Departing from BeijingBeijing: </span>
-                            <span>05:00 – 24:00 </span>
-                        </div>
-                        <CloseIcon/>
-                    </div>
+
                 </div>
             </div>
             <Divider component="div"/>

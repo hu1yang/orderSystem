@@ -12,10 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
-import dayjs from "dayjs";
 import {
-    applyFilter,
-    findLowestAdultCombo,
     formatTotalDuration, getAirResultList,
 } from "@/utils/order.ts";
 import {format} from "date-fns";

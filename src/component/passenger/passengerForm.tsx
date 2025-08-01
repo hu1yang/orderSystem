@@ -130,9 +130,7 @@ const PassengerForm = forwardRef((_,ref) => {
         mode: 'onBlur',
         defaultValues: {
             passengers:[
-
             ]
-
         }
     });
 

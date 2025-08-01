@@ -1,6 +1,6 @@
-import {memo, useCallback, useMemo, useRef, useState} from "react";
+import {memo, useMemo, useRef, useState} from "react";
 import Slider from 'react-slick';
-import {Box, Card, CardContent, Typography, Divider, CardHeader, Radio} from '@mui/material';
+import {Box, Card, CardContent, Typography, Divider, CardHeader, Button} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -12,18 +12,13 @@ import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 
 import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {AirSearchData, Amount, LostPriceAmout, Luggage} from "@/types/order.ts";
-import {useSelector} from "react-redux";
+import type {AirSearchData, ComboItem, Result} from "@/types/order.ts";
+import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
 import {getLayeredTopCombos} from "@/utils/order.ts";
-
-
-const itineraryTypeMap = {
-    multi: 'Multi-city',
-    oneWay: 'One-way',
-    round: 'Round-trip',
-} as const
+import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
+import {useNavigate} from "react-router";
 
 
 
@@ -72,132 +67,68 @@ function PrevArrow({onClick,hidden}: { onClick?: () => void,hidden:boolean }) {
     );
 }
 
-function ruleContent(value:string[],type:string) {
-    return <>
-        {
-            !!value.length && (
-                <HtmlTooltip placement="bottom" sx={{
-                    '.MuiTooltip-tooltip':{
-                        fontSize: '1rem',
-                        p:{
-                            fontSize: '1em',
-                            color: 'var(--tips-color)'
-                        }
-                    }
-                }} title={
-                    value.map(rule => <p key={rule}>{rule}</p>)
-                }>
-                    <Typography variant="body2" className={styles.detailText}
-                                sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                        <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                        <span className={`${styles.texts} elli-1`}>{type}:{value.map(rule => rule).join(',')}</span>
-                    </Typography>
-                </HtmlTooltip>
-            )
-        }
-    </>
-}
-
-function renderContent(luggage: Luggage) {
-    switch (luggage.luggageType) {
-        case 'carry':
-            return (
-                <>
-                    <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                    <span className={styles.texts}>
-                        Carry-on baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                    </span>
-                </>
-            )
-            break;
-        case 'checked':
-            return (
-                <>
-                    <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                    <span className={styles.texts}>
-                        Checked baggage: <strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                    </span>
-                </>
-            )
-            break;
-        case 'hand':
-            return (
-                <>
-                    <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                    <span className={styles.texts}>
-                        Handed baggage:<strong>1 × {luggage.luggageCount} {luggage.luggageSizeType}</strong>
-                    </span>
-                </>
-            )
-        default:
-            return <></>
-
-    }
-}
-
-const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency, chooseAmount,chooseAmountfnc,lostPriceAmout,style}:{
-    lostPriceAmout: number
-    amount: Amount
-    identification:{
-        channelCode: string
-        contextId:string
-        resultKey:string
-    }
-    disabledChoose:boolean
+const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     currency:string
-    chooseAmount:{
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    }|null
-    chooseAmountfnc:(value:{
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    },lostPriceValue:LostPriceAmout) => void
     style?: React.CSSProperties
-    lostPrice: LostPriceAmout
+    amountResult: ComboItem
+    amountsResultsObj: AirSearchData
 }) => {
-    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
 
-    const formattedDiff = useMemo(() => {
-        const diff = lostPrice.minTotal - lostPriceAmout;
-        const sign = diff < 0 ? '' : '+'; // 负数原样，其它加 "+"
-        return `${sign}${diff.toFixed(2)}`;
-    }, [lostPrice, lostPriceAmout]);
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [disabledChoose, setDisabledChoose] = useState(false)
 
-    const chooseBool = useMemo(() => {
-        return chooseAmount &&
-            chooseAmount.name === amount.familyName &&
-            chooseAmount.code === amount.familyCode &&
-            chooseAmount.channelCode === identification.channelCode &&
-            chooseAmount.contextId === identification.contextId &&
-            chooseAmount.resultKey === identification.resultKey;
-    }, [
-        amount,
-        chooseAmount,
-        identification
-    ]);
+    const luggagesMemo = useMemo(() => {
+        const hand = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'hand') ?? null
+        const checked = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'checked') ?? null
+        const carry = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'carry') ?? null
+        return {
+            hand,checked,carry
+        }
+    }, [amountResult.amount.luggages]);
 
-    const chooseFnc = useCallback(() => {
-        chooseAmountfnc({
-            ...identification,
-            name: amount.familyName,
-            code: amount.familyCode,
-        },lostPrice);
-    }, [chooseAmountfnc, identification, amount,lostPrice]);
+    const submitResult = () => {
+        setDisabledChoose(true)
+        const result = amountsResultsObj.combinationResult.find(result => result.contextId === amountResult.sourceItem.contextId && result.resultKey === amountResult.resultKey)
+        if(!result) return
+        const newAmount = result.itineraries[airportActived].amounts.filter(amount => amount.familyName === amountResult.amount.familyName)
+        const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived)
+        if(!itinerarie) return
+        const newItinerarie = {
+            amounts:[...newAmount],
+            itineraryNo:itinerarie.itineraryNo,
+            itineraryKey: itinerarie.itineraryKey,
+            subItineraryId: itinerarie.subItineraryId!,
+            segments: itinerarie.segments
+        }
 
-
+        if(airportActived === 0){
+            const resultObj = {
+                contextId:result.contextId,
+                policies:result.policies,
+                resultType:result.resultType,
+                currency:result.currency,
+                resultKey:result.resultKey,
+                itineraries:[{...newItinerarie}]
+            } as Result
+            dispatch(setChannelCode(amountResult.channelCode))
+            dispatch(setResult(resultObj))
+        }else{
+            dispatch(setResultItineraries(newItinerarie))
+        }
+        if(query.itineraries.length  === airportActived+1){
+            navigate('/passenger')
+        }
+        setDisabledChoose(false)
+    }
 
     return (
         <Box sx={{width: 320,...style}}>
-            <Card className={'cursor-p'} onClick={chooseFnc} sx={{
-                width: 319,height: 390, borderRadius: '4px', padding: '16px 24px',
-                boxShadow: chooseBool ? 'inset 0 0 0 3px var(--back-color)' : 'inset 0 0 0 3px transparent',
+            <Card className={'cursor-p'} sx={{
+                width: 250, borderRadius: '4px', padding: '16px 24px',
+                boxShadow: 'inset 0 0 0 3px transparent',
                 '.MuiCardContent-root': {
                     padding: '0'
                 },
@@ -206,59 +137,152 @@ const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency
                     p: 0
                 }} title={
                     <Typography fontWeight="bold" fontSize="1.6rem"
-                                gutterBottom>{amount.familyName}</Typography>
-                } action={
-                    <Radio
-                        disabled={disabledChoose}
-                        checked={!!chooseBool}
-                        onChange={chooseFnc}
-                        value={
-                            `${amount.familyName} -${amount.familyCode} -${identification.channelCode} -${identification.contextId}-${identification.resultKey}`
-                        }
-                        color="primary"
-                        onClick={(e) => e.stopPropagation()}
-                        sx={{
-                            '& .MuiSvgIcon-root': {
-                                fontSize: 28,
-                            },
-                        }}
-                    />
+                                gutterBottom>{amountResult.amount.familyName}</Typography>
                 }/>
                 <CardContent>
                     <Divider sx={{my: 1.5}}/>
 
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
-                    <div style={{height: '80px'}}>
-                        {amount.luggages.map((luggage, luggageIndex) => (
-                            <Typography key={luggageIndex} variant="body2" className={styles.detailText}
-                                        sx={{display: 'flex', alignItems: 'center', mt: 0.5, fontSize: 13}}>
-                                {
-                                    renderContent(luggage)
-                                }
-                            </Typography>
-                        ))}
+                    <div>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                            <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={styles.texts}>
+                                 {
+                                     luggagesMemo.hand ? <strong>{luggagesMemo.hand.luggageCount} {luggagesMemo.hand.luggageSizeType}</strong> : '--'
+                                 }
+                            </span>
+                        </Typography>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                            <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={styles.texts}>
+                                 {
+                                     luggagesMemo.checked ? <strong>{luggagesMemo.checked.luggageCount} {luggagesMemo.checked.luggageSizeType}</strong> : '--'
+                                 }
+                            </span>
+                        </Typography>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                            <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={styles.texts}>
+                                 {
+                                     luggagesMemo.carry ? <strong>{luggagesMemo.carry.luggageCount} {luggagesMemo.carry.luggageSizeType}</strong> : '--'
+                                 }
+                            </span>
+                        </Typography>
                     </div>
 
                     <Divider sx={{my: 1.5}}/>
 
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
-                    <div style={{height: '100px'}}>
-                        {
-                            ruleContent(amount.refundNotes as string[],'Refund Policy')
-                        }
+                    <div>
+                        <div className={'s-flex ai-ct'}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={`${styles.texts} elli-1`}>
+                                 {
+                                     amountResult.amount.cancelNotes.length ?
+                                         <HtmlTooltip placement="top" sx={{
+                                             '.MuiTooltip-tooltip': {
+                                                 padding: 'var(--pm-16)',
+                                             }
+                                         }} title={
+                                             <div className={'s-flex flex-dir'}>
+                                                 {
+                                                     amountResult.amount.cancelNotes.map((cancelNote,cancelNoteIndex) => (
+                                                         <Typography key={cancelNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                             fontSize: 12,
+                                                         }}>
+                                                             {cancelNote}
+                                                         </Typography>
+                                                     ))
+                                                 }
+                                             </div>
 
-                        {
-                            ruleContent(amount.changeNotes as string[],'Change Policy')
-                        }
-                        {
-                            ruleContent(amount.cancelNotes as string[],'Cancellation Policy')
-                        }
-                        {
-                            ruleContent(amount.othersNotes as string[],'Other Policy')
-                        }
+                                         }>
+                                             <Typography fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                 fontSize: 12,
+                                                 '&:hover': {
+                                                     textDecoration: 'underline',
+                                                     cursor: 'help',
+                                                 }
+                                             }}>{amountResult.amount.cancelNotes}
+                                             </Typography>
+                                         </HtmlTooltip>
+                                          : '--'
+                                 }
+                            </span>
+                        </div>
+                        <div className={'s-flex ai-ct'}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={`${styles.texts} elli-1`}>
+                                 {
+                                     amountResult.amount.changeNotes.length ?
+                                         <HtmlTooltip placement="top" sx={{
+                                             '.MuiTooltip-tooltip': {
+                                                 padding: 'var(--pm-16)',
+                                             }
+                                         }} title={
+                                             <div className={'s-flex flex-dir'}>
+                                                 {
+                                                     amountResult.amount.changeNotes.map((changeNote,changeNoteIndex) => (
+                                                         <Typography key={changeNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                             fontSize: 12,
+                                                         }}>
+                                                             {changeNote}
+                                                         </Typography>
+                                                     ))
+                                                 }
+                                             </div>
 
+                                         }>
+                                             <Typography fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                 fontSize: 12,
+                                                 '&:hover': {
+                                                     textDecoration: 'underline',
+                                                     cursor: 'help',
+                                                 }
+                                             }}>{amountResult.amount.changeNotes}
+                                             </Typography>
+                                         </HtmlTooltip>
+                                         : '--'
+                                 }
+                            </span>
+                        </div>
+                        <div  className={'s-flex ai-ct'}>
+                            <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <span className={`${styles.texts} elli-1`}>
+                                 {
+                                     amountResult.amount.refundNotes.length ?
+                                         <HtmlTooltip placement="top" sx={{
+                                             '.MuiTooltip-tooltip': {
+                                                 padding: 'var(--pm-16)',
+                                             }
+                                         }} title={
+                                             <div className={'s-flex flex-dir'}>
+                                                 {
+                                                     amountResult.amount.refundNotes.map((refundNote,refundNoteIndex) => (
+                                                         <Typography key={refundNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                             fontSize: 12,
+                                                         }}>
+                                                             {refundNote}
+                                                         </Typography>
+                                                     ))
+                                                 }
+                                             </div>
+
+                                         }>
+                                             <Typography fontWeight="400" fontSize="1.1rem" display="inline" sx={{
+                                                 fontSize: 12,
+                                                 '&:hover': {
+                                                     textDecoration: 'underline',
+                                                     cursor: 'help',
+                                                 }
+                                             }}>{amountResult.amount.refundNotes}
+                                             </Typography>
+                                         </HtmlTooltip>
+                                         : '--'
+                                 }
+                            </span>
+                        </div>
                     </div>
-
 
                     <Box mt={2}>
                         <HtmlTooltip placement="top" sx={{
@@ -267,7 +291,7 @@ const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={lostPrice.amounts} totalPrice={lostPrice.minTotal} currency={currency} />
+                            <PriceDetail amounts={amountResult.lostPrice.amounts} totalPrice={amountResult.lostPrice.minTotal} currency={currency} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -276,49 +300,43 @@ const SliderBox = memo(({lostPrice,amount,identification,disabledChoose,currency
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{currency}${formattedDiff}</Typography>
+                            }}>{currency}${amountResult.lostPrice.minTotal}</Typography>
                         </HtmlTooltip>
-                        <Typography variant="caption" color="text.secondary" ml={1}
-                                    sx={{fontSize: 14}}>{itineraryTypeMap[itineraryType]}</Typography>
                     </Box>
-
-
+                    <Button variant="contained" disabled={disabledChoose} onClick={submitResult} className={'full-width'} sx={{
+                        fontSize: '1.2rem',
+                        mt:'10px',
+                        borderRadius:'2px',
+                        backgroundColor:'#f68201'
+                    }}>Select</Button>
                 </CardContent>
             </Card>
         </Box>
     )
 })
 
-const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,disabledChoose,lostPriceAmout}: {
-    lostPriceAmout: number
-    amountsResult: AirSearchData
-    chooseAmount: {
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    }|null
-    chooseFnc: (value: {
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    },lostPriceValue:LostPriceAmout) => void
+const FareCardsSlider = memo(({currency,searchKey}: {
     currency:string
-    disabledChoose:boolean
+    searchKey:string
 }) => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+
+    const amountsResultsObj = useMemo(() => {
+        const searchResult = airSearchData.find(a => a.combinationKey === searchKey)
+        return searchResult
+    }, [searchKey,airSearchData]);
+
 
     const amountsMemo = useMemo(() => {
+        if(!amountsResultsObj) return []
         const result = getLayeredTopCombos(
-            amountsResult.combinationResult,
+            amountsResultsObj.combinationResult,
             airportActived,
             airChoose)
         return result
-    }, []);
+    }, [amountsResultsObj]);
 
     const sliderRef = useRef(null);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -345,66 +363,32 @@ const FareCardsSlider = memo(({amountsResult,chooseAmount,chooseFnc,currency,dis
     };
 
 
-    const handleChooseAmount = useCallback((value: {
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    },lostPriceValue:LostPriceAmout) => {
-        if (isDragging.current) return;
-        if (disabledChoose) return;
-        chooseFnc(value,lostPriceValue);
-    }, [disabledChoose, chooseFnc,chooseAmount]);
-
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
             {
                 amountsMemo.length > 2 ?
                     <Slider {...settings} ref={sliderRef}>
                         {amountsMemo.map((amountResult) => (
-                            <SliderBox lostPriceAmout={lostPriceAmout} chooseAmount={chooseAmount}
-                                       chooseAmountfnc={handleChooseAmount}
+                            <SliderBox
                                        key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
-                                       identification={{
-                                           channelCode:amountResult.sourceItem.channelCode,
-                                           contextId:amountResult.sourceItem.contextId,
-                                           resultKey:amountResult.sourceItem.resultKey,
-                                       }}
-                                       lostPrice={amountResult.lostPrice}
-                                       amount={amountResult.amount}
-                                       disabledChoose={disabledChoose} currency={currency}/>
+                                       amountResult={amountResult}
+                                       amountsResultsObj={amountsResultsObj as AirSearchData}
+                                       currency={currency}/>
                         ))}
                     </Slider> :
                     <div className={`s-flex flex-row`}>
                         {
                             amountsMemo.map((amountResult) => (
-                                <SliderBox style={{marginRight:'23px'}} lostPriceAmout={lostPriceAmout} chooseAmount={chooseAmount}
-                                           chooseAmountfnc={handleChooseAmount}
+                                <SliderBox style={{marginRight:'23px'}}
                                            key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
-                                           identification={{
-                                               channelCode:amountResult.sourceItem.channelCode,
-                                               contextId:amountResult.sourceItem.contextId,
-                                               resultKey:amountResult.sourceItem.resultKey,
-                                           }}
-                                           lostPrice={amountResult.lostPrice}
-                                           amount={amountResult.amount}
-                                           disabledChoose={disabledChoose} currency={currency}/>
+                                           amountResult={amountResult}
+                                           amountsResultsObj={amountsResultsObj as AirSearchData}
+                                           currency={currency}/>
 
                             ))
                         }
                     </div>
             }
-            {/*<div className={`${styles.fareCardsTips} s-flex ai-ct`}>*/}
-            {/*    <img*/}
-            {/*        src="https://static.tripcdn.com/packages/flight/static-image-online/latest/flight_v2/hotel_cross/pic_popup_small.png"*/}
-            {/*        alt=""/>*/}
-            {/*    <div className={`${styles.fareCardsTipsText} s-flex ai-ct`}>*/}
-            {/*        <span>Get up to </span>*/}
-            {/*        <strong>25% off</strong>*/}
-            {/*        <span> stays by booking a flight, plus free cancellation for your stay if your flight is rescheduled</span>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
         </Box>
     );
 })

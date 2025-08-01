@@ -3,10 +3,6 @@ import styles from './styles.module.less'
 import {
     Alert,
     Button,
-    Dialog, DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
     Divider,
     Grid,
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
@@ -14,19 +10,20 @@ import {
 } from "@mui/material";
 import type {OrderCreate, PriceSummary} from '@/types/order.ts'
 import type {RootState} from "@/store";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import PassengerForm from "./passengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
-import {orderCreateAgent, paymentOrderAgent} from "@/utils/request/agetn.ts";
+import {orderCreateAgent} from "@/utils/request/agetn.ts";
 
 import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
+import {resetChoose} from "@/store/orderInfo.ts";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -79,9 +76,21 @@ const Detail = memo(() => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
-    const selectPassengers = useSelector((state: RootState)=> state.ordersInfo.selectPassengers)
     const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
     const navigate = useNavigate()
+
+    const dispatch = useDispatch()
+
+    const targetRef = useRef<HTMLDivElement>(null)
+    const scrollToTarget = () => {
+        if (targetRef.current) {
+            const offsetTop = targetRef.current.offsetTop
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth',
+            })
+        }
+    }
 
     const passengersRef = useRef<{
         submit: () => Promise<boolean>;
@@ -89,8 +98,6 @@ const Detail = memo(() => {
 
     const [open, setOpen] = useState(false)
     const [snackbarCom, setSnackbarCom] = useState<ReactElement>()
-    const [dialogVisible, setDialogVisible] = useState(false)
-    const [orderNumber, setOrderNumber] = useState('')
 
     const handleClose = (
         _event?: React.SyntheticEvent | Event,
@@ -102,32 +109,28 @@ const Detail = memo(() => {
         setOpen(false);
     }
 
-    const choosePassengers = useMemo(() => {
-        return passengers.filter(passenger => selectPassengers.includes(passenger.idNumber))
-    }, [passengers,selectPassengers]);
-
-
 
     const handlepaySubmit = useCallback(async () => {
-        if(!passengersRef.current)return false
-        const passengerResult = await passengersRef.current.submit()
-        if (!passengerResult) return false
-        const totalCount = query.travelers.reduce((sum, item) => sum + item.passengerCount, 0);
-
-        if (totalCount !== choosePassengers.length) {
+        let passengerResult:boolean
+        try {
+            if(!passengersRef.current) return false
+            passengerResult = await passengersRef.current.submit()
+        } catch {
+            scrollToTarget()
             setOpen(true);
             setSnackbarCom(
                 <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    Please select all passengers
+                    Please fill in the passenger information
                 </Alert>
             );
             return;
         }
+        if (!passengerResult) return false
 
         // 对每种 passengerType 进行校验
         const mismatch = query.travelers.find(traveler => {
             const expected = traveler.passengerCount;
-            const actual = choosePassengers.filter(p => p.passengerType === traveler.passengerType).length;
+            const actual = passengers.filter(p => p.passengerType === traveler.passengerType).length;
             return actual !== expected;
         });
 
@@ -151,15 +154,20 @@ const Detail = memo(() => {
             shuttleNumber:'',
             tLimit:'',
             remarks:'',
-            passengers:choosePassengers,
+            passengers:passengers,
             contacts
         } as OrderCreate
         orderCreateAgent(result).then(res => {
             if(res.succeed){
-                navigate(`/mine/orderDetail/${res.response.orderNumber}`)
-                return
-                setDialogVisible(true)
-                setOrderNumber(res.response.orderNumber)
+                setOpen(true);
+                setSnackbarCom(
+                    <Alert severity="success" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                        {'Order created successfully'}
+                    </Alert>
+                );
+                backOrder(res.response.orderNumber)
+                //
+                // navigate(`/mine/orderDetail/${res.response.orderNumber}`)
             }else{
                 setOpen(true);
                 setSnackbarCom(
@@ -176,31 +184,22 @@ const Detail = memo(() => {
                 </Alert>
             );
         })
-    },[choosePassengers,query,airChoose,contacts]) // 条件
+    },[query,airChoose,contacts]) // 条件
 
-    const handleCloseVisible = () => {
-        setDialogVisible(false)
-    }
-    const handlePayment = () => {
+    const backOrder = (orderid:string) => {
+        const referrer = document.referrer
+        if(referrer){
+            const origin = new URL(referrer).origin;
+            window.parent.postMessage({
+                type:'orderPaySuccess',
+                data:{orderid}
+            },origin)
+        }
 
-        paymentOrderAgent(orderNumber).then(res => {
-            if(res.succeed){
-                setOpen(true)
-                setSnackbarCom(<Alert
-                    severity="success"
-                    variant="filled"
-                    sx={{ width: '100%' , fontSize: 18 }}
-                >
-                    Payment successful! Redirecting soon~
-                </Alert>)
-
-                setDialogVisible(false)
-
-                setTimeout(() => {
-                    history.go(-1)
-                },1000)
-            }
-        })
+        dispatch(resetChoose())
+        setTimeout(() => {
+            navigate('/')
+        },500)
     }
 
     const pirceResult = useMemo(() => {
@@ -216,9 +215,6 @@ const Detail = memo(() => {
             return found?.luggages || [];
         });
     }, [airChoose.result]);
-
-
-
 
 
     return (
@@ -283,7 +279,7 @@ const Detail = memo(() => {
                 </div>
             </div>
             <div className={`${styles.leftDetail}`}>
-                <div className={`${styles.wContainer} s-flex flex-dir`}>
+                <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>
                     <PassengerForm ref={passengersRef} />
                     <ContactForm />
                     <div className={styles.package}>
@@ -354,41 +350,21 @@ const Detail = memo(() => {
                                                         <div className={styles.cityText}>{cityText}</div>
                                                     </Grid>
                                                     <Grid size={12}>
-
-                                                        {
-                                                            choosePassengers.length ? choosePassengers.map((choosePassenger) => (
-                                                                    <Grid container key={choosePassenger.idNumber}>
-                                                                        <Grid size={3}>
-                                                                            <div className={styles.cityDetail}>{choosePassenger.fullName}
-                                                                            </div>
-                                                                        </Grid>
-                                                                        <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
-                                                                        </Grid>
-                                                                        <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
-                                                                        </Grid>
-                                                                        <Grid size={3}>
-                                                                            <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                )) :
-                                                                <Grid container>
-                                                                    <Grid size={3}>
-                                                                        <div className={styles.cityDetail}>Passenger 1
-                                                                        </div>
-                                                                    </Grid>
-                                                                    <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
-                                                                    </Grid>
-                                                                    <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
-                                                                    </Grid>
-                                                                    <Grid size={3}>
-                                                                        <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
-                                                                    </Grid>
-                                                                </Grid>
-                                                        }
+                                                        <Grid container>
+                                                            <Grid size={3}>
+                                                                <div className={styles.cityDetail}>Passenger
+                                                                </div>
+                                                            </Grid>
+                                                            <Grid size={3}>
+                                                                <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
+                                                            </Grid>
+                                                            <Grid size={3}>
+                                                                <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
+                                                            </Grid>
+                                                            <Grid size={3}>
+                                                                <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
+                                                            </Grid>
+                                                        </Grid>
                                                     </Grid>
                                                 </Grid>
                                                 <Divider sx={{
@@ -401,22 +377,6 @@ const Detail = memo(() => {
                             </div>
                         </div>
                     </div>
-                    {/*<div className={styles.cancellation}>*/}
-                    {/*    <div className={styles.cancellationTitle}>Cancellation & Change Policies</div>*/}
-                    {/*    <div className={styles.commonBox}>*/}
-                    {/*        <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>*/}
-                    {/*            <span>Cancellation fee</span>*/}
-                    {/*            <span>From US$14.00</span>*/}
-                    {/*            <ChevronRightIcon sx={{fontSize: 22}} />*/}
-                    {/*        </div>*/}
-                    {/*        <div className={`${styles.cancellationli} s-flex ai-ct cursor-p`}>*/}
-                    {/*            <span>Change fee</span>*/}
-                    {/*            <span>From US$14.00</span>*/}
-                    {/*            <ChevronRightIcon sx={{fontSize: 22}} />*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-
-                    {/*</div>*/}
                     {
                         pirceResult ? <NextStep pirceResult={pirceResult} paySubmit={handlepaySubmit} /> : <></>
                     }
@@ -427,27 +387,6 @@ const Detail = memo(() => {
                       onClose={handleClose}>
                 {snackbarCom}
             </Snackbar>
-            <Dialog
-                open={dialogVisible}
-                onClose={handleCloseVisible}
-                aria-labelledby="alert-dialog-title-payment"
-                aria-describedby="alert-dialog-description-payment"
-            >
-                <DialogTitle id="alert-dialog-title-payment">
-                    {"The order is successfully placed, please pay in time"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Please click Pay to complete this order
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseVisible}>Disagree</Button>
-                    <Button onClick={handlePayment} autoFocus>
-                        Payment
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </div>
     )
 })

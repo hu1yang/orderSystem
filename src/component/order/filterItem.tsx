@@ -1,16 +1,14 @@
-import {memo, useCallback, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {memo, useMemo, useState} from "react";
+import { useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {useNavigate} from "react-router";
 import {
     formatDuration, formatTotalDuration,
 } from "@/utils/order.ts";
-import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
 
 import {
-    Box, Button,
-    Dialog, DialogActions, DialogContent, DialogTitle,
+    Box, Button, Card, CardContent, CardHeader,
+    Divider,
     Grid,
     Typography
 } from "@mui/material";
@@ -20,12 +18,9 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 import FareCardsSlider from "@/component/order/detail.tsx";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
-import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import PriceDetail from "@/component/order/priceDetail.tsx";
 
 import type {
     LostPriceAmout,
-    Result,
     Segment
 } from "@/types/order.ts";
 
@@ -33,6 +28,8 @@ import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import {extractTimeWithTimezone} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 
 const FlightTimeline = memo(({segments}:{
@@ -194,95 +191,17 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
 }) => {
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const itinerarieQuery = useSelector((state: RootState) => state.ordersInfo.query.itineraries[airportActived])
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
-    const dispatch = useDispatch()
 
 
-    const navigate = useNavigate()
 
-    const [disabledChoose, setDisabledChoose] = useState(false)
 
     const [open, setOpen] = useState(false)
 
 
-    const openMore = () => {
-        setOpen(true)
-    }
-    const handleClose = () => {
-        setOpen(false)
-        setChooseAmount(null)
-    }
 
 
-    const amountsResult = useMemo(() => {
-        const searchResult = airSearchData.find(a => a.combinationKey === searchKey)
-        return searchResult
-    }, [searchKey,airSearchData]);
 
 
-    const [priceChooseAmout, setPriceChooseAmout] = useState<LostPriceAmout>(cheapAmount)
-
-    const [chooseAmount, setChooseAmount] = useState<{
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    }|null>(null)
-
-    const handleChooseFnc = useCallback((value: {
-        name:string
-        code:string
-        channelCode: string
-        contextId:string
-        resultKey:string
-    },lostPriceValue:LostPriceAmout) => {
-        setChooseAmount(value)
-        setPriceChooseAmout(lostPriceValue)
-    }, []);
-
-    const submitResult = () => {
-        setDisabledChoose(true)
-        if(!chooseAmount) {
-            setDisabledChoose(false)
-            return
-        }
-        const result = amountsResult?.combinationResult.find(result => result.contextId === chooseAmount.contextId && result.resultKey === chooseAmount.resultKey)
-        if(!result) return
-        const amountResult = result.itineraries[airportActived].amounts.filter(amount => amount.familyName === chooseAmount.name)
-        const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived)
-        if(!itinerarie) return
-        const newItinerarie = {
-            amounts:[...amountResult],
-            itineraryNo:itinerarie.itineraryNo,
-            itineraryKey: itinerarie.itineraryKey,
-            subItineraryId: itinerarie.subItineraryId!,
-            segments: itinerarie.segments
-        }
-
-        if(airportActived === 0){
-            const resultObj = {
-                contextId:result.contextId,
-                policies:result.policies,
-                resultType:result.resultType,
-                currency:result.currency,
-                resultKey:result.resultKey,
-                itineraries:[{...newItinerarie}]
-            } as Result
-            dispatch(setChannelCode(chooseAmount.channelCode))
-            dispatch(setResult(resultObj))
-        }else{
-            dispatch(setResultItineraries(newItinerarie))
-        }
-        if(query.itineraries.length  === airportActived+1){
-            navigate('/passenger')
-        }
-        setDisabledChoose(false)
-        setOpen(false)
-    }
 
     return  (
         <div className={styles.filterItem}>
@@ -336,107 +255,66 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
                                 <span>{itineraryTypeMap[itineraryType]}</span>
                             </div>
                         </div>
-                        <Button variant='contained' onClick={openMore} sx={{
-                            backgroundColor: 'var(--put-border-hover-color)',
+                        {/*<Button variant='contained' onClick={openMore} sx={{*/}
+                        {/*    backgroundColor: 'var(--put-border-hover-color)',*/}
+                        {/*    fontWeight: 'bold',*/}
+                        {/*    fontSize: '1.2em',*/}
+                        {/*    color: 'var(--vt-c-white)',*/}
+                        {/*    width: '110px'*/}
+
+                        {/*}}>*/}
+                        {/*    Select*/}
+                        {/*</Button>*/}
+                        <Button variant='contained' endIcon={!open ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />} onClick={() => setOpen(!open)} sx={{
+                            backgroundColor: !open ? 'var(--put-border-hover-color)' : 'transparent',
                             fontWeight: 'bold',
                             fontSize: '1.2em',
-                            color: 'var(--vt-c-white)',
+                            color: !open ? 'var(--vt-c-white)' : 'var(--active-color)',
                             width: '110px'
 
                         }}>
-                            Select
+                            {!open?'Select':'Hide'}
                         </Button>
                     </div>
                 </div>
             </div>
-            <Dialog open={open} onClose={handleClose} maxWidth="lg" className={styles.dialogFirport} sx={{
-                '.MuiDialog-paperWidthLg': {
-                    width: '1024px',
-                    minWidth:'1000px'
-                }
-            }}>
-                <DialogTitle sx={{
-                    '&.MuiDialogTitle-root': {
-                        padding: '32px 32px 16px'
-                    }
-                }}>
-                    <div className={styles.firportTitle}>
-                        <span>Trip to {itinerarieQuery.departure}</span>
-                    </div>
-                </DialogTitle>
-                <DialogContent sx={{
-                    '&.MuiDialogContent-root':{
-                        backgroundColor:'#f6f7fa',
-                        p:0
-                    }
-                }}>
-                    <div className={`${styles.firportInfo}`}>
-                        {
-                            <FirportInfomation segments={segments} labelPostion={airportActived === 0 ? 'Depart':'Return'} />
-                        }
-                    </div>
-                    <div style={{
-                        backgroundColor:'#f6f7fa',
-                        padding:'8px 32px 0'
+            <div style={{maxHeight: open ? 600: 0}} className={`${styles.filterItemMore} s-flex`}>
+                <div className={styles.introduction}>
+                    <Card sx={{
+                        borderRadius: 0,
+                        padding: '16px 0',
+                        boxShadow:'none',
+                        backgroundColor: 'transparent',
+                        '.MuiCardContent-root': {
+                            padding: '0'
+                        },
                     }}>
-                        {
-                            <FareCardsSlider lostPriceAmout={priceChooseAmout.minTotal} amountsResult={amountsResult!} disabledChoose={disabledChoose} currency={currency} chooseAmount={chooseAmount} chooseFnc={handleChooseFnc} />
-                        }
-                    </div>
-                </DialogContent>
-                <DialogActions sx={{
-                    '&.MuiDialogActions-root':{
-                        backgroundColor:'#f6f7fa',
-                        p: '16px 32px'
-                    }
-                }}>
-                    <div className={`s-flex jc-fe ai-ct`}>
-                        {
-                                <Box className={''}>
-                                    <div className={`s-flex ai-ct`}>
-                                        <HtmlTooltip placement="top" sx={{
-                                            width: 300,
-                                            '.MuiTooltip-tooltip': {
-                                                padding: 'var(--pm-16)',
-                                            }
-                                        }} title={
-                                            <PriceDetail amounts={priceChooseAmout.amounts} totalPrice={priceChooseAmout.minTotal} currency={currency} />
-                                        }>
-                                            <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
-                                                fontSize: 20,
-                                                color: 'var(--active-color)',
-                                                '&:hover': {
-                                                    textDecoration: 'underline',
-                                                    cursor: 'help',
-                                                }
-                                            }}>
-                                                {currency}${priceChooseAmout.minTotal}</Typography>
-                                        </HtmlTooltip>
-                                    </div>
-                                    <Typography variant="caption" color="text.secondary" ml={1}
-                                                sx={{fontSize: 14,lineHeight: 1}}>{itineraryTypeMap[itineraryType]}</Typography>
-                                </Box>
-                        }
-                        <Button
-                            variant='contained'
-                            fullWidth
-                            size="large"
-                            sx={{
-                                backgroundColor: 'var(--active-color)',
-                                fontSize:20,
-                                flex:1,
-                                ml:'20px',
-                                fontWeight: 'bold',
-                                '&:hover': { backgroundColor: '#264fd3' },
-                            }}
-                            onClick={submitResult}
-                        >
-                            Continue
-                        </Button>
-                    </div>
-
-                </DialogActions>
-            </Dialog>
+                        <CardHeader sx={{
+                            p: 0
+                        }} title={
+                            <Typography fontWeight="bold" fontSize="1.6rem"
+                                        gutterBottom>Fare type</Typography>
+                        } />
+                        <CardContent>
+                            <Divider sx={{my: 1.5}}/>
+                            <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
+                            <div >
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Hand baggage</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Check baggage</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Carry baggage</Typography>
+                            </div>
+                            <Divider sx={{my: 1.5}}/>
+                            <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
+                            <div>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Cancellation</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Rebooking</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Refund</Typography>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+                <FareCardsSlider currency={currency} searchKey={searchKey} />
+            </div>
         </div>
     )
 })

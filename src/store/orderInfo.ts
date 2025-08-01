@@ -17,7 +17,6 @@ type IOrder = {
     airportActived: number
     airChoose: AirChoose
     passengers: Passenger[]
-    selectPassengers: string[]
     contacts: IContact[]
     airSearchData: AirSearchData[]
 }
@@ -46,7 +45,6 @@ const initialState: IOrder = {
         channelCode:'',
     },
     passengers:[],
-    selectPassengers:[],
     contacts:[
         {
             contactName:'',
@@ -148,13 +146,7 @@ const orderInfoSlice = createSlice({
         setPassengers: (state, action: PayloadAction<{passengers:Passenger[]}>) => {
             state.passengers = action.payload.passengers
         },
-        setSelectPassengers: (state, action: PayloadAction<string>) => {
-            const prev = state.selectPassengers;
-            const idNumber = action.payload
-            state.selectPassengers =  prev.includes(idNumber)
-                ? prev.filter(id => id !== idNumber)
-                : [...prev, idNumber]
-        },
+
         setContacts: (state, action: PayloadAction<IContact>) => {
             state.contacts = [{...action.payload}];
         },
@@ -190,7 +182,6 @@ export const {
     setQueryDate,
     setResultItineraries,
     setPassengers,
-    setSelectPassengers,
     setContacts,
     prevAirChoose,
     setSearchDate,

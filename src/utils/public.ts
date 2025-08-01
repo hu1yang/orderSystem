@@ -1,16 +1,51 @@
-import { format, addDays } from 'date-fns';
+import {format, addDays, parseISO, differenceInCalendarDays} from 'date-fns';
 import dayjs, {type Dayjs} from 'dayjs';
 import type {QueryGlobalAirports} from "@/types/order.ts";
 
-export function generateMonthlyDateRanges() {
+export function generateMonthlyDateRanges(
+    numberValue: number = 1,
+    isRound: boolean,
+    timeValue: string | { from: string; to: string }
+) {
     const today = new Date();
+    let targetDate: Date;
+
+    if (isRound && typeof timeValue === 'object') {
+        // 往返：取 from 字段
+        targetDate = parseISO(timeValue.from);
+    } else if (!isRound && typeof timeValue === 'string') {
+        // 单程：直接使用 timeValue
+        targetDate = parseISO(timeValue);
+    } else {
+        return []; // 无效输入
+    }
+
+    const daysCount = differenceInCalendarDays(targetDate, today);
+
+    if (daysCount < 0) return []; // 目标日期早于当前时间
+
     const ranges = [];
 
-    for (let i = 0; i < 30; i++) {
-        const start = addDays(today, i);
-        const end = addDays(start, 2); // 区间是 2 天
-        const label = `${format(start, 'MMM d')} – ${format(end, 'MMM d')}`;
-        ranges.push({ label,price:'' });
+    for (let i = 0; i <= daysCount; i++) {
+        const current = addDays(today, i);
+
+        if (isRound) {
+            const end = addDays(current, numberValue);
+            const label = `${format(current, 'MMM d')} – ${format(end, 'MMM d')}`;
+            ranges.push({
+                label,
+                value: {
+                    to: format(current, 'yyyy-MM-dd'),
+                    from: format(end, 'yyyy-MM-dd'),
+                },
+            });
+        } else {
+            const label = format(current, 'MMM d');
+            ranges.push({
+                label,
+                value: format(current, 'yyyy-MM-dd'),
+            });
+        }
     }
 
     return ranges;

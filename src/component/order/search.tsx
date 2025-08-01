@@ -251,14 +251,11 @@ const TimerChoose = memo(({isRound}:{
 
     const dispatch = useDispatch()
 
-    const [dataChoose, setDataChoose] = useState<1|2>(1)
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
     const open = Boolean(anchorEl)
-    const [dateLocal, setDateLocal] = useState<DateRange | Date | undefined>(localDate)
 
     const openPop = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget)
-        setDateLocal(undefined)
     }, [isRound])
 
     const closePop = useCallback(() => {
@@ -266,41 +263,37 @@ const TimerChoose = memo(({isRound}:{
             document.activeElement.blur()
         }
         setAnchorEl(null)
-        if(!dateLocal){
-            setDateLocal(localDate)
-        }
-    }, [localDate,dateLocal])
+    }, [localDate])
 
 
 
 
     const handleSelect = (val: DateRange | Date | undefined) => {
         if (!val) return
-        setDateLocal(val)
         if(isRound){
-            if(dataChoose === 1){
-                setDataChoose(2)
-            }else{
-                setDataChoose(1)
-                dispatch(setLocalDate(val))
-                closePop()
-            }
+            const {to,from} = val as DateRange
+            dispatch(setLocalDate({
+                to:dayjs(to).format('YYYY-MM-DD'),
+                from:dayjs(from).format('YYYY-MM-DD')
+            }))
         }else{
-            dispatch(setLocalDate(val))
-            closePop()
+            dispatch(setLocalDate(dayjs(val as Date).format('YYYY-MM-DD')))
         }
     }
 
     const formatRange = useMemo(() => {
         if(!isRound){
-            if(localDate instanceof Date) return <p>{localDate && format(localDate as Date, 'EEE, MMM dd')}</p>
+            return <p>{localDate && format(new Date(localDate as string) as Date, 'EEE, MMM dd')}</p>
         }else{
-            const {from,to} = localDate as DateRange
+            const {from,to} = localDate as {
+                to:string
+                from:string
+            }
             return (
                 <>
-                    <p>{from && format(from!, 'EEE, MMM dd')}</p>
+                    <p>{from && format(new Date(from), 'EEE, MMM dd')}</p>
                     <p>-</p>
-                    <p>{to && format(to!, 'EEE, MMM dd')}</p>
+                    <p>{to && format(new Date(to), 'EEE, MMM dd')}</p>
                 </>
             )
         }
@@ -319,7 +312,16 @@ const TimerChoose = memo(({isRound}:{
                         isRound ? (
                             <DayPicker
                                 mode="range"
-                                selected={dateLocal as DateRange}
+                                selected={{
+                                    to: new Date((localDate as {
+                                        to:string
+                                        from:string
+                                    }).to),
+                                    from: new Date((localDate as {
+                                        to:string
+                                        from:string
+                                    }).from),
+                                }}
                                 onSelect={handleSelect}
                                 disabled={{ before: new Date() }}
                                 numberOfMonths={2}
@@ -328,7 +330,7 @@ const TimerChoose = memo(({isRound}:{
                         ) : (
                             <DayPicker
                                 mode="single"
-                                selected={localDate as Date}
+                                selected={new Date(localDate as string)}
                                 onSelect={handleSelect}
                                 disabled={{ before: new Date() }}
                                 numberOfMonths={1}
@@ -336,6 +338,11 @@ const TimerChoose = memo(({isRound}:{
                             />
                         )
                     }
+                    <div className={`s-flex jc-fe`}>
+                        <Button onClick={closePop} variant="contained" sx={{
+                            backgroundColor: 'var(--back-color)',
+                        }}>Choose</Button>
+                    </div>
                 </div>
             </InputPop>
         </>
@@ -538,23 +545,26 @@ const SearchComponent = () => {
                     itineraryNo: 0,
                     arrival: daValue.arrival?.airportCode as string,
                     departure: daValue.departure?.airportCode as string,
-                    departureDate: dayjs(localDate as Date).format('YYYY-MM-DD'),
+                    departureDate: dayjs(new Date(localDate as string)).format('YYYY-MM-DD'),
                 },
             ]
         } else if (radioType === 'round') {
-            const { from, to } = localDate as DateRange
+            const { from, to } = localDate as {
+                to:string
+                from:string
+            }
             result.itineraries = [
                 {
                     itineraryNo: 0,
                     arrival: daValue.arrival?.airportCode as string,
                     departure: daValue.departure?.airportCode as string,
-                    departureDate: dayjs(from).format('YYYY-MM-DD'),
+                    departureDate: dayjs(new Date(from)).format('YYYY-MM-DD'),
                 },
                 {
                     itineraryNo: 1,
                     arrival: daValue.departure?.airportCode as string,
                     departure: daValue.arrival?.airportCode as string,
-                    departureDate: dayjs(to).format('YYYY-MM-DD'),
+                    departureDate: dayjs(new Date(to)).format('YYYY-MM-DD'),
                 },
             ]
         }

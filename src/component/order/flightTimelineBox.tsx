@@ -7,10 +7,12 @@ import DataUsageIcon from "@mui/icons-material/DataUsage";
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
+import {useLocation} from "react-router";
 
 const FlightTimelineBox = memo(({segments}:{
     segments:Segment[]
 }) => {
+    const {pathname} = useLocation()
     return (
         <div className={styles.flightTimelineBox}>
             {
@@ -27,8 +29,14 @@ const FlightTimelineBox = memo(({segments}:{
                             </div>
                             <div className={`${styles.airInfomation} s-flex`}>
                                 <div className={`${styles.airInfomationPicture} s-flex ai-ct jc-ct`}>
-                                    <LuggageIcon />
-                                    <AdfScannerIcon />
+                                    {
+                                        pathname !== '/passenger' && (
+                                            <>
+                                                <LuggageIcon />
+                                                <AdfScannerIcon />
+                                            </>
+                                        )
+                                    }
                                 </div>
                                 <div className={styles.airInfomationmains}>
                                     <p>Flight number {segment.flightNumber}

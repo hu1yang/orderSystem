@@ -1,6 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import type {CabinLevel, IAirport, ITem, ItineraryType, Travelers} from "@/types/order.ts";
-import type {DateRange} from "react-day-picker";
 import dayjs from "dayjs";
 
 interface IdaValue{
@@ -10,7 +9,10 @@ interface IdaValue{
 interface SearchInfoType {
     travelers:Travelers[]
     cabinValue:CabinLevel
-    localDate:DateRange | Date | undefined
+    localDate:{
+        to:string
+        from:string
+    } | string
     radioType:ItineraryType
     daValue:IdaValue
 }
@@ -19,10 +21,10 @@ const lcaolDateValue = (isRound:boolean) => {
     if (isRound) {
         const from = dayjs().format('YYYY-MM-DD')
         const to = dayjs().add(1,'day').format('YYYY-MM-DD')
-        return from && to ? { from: new Date(from), to: new Date(to) } : undefined
+        return { from: from, to: to }
     } else {
         const date = dayjs().format('YYYY-MM-DD')
-        return date ? new Date(date) : undefined
+        return date
     }
 }
 
@@ -48,8 +50,18 @@ const searchInfoSlice = createSlice({
             state.radioType = action.payload;
             state.localDate = lcaolDateValue(action.payload === 'round');
         },
-        setLocalDate(state,action:PayloadAction<DateRange | Date>){
-            state.localDate = action.payload;
+        setLocalDate(state,action:PayloadAction<{
+            to:string
+            from:string
+        } | string>){
+            if(typeof action.payload !== 'string'){
+                state.localDate = {
+                    to:action.payload.to,
+                    from:action.payload.from
+                };
+            }else{
+                state.localDate = action.payload;
+            }
         },
         setTravelers(state, action: PayloadAction<Travelers>) {
             const { passengerType, passengerCount } = action.payload;
@@ -70,11 +82,11 @@ const searchInfoSlice = createSlice({
             state.cabinValue = cabinLevel
             state.radioType = itineraryType
             if(itineraryType === 'oneWay'){
-                state.localDate = new Date(itineraries[0].departureDate)
+                state.localDate = itineraries[0].departureDate
             }else{
                 state.localDate = {
-                    to: new Date(itineraries[0].departureDate),
-                    from: new Date(itineraries[1].departureDate),
+                    to: itineraries[0].departureDate,
+                    from: itineraries[1].departureDate,
                 }
             }
 

@@ -1,26 +1,65 @@
-import {memo, useEffect, useState} from "react";
+import {memo, useEffect, useMemo, useState} from "react";
 
 import {generateMonthlyDateRanges} from "@/utils/public.ts";
 import {Tab, Tabs, tabsClasses} from "@mui/material";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import styles from './styles.module.less'
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import dayjs from "dayjs";
 
 interface IDay {
     label:string;
-    price:string;
+    value:string|{
+        to:string
+        from:string
+    };
 }
 const DayChoose = memo(() => {
-    const [dayArr, setDayArr] = useState<IDay[]>([])
-    const [dayValue, setDayValue] = useState(0)
+    const query = useSelector((state: RootState) => state.ordersInfo.query)
 
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    const isRound = useMemo(() => query.itineraryType === 'round', [query.itineraryType])
+
+    const timeValue = useMemo(() => {
+        if(isRound){
+            return {
+                to:query.itineraries[0].departureDate,
+                from:query.itineraries[1].departureDate
+            }
+        }else{
+            return query.itineraries[0].departureDate
+        }
+    }, [query,isRound]);
+
+
+
+    const [dayArr, setDayArr] = useState<IDay[]>([])
+    const [dayValue, setDayValue] = useState(() => {
+        if(isRound){
+            if(typeof timeValue !=='string')
+            return `${timeValue.to}/${timeValue.from}`
+        }else{
+            return timeValue
+        }
+    })
+
+    const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
         setDayValue(newValue);
+
+
     };
 
     useEffect(() => {
-        const dateRanges = generateMonthlyDateRanges()
+        let number = 0
+        if(!timeValue) return
+        if(isRound){
+            if(typeof timeValue !=='string')
+            number = dayjs(timeValue?.from).diff(dayjs(timeValue?.to), 'day');
+        }
+        const dateRanges = generateMonthlyDateRanges(number,isRound,timeValue)
         setDayArr(dateRanges)
-    }, []);
+    }, [isRound,timeValue]);
+
     return (
         <div className={`${styles.dayContainer} s-flex jc-bt`}>
             <div className={`${styles.dayChoose} flex-1`}>
@@ -58,13 +97,16 @@ const DayChoose = memo(() => {
                       }}>
                     {
                         dayArr.map((item,index) => (
-                            <Tab key={index} label={
+                            <Tab key={index} value={isRound?`${(item.value as {
+                                to:string
+                                from:string
+                            })?.to}/${(item.value as {
+                                to:string
+                                from:string
+                            })?.from}`:item.value} label={
                                 <div className={`${styles.dayItem} s-flex flex-dir ai-ct`}>
                                     <div className={styles.dayView}>
                                         <span>{item.label}</span>
-                                    </div>
-                                    <div className={styles.moneyView}>
-                                        <span>{item.price || 'View'}</span>
                                     </div>
                                 </div>
                             } />
@@ -72,10 +114,10 @@ const DayChoose = memo(() => {
                     }
                 </Tabs>
             </div>
-            <div className={`${styles.dayChartBtn} s-flex flex-dir ai-ct jc-ct cursor-p`}>
-                <CalendarMonthIcon sx={{fontSize: 18}} />
-                <span>Price Table</span>
-            </div>
+            {/*<div className={`${styles.dayChartBtn} s-flex flex-dir ai-ct jc-ct cursor-p`}>*/}
+            {/*    <CalendarMonthIcon sx={{fontSize: 18}} />*/}
+            {/*    <span>Price Table</span>*/}
+            {/*</div>*/}
         </div>
     )
 })
