@@ -313,7 +313,6 @@ export interface FilterAirport {
     countryEName:string
     timeZone:number
     airports:IAirport[]
-
 }
 
 export type ITem = Omit<FQuery, 'itineraries'> & {
@@ -323,4 +322,24 @@ export type ITem = Omit<FQuery, 'itineraries'> & {
         departureDate: string
         departure: IAirport
     }[]
+}
+
+export type AddAgentSettingForm = {
+    id: string;
+    branchId: string;
+    agentId: string;
+    isEnabled: boolean;
+    contactName: string;
+    phoneNumber: string;
+    emailAddress: string;
+    localAddress: string;
+    remarks: string;
+    channelCodes: string[];
+}
+
+export interface AgentSetting extends AddAgentSettingForm {
+    operator: string;
+    updatedTime: string|Date;
+    createdTime: string|Date;
+    expandSettings: ExpandsSetting[];
 }

@@ -1,5 +1,6 @@
 import axios from "../createRequest.ts";
 import type {
+    AgentSetting,
     AirChooseForm,
     CommonResponseGroup, CommonResponseOrder,
     FQuery,
@@ -20,3 +21,5 @@ export const paymentOrderAgent = (id:string) => axios.patch<CommonResponseGroup>
 export const getIdentityAgent = () => axios.get('/identityApi/AgentAccount/GetIdentity')
 
 export const fuzzyQueryGlobalAirportsAgent = (content:string) => axios.get<QueryGlobalAirports[]>(`/agentApi/Configs/FuzzyQueryGlobalAirports/${content}/20`)
+
+export const getAgentSettingAgent = () => axios.get<AgentSetting>(`/agentApi/Configs/GetAgentSetting`)

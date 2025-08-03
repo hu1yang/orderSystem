@@ -17,6 +17,7 @@ import phoneCodesGrouped from "@/assets/phone_codes_grouped.json";
 import {useDispatch} from "react-redux";
 import {setContacts} from "@/store/orderInfo.ts";
 import {debounce} from "@/utils/public.ts";
+import {getAgentSettingAgent} from "@/utils/request/agetn.ts";
 
 type IContactMore = IContact & {
     phoneCode:string
@@ -45,7 +46,6 @@ const ContactForm = memo(() => {
         debounceValid(watchFields)
     }, [watchFields])
 
-
     const debounceValid = useMemo(() => debounce((
         fields
     ) => {
@@ -69,10 +69,41 @@ const ContactForm = memo(() => {
         }
     }, 300), []) // ✅ debounce 函数只创建一次
 
-// 👇 使用时把最新字段传进去
+
+
     useEffect(() => {
-        debounceValid(watchFields)
-    }, [watchFields])
+        getAgentInfo()
+    }, []);
+
+    const getAgentInfo = async () => {
+        try {
+            const res = await getAgentSettingAgent();
+
+            if (res && typeof res === 'object') {
+                const { phoneNumber, contactName, emailAddress } = res;
+
+                if (typeof phoneNumber === 'string' && phoneNumber.includes('/')) {
+                    const phoneArr = phoneNumber.split('/').map(str => str.trim());
+                    const [code, number] = phoneArr;
+
+                    if (code && number) {
+                        setValue('phoneCode', `+${code}`);
+                        setValue('phoneNumber', number);
+                    }
+                }
+
+                if (typeof contactName === 'string' && contactName.trim()) {
+                    setValue('contactName', contactName.trim());
+                }
+
+                if (typeof emailAddress === 'string' && emailAddress.trim()) {
+                    setValue('emailAddress', emailAddress.trim());
+                }
+            }
+        } catch (error) {
+            console.error('获取代理信息失败:', error);
+        }
+    };
 
 
     return (

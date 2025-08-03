@@ -191,17 +191,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
 }) => {
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-
-
-
-
     const [open, setOpen] = useState(false)
-
-
-
-
-
-
 
     return  (
         <div className={styles.filterItem}>

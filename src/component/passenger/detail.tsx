@@ -8,7 +8,7 @@ import {
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
-import type {OrderCreate, PriceSummary} from '@/types/order.ts'
+import type {OrderCreate, Passenger, PriceSummary} from '@/types/order.ts'
 import type {RootState} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -23,7 +23,7 @@ import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
-import {resetChoose} from "@/store/orderInfo.ts";
+import {resetChoose, setPassengers} from "@/store/orderInfo.ts";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -75,7 +75,6 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 const Detail = memo(() => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const passengers = useSelector((state: RootState)=> state.ordersInfo.passengers)
     const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
     const navigate = useNavigate()
 
@@ -93,7 +92,7 @@ const Detail = memo(() => {
     }
 
     const passengersRef = useRef<{
-        submit: () => Promise<boolean>;
+        submit: () => Promise<Passenger[]>;
     }>(null)
 
     const [open, setOpen] = useState(false)
@@ -110,11 +109,12 @@ const Detail = memo(() => {
     }
 
 
+
     const handlepaySubmit = useCallback(async () => {
-        let passengerResult:boolean
+        let passengers:Passenger[]
         try {
             if(!passengersRef.current) return false
-            passengerResult = await passengersRef.current.submit()
+            passengers = await passengersRef.current.submit()
         } catch {
             scrollToTarget()
             setOpen(true);
@@ -125,7 +125,6 @@ const Detail = memo(() => {
             );
             return;
         }
-        if (!passengerResult) return false
 
         // 对每种 passengerType 进行校验
         const mismatch = query.travelers.find(traveler => {
@@ -144,6 +143,7 @@ const Detail = memo(() => {
             return;
         }
         const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+        dispatch(setPassengers(passengers))
 
         const result = {
             ...airChoose,
@@ -154,9 +154,10 @@ const Detail = memo(() => {
             shuttleNumber:'',
             tLimit:'',
             remarks:'',
-            passengers:passengers,
+            passengers,
             contacts
         } as OrderCreate
+
         orderCreateAgent(result).then(res => {
             if(res.succeed){
                 setOpen(true);
@@ -184,7 +185,7 @@ const Detail = memo(() => {
                 </Alert>
             );
         })
-    },[query,airChoose,contacts]) // 条件
+    },[query,airChoose,contacts])
 
     const backOrder = (orderid:string) => {
         const referrer = document.referrer

@@ -26,7 +26,7 @@ const initialState: IOrder = {
         cabinLevel: 'y',
         travelers: [
             { passengerCount: 1, passengerType: 'adt' },
-            { passengerCount: 0, passengerType: 'chd' },
+            { passengerCount: 1, passengerType: 'chd' },
             { passengerCount: 0, passengerType: 'inf' },
         ],
         itineraries: [
@@ -143,8 +143,8 @@ const orderInfoSlice = createSlice({
                 state.airChoose.result.itineraries.push(action.payload);
             }
         },
-        setPassengers: (state, action: PayloadAction<{passengers:Passenger[]}>) => {
-            state.passengers = action.payload.passengers
+        setPassengers: (state, action: PayloadAction<Passenger[]>) => {
+            state.passengers = action.payload
         },
 
         setContacts: (state, action: PayloadAction<IContact>) => {

@@ -1,16 +1,13 @@
 import {memo, useMemo, useState} from "react";
 import { useSelector } from "react-redux";
-import {Avatar, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography} from "@mui/material";
+import {Card, CardActions, CardContent, CardHeader, Divider, Typography} from "@mui/material";
 
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
-import T from '@/assets/t.png'
-import C from '@/assets/c.png'
 import styles from './styles.module.less'
 import type { RootState } from "@/store";
-import CheckIcon from "@mui/icons-material/Check";
 import type {PriceSummary} from "@/types/order.ts";
 
 const passengerTypes = {

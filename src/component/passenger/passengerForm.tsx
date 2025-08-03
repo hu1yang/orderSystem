@@ -12,11 +12,10 @@ import {Controller, useFieldArray, useForm, useWatch} from "react-hook-form";
 import dayjs from 'dayjs';
 import type {ITravelerSex, Passenger, PassengerType} from "@/types/order.ts";
 import phoneCodesGrouped from '@/assets/phone_codes_grouped.json'
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
 import type {Control} from "react-hook-form/dist/types/form";
-import {setPassengers} from "@/store/orderInfo.ts";
 
 type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'MS'
 const titleMapping = {
@@ -101,11 +100,11 @@ const PassengerForm = forwardRef((_,ref) => {
 
     useImperativeHandle(ref, () => ({
         submit: () => {
-            return new Promise<boolean>((resolve, reject) => {
+            return new Promise<Passenger[]>((resolve, reject) => {
                 handleSubmit(
                     (data) => {
                         onSubmit(data)
-                        .then(() => resolve(true))
+                        .then(() => resolve(data.passengers))
                         .catch((err) => reject(err));
                     },
                     () => {
@@ -117,7 +116,6 @@ const PassengerForm = forwardRef((_,ref) => {
     }));
 
 
-    const dispatch = useDispatch()
 
 
 
@@ -186,12 +184,12 @@ const PassengerForm = forwardRef((_,ref) => {
                             ? 1
                             : 0);
 
-                    if (passenger.passengerType === 'adt' && age < 18) {
+                    if (passenger.passengerType === 'adt' && age < 12) {
                         setError(`passengers.${i}.birthday`, {
                             type: 'manual',
-                            message: 'Adult must be at least 18 years old.',
+                            message: 'Adult must be at least 12 years old.',
                         });
-                        reject(new Error('Adult must be at least 18 years old.'));
+                        reject(new Error('Adult must be at least 12 years old.'));
                         return;
                     }
 
@@ -245,7 +243,6 @@ const PassengerForm = forwardRef((_,ref) => {
                 delete passenger.lastName;
             }
 
-            dispatch(setPassengers(data));
 
             resolve();
         });
@@ -500,6 +497,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                                 const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
                                                                 field.onChange(formatted); // 存为字符串
                                                             }}
+                                                            maxDate={dayjs()}
                                                             slotProps={{
                                                                 textField: {
                                                                     fullWidth: true,
@@ -529,6 +527,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                                 const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
                                                                 field.onChange(formatted); // 存为字符串
                                                             }}
+                                                            minDate={dayjs()}
                                                             slotProps={{
                                                                 textField: {
                                                                     fullWidth: true,

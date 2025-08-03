@@ -125,7 +125,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     }
 
     return (
-        <Box sx={{width: 320,...style}}>
+        <Box sx={{width: 250,...style}}>
             <Card className={'cursor-p'} sx={{
                 width: 250, borderRadius: '4px', padding: '16px 24px',
                 boxShadow: 'inset 0 0 0 3px transparent',

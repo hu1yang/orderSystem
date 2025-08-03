@@ -1,4 +1,4 @@
-import {format, addDays, parseISO, differenceInCalendarDays} from 'date-fns';
+import {format, addDays, parseISO, differenceInCalendarDays, addMonths} from 'date-fns';
 import dayjs, {type Dayjs} from 'dayjs';
 import type {QueryGlobalAirports} from "@/types/order.ts";
 
@@ -11,18 +11,17 @@ export function generateMonthlyDateRanges(
     let targetDate: Date;
 
     if (isRound && typeof timeValue === 'object') {
-        // 往返：取 from 字段
-        targetDate = parseISO(timeValue.from);
+        // 往返：取 from，加 1 个月
+        targetDate = addMonths(parseISO(timeValue.to), 1);
     } else if (!isRound && typeof timeValue === 'string') {
-        // 单程：直接使用 timeValue
-        targetDate = parseISO(timeValue);
+        // 单程：直接使用 timeValue，加 1 个月
+        targetDate = addMonths(parseISO(timeValue), 1);
     } else {
         return []; // 无效输入
     }
 
     const daysCount = differenceInCalendarDays(targetDate, today);
-
-    if (daysCount < 0) return []; // 目标日期早于当前时间
+    if (daysCount < 0) return [];
 
     const ranges = [];
 
@@ -50,6 +49,7 @@ export function generateMonthlyDateRanges(
 
     return ranges;
 }
+
 
 // 参数规范化：空字符串转为 null（递归处理嵌套对象）
 export function normalizeParams<T>(params?: T): T {
