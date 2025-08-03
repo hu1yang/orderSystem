@@ -197,7 +197,6 @@ const Detail = memo(() => {
             },origin)
         }
 
-        dispatch(resetChoose())
         setTimeout(() => {
             navigate('/')
         },500)

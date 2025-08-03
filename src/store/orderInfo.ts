@@ -26,7 +26,7 @@ const initialState: IOrder = {
         cabinLevel: 'y',
         travelers: [
             { passengerCount: 1, passengerType: 'adt' },
-            { passengerCount: 1, passengerType: 'chd' },
+            { passengerCount: 0, passengerType: 'chd' },
             { passengerCount: 0, passengerType: 'inf' },
         ],
         itineraries: [
@@ -162,9 +162,20 @@ const orderInfoSlice = createSlice({
                 state.airportActived = state.airportActived - 1
             }
         },
-        setSearchDate: (state, action: PayloadAction<FQueryResult[]>) => {
-            const result = setSearchDateFnc(action.payload)
-            state.airSearchData = result;
+        setSearchDate: (state, action: PayloadAction<FQueryResult[]|[]>) => {
+            if(action.payload.length){
+                const result = setSearchDateFnc(action.payload)
+                state.airSearchData = result;
+            }else{
+                state.airSearchData = [];
+            }
+
+        },
+        resetAirChoose:(state) => {
+            state.airChoose = {
+                result: null,
+                channelCode:'',
+            }
         },
         resetChoose: () => initialState
     },
@@ -183,8 +194,9 @@ export const {
     setResultItineraries,
     setPassengers,
     setContacts,
+    resetAirChoose,
     prevAirChoose,
     setSearchDate,
-    resetChoose
+    resetChoose,
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

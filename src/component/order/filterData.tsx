@@ -17,6 +17,7 @@ import {
 } from "@/utils/order.ts";
 import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
+import FilterItemSkeleton from "@/component/order/filterItemSkeleton.tsx";
 
 
 const filterTabArr = [
@@ -148,70 +149,66 @@ const FilterData = memo(() => {
         <div className={`${styles.filterData} flex-1`}>
 
             <div className={styles.filterBox}>
-                {
-                    airResultList.length?
-                        <>
-                            <div className={styles.filterHeader}>
-                                <div className={styles.stackedColor}></div>
-                                <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
-                                    <h2>
-                                        {
-                                            state.ordersInfo.query.itineraries.length?
-                                                `${airportActived + 1}. ${(airportActived === 0) ? 'Departing' : 'Returning'} to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
-                                                :<></>
+
+                <div className={styles.filterHeader}>
+                    <div className={styles.stackedColor}></div>
+                    <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
+                        <h2>
+                            {
+                                state.ordersInfo.query.itineraries.length?
+                                    `${airportActived + 1}. ${(airportActived === 0) ? 'Departing' : 'Returning'} to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
+                                    :<></>
+                            }
+                        </h2>
+                        <div className={`s-flex ai-fs cursor-p`}>
+                            {/*<span>*Last updated: {updatedTime}</span>*/}
+                        </div>
+                    </div>
+                    {
+                        prevAir ?
+                            <div className={`${styles.prevCom} s-flex jc-bt ai-ct`}>
+                                <div className={`${styles.prevComInfo} s-flex ai-ct`}>
+                                    <Chip label={(airportActived === 0) ? 'Depart':'Return'} size={'small'} sx={{
+                                        background: 'var(--active-color)',
+                                        borderRadius: '4px',
+                                        fontSize: '1rem',
+                                        color: 'var(--vt-c-white)',
+                                        fontWeight: 'bold',
+                                        '.MuiChip-label': {
+                                            fontSize: '1.2em',
                                         }
-                                    </h2>
-                                    <div className={`s-flex ai-fs cursor-p`}>
-                                        {/*<span>*Last updated: {updatedTime}</span>*/}
+                                    }}/>
+                                    <div className={styles.airInfos}>
+                                        <span>{format(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
+                                        <span>{extractTimeWithTimezone(prevAir[0].departureTime)} – {extractTimeWithTimezone(prevAir.at(-1)?.arrivalTime as string)}</span>
+                                        <span>{prevAir[0].departureAirport} – {prevAir.at(-1)?.arrivalAirport}</span>
+                                        <span>{formatTotalDuration(prevAir.map(segment => segment.totalFlyingTime) as string[])}</span>
                                     </div>
                                 </div>
-                                {
-                                    prevAir ?
-                                        <div className={`${styles.prevCom} s-flex jc-bt ai-ct`}>
-                                            <div className={`${styles.prevComInfo} s-flex ai-ct`}>
-                                                <Chip label={(airportActived === 0) ? 'Depart':'Return'} size={'small'} sx={{
-                                                    background: 'var(--active-color)',
-                                                    borderRadius: '4px',
-                                                    fontSize: '1rem',
-                                                    color: 'var(--vt-c-white)',
-                                                    fontWeight: 'bold',
-                                                    '.MuiChip-label': {
-                                                        fontSize: '1.2em',
-                                                    }
-                                                }}/>
-                                                <div className={styles.airInfos}>
-                                                    <span>{format(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
-                                                    <span>{extractTimeWithTimezone(prevAir[0].departureTime)} – {extractTimeWithTimezone(prevAir.at(-1)?.arrivalTime as string)}</span>
-                                                    <span>{prevAir[0].departureAirport} – {prevAir.at(-1)?.arrivalAirport}</span>
-                                                    <span>{formatTotalDuration(prevAir.map(segment => segment.totalFlyingTime) as string[])}</span>
-                                                </div>
-                                            </div>
-                                            <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={prevChooseAir}>
-                                                <span>Change Flight</span>
-                                            </div>
-                                        </div>
-                                        :<></>
-                                }
-
+                                <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={prevChooseAir}>
+                                    <span>Change Flight</span>
+                                </div>
                             </div>
-                            {/*<FilterTab />*/}
-                            <div className={styles.filterContent}>
-                                {
-                                    airResultList.map((searchData) => (
-                                        <FilterItem
-                                            key={`${searchData.key}-${searchData.itineraryKey}`}
-                                            segments={searchData.segments}
-                                            cheapAmount={searchData.cheapAmount}
-                                            currency={searchData.currency!}
-                                            searchKey={searchData.key}
-                                            />
-                                    ))
-                                }
+                            :<></>
+                    }
 
-                            </div>
-                        </>:<></>
-                }
-
+                </div>
+                {/*<FilterTab />*/}
+                <div className={styles.filterContent}>
+                    {
+                        airSearchData.length ? (
+                            airResultList.map((searchData) => (
+                                <FilterItem
+                                    key={`${searchData.key}-${searchData.itineraryKey}`}
+                                    segments={searchData.segments}
+                                    cheapAmount={searchData.cheapAmount}
+                                    currency={searchData.currency!}
+                                    searchKey={searchData.key}
+                                />
+                            ))
+                        ):<FilterItemSkeleton />
+                    }
+                </div>
             </div>
         </div>
     )

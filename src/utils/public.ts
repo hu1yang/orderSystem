@@ -34,15 +34,17 @@ export function generateMonthlyDateRanges(
             ranges.push({
                 label,
                 value: {
-                    to: format(current, 'yyyy-MM-dd'),
-                    from: format(end, 'yyyy-MM-dd'),
+                    to: format(end, 'yyyy-MM-dd'),
+                    from: format(current, 'yyyy-MM-dd'),
                 },
+                key: format(end, 'yyyy-MM-dd'),
             });
         } else {
             const label = format(current, 'MMM d');
             ranges.push({
                 label,
                 value: format(current, 'yyyy-MM-dd'),
+                key: format(current, 'yyyy-MM-dd'),
             });
         }
     }

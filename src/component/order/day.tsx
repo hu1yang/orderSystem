@@ -2,11 +2,15 @@ import {memo, useEffect, useMemo, useState} from "react";
 
 import {generateMonthlyDateRanges} from "@/utils/public.ts";
 import {Tab, Tabs, tabsClasses} from "@mui/material";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import styles from './styles.module.less'
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import dayjs from "dayjs";
+import {setErrorMsg, setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
+import type {FQuery} from "@/types/order.ts";
+import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
+import {deduplicateByChannelCode} from "@/utils/order.ts";
+import {resetAirChoose, setSearchDate} from "@/store/orderInfo.ts";
 
 interface IDay {
     label:string;
@@ -14,17 +18,21 @@ interface IDay {
         to:string
         from:string
     };
+    key:string
 }
 const DayChoose = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
+
+    const dispatch = useDispatch()
 
     const isRound = useMemo(() => query.itineraryType === 'round', [query.itineraryType])
 
     const timeValue = useMemo(() => {
         if (isRound) {
             return {
-                to: query.itineraries[0]?.departureDate ?? '',
-                from: query.itineraries[1]?.departureDate ?? ''
+                to: query.itineraries[1]?.departureDate ?? '',
+                from: query.itineraries[0]?.departureDate ?? ''
             };
         } else {
             return query.itineraries[0]?.departureDate ?? '';
@@ -36,9 +44,9 @@ const DayChoose = memo(() => {
 
         let currentValue = '';
         if (isRound && typeof timeValue !== 'string') {
-            currentValue = JSON.stringify(timeValue);
+            currentValue = timeValue.to;
         } else if (!isRound && typeof timeValue === 'string') {
-            currentValue = JSON.stringify(timeValue);
+            currentValue = timeValue;
         }
 
         setDayValue(currentValue);
@@ -56,12 +64,61 @@ const DayChoose = memo(() => {
 
     // 切换时从 JSON 字符串恢复成对象（如你有需要）
     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-        const parsed = JSON.parse(newValue); // 可根据需要使用 parsed
-        setDayValue(parsed);
+        setDayValue(newValue);
+        const date = dayArr.find(day => day.key === newValue)
+        if(!date) return
+        dispatch(resetAirChoose())
+        dispatch(setSearchDate([]))
+        dispatch(setLocalDate(date?.value))
+        searchData(date?.value)
     };
 
+    const searchData = (date:string|{
+        to:string
+        from:string
+    }) => {
+        if(searchLoad) return
+        dispatch(setSearchLoad(true))
+        dispatch(setSearchFlag(true))
+        let newItineraries = query.itineraries
+        if(isRound){
+            newItineraries = query.itineraries.map(it => ({
+                ...it,
+                departureDate:(date  as {
+                    to:string
+                    from:string
+                })[it.itineraryNo === 0 ? 'from' : 'to']
+            }))
+        }else{
+            newItineraries[0].departureDate = date as string
+        }
 
+        const result: FQuery = {
+            ...query,
+            itineraries:newItineraries
+        }
 
+        getAuthorizableRoutingGroupAgent(result).then(res => {
+            if(res.length){
+                const objResult = deduplicateByChannelCode(res)
+                dispatch(setSearchDate(objResult))
+                const allFailed = objResult.every(a => a.succeed !== true)
+                dispatch(setSearchLoad(false))
+
+                if(allFailed){
+                    dispatch(setSearchDate([]))
+                    dispatch(setErrorMsg('No suitable data'))
+                }
+            }else{
+                dispatch(setSearchLoad(false))
+                dispatch(setErrorMsg('No suitable data'))
+            }
+
+        }).catch(() => {
+            dispatch(setSearchLoad(false))
+            dispatch(setErrorMsg('Interface error'))
+        })
+    }
 
     return (
         <div className={`${styles.dayContainer} s-flex jc-bt`}>
@@ -101,8 +158,8 @@ const DayChoose = memo(() => {
                                   }
                               }}>
                             {
-                                dayArr.map((item,index) => (
-                                    <Tab key={index} value={JSON.stringify(item.value)} label={
+                                dayArr.map(item => (
+                                    <Tab key={item.key} value={item.key} label={
                                         <div className={`${styles.dayItem} s-flex flex-dir ai-ct`}>
                                             <div className={styles.dayView}>
                                                 <span>{item.label}</span>
@@ -116,10 +173,6 @@ const DayChoose = memo(() => {
                 }
 
             </div>
-            {/*<div className={`${styles.dayChartBtn} s-flex flex-dir ai-ct jc-ct cursor-p`}>*/}
-            {/*    <CalendarMonthIcon sx={{fontSize: 18}} />*/}
-            {/*    <span>Price Table</span>*/}
-            {/*</div>*/}
         </div>
     )
 })

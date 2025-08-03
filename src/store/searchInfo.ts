@@ -15,13 +15,20 @@ interface SearchInfoType {
     } | string
     radioType:ItineraryType
     daValue:IdaValue
+    searchFlag:boolean
+    searchLoad:boolean
+    errorMsg:string|null
 }
-
+const defaultTravelers = [
+    { passengerCount: 1, passengerType: 'adt' },
+    { passengerCount: 0, passengerType: 'chd' },
+    { passengerCount: 0, passengerType: 'inf' },
+]
 const lcaolDateValue = (isRound:boolean) => {
     if (isRound) {
         const from = dayjs().format('YYYY-MM-DD')
         const to = dayjs().add(1,'day').format('YYYY-MM-DD')
-        return { from: from, to: to }
+        return { from, to }
     } else {
         const date = dayjs().format('YYYY-MM-DD')
         return date
@@ -29,18 +36,17 @@ const lcaolDateValue = (isRound:boolean) => {
 }
 
 const initialState:SearchInfoType = {
-    travelers:[
-        { passengerCount: 1, passengerType: 'adt' },
-        { passengerCount: 0, passengerType: 'chd' },
-        { passengerCount: 0, passengerType: 'inf' },
-    ],
+    travelers:defaultTravelers,
     cabinValue:'y',
     localDate: lcaolDateValue(false),
     radioType: 'oneWay',
     daValue:{
         departure:null,
         arrival:null
-    }
+    },
+    searchFlag:false,
+    searchLoad:false,
+    errorMsg:null
 }
 const searchInfoSlice = createSlice({
     name:'searchInfo',
@@ -85,18 +91,38 @@ const searchInfoSlice = createSlice({
                 state.localDate = itineraries[0].departureDate
             }else{
                 state.localDate = {
-                    to: itineraries[0].departureDate,
-                    from: itineraries[1].departureDate,
+                    to: itineraries[1].departureDate,
+                    from: itineraries[0].departureDate,
                 }
             }
 
-            state.travelers = travelers
+            const newTravelers = defaultTravelers.map((traveler: Travelers) => {
+                const matchedTraveler = travelers.find(
+                    (t) => t.passengerType === traveler.passengerType
+                );
+
+                return {
+                    ...traveler,
+                    passengerCount: matchedTraveler?.passengerCount ?? 0, // 默认值更安全
+                };
+            });
+
+            state.travelers = newTravelers
             state.daValue = {
                 departure:itineraries[0].departure,
                 arrival:itineraries[0].arrival,
             }
+        },
+        setSearchFlag(state,action:PayloadAction<boolean>){
+            state.searchFlag = action.payload;
+        },
+        setSearchLoad(state,action:PayloadAction<boolean>){
+            state.searchLoad = action.payload;
+        },
+        setErrorMsg(state,action:PayloadAction<string|null>){
+            state.errorMsg = action.payload;
         }
     }
 })
-export const {setRadioType, setLocalDate, setTravelers, setCabinValue , setDaValue,setHistory} = searchInfoSlice.actions
+export const {setRadioType, setLocalDate, setTravelers, setCabinValue, setDaValue, setHistory,setSearchLoad,setErrorMsg,setSearchFlag} = searchInfoSlice.actions
 export default searchInfoSlice.reducer;

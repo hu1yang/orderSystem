@@ -1,41 +1,66 @@
 import SearchComponent from "@/component/order/search";
-// import DayChoose from "@/component/order/day.tsx";
 import styles from './styles.module.less'
 import FilterData from "@/component/order/filterData.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import {resetChoose, } from "@/store/orderInfo.ts";
 import type {RootState} from "@/store";
-import HistoryCom from "@/component/order/HistoryCom.tsx";
+import DefaultShow from "@/component/order/defaultShow.tsx";
 import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
+import {Alert, Snackbar} from "@mui/material";
+import {setErrorMsg, setSearchFlag} from "@/store/searchInfo.ts";
+import banner from '@/assets/banner.png'
 
 const Order = () => {
     const dispatch = useDispatch()
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+    const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
+    const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
 
     useEffect(() => {
         dispatch(resetChoose())
+        dispatch(setSearchFlag(false))
     },[])
+
+
+    const errClose = () => {
+        dispatch(setErrorMsg(null))
+    }
 
     return (
         <div className={styles.orderLayout}>
             <div className={styles.layoutWidth}>
                 <SearchComponent />
                 {
-                    !!airSearchData.length && <DayChoose />
+                    searchFlag && <DayChoose />
                 }
                 <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
                     {
-                        airSearchData.length? (
+                        searchFlag ? (
                             <>
                                 <FilterComponent />
                                 <FilterData />
                             </>
-                        ) : <HistoryCom />
+                        ) : <DefaultShow />
+
                     }
                 </div>
             </div>
+            <Snackbar
+                anchorOrigin={{ vertical:'top', horizontal:'right' }}
+                open={!!errMessage}
+                autoHideDuration={2000}
+                onClose={errClose}
+            >
+                <Alert
+                    onClose={errClose}
+                    severity="error"
+                    variant="filled"
+                    sx={{ fontSize: '1.3rem', fontWeight: 'bold' }}
+                >
+                    {errMessage}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

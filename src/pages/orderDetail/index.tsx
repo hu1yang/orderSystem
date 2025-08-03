@@ -260,7 +260,6 @@ const OrderDetail = () => {
             },origin)
         }
 
-        dispatch(resetChoose())
         setTimeout(() => {
             navigate('/')
         },500)

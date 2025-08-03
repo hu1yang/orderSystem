@@ -41,7 +41,14 @@ import dayjs from "dayjs";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
 import {debounce, flattenByCountry} from "@/utils/public.ts";
 import type {RootState} from "@/store";
-import {setCabinValue, setDaValue, setLocalDate, setRadioType, setTravelers} from "@/store/searchInfo.ts";
+import {
+    setCabinValue,
+    setDaValue, setErrorMsg,
+    setLocalDate,
+    setRadioType, setSearchFlag,
+    setSearchLoad,
+    setTravelers
+} from "@/store/searchInfo.ts";
 
 
 const cabinOptions = [
@@ -484,11 +491,9 @@ const SearchComponent = () => {
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
     const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
     const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
+    const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
 
-    const [searchLoad, setSearchLoad] = useState<boolean>(false)
     const isRound = useMemo(() => radioType === 'round', [radioType])
-    const [errOpen, setErrOpen] = useState(false)
-    const [errMessage, setErrMessage] = useState('')
 
 
     function setHistorySearch(newItem: ITem) {
@@ -530,7 +535,9 @@ const SearchComponent = () => {
 
     const search = () => {
         if(searchLoad) return
-        setSearchLoad(true)
+        dispatch(setSearchLoad(true))
+        dispatch(setSearchFlag(true))
+
         const result: FQuery = {
             itineraryType: radioType,
             cabinLevel: cabinValue,
@@ -585,30 +592,24 @@ const SearchComponent = () => {
                 const objResult = deduplicateByChannelCode(res)
                 dispatch(setSearchDate(objResult))
                 const allFailed = objResult.every(a => a.succeed !== true)
-                setSearchLoad(false)
+                dispatch(setSearchLoad(false))
 
                 if(allFailed){
-                    errHandleOpen('No suitable data')
+                    dispatch(setSearchDate([]))
+                    dispatch(setErrorMsg('No suitable data'))
                 }
             }else{
-                setSearchLoad(false)
-                errHandleOpen('No suitable data')
+                dispatch(setSearchLoad(false))
+                dispatch(setErrorMsg('No suitable data'))
             }
 
         }).catch(() => {
-            setSearchLoad(false)
-            errHandleOpen('Interface error')
+            dispatch(setSearchLoad(false))
+            dispatch(setErrorMsg('Interface error'))
         })
     }
 
-    const errHandleOpen = (message:string) => {
-        setErrOpen(true)
-        setErrMessage(message)
-    }
-    const errClose = () => {
-        setErrOpen(false)
-        setErrMessage('')
-    }
+
 
     return (
         <div className={styles.searchContainer}>
@@ -635,21 +636,7 @@ const SearchComponent = () => {
                     Search
                 </Button>
             </div>
-            <Snackbar
-                anchorOrigin={{ vertical:'top', horizontal:'right' }}
-                open={errOpen}
-                autoHideDuration={2000}
-                onClose={errClose}
-            >
-                <Alert
-                    onClose={errClose}
-                    severity="error"
-                    variant="filled"
-                    sx={{ fontSize: '1.3rem', fontWeight: 'bold' }}
-                >
-                    {errMessage}
-                </Alert>
-            </Snackbar>
+
         </div>
     );
 }
