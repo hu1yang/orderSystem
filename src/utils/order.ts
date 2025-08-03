@@ -87,9 +87,11 @@ export function formatDuration(start: string, end: string): string {
 }
 
 
-export function getAdultAmountTotal(amount: Amount) {
+export function getAdultAmountTotal(amount: Amount): number {
     return (amount.printAmount || 0) + (amount.taxesAmount || 0);
 }
+
+
 
 export function findLowestAdultCombo(
     itineraryGroups: ResponseItinerary[][]
@@ -123,7 +125,7 @@ export function findLowestAdultCombo(
 
             if (total < result.minTotal) {
                 result = {
-                    minTotal: total,
+                    minTotal: Number(total.toFixed(2)),
                     amounts: [baseAmount],
                 };
             }
@@ -152,12 +154,13 @@ export function findLowestAdultCombo(
 
             if (total < result.minTotal) {
                 result = {
-                    minTotal: total,
+                    minTotal: Number(total.toFixed(2)),
                     amounts: [baseAmount, ...returnAmounts],
                 };
             }
         }
     });
+    console.log(result)
 
     return result;
 }
