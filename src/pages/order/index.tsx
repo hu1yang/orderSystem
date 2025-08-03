@@ -2,7 +2,7 @@ import SearchComponent from "@/component/order/search";
 import styles from './styles.module.less'
 import FilterData from "@/component/order/filterData.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useMemo} from "react";
+import {useEffect} from "react";
 import {resetChoose, } from "@/store/orderInfo.ts";
 import type {RootState} from "@/store";
 import DefaultShow from "@/component/order/defaultShow.tsx";
@@ -10,7 +10,6 @@ import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
 import {Alert, Snackbar} from "@mui/material";
 import {setErrorMsg, setSearchFlag} from "@/store/searchInfo.ts";
-import banner from '@/assets/banner.png'
 
 const Order = () => {
     const dispatch = useDispatch()

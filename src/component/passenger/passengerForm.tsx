@@ -462,6 +462,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                         <DatePicker
                                                             label="Date of birth"
                                                             format="DD/MM/YYYY"
+                                                            maxDate={dayjs()}
                                                             value={field.value ? dayjs(field.value) : null}
                                                             onChange={(date) => {
                                                                 const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';

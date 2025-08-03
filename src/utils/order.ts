@@ -46,18 +46,19 @@ export function calculateTotalPriceSummary(
 
     (['adt', 'chd', 'inf'] as PassengerType[]).forEach(type => {
         const item = perType[type];
-        item.printAmount = Number(item.printAmount);
-        item.taxesAmount = Number(item.taxesAmount);
-        item.unitPrice = (item.printAmount + item.taxesAmount);
-        item.totalPrice = (item.unitPrice * item.count);
+        item.printAmount = Math.round(item.printAmount * 100) / 100;
+        item.taxesAmount = Math.round(item.taxesAmount * 100) / 100;
+        item.unitPrice = Math.round((item.printAmount + item.taxesAmount) * 100) / 100;
+        item.totalPrice = Math.round(item.unitPrice * item.count * 100) / 100;
         total += item.totalPrice;
     });
 
     return {
-        totalPrice: total,
+        totalPrice: Math.round(total * 100) / 100,
         perType
     };
 }
+
 
 export function formatTotalDuration(times: string[]): string {
 
@@ -87,8 +88,10 @@ export function formatDuration(start: string, end: string): string {
 
 
 export function getAdultAmountTotal(amount: Amount) {
-    return (amount.printAmount || 0) + (amount.taxesAmount || 0);
+    const total = (amount.printAmount || 0) + (amount.taxesAmount || 0);
+    return Math.round(total * 100) / 100;
 }
+
 
 export function findLowestAdultCombo(
     itineraryGroups: ResponseItinerary[][]

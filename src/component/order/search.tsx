@@ -1,5 +1,4 @@
 import {
-    Alert,
     Button,
     Divider, FormControl,
     FormControlLabel,
@@ -8,7 +7,7 @@ import {
     MenuItem,
     Popover,
     Radio,
-    RadioGroup, Select, Snackbar, Stack,
+    RadioGroup, Select, Stack,
     Typography
 } from '@mui/material';
 import styles from './styles.module.less'
@@ -34,6 +33,7 @@ import type {
 } from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
+    resetAirChoose,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
@@ -535,6 +535,8 @@ const SearchComponent = () => {
 
     const search = () => {
         if(searchLoad) return
+        dispatch(resetAirChoose())
+        dispatch(setSearchDate([]))
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
 

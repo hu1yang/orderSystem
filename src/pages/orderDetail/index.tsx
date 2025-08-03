@@ -2,17 +2,11 @@ import React, {memo, useEffect, useMemo, useRef, useState} from "react";
 import {
     Alert,
     Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Divider,
+
     Grid,
-    Link,
     Snackbar,
     type SnackbarCloseReason,
-    Typography
 } from "@mui/material";
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import styles from './styles.module.less'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import {useDispatch, useSelector} from "react-redux";
@@ -22,9 +16,8 @@ import {calculateTotalPriceSummary} from "@/utils/order.ts";
 import stylesPass from '@/component/passenger/styles.module.less'
 import {formatDateToShortString} from "@/utils/public.ts";
 import type {Dayjs} from "dayjs";
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {paymentOrderAgent} from "@/utils/request/agetn.ts";
-import {resetChoose} from "@/store/orderInfo.ts";
 
 const FlightCom = memo(({
                             type,data
@@ -208,7 +201,6 @@ const OrderDetail = () => {
     const {payid} = useParams()
     const navigate = useNavigate()
 
-    const dispatch = useDispatch()
 
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
