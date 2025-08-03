@@ -88,10 +88,8 @@ export function formatDuration(start: string, end: string): string {
 
 
 export function getAdultAmountTotal(amount: Amount) {
-    const total = (amount.printAmount || 0) + (amount.taxesAmount || 0);
-    return Math.round(total * 100) / 100;
+    return (amount.printAmount || 0) + (amount.taxesAmount || 0);
 }
-
 
 export function findLowestAdultCombo(
     itineraryGroups: ResponseItinerary[][]

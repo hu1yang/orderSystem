@@ -19,6 +19,7 @@ type IOrder = {
     passengers: Passenger[]
     contacts: IContact[]
     airSearchData: AirSearchData[]
+    noData:boolean
 }
 const initialState: IOrder = {
     query:{
@@ -51,7 +52,8 @@ const initialState: IOrder = {
             emailAddress:'',
             phoneNumber: '',
         }
-    ]
+    ],
+    noData:false
 }
 
 const orderInfoSlice = createSlice({
@@ -177,6 +179,9 @@ const orderInfoSlice = createSlice({
                 channelCode:'',
             }
         },
+        setNoData: (state, action: PayloadAction<boolean>) => {
+            state.noData = action.payload
+        },
         resetChoose: () => initialState
     },
 })
@@ -198,5 +203,6 @@ export const {
     prevAirChoose,
     setSearchDate,
     resetChoose,
+    setNoData
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

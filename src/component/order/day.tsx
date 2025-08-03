@@ -10,7 +10,7 @@ import {setErrorMsg, setLocalDate, setSearchFlag, setSearchLoad} from "@/store/s
 import type {FQuery} from "@/types/order.ts";
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
-import {resetAirChoose, setSearchDate} from "@/store/orderInfo.ts";
+import {resetAirChoose, setNoData, setSearchDate} from "@/store/orderInfo.ts";
 
 interface IDay {
     label:string;
@@ -78,11 +78,13 @@ const DayChoose = memo(() => {
         from:string
     }) => {
         if(searchLoad) return
+        dispatch(setNoData(false))
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
-        let newItineraries = query.itineraries
+        const newResult = {...query}
+        let newItineraries = newResult.itineraries
         if(isRound){
-            newItineraries = query.itineraries.map(it => ({
+            newItineraries = newResult.itineraries.map(it => ({
                 ...it,
                 departureDate:(date  as {
                     to:string
@@ -90,11 +92,15 @@ const DayChoose = memo(() => {
                 })[it.itineraryNo === 0 ? 'from' : 'to']
             }))
         }else{
-            newItineraries[0].departureDate = date as string
+            newItineraries = newResult.itineraries.map(it => ({
+                ...it,
+                departureDate:date as string
+            }))
         }
 
         const result: FQuery = {
-            ...query,
+            ...newResult,
+            travelers:newResult.travelers.filter(tr => tr.passengerCount>0),
             itineraries:newItineraries
         }
 
@@ -107,6 +113,7 @@ const DayChoose = memo(() => {
 
                 if(allFailed){
                     dispatch(setSearchDate([]))
+                    dispatch(setNoData(true))
                     dispatch(setErrorMsg('No suitable data'))
                 }
             }else{

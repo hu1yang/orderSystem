@@ -4,7 +4,7 @@ import {
     Box,
     Chip,
     Tab,
-    Tabs,
+    Tabs, Typography,
 } from "@mui/material";
 import HtmlTooltip from "../defult/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -120,6 +120,7 @@ const FilterData = memo(() => {
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const noData = useSelector((state: RootState) => state.ordersInfo.noData)
     const dispatch = useDispatch()
 
     const prevAir = useMemo(() => {
@@ -196,7 +197,11 @@ const FilterData = memo(() => {
                 {/*<FilterTab />*/}
                 <div className={styles.filterContent}>
                     {
-                        airSearchData.length ? (
+                        noData ?  <Box component="section" sx={{ p: 2,}}>
+                            <Typography variant="h4" gutterBottom>
+                                No data found
+                            </Typography>
+                        </Box> : airSearchData.length ? (
                             airResultList.map((searchData) => (
                                 <FilterItem
                                     key={`${searchData.key}-${searchData.itineraryKey}`}
@@ -208,6 +213,7 @@ const FilterData = memo(() => {
                             ))
                         ):<FilterItemSkeleton />
                     }
+
                 </div>
             </div>
         </div>

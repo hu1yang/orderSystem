@@ -33,7 +33,7 @@ import type {
 } from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    resetAirChoose,
+    resetAirChoose, setNoData,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
@@ -535,6 +535,8 @@ const SearchComponent = () => {
 
     const search = () => {
         if(searchLoad) return
+        dispatch(setNoData(false))
+
         dispatch(resetAirChoose())
         dispatch(setSearchDate([]))
         dispatch(setSearchLoad(true))
@@ -598,6 +600,7 @@ const SearchComponent = () => {
 
                 if(allFailed){
                     dispatch(setSearchDate([]))
+                    dispatch(setNoData(true))
                     dispatch(setErrorMsg('No suitable data'))
                 }
             }else{
