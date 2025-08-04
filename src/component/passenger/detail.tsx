@@ -49,24 +49,9 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                         color:'var(--vt-c-white)',
                         fontWeight: 'bold',
                         fontSize: 18
-                    }} fullWidth onClick={payNow}>Pay Now</Button>
+                    }} fullWidth onClick={payNow}>Booking Now</Button>
                 </div>
             </div>
-            <div className={`${styles.simple} s-flex ai-ct jc-ct`}>
-                <div className={`${styles.simpleli} s-flex ai-ct`}>
-                    <img src="https://ak-d.tripcdn.com/images/05S4r12000ceoxeo136F7.png" alt=""/>
-                    <span>Award-winning</span>
-                </div>
-                <div className={`${styles.simpleli} s-flex ai-ct`}>
-                    <img src="https://ak-d.tripcdn.com/images/0AS5f120008whj34f2145.png" alt=""/>
-                    <span>Support in approx. 30s</span>
-                </div>
-                <div className={`${styles.simpleli} s-flex ai-ct`}>
-                    <img src="https://ak-d.tripcdn.com/images/0AS5x120008whk01q784B.png" alt=""/>
-                    <span>Rewards for booking</span>
-                </div>
-            </div>
-
         </div>
 
     )

@@ -287,6 +287,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                         <Grid size={4}>
                                             <Controller
                                                 control={control}
+                                                disabled={field.passengerType === 'inf'}
                                                 name={`passengers.${index}.title`}
                                                 render={({field}) => (
                                                     <FormControl fullWidth>

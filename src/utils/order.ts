@@ -160,7 +160,6 @@ export function findLowestAdultCombo(
             }
         }
     });
-    console.log(result)
 
     return result;
 }
