@@ -17,13 +17,13 @@ import type {RootState} from "@/store";
 import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
 import type {Control} from "react-hook-form/dist/types/form";
 
-type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'MS'
+type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'Ms'
 const titleMapping = {
     'Master': { type: 'chd', sex: 'm' },
     'Miss': { type: 'chd', sex: 'f' },
     'Mr': { type: 'adt', sex: 'm' },
     'Mrs': { type: 'adt', sex: 'f' },
-    'MS': { type: 'adt', sex: 'f' },
+    'Ms': { type: 'adt', sex: 'f' },
     // 可以添加更多映射
 };
 
@@ -270,7 +270,7 @@ const PassengerForm = forwardRef((_,ref) => {
                             let passengerTitleFilter:PassengerTitle|string[] = []
                             switch (field.passengerType) {
                                 case "adt":
-                                    passengerTitleFilter = ['Mr','Mrs','MS']
+                                    passengerTitleFilter = ['Mr','Mrs','Ms']
                                     break
                                 case 'chd':
                                     passengerTitleFilter = ['Master','Miss']
@@ -409,7 +409,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                     <TextField
                                                         {...field}
                                                         fullWidth
-                                                        label="ID country"
+                                                        label="Nationality"
                                                         error={!!fieldState.error}
                                                         helperText={fieldState.error?.message}
                                                         onChange={(e) => {
@@ -625,9 +625,9 @@ const PassengerForm = forwardRef((_,ref) => {
                                                             labelId="passengerIdType-label"
                                                             label="Passenger Id type"
                                                         >
-                                                            <MenuItem value="pp">pp</MenuItem>
-                                                            <MenuItem value="ni">ni</MenuItem>
-                                                            <MenuItem value="bd">bd</MenuItem>
+                                                            <MenuItem value="pp">Passport</MenuItem>
+                                                            <MenuItem value="ni">National ID</MenuItem>
+                                                            <MenuItem value="bd">Birth Document</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 )}
@@ -663,8 +663,8 @@ const PassengerForm = forwardRef((_,ref) => {
                                                     <FormControl fullWidth error={!!fieldState.error}>
                                                         <InputLabel htmlFor="passengerSexType-select">Passenger sex type</InputLabel>
                                                         <Select {...field} id="passengerSexType-select" label="passengerSexType">
-                                                            <MenuItem value="m">male</MenuItem>
-                                                            <MenuItem value="f">female</MenuItem>
+                                                            <MenuItem value="m">Male</MenuItem>
+                                                            <MenuItem value="f">Female</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 )}
