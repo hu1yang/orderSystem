@@ -17,7 +17,7 @@ import phoneCodesGrouped from "@/assets/phone_codes_grouped.json";
 import {useDispatch} from "react-redux";
 import {setContacts} from "@/store/orderInfo.ts";
 import {debounce} from "@/utils/public.ts";
-import {getAgentSettingAgent} from "@/utils/request/agetn.ts";
+import {getAgentSettingAgent} from "@/utils/request/agent.ts";
 
 type IContactMore = IContact & {
     phoneCode:string

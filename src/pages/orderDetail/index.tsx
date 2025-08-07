@@ -17,7 +17,7 @@ import stylesPass from '@/component/passenger/styles.module.less'
 import {formatDateToShortString} from "@/utils/public.ts";
 import type {Dayjs} from "dayjs";
 import {useNavigate, useParams} from "react-router";
-import {paymentOrderAgent} from "@/utils/request/agetn.ts";
+import {paymentOrderAgent} from "@/utils/request/agent.ts";
 
 const FlightCom = memo(({
                             type,data

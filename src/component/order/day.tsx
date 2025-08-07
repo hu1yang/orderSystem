@@ -8,7 +8,7 @@ import type {RootState} from "@/store";
 import dayjs from "dayjs";
 import {setErrorMsg, setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {FQuery} from "@/types/order.ts";
-import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
+import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
 import {resetAirChoose, setNoData, setSearchDate} from "@/store/orderInfo.ts";
 

@@ -36,7 +36,7 @@ import {
     resetAirChoose, setNoData,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
-import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agetn.ts";
+import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
 import dayjs from "dayjs";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
 import {debounce, flattenByCountry} from "@/utils/public.ts";

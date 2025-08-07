@@ -3,7 +3,7 @@ import Detail from "@/component/passenger/detail.tsx";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {queryBookingAgent} from "@/utils/request/agetn.ts";
+import {queryBookingAgent} from "@/utils/request/agent.ts";
 import {setResult} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";

@@ -107,7 +107,14 @@ export function debounce<T extends (...args: any[]) => void>(
 
 
 export function toLogin () {
-    window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
+    const referrer = document.referrer
+    if(referrer){
+        const origin = new URL(referrer).origin;
+        window.parent.postMessage({
+            type:'reloadLogOut',
+        },origin)
+    }
+    // window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
 }
 export function flattenByCountry(data:QueryGlobalAirports[]) {
     const map = new Map();
