@@ -62,9 +62,9 @@ const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IA
     return (
         <div className={`${styles.addressCard} cursor-p`} style={style}>
             {
-                !!address &&  <div>
-                    <span>{address.cityEName}</span>
-                    <p>{address.airportEName}</p>
+                !!address &&  <div className={'full-width'}>
+                    <span className={'elli-1'}>{address.cityEName}</span>
+                    <p className={'elli-1'}>{address.airportEName}</p>
                 </div>
             }
         </div>
@@ -170,6 +170,12 @@ const Airports = () => {
         })
     }, 300)
 
+    const handleEnter = () => {
+        if(searchList.length){
+            handleInput(searchList[0].airports[0])
+        }
+    }
+
 
     return (
         <div className={`s-flex s-flex ai-ct`}>
@@ -194,6 +200,12 @@ const Airports = () => {
                     <div className={styles.popBoxSearch}>
                         <InputModel style={{width: '100%'}}>
                             <input type="text" ref={inputRef} onChange={(e) => searchCity(e.currentTarget.value)}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter') {
+                                           // 用户按下了 Enter
+                                           handleEnter(); // 替换成你的逻辑函数
+                                       }
+                                   }}
                                    className={`${styles.inputBox} flex-1`}/>
                         </InputModel>
                     </div>
