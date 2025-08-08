@@ -251,6 +251,110 @@ const Detail = memo(() => {
                                 }
                             </Grid>
                             {/*<Passenger />*/}
+                            <div className={`${styles.leftDetail}`}>
+                                <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>
+                                    <PassengerForm ref={passengersRef} />
+                                    <ContactForm />
+                                    <div className={styles.package}>
+                                        <div className={styles.packgaeTitle}>
+                                            Additional Baggage Allowanc
+                                        </div>
+                                        <div className={styles.commonBox}>
+                                            <div className={styles.packageContent}>
+                                                <Grid container spacing={2}>
+                                                    <Grid size={3}></Grid>
+                                                    <Grid size={3}>
+                                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
+                                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
+                                                                <img src={personal_no} alt=""/>
+                                                            </div>
+                                                            <div className={styles.packageliNames}>Personal Item</div>
+
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid size={3}>
+                                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
+                                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
+                                                                <img src={carryOn} alt=""/>
+                                                            </div>
+                                                            <div className={styles.packageliNames}>Carry-on baggage</div>
+
+
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid size={3}>
+                                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
+                                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
+                                                                <img src={checkIn} alt=""/>
+                                                            </div>
+                                                            <div className={styles.packageliNames}>Checked baggage</div>
+
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                                <Divider sx={{
+                                                    my:'20px'
+                                                }} />
+                                                {
+                                                    airChoose.result ? airChoose.result.itineraries.map((itinerarie, index) => {
+                                                        const {segments} = itinerarie;
+                                                        const handLuggage = luggages[index]?.find(l => l.luggageType === 'hand');
+                                                        const carryLuggage = luggages[index]?.find(l => l.luggageType === 'carry');
+                                                        const checkedLuggage = luggages[index]?.find(l => l.luggageType === 'checked');
+
+
+                                                        // 处理城市显示逻辑
+                                                        let cityText = '';
+                                                        if (segments.length === 1) {
+                                                            cityText = `${segments[0].departureAirport} - ${segments[0].arrivalAirport}`;
+                                                        } else if (segments.length > 1) {
+                                                            // 多段航班：起点 + 所有中间到达点
+                                                            const stops = [
+                                                                segments[0].departureAirport,
+                                                                ...segments.map(seg => seg.arrivalAirport)
+                                                            ];
+                                                            cityText = stops.join(' - ');
+                                                        }
+
+                                                        return (
+                                                            <Fragment key={index}>
+                                                                <Grid container spacing={2}>
+                                                                    <Grid size={12}>
+                                                                        <div className={styles.cityText}>{cityText}</div>
+                                                                    </Grid>
+                                                                    <Grid size={12}>
+                                                                        <Grid container>
+                                                                            <Grid size={3}>
+                                                                                <div className={styles.cityDetail}>Passenger
+                                                                                </div>
+                                                                            </Grid>
+                                                                            <Grid size={3}>
+                                                                                <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
+                                                                            </Grid>
+                                                                            <Grid size={3}>
+                                                                                <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
+                                                                            </Grid>
+                                                                            <Grid size={3}>
+                                                                                <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
+                                                                            </Grid>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                </Grid>
+                                                                <Divider sx={{
+                                                                    my: '20px'
+                                                                }}/>
+                                                            </Fragment>
+                                                        );
+                                                    }) : <></>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {
+                                        pirceResult ? <NextStep pirceResult={pirceResult} paySubmit={handlepaySubmit} /> : <></>
+                                    }
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <div className={styles.cardCom}>
@@ -261,110 +365,6 @@ const Detail = memo(() => {
                         </div>
                     </div>
 
-                </div>
-            </div>
-            <div className={`${styles.leftDetail}`}>
-                <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>
-                    <PassengerForm ref={passengersRef} />
-                    <ContactForm />
-                    <div className={styles.package}>
-                        <div className={styles.packgaeTitle}>
-                            Additional Baggage Allowanc
-                        </div>
-                        <div className={styles.commonBox}>
-                            <div className={styles.packageContent}>
-                                <Grid container spacing={2}>
-                                    <Grid size={3}></Grid>
-                                    <Grid size={3}>
-                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
-                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src={personal_no} alt=""/>
-                                            </div>
-                                            <div className={styles.packageliNames}>Personal Item</div>
-
-                                        </div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
-                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src={carryOn} alt=""/>
-                                            </div>
-                                            <div className={styles.packageliNames}>Carry-on baggage</div>
-
-
-                                        </div>
-                                    </Grid>
-                                    <Grid size={3}>
-                                        <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
-                                            <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
-                                                <img src={checkIn} alt=""/>
-                                            </div>
-                                            <div className={styles.packageliNames}>Checked baggage</div>
-
-                                        </div>
-                                    </Grid>
-                                </Grid>
-                                <Divider sx={{
-                                    my:'20px'
-                                }} />
-                                {
-                                    airChoose.result ? airChoose.result.itineraries.map((itinerarie, index) => {
-                                        const {segments} = itinerarie;
-                                        const handLuggage = luggages[index]?.find(l => l.luggageType === 'hand');
-                                        const carryLuggage = luggages[index]?.find(l => l.luggageType === 'carry');
-                                        const checkedLuggage = luggages[index]?.find(l => l.luggageType === 'checked');
-
-
-                                        // 处理城市显示逻辑
-                                        let cityText = '';
-                                        if (segments.length === 1) {
-                                            cityText = `${segments[0].departureAirport} - ${segments[0].arrivalAirport}`;
-                                        } else if (segments.length > 1) {
-                                            // 多段航班：起点 + 所有中间到达点
-                                            const stops = [
-                                                segments[0].departureAirport,
-                                                ...segments.map(seg => seg.arrivalAirport)
-                                            ];
-                                            cityText = stops.join(' - ');
-                                        }
-
-                                        return (
-                                            <Fragment key={index}>
-                                                <Grid container spacing={2}>
-                                                    <Grid size={12}>
-                                                        <div className={styles.cityText}>{cityText}</div>
-                                                    </Grid>
-                                                    <Grid size={12}>
-                                                        <Grid container>
-                                                            <Grid size={3}>
-                                                                <div className={styles.cityDetail}>Passenger
-                                                                </div>
-                                                            </Grid>
-                                                            <Grid size={3}>
-                                                                <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
-                                                            </Grid>
-                                                            <Grid size={3}>
-                                                                <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
-                                                            </Grid>
-                                                            <Grid size={3}>
-                                                                <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                </Grid>
-                                                <Divider sx={{
-                                                    my: '20px'
-                                                }}/>
-                                            </Fragment>
-                                        );
-                                    }) : <></>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    {
-                        pirceResult ? <NextStep pirceResult={pirceResult} paySubmit={handlepaySubmit} /> : <></>
-                    }
                 </div>
             </div>
 

@@ -64,6 +64,7 @@ const DayChoose = memo(() => {
 
     // 切换时从 JSON 字符串恢复成对象（如你有需要）
     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
+        if(searchLoad) return
         setDayValue(newValue);
         const date = dayArr.find(day => day.key === newValue)
         if(!date) return
