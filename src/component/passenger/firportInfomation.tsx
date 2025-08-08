@@ -1,4 +1,4 @@
-import {memo} from "react";
+import React, {memo} from "react";
 import styles from './styles.module.less'
 import {
     Chip,
@@ -7,12 +7,18 @@ import {
 import type {Segment} from "@/types/order.ts";
 import { formatDateToShortString, formatFlyingTime} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
+import {useNavigate} from "react-router";
 
 
-const FirportInfomation = memo(({segments,labelPostion}:{
+const FirportInfomation = memo(({segments,labelPostion,index}:{
     segments:Segment[]
+    index:number;
     labelPostion:string
 }) => {
+    const navigate = useNavigate()
+    const backOrder = () => {
+        navigate('/')
+    }
     return (
         <div className={styles.firportInfomation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
@@ -32,7 +38,16 @@ const FirportInfomation = memo(({segments,labelPostion}:{
                         height: 10
                     }} flexItem/>
                     <span>Duration {formatFlyingTime(segments[0].totalFlyingTime!)}</span>
+
                 </div>
+                {
+                    index === 0 && (
+                        <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrder}>
+                            <span>Change Flight</span>
+                        </div>
+                    )
+                }
+
             </div>
             <FlightTimelineBox segments={segments} />
         </div>

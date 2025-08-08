@@ -304,8 +304,8 @@ export function getLayeredTopCombos(
     return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 8);
 }
 
-export function deduplicateByChannelCode(data: FQueryResult[]):FQueryResult[] {
-    const map = new Map();
+export function deduplicateByChannelCode(data: FQueryResult[]): FQueryResult[] {
+    const map = new Map<string, FQueryResult>();
 
     for (const item of data) {
         if (!item.succeed || !item.response?.channelCode || !item.response?.updatedTime) continue;
@@ -313,14 +313,27 @@ export function deduplicateByChannelCode(data: FQueryResult[]):FQueryResult[] {
         const key = item.response.channelCode;
         const existing = map.get(key);
 
-        if (!existing || new Date(item.response.updatedTime) > new Date(existing.response.updatedTime)) {
+        if (!existing) {
             map.set(key, item);
+            continue;
+        }
+
+        const newTime = new Date(item.response.updatedTime).getTime();
+        const oldTime = new Date(existing.response!.updatedTime!).getTime();
+
+        if (newTime > oldTime) {
+            map.set(key, item);
+        } else if (newTime === oldTime) {
+            // 时间一样时优先 isFromCaching === false
+            if (existing.response!.isFromCaching && !item.response.isFromCaching) {
+                map.set(key, item);
+            }
         }
     }
 
-
     return Array.from(map.values());
 }
+
 
 export function setSearchDateFnc(data: FQueryResult[]): AirSearchData[] {
     const originalData = data

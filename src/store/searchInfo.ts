@@ -124,7 +124,8 @@ const searchInfoSlice = createSlice({
         setErrorMsg(state,action:PayloadAction<string|null>){
             state.errorMsg = action.payload;
         },
+        resetSearch: () => initialState
     }
 })
-export const {setRadioType, setLocalDate, setTravelers, setCabinValue, setDaValue, setHistory,setSearchLoad,setErrorMsg,setSearchFlag} = searchInfoSlice.actions
+export const {setRadioType, setLocalDate, setTravelers, setCabinValue, setDaValue, setHistory,setSearchLoad,setErrorMsg,setSearchFlag,resetSearch} = searchInfoSlice.actions
 export default searchInfoSlice.reducer;

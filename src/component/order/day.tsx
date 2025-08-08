@@ -119,9 +119,9 @@ const DayChoose = memo(() => {
                 }
             }else{
                 dispatch(setSearchLoad(false))
+                dispatch(setNoData(true))
                 dispatch(setErrorMsg('No suitable data'))
             }
-
         }).catch(() => {
             dispatch(setSearchLoad(false))
             dispatch(setErrorMsg('Interface error'))

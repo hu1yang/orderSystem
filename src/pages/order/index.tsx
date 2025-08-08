@@ -9,7 +9,7 @@ import DefaultShow from "@/component/order/defaultShow.tsx";
 import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
 import {Alert, Snackbar} from "@mui/material";
-import {setErrorMsg, setSearchFlag} from "@/store/searchInfo.ts";
+import {resetSearch, setErrorMsg, setSearchFlag} from "@/store/searchInfo.ts";
 
 const Order = () => {
     const dispatch = useDispatch()
@@ -18,6 +18,7 @@ const Order = () => {
 
     useEffect(() => {
         dispatch(resetChoose())
+        dispatch(resetSearch())
         dispatch(setSearchFlag(false))
     },[])
 
