@@ -10,7 +10,7 @@ import {setErrorMsg, setLocalDate, setSearchFlag, setSearchLoad} from "@/store/s
 import type {FQuery} from "@/types/order.ts";
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
 import {deduplicateByChannelCode} from "@/utils/order.ts";
-import {resetAirChoose, setNoData, setSearchDate} from "@/store/orderInfo.ts";
+import {resetAirChoose, setNoData, setSearchDate, switchDay} from "@/store/orderInfo.ts";
 
 interface IDay {
     label:string;
@@ -69,6 +69,7 @@ const DayChoose = memo(() => {
         if(!date) return
         dispatch(resetAirChoose())
         dispatch(setSearchDate([]))
+        dispatch(switchDay(date?.value))
         dispatch(setLocalDate(date?.value))
         searchData(date?.value)
     };

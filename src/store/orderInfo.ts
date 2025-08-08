@@ -182,6 +182,26 @@ const orderInfoSlice = createSlice({
         setNoData: (state, action: PayloadAction<boolean>) => {
             state.noData = action.payload
         },
+        switchDay:(state, action: PayloadAction<{
+            to:string
+            from:string
+        } | string>) => {
+            if(state.query.itineraryType === 'oneWay'){
+                state.query.itineraries = state.query.itineraries.map(it => ({
+                    ...it,
+                    departureDate: action.payload as string
+                }));
+            }else if (state.query.itineraryType === 'round'){
+                state.query.itineraries.forEach(it => {
+                    if(it.itineraryNo === 0){
+                        it.departureDate = (action.payload as { to:string; from:string }).from
+                    }else{
+                        it.departureDate = (action.payload as { to:string; from:string }).to
+                    }
+                });
+
+            }
+        },
         resetChoose: () => initialState
     },
 })
@@ -203,6 +223,7 @@ export const {
     prevAirChoose,
     setSearchDate,
     resetChoose,
-    setNoData
+    setNoData,
+    switchDay
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

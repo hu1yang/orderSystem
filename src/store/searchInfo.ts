@@ -61,11 +61,13 @@ const searchInfoSlice = createSlice({
             from:string
         } | string>){
             if(typeof action.payload !== 'string'){
+                state.radioType = 'round'
                 state.localDate = {
                     to:action.payload.to,
                     from:action.payload.from
                 };
             }else{
+                state.radioType = 'oneWay'
                 state.localDate = action.payload;
             }
         },
@@ -121,7 +123,7 @@ const searchInfoSlice = createSlice({
         },
         setErrorMsg(state,action:PayloadAction<string|null>){
             state.errorMsg = action.payload;
-        }
+        },
     }
 })
 export const {setRadioType, setLocalDate, setTravelers, setCabinValue, setDaValue, setHistory,setSearchLoad,setErrorMsg,setSearchFlag} = searchInfoSlice.actions
