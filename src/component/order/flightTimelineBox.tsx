@@ -23,7 +23,7 @@ const FlightTimelineBox = memo(({segments}:{
                                 <div className={styles.timer}>{extractTimeWithTimezone(segment.departureTime)}</div>
                                 <div className={styles.airTitle}>
                                     <span> {segment.departureAirport}</span>
-                                    <span> {segment.carrier} International Airport</span>
+                                    <span> {segment.carrier} Airport</span>
                                     <span> {segment.departureTerminal}</span>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@ const FlightTimelineBox = memo(({segments}:{
                                 <div className={styles.timer}>{extractTimeWithTimezone(segment.arrivalTime)}</div>
                                 <div className={styles.airTitle}>
                                     <span> {segment.arrivalAirport}</span>
-                                    <span> {segment.carrier} International Airport</span>
+                                    <span> {segment.carrier} Airport</span>
                                     <span> {segment.arrivalTerminal}</span>
                                 </div>
                             </div>
@@ -88,8 +88,6 @@ const FlightTimelineBox = memo(({segments}:{
                     </React.Fragment>
                 ))
             }
-
-
         </div>
     )
 })

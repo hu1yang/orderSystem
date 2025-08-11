@@ -4,7 +4,6 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LocalAirportIcon from '@mui/icons-material/LocalAirport';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CloseIcon from '@mui/icons-material/Close';
 import Brightness2Icon from '@mui/icons-material/Brightness2';
 import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import styles from './styles.module.less'
@@ -149,32 +148,30 @@ const RecommendedCheckboxList = () => (
 );
 
 // --- 新增组件: 时间滑块复用 ---
-const TimeRangeSlider = ({label,value,setQueryValue,maxStart = 24,minEnd = 0}: {
+const TimeRangeSlider = memo(({label}: {
     label: string;
-    value: number[];
-    setQueryValue: (v: number[]) => void;
-    maxStart?: number;
-    minEnd?: number;
 }) => {
     const formatTime = (v: number) => String(v).padStart(2, '0') + ':00';
+
+    const [slider, setSlider] = useState([0, 24])
 
     return (
         <Box sx={{width: '100%', mx: 'auto'}}>
             <Typography gutterBottom className={`${styles.timerTitle} s-flex ai-ct`}>
                 <span>{label}</span>
                 <span>
-                    {formatTime(value[0])} – {formatTime(value[1])}
+                    {formatTime(slider[0])} – {formatTime(slider[1])}
                 </span>
             </Typography>
             <Slider
                 disabled
-                value={value}
+                value={slider}
                 onChange={(_, newValue) => {
                     let [start, end] = newValue as number[];
-                    start = Math.min(start, maxStart);
-                    end = Math.max(end, minEnd);
+                    start = Math.min(start, 18);
+                    end = Math.max(end, 0);
                     if (start > end) start = end;
-                    setQueryValue([start, end]);
+                    setSlider([start, end]);
                 }}
                 min={0}
                 max={24}
@@ -224,7 +221,7 @@ const TimeRangeSlider = ({label,value,setQueryValue,maxStart = 24,minEnd = 0}: {
             />
         </Box>
     );
-};
+});
 
 const FilterComponent = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -234,8 +231,6 @@ const FilterComponent = memo(() => {
         return query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
     }, [query,airportActived]);
 
-    const [statrtValue, setStatrtValue] = useState([0, 24]);
-    const [endValue, setEndValue] = useState([0, 24]);
 
     return (
         <div className={styles.filterContainer}>
@@ -289,18 +284,13 @@ const FilterComponent = memo(() => {
                 title="Timers"
                 render={
                     <>
-                        <TimeRangeSlider
-                            label="Departing from Beijing:"
-                            value={statrtValue}
-                            setQueryValue={setStatrtValue}
-                            maxStart={18}
-                        />
-                        <TimeRangeSlider
-                            label="Departing from Shanghai:"
-                            value={endValue}
-                            setQueryValue={setEndValue}
-                            minEnd={6}
-                        />
+                        {
+                            query.itineraries.map((itinerarie,itinerarieIndex) => (
+                                <TimeRangeSlider
+                                    label={`Departing from ${itinerarie[itinerarieIndex === 0?'departure':'arrival']}:`}
+                                />
+                            ))
+                        }
                     </>
                 }
             />
