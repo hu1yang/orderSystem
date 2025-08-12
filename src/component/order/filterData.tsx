@@ -140,8 +140,9 @@ const FilterData = memo(() => {
     // }, [state.ordersInfo.airportList,airportActived]);
 
     const airResultList = useMemo(() => {
-        return getAirResultList({airSearchData, airportActived, airChoose})
-    }, [airSearchData, airportActived, airChoose.result]);
+        const airResult = getAirResultList({airSearchData, airportActived, airChoose})
+        return airResult
+    }, [airSearchData, airportActived, airChoose]);
 
 
     const prevChooseAir = () => {
@@ -211,6 +212,7 @@ const FilterData = memo(() => {
                             {airResultList.map((searchData) => (
                                 <FilterItem
                                     key={`${searchData.key}-${searchData.itineraryKey}`}
+                                    itineraryKey={searchData.itineraryKey}
                                     segments={searchData.segments}
                                     cheapAmount={searchData.cheapAmount}
                                     currency={searchData.currency!}

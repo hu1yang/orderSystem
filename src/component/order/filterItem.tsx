@@ -183,11 +183,12 @@ const itineraryTypeMap = {
     oneWay: 'One-way',
     round: 'Round-trip',
 } as const
-const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
+const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:{
     segments: Segment[]
     cheapAmount: LostPriceAmout
     currency:string
     searchKey: string
+    itineraryKey:string
 }) => {
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
@@ -303,7 +304,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey}:{
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider currency={currency} searchKey={searchKey} />
+                <FareCardsSlider currency={currency} searchKey={searchKey} itineraryKey={itineraryKey} />
             </div>
         </div>
     )

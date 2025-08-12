@@ -261,7 +261,8 @@ function getTopLayeredCombos(
 export function getLayeredTopCombos(
     combinationResult: CombinationResult[],
     airportActived: number,
-    airChoose: AirChoose
+    airChoose: AirChoose,
+    itineraryKey: string
 ): ComboItem[] {
     const isReturn = airportActived === 1;
     const allLayerCombos: (Array<{ total: number; item: ComboItem }>)[] = [];
@@ -269,7 +270,7 @@ export function getLayeredTopCombos(
     for (const item of combinationResult) {
         if (!isSameContext(item, airChoose)) continue;
 
-        const itinerary = item.itineraries.find(it => it.itineraryNo === airportActived);
+        const itinerary = item.itineraries.find(it => it.itineraryNo === airportActived && itineraryKey === it.itineraryKey);
         if (!itinerary) continue;
 
         const filteredAmounts = getFilteredAmounts(itinerary);
@@ -417,11 +418,7 @@ interface GetAirResultListParams {
     airChoose: AirChoose;
 }
 
-export function getAirResultList({
-                                     airSearchData,
-                                     airportActived,
-                                     airChoose,
-                                 }: GetAirResultListParams) {
+export function getAirResultList({airSearchData,airportActived,airChoose}: GetAirResultListParams) {
     const chooseResult = airChoose.result;
 
     if (chooseResult) {
@@ -488,12 +485,13 @@ export function getAirResultList({
 
     return airSearchData.map(item => {
         const conRe = item.combinationResult[0];
+        const itinerarie = conRe?.itineraries.find(it => it.itineraryNo === airportActived)
         return {
             key: item.combinationKey,
-            segments: conRe?.itineraries.find(it => it.itineraryNo === airportActived)?.segments || [],
+            segments: itinerarie?.segments || [],
             cheapAmount: item.cheapAmount,
             currency: conRe?.currency,
-            itineraryKey: item.combinationKey
+            itineraryKey: itinerarie?.itineraryKey || ''
         };
     });
 }

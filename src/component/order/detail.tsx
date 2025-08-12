@@ -29,11 +29,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 
-const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
+const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itineraryKey}:{
     currency:string
     style?: React.CSSProperties
     amountResult: ComboItem
     amountsResultsObj: AirSearchData
+    itineraryKey:string
 }) => {
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
@@ -55,9 +56,10 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
         dispatch(setDisabledChoose(true))
         const result = amountsResultsObj.combinationResult.find(result => result.contextId === amountResult.sourceItem.contextId && result.resultKey === amountResult.resultKey)
         if(!result) return
-        const newAmount = result.itineraries[airportActived].amounts.filter(amount => amount.familyName === amountResult.amount.familyName)
-        const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived)
+        const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived && itineraryKey === itinerarie.itineraryKey)
         if(!itinerarie) return
+        const newAmount = itinerarie.amounts.filter(amount => amount.familyName === amountResult.amount.familyName)
+
         const newItinerarie = {
             amounts:[...newAmount],
             itineraryNo:itinerarie.itineraryNo,
@@ -65,7 +67,6 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
             subItineraryId: itinerarie.subItineraryId!,
             segments: itinerarie.segments
         }
-
         if(airportActived === 0){
             const resultObj = {
                 contextId:result.contextId,
@@ -279,9 +280,10 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     )
 })
 
-const FareCardsSlider = memo(({currency,searchKey}: {
+const FareCardsSlider = memo(({currency,searchKey,itineraryKey}: {
     currency:string
     searchKey:string
+    itineraryKey:string
 }) => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
@@ -304,7 +306,7 @@ const FareCardsSlider = memo(({currency,searchKey}: {
         const result = getLayeredTopCombos(
             amountsResultsObj.combinationResult,
             airportActived,
-            airChoose)
+            airChoose,itineraryKey)
         return result
     }, [amountsResultsObj,airportActived,airChoose]);
 
@@ -366,9 +368,10 @@ const FareCardsSlider = memo(({currency,searchKey}: {
                         <SwiperSlide
                             key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}>
                             <SliderBox
-                                       amountResult={amountResult}
-                                       amountsResultsObj={amountsResultsObj as AirSearchData}
-                                       currency={currency}/>
+                               amountResult={amountResult}
+                               itineraryKey={itineraryKey}
+                               amountsResultsObj={amountsResultsObj as AirSearchData}
+                               currency={currency}/>
                         </SwiperSlide>
 
                     ))
