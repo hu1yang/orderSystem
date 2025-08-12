@@ -8,7 +8,11 @@ const FilterItemSkeleton = memo(() => {
         <Box>
             {
                 [...Array(3)].map((_, i) => (
-                    <div key={i} className={styles.filterItem}>
+                    <div key={i} className={styles.filterItem} style={{
+                        backgroundColor:'var(--vt-c-white)',
+                        padding:'12px var(--pm-16) 16px',
+                        marginBottom: '6px'
+                    }}>
                         <div className={styles.filterItemBox}>
                             <div className={`${styles.filterTips} s-flex ai-ct`}>
                                 <Skeleton variant="text" animation={false} width={60} height={12} />

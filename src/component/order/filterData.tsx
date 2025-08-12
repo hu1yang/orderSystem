@@ -224,7 +224,6 @@ const FilterData = memo(() => {
                         <FilterItemSkeleton />
                     )
                 }
-
             </div>
         </div>
     )

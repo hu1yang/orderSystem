@@ -176,6 +176,7 @@ const orderInfoSlice = createSlice({
 
         },
         resetAirChoose:(state) => {
+            state.airportActived = 0
             state.airChoose = {
                 result: null,
                 channelCode:'',
