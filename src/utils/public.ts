@@ -1,6 +1,6 @@
 import {format, addDays, parseISO, differenceInCalendarDays, addMonths} from 'date-fns';
 import dayjs, {type Dayjs} from 'dayjs';
-import type {QueryGlobalAirports} from "@/types/order.ts";
+import type {ITem, QueryGlobalAirports} from "@/types/order.ts";
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -158,3 +158,18 @@ export function flattenByCountry(data:QueryGlobalAirports[]) {
     return Array.from(map.values());
 }
 
+
+
+export function filterValidTrips(data: ITem[]) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 清除时间部分，确保只比较日期
+
+    return data.filter(item => {
+        // 如果任意一个 departureDate 小于今天，就返回 false（删除）
+        const hasPast = item.itineraries.some(itinerary => {
+            const depDate = new Date(itinerary.departureDate);
+            return depDate < today;
+        });
+        return !hasPast; // 保留没有过期的
+    });
+}

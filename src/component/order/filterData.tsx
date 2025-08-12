@@ -121,6 +121,8 @@ const FilterData = memo(() => {
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const noData = useSelector((state: RootState) => state.ordersInfo.noData)
+    const disabledChoose = useSelector((state: RootState) => state.ordersInfo.disabledChoose)
+
     const dispatch = useDispatch()
 
     const prevAir = useMemo(() => {
@@ -195,14 +197,18 @@ const FilterData = memo(() => {
 
                 </div>
                 {/*<FilterTab />*/}
-                <div className={styles.filterContent}>
-                    {
-                        noData ?  <Box component="section" sx={{ p: 2,}}>
+                {
+                    disabledChoose ? (
+                        <FilterItemSkeleton />
+                    ) : noData ? (
+                        <Box component="section" sx={{ p: 2 }}>
                             <Typography variant="h4" gutterBottom>
                                 No data found
                             </Typography>
-                        </Box> : airSearchData.length ? (
-                            airResultList.map((searchData) => (
+                        </Box>
+                    ) : airSearchData.length ? (
+                        <div className={styles.filterContent}>
+                            {airResultList.map((searchData) => (
                                 <FilterItem
                                     key={`${searchData.key}-${searchData.itineraryKey}`}
                                     segments={searchData.segments}
@@ -210,11 +216,13 @@ const FilterData = memo(() => {
                                     currency={searchData.currency!}
                                     searchKey={searchData.key}
                                 />
-                            ))
-                        ):<FilterItemSkeleton />
-                    }
+                            ))}
+                        </div>
+                    ) : (
+                        <FilterItemSkeleton />
+                    )
+                }
 
-                </div>
             </div>
         </div>
     )

@@ -1,18 +1,20 @@
 import {Box, Card, CardActionArea, CardContent, CardHeader, Grid, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import {useEffect, useState} from "react";
+import {memo, useEffect, useState} from "react";
 import type {ITem} from "@/types/order.ts";
-import {formatDateToShortString} from "@/utils/public.ts";
+import {filterValidTrips, formatDateToShortString} from "@/utils/public.ts";
 import {useDispatch} from "react-redux";
 import {setHistory} from "@/store/searchInfo.ts";
 import banner from "@/assets/banner.png";
-const DefaultShow = () => {
+const DefaultShow = memo(() => {
     const dispatch = useDispatch()
 
     const [historyList, setHistoryList] = useState<ITem[]>([])
     useEffect(() => {
         const historySearch = localStorage.getItem('historySearch')
-        setHistoryList(historySearch ? JSON.parse(historySearch) : [])
+        const historyResult =  filterValidTrips(historySearch ? JSON.parse(historySearch) : [])
+        setHistoryList(historyResult)
+        localStorage.setItem('historySearch', JSON.stringify(historyResult));
     }, []);
 
     const handleSearchHistory = (history:ITem) => {
@@ -72,6 +74,6 @@ const DefaultShow = () => {
             <img src={banner} alt="" style={{width:'100%',marginTop:'var(--pm-16)'}} />
         </div>
     )
-}
+})
 
 export default DefaultShow

@@ -124,7 +124,7 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
     </>
 ))
 
-const Airports = () => {
+const Airports = memo(() => {
     const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
 
     const dispatch = useDispatch();
@@ -261,7 +261,7 @@ const Airports = () => {
             </InputPop>
         </div>
     )
-}
+})
 
 const TimerChoose = memo(({isRound}:{
     isRound: boolean
@@ -368,7 +368,7 @@ const TimerChoose = memo(({isRound}:{
     )
 })
 
-const PersonChoose = () => {
+const PersonChoose = memo(() => {
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
     const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
 
@@ -494,9 +494,9 @@ const PersonChoose = () => {
             </InputPop>
         </>
     )
-}
+})
 
-const SearchComponent = () => {
+const SearchComponent = memo(() => {
     const dispatch = useDispatch()
     const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
     const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
@@ -656,6 +656,6 @@ const SearchComponent = () => {
 
         </div>
     );
-}
+})
 
 export default SearchComponent;

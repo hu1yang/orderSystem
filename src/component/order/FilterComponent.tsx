@@ -48,7 +48,7 @@ type AirbnbThumbComponentProps = React.HTMLAttributes<HTMLSpanElement> & {
     };
 };
 
-export function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
+const AirbnbThumbComponent = memo((props: AirbnbThumbComponentProps) => {
     const {children, ...other} = props;
     const dataIndex = Number(other['data-index']);
     const index = dataIndex;
@@ -68,7 +68,7 @@ export function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
             )}
         </SliderThumb>
     );
-}
+})
 
 const FilterAccordion = memo(({title, render}: {
     title: string;
@@ -109,7 +109,7 @@ const FilterAccordion = memo(({title, render}: {
 })
 
 // --- 新增组件: 推荐项复用 ---
-const RecommendedCheckboxList = () => (
+const RecommendedCheckboxList = memo(() => (
     <FormGroup>
         {recommendedArr.map((item) => (
             <FormControlLabel
@@ -145,7 +145,7 @@ const RecommendedCheckboxList = () => (
             />
         ))}
     </FormGroup>
-);
+));
 
 // --- 新增组件: 时间滑块复用 ---
 const TimeRangeSlider = memo(({label}: {
@@ -286,7 +286,7 @@ const FilterComponent = memo(() => {
                     <>
                         {
                             query.itineraries.map((itinerarie,itinerarieIndex) => (
-                                <TimeRangeSlider
+                                <TimeRangeSlider key={itinerarieIndex}
                                     label={`Departing from ${itinerarie[itinerarieIndex === 0?'departure':'arrival']}:`}
                                 />
                             ))

@@ -20,6 +20,7 @@ type IOrder = {
     contacts: IContact[]
     airSearchData: AirSearchData[]
     noData:boolean
+    disabledChoose:boolean
 }
 const initialState: IOrder = {
     query:{
@@ -53,7 +54,8 @@ const initialState: IOrder = {
             phoneNumber: '',
         }
     ],
-    noData:false
+    noData:false,
+    disabledChoose:false
 }
 
 const orderInfoSlice = createSlice({
@@ -202,6 +204,9 @@ const orderInfoSlice = createSlice({
 
             }
         },
+        setDisabledChoose(state, action: PayloadAction<boolean>) {
+            state.disabledChoose = action.payload
+        },
         resetChoose: () => initialState
     },
 })
@@ -224,6 +229,7 @@ export const {
     setSearchDate,
     resetChoose,
     setNoData,
-    switchDay
+    switchDay,
+    setDisabledChoose
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

@@ -1,9 +1,9 @@
+import {memo} from "react";
 import {Box, Grid, Skeleton} from '@mui/material'
 import styles from './styles.module.less'
 
 
-const FilterItemSkeleton = () => {
-
+const FilterItemSkeleton = memo(() => {
     return (
         <Box>
             {
@@ -54,6 +54,6 @@ const FilterItemSkeleton = () => {
 
         </Box>
     )
-}
+})
 
 export default FilterItemSkeleton

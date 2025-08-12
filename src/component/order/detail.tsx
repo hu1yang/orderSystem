@@ -1,5 +1,5 @@
 import {memo, useMemo, useRef, useState} from "react";
-import Slider from 'react-slick';
+import {useNavigate} from "react-router";
 import {Box, Card, CardContent, Typography, Divider, CardHeader, Button} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -9,63 +9,25 @@ import 'slick-carousel/slick/slick-theme.css';
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import LuggageIcon from '@mui/icons-material/Luggage';
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
 
-import styles from './styles.module.less'
+
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import type {AirSearchData, ComboItem, Result} from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
 import {getLayeredTopCombos} from "@/utils/order.ts";
-import {setChannelCode, setResult, setResultItineraries} from "@/store/orderInfo.ts";
-import {useNavigate} from "react-router";
+import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
+import styles from './styles.module.less'
+// Import Swiper styles
+// @ts-ignore
+import 'swiper/css';
+// @ts-ignore
+import 'swiper/css/pagination';
 
-
-function NextArrow({onClick,hidden}: { onClick?: () => void ,hidden:boolean}) {
-    return (
-        <Box sx={{
-            position: 'absolute',
-            right: 0,
-            top: '40%',
-            zIndex: 1,
-            cursor: 'pointer',
-            background: 'var(--vt-c-white)',
-            border: '1px solid var(--put-border-color)',
-            borderRadius: '4px',
-            boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
-            color: 'var(--active-color)',
-            width: 48,
-            height: 48,
-            opacity:hidden?0:1
-        }} display={'flex'} alignItems={'center'} justifyContent={'center'} onClick={onClick}>
-
-            <ArrowForwardIosIcon/>
-        </Box>
-    );
-}
-
-function PrevArrow({onClick,hidden}: { onClick?: () => void,hidden:boolean }) {
-    return (
-        <Box sx={{
-            position: 'absolute',
-            left: 0,
-            top: '40%',
-            zIndex: 1,
-            cursor: 'pointer',
-            background: 'var(--vt-c-white)',
-            border: '1px solid var(--put-border-color)',
-            borderRadius: '4px',
-            boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
-            color: 'var(--active-color)',
-            width: 48,
-            height: 48,
-            opacity:hidden?0:1
-        }} display={'flex'} alignItems={'center'} justifyContent={'center'} onClick={onClick}>
-            <ArrowBackIosNewIcon/>
-        </Box>
-    );
-}
 
 const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     currency:string
@@ -74,11 +36,11 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     amountsResultsObj: AirSearchData
 }) => {
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [disabledChoose, setDisabledChoose] = useState(false)
 
     const luggagesMemo = useMemo(() => {
         const hand = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'hand') ?? null
@@ -90,7 +52,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
     }, [amountResult.amount.luggages]);
 
     const submitResult = () => {
-        setDisabledChoose(true)
+        dispatch(setDisabledChoose(true))
         const result = amountsResultsObj.combinationResult.find(result => result.contextId === amountResult.sourceItem.contextId && result.resultKey === amountResult.resultKey)
         if(!result) return
         const newAmount = result.itineraries[airportActived].amounts.filter(amount => amount.familyName === amountResult.amount.familyName)
@@ -118,10 +80,12 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj}:{
         }else{
             dispatch(setResultItineraries(newItinerarie))
         }
-        if(query.itineraries.length  === airportActived+1){
+        if(query.itineraries.length === airportActived+1){
             navigate('/passenger')
         }
-        setDisabledChoose(false)
+        setTimeout(() => {
+            dispatch(setDisabledChoose(false))
+        },200)
     }
 
     return (
@@ -323,6 +287,12 @@ const FareCardsSlider = memo(({currency,searchKey}: {
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
 
+    const prevRef = useRef<HTMLButtonElement>(null);
+    const nextRef = useRef<HTMLButtonElement>(null);
+
+    const [isBeginning, setIsBeginning] = useState(true);
+    const [isEnd, setIsEnd] = useState(false);
+
     const amountsResultsObj = useMemo(() => {
         const searchResult = airSearchData.find(a => a.combinationKey === searchKey)
         return searchResult
@@ -336,59 +306,74 @@ const FareCardsSlider = memo(({currency,searchKey}: {
             airportActived,
             airChoose)
         return result
-    }, [amountsResultsObj]);
-
-    const sliderRef = useRef(null);
-    const [currentSlide, setCurrentSlide] = useState(0);
-
-    const isLast = currentSlide >= amountsMemo.length - 2.8;
-    const isDragging = useRef(false);
-    const settings = {
-        dots: false,
-        infinite: false,
-        speed: 300,
-        alignItems:'',
-        slidesToShow: 2.8,
-        slidesToScroll: 1,
-        swipeToSlide:true,
-        beforeChange: () => isDragging.current = true,
-        afterChange: (index:number) => {
-            setCurrentSlide(index)
-            setTimeout(() => {
-                isDragging.current = false;
-            }, 0)
-        },
-        nextArrow:  <NextArrow hidden={isLast} />,
-        prevArrow: <PrevArrow hidden={currentSlide < 1} />,
-    };
+    }, [amountsResultsObj,airportActived,airChoose]);
 
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
-            {
-                amountsMemo.length > 2 ?
-                    <Slider {...settings} ref={sliderRef}>
-                        {amountsMemo.map((amountResult) => (
+            <Box ref={prevRef} sx={{
+                position: 'absolute',
+                left: 0,
+                top: '40%',
+                zIndex: 99,
+                cursor: 'pointer',
+                background: 'var(--vt-c-white)',
+                border: '1px solid var(--put-border-color)',
+                borderRadius: '4px',
+                boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
+                color: 'var(--active-color)',
+                width: 48,
+                height: 48,
+                opacity: amountsMemo.length < 3 || isBeginning ? 0 : 1,
+            }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                <ArrowBackIosNewIcon/>
+            </Box>
+            <Box ref={nextRef} sx={{
+                position: 'absolute',
+                right: 0,
+                top: '40%',
+                zIndex: 99,
+                cursor: 'pointer',
+                background: 'var(--vt-c-white)',
+                border: '1px solid var(--put-border-color)',
+                borderRadius: '4px',
+                boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
+                color: 'var(--active-color)',
+                width: 48,
+                height: 48,
+                opacity: amountsMemo.length < 3 || isEnd ? 0 : 1,
+            }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                <ArrowForwardIosIcon/>
+            </Box>
+            <Swiper slidesPerView={2.8} spaceBetween={5} grabCursor={true} pagination={{clickable: true}}
+                    onBeforeInit={(swiper) => {
+                        // @ts-ignore
+                        swiper.params.navigation.prevEl = prevRef.current;
+                        // @ts-ignore
+                        swiper.params.navigation.nextEl = nextRef.current;
+                    }}
+                    onProgress={(_, progress) => {
+                        setIsBeginning(progress <= 0);
+                        setIsEnd(progress >= 1);
+                    }}
+                    navigation={{
+                        prevEl: prevRef.current,
+                        nextEl: nextRef.current,
+                    }}
+                    modules={[Navigation]}>
+                {
+                    amountsMemo.map((amountResult) => (
+                        <SwiperSlide
+                            key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}>
                             <SliderBox
-                                       key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
                                        amountResult={amountResult}
                                        amountsResultsObj={amountsResultsObj as AirSearchData}
                                        currency={currency}/>
-                        ))}
-                    </Slider> :
-                    <div className={`s-flex flex-row`}>
-                        {
-                            amountsMemo.map((amountResult) => (
-                                <SliderBox style={{marginRight:'23px'}}
-                                           key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}
-                                           amountResult={amountResult}
-                                           amountsResultsObj={amountsResultsObj as AirSearchData}
-                                           currency={currency}/>
+                        </SwiperSlide>
 
-                            ))
-                        }
-                    </div>
-            }
+                    ))
+                }
+            </Swiper>
         </Box>
     );
 })

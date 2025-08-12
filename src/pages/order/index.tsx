@@ -42,7 +42,6 @@ const Order = () => {
                                 <FilterData />
                             </>
                         ) : <DefaultShow />
-
                     }
                 </div>
             </div>
