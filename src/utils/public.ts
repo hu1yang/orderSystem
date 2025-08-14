@@ -173,3 +173,7 @@ export function filterValidTrips(data: ITem[]) {
         return !hasPast; // 保留没有过期的
     });
 }
+
+export function genRandomKey() {
+    return 'key_' + Math.random().toString(36).slice(2, 10);
+}

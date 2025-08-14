@@ -36,14 +36,14 @@ import {
     resetAirChoose, setNoData,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
-import {fuzzyQueryGlobalAirportsAgent, getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
+import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
 import dayjs from "dayjs";
-import {deduplicateByChannelCode} from "@/utils/order.ts";
+import {getAgentQuery} from "@/utils/order.ts";
 import {debounce, flattenByCountry} from "@/utils/public.ts";
 import type {RootState} from "@/store";
 import {
     setCabinValue,
-    setDaValue, setErrorMsg,
+    setDaValue,
     setLocalDate,
     setRadioType, setSearchFlag,
     setSearchLoad,
@@ -498,6 +498,7 @@ const PersonChoose = memo(() => {
 
 const SearchComponent = memo(() => {
     const dispatch = useDispatch()
+
     const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
     const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
@@ -597,33 +598,14 @@ const SearchComponent = memo(() => {
         const newQuery = {...result}
         newQuery.travelers = result.travelers.filter(traveler => traveler.passengerCount>0)
 
-        getAuthorizableRoutingGroupAgent(newQuery).then(res => {
-            if(res.length){
-                setHistorySearch({
-                    ...newQuery,
-                    itineraries:newQuery.itineraries.map(it => ({...it,departure:daValue.departure as IAirport,
-                        arrival:daValue.arrival as IAirport}))
-                })
-
-                const objResult = deduplicateByChannelCode(res)
-                dispatch(setSearchDate(objResult))
-                const allFailed = objResult.every(a => a.succeed !== true)
-                dispatch(setSearchLoad(false))
-
-                if(allFailed){
-                    dispatch(setSearchDate([]))
-                    dispatch(setNoData(true))
-                    dispatch(setErrorMsg('No suitable data'))
-                }
-            }else{
-                dispatch(setSearchLoad(false))
-                dispatch(setErrorMsg('No suitable data'))
-            }
-
-        }).catch(() => {
-            dispatch(setSearchLoad(false))
-            dispatch(setErrorMsg('Interface error'))
+        setHistorySearch({
+            ...newQuery,
+            itineraries:newQuery.itineraries.map(it => ({...it,departure:daValue.departure as IAirport,
+                arrival:daValue.arrival as IAirport}))
         })
+
+        getAgentQuery(newQuery,dispatch)
+
     }
 
 

@@ -10,10 +10,10 @@ import HtmlTooltip from "../defult/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {extractTimeWithTimezone} from "@/utils/public.ts";
+import {extractTimeWithTimezone, genRandomKey} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
 import {
-    formatTotalDuration, getAirResultList,
+    formatTotalDuration,
 } from "@/utils/order.ts";
 import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
@@ -139,10 +139,35 @@ const FilterData = memo(() => {
     //     return dayjs(time).format('HH:mm:ss') || ''
     // }, [state.ordersInfo.airportList,airportActived]);
 
-    const airResultList = useMemo(() => {
-        const airResult = getAirResultList({airSearchData, airportActived, airChoose})
-        return airResult
+
+    const airItem = useMemo(() => {
+        let source = airSearchData;
+
+        if (airChoose.channelCode && airChoose.result) {
+            source = source.filter(
+                air =>
+                    air.channelCode === airChoose.channelCode &&
+                    air.contextId === airChoose.result?.contextId
+            );
+        }
+
+        const result = source
+        .flatMap(({ itinerariesMerge, ...rest }) =>
+            itinerariesMerge
+            .filter(it => it.itineraryNo === airportActived)
+            .map(it => ({
+                ...rest,
+                segments: it.segments,
+                itineraryNo: it.itineraryNo,
+                amountsMerge: it.amountsMerge,
+                key: genRandomKey(),
+            }))
+        );
+
+        return result;
     }, [airSearchData, airportActived, airChoose]);
+
+
 
 
     const prevChooseAir = () => {
@@ -209,14 +234,10 @@ const FilterData = memo(() => {
                         </Box>
                     ) : airSearchData.length ? (
                         <div className={styles.filterContent}>
-                            {airResultList.map((searchData) => (
+                            {airItem.map((searchData,searchDataIndex) => (
                                 <FilterItem
-                                    key={`${searchData.key}-${searchData.itineraryKey}`}
-                                    itineraryKey={searchData.itineraryKey}
-                                    segments={searchData.segments}
-                                    cheapAmount={searchData.cheapAmount}
-                                    currency={searchData.currency!}
-                                    searchKey={searchData.key}
+                                    key={`${searchData.key}-${searchDataIndex}`}
+                                    searchData={searchData}
                                 />
                             ))}
                         </div>
@@ -224,6 +245,7 @@ const FilterData = memo(() => {
                         <FilterItemSkeleton />
                     )
                 }
+
             </div>
         </div>
     )

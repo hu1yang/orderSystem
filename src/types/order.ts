@@ -89,18 +89,25 @@ export interface Segment {
 export interface ResponseItinerary {
     amounts: Amount[];
     itineraryNo: number;
-    subItineraryId: string;
     itineraryKey: string;
     segments: Segment[];
 }
 
+interface IPatterns {
+    policyId: string;
+    policyType: 'quote'| 'teamed';
+    discount: number;
+    familyCode: string;
+    itineraryKey: string;
+}
 export interface Result {
     contextId: string
-    policies: string[] // 如果需要可再细化
     resultType: ResultType
     currency: string
     resultKey: string
     itineraries: ResponseItinerary[]
+    patterns: IPatterns[]|null
+    teamedKey:null
 }
 
 export interface ResponseData {
@@ -273,17 +280,6 @@ export type LostPriceAmout = {
 }
 
 
-export type ComboItem = {
-    amount: Amount;
-    itineraryNo: number;
-    familyCode: string;
-    channelCode: string;
-    resultKey: string;
-    currency: string;
-    lostPrice: LostPriceAmout;
-    sourceItem: CombinationResult;
-};
-
 export interface QueryGlobalAirports {
     countryEName: string,
     countryCName: string,
@@ -342,4 +338,35 @@ export interface AgentSetting extends AddAgentSettingForm {
     updatedTime: string|Date;
     createdTime: string|Date;
     expandSettings: ExpandsSetting[];
+}
+
+
+export interface IamountsMerge {
+    amounts: Amount[]
+    itineraryKey:string
+}
+
+export interface ItinerariesMerge{
+    segments: Segment[];
+    itineraryNo:number;
+    amountsMerge:IamountsMerge[]
+}
+
+
+export interface MregeResultAirport {
+    channelCode:string
+    contextId:string
+    currency:string
+    patterns: IPatterns[]|null
+    resultKey: string
+    resultType: ResultType
+    teamedKey:null
+    itinerariesMerge: ItinerariesMerge[]
+}
+
+export type MregeResultData = Omit<MregeResultAirport, 'itinerariesMerge'> & {
+    segments: Segment[];
+    itineraryNo:number;
+    amountsMerge:IamountsMerge[]
+    key: string
 }

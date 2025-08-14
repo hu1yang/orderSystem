@@ -2,7 +2,9 @@ import {memo, useMemo, useState} from "react";
 import { useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {
-    formatDuration, formatTotalDuration,
+    amountPrice,
+    findLowestAmount,
+    formatDuration, formatTotalDuration, getLowestAmountsByItinerary,
 } from "@/utils/order.ts";
 
 
@@ -20,7 +22,8 @@ import FareCardsSlider from "@/component/order/detail.tsx";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
 
 import type {
-    LostPriceAmout,
+    Amount,
+    MregeResultData,
     Segment
 } from "@/types/order.ts";
 
@@ -183,16 +186,52 @@ const itineraryTypeMap = {
     oneWay: 'One-way',
     round: 'Round-trip',
 } as const
-const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:{
-    segments: Segment[]
-    cheapAmount: LostPriceAmout
-    currency:string
-    searchKey: string
-    itineraryKey:string
+const FilterItem = memo(({searchData}:{
+    searchData:MregeResultData
 }) => {
-
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
+    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+
+
     const [open, setOpen] = useState(false)
+
+    const nextCheapAmount = useMemo(() => {
+        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData.channelCode && airSearch.contextId === searchData.contextId)
+        if(!airFilter) return []
+        const airResult = airFilter.itinerariesMerge.filter(it => it.itineraryNo > airportActived)
+        const result = getLowestAmountsByItinerary(airResult)
+        return result
+    }, [airSearchData,searchData,airportActived]);
+
+    const cheapAmount = useMemo(() => {
+        let beforeAmount: Amount[] = [];
+
+        if (airChoose.result) {
+            beforeAmount = airChoose.result.itineraries
+            .map(it => it.amounts.find(amt => amt.passengerType === 'adt'))
+            .filter((a): a is Amount => Boolean(a));
+        }
+
+        const currentCheapAmount = findLowestAmount(
+            searchData.amountsMerge?.flatMap(a => a.amounts.filter(am => am.passengerType === 'adt') ?? []) ?? []
+        );
+
+        const result  = [
+            ...beforeAmount,
+            ...(currentCheapAmount ? [currentCheapAmount] : []),
+            ...(nextCheapAmount ?? [])
+        ] as Amount[];
+        return result;
+    }, [searchData, nextCheapAmount, airChoose]);
+
+
+    const lostPrice = useMemo(() => {
+        if(!cheapAmount) return 0
+        const price = amountPrice(cheapAmount as Amount[])
+        return price
+    },[cheapAmount])
 
     return  (
         <div className={styles.filterItem}>
@@ -210,12 +249,12 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
                             <div className={`${styles.leftInfoDetailTitle}`}>
                                 <div className={`${styles.airTitle} s-flex flex-dir`}>
                                     {
-                                        segments.map((segment) =>  <span key={segment.flightNumber}>{segment.flightNumber}</span>)
+                                        searchData.segments.map((segment) =>  <span key={segment.flightNumber}>{segment.flightNumber}</span>)
                                     }
 
                                 </div>
                                 {
-                                    segments.some(segment => segment.flightMealType) && (
+                                    searchData.segments.some(segment => segment.flightMealType) && (
                                         <HtmlTooltip title={
                                             <AirTooltip />
                                         }>
@@ -231,7 +270,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
                         <Grid container className={'flex-1'} spacing={2}>
                             <Grid size={12}>
                                 {
-                                    <FlightTimeline segments={segments} />
+                                    <FlightTimeline segments={searchData.segments} />
                                 }
                             </Grid>
                         </Grid>
@@ -240,7 +279,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
                                 <span>from</span>
-                                <div>{currency}${cheapAmount.minTotal}</div>
+                                <div>{searchData.currency}${lostPrice}</div>
                             </div>
                             <div>
                                 <span>{itineraryTypeMap[itineraryType]}</span>
@@ -304,7 +343,7 @@ const FilterItem = memo(({segments,cheapAmount,currency,searchKey,itineraryKey}:
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider currency={currency} searchKey={searchKey} itineraryKey={itineraryKey} />
+                <FareCardsSlider currency={searchData.currency} searchData={searchData} nextCheapAmount={nextCheapAmount as Amount[]} />
             </div>
         </div>
     )

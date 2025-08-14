@@ -14,11 +14,11 @@ import { Navigation } from 'swiper/modules';
 
 
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {AirSearchData, ComboItem, Result} from "@/types/order.ts";
+import type {Amount, MregeResultData, Result} from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {getLayeredTopCombos} from "@/utils/order.ts";
+import {amountPrice, findLowestAmount} from "@/utils/order.ts";
 import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
 import styles from './styles.module.less'
@@ -29,54 +29,87 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 
-const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itineraryKey}:{
+const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,itineraryKey}:{
     currency:string
-    style?: React.CSSProperties
-    amountResult: ComboItem
-    amountsResultsObj: AirSearchData
+    amount:Amount
+    nextCheapAmount:Amount[]
+    channelCode:string
+    contextId:string
     itineraryKey:string
 }) => {
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const luggagesMemo = useMemo(() => {
-        const hand = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'hand') ?? null
-        const checked = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'checked') ?? null
-        const carry = amountResult.amount.luggages.find(luggage => luggage.luggageType === 'carry') ?? null
+        const hand = amount.luggages.find(luggage => luggage.luggageType === 'hand') ?? null
+        const checked = amount.luggages.find(luggage => luggage.luggageType === 'checked') ?? null
+        const carry = amount.luggages.find(luggage => luggage.luggageType === 'carry') ?? null
         return {
             hand,checked,carry
         }
-    }, [amountResult.amount.luggages]);
+    }, [amount.luggages]);
+
+    const cheapAmount = useMemo(() => {
+        let beforeAmount: Amount[] = [];
+
+        if (airChoose.result) {
+            beforeAmount = airChoose.result.itineraries
+            .map(it => it.amounts.find(amt => amt.passengerType === 'adt'))
+            .filter((a): a is Amount => Boolean(a));
+        }
+
+        const currentCheapAmount = findLowestAmount([amount])
+        return [
+            ...beforeAmount,
+            ...(currentCheapAmount ? [currentCheapAmount] : []),
+            ...nextCheapAmount
+        ]
+    }, [nextCheapAmount,airChoose,amount]);
+
+    const lostPrice = useMemo(() => {
+        if(!cheapAmount) return 0
+        const price = amountPrice(cheapAmount as Amount[])
+        return price
+    },[cheapAmount])
+
 
     const submitResult = () => {
         dispatch(setDisabledChoose(true))
-        const result = amountsResultsObj.combinationResult.find(result => result.contextId === amountResult.sourceItem.contextId && result.resultKey === amountResult.resultKey)
-        if(!result) return
-        const itinerarie = result.itineraries.find(itinerarie => itinerarie.itineraryNo === airportActived && itineraryKey === itinerarie.itineraryKey)
-        if(!itinerarie) return
-        const newAmount = itinerarie.amounts.filter(amount => amount.familyName === amountResult.amount.familyName)
+        const airport = airSearchData.find(airport => airport.channelCode === channelCode && airport.contextId === contextId)
+        if(!airport) return;
+        const filteritMer = airport.itinerariesMerge.filter(itm => itm.itineraryNo === airportActived)
+
+        const parent = filteritMer.find(item =>
+            item.amountsMerge.some(amr => amr.itineraryKey === itineraryKey)
+        );
+
+        const chooseAmount = parent?.amountsMerge
+        .find(amr => amr.itineraryKey === itineraryKey)
+            ?.amounts.filter(am => am.familyName === amount.familyName);
+
 
         const newItinerarie = {
-            amounts:[...newAmount],
-            itineraryNo:itinerarie.itineraryNo,
-            itineraryKey: itinerarie.itineraryKey,
-            subItineraryId: itinerarie.subItineraryId!,
-            segments: itinerarie.segments
+            amounts:[...chooseAmount!],
+            itineraryNo: parent!.itineraryNo,
+            itineraryKey: itineraryKey,
+            segments: parent!.segments
         }
         if(airportActived === 0){
             const resultObj = {
-                contextId:result.contextId,
-                policies:result.policies,
-                resultType:result.resultType,
-                currency:result.currency,
-                resultKey:result.resultKey,
+                contextId:airport.contextId,
+                patterns:airport.patterns,
+                resultType:airport.resultType,
+                currency:airport.currency,
+                resultKey:airport.resultKey,
                 itineraries:[{...newItinerarie}]
             } as Result
-            dispatch(setChannelCode(amountResult.channelCode))
+            dispatch(setChannelCode(airport.channelCode))
             dispatch(setResult(resultObj))
         }else{
             dispatch(setResultItineraries(newItinerarie))
@@ -86,11 +119,11 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
         }
         setTimeout(() => {
             dispatch(setDisabledChoose(false))
-        },200)
+        },500)
     }
 
     return (
-        <Box sx={{width: 250,...style}}>
+        <Box sx={{width: 250}}>
             <Card className={'cursor-p'} sx={{
                 width: 250, borderRadius: '4px', padding: '16px 24px',
                 boxShadow: 'inset 0 0 0 3px transparent',
@@ -102,7 +135,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                     p: 0
                 }} title={
                     <Typography fontWeight="bold" fontSize="1.6rem"
-                                gutterBottom>{amountResult.amount.familyName}</Typography>
+                                gutterBottom>{amount.familyName}</Typography>
                 }/>
                 <CardContent>
                     <Divider sx={{my: 1.5}}/>
@@ -139,11 +172,11 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
 
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
                     <div>
-                        <div className={'s-flex ai-ct'}>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
-                                     amountResult.amount.cancelNotes.length ?
+                                     amount.cancelNotes.length ?
                                          <HtmlTooltip placement="top" sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
@@ -151,7 +184,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                          }} title={
                                              <div className={'s-flex flex-dir'}>
                                                  {
-                                                     amountResult.amount.cancelNotes.map((cancelNote,cancelNoteIndex) => (
+                                                     amount.cancelNotes.map((cancelNote,cancelNoteIndex) => (
                                                          <Typography key={cancelNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
                                                              fontSize: 12,
                                                          }}>
@@ -168,18 +201,18 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                                      textDecoration: 'underline',
                                                      cursor: 'help',
                                                  }
-                                             }}>{amountResult.amount.cancelNotes}
+                                             }}>{amount.cancelNotes}
                                              </Typography>
                                          </HtmlTooltip>
                                           : '--'
                                  }
                             </span>
-                        </div>
-                        <div className={'s-flex ai-ct'}>
+                        </Typography>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
-                                     amountResult.amount.changeNotes.length ?
+                                     amount.changeNotes.length ?
                                          <HtmlTooltip placement="top" sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
@@ -187,7 +220,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                          }} title={
                                              <div className={'s-flex flex-dir'}>
                                                  {
-                                                     amountResult.amount.changeNotes.map((changeNote,changeNoteIndex) => (
+                                                     amount.changeNotes.map((changeNote,changeNoteIndex) => (
                                                          <Typography key={changeNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
                                                              fontSize: 12,
                                                          }}>
@@ -204,18 +237,18 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                                      textDecoration: 'underline',
                                                      cursor: 'help',
                                                  }
-                                             }}>{amountResult.amount.changeNotes}
+                                             }}>{amount.changeNotes}
                                              </Typography>
                                          </HtmlTooltip>
                                          : '--'
                                  }
                             </span>
-                        </div>
-                        <div  className={'s-flex ai-ct'}>
+                        </Typography>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
-                                     amountResult.amount.refundNotes.length ?
+                                     amount.refundNotes.length ?
                                          <HtmlTooltip placement="top" sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
@@ -223,7 +256,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                          }} title={
                                              <div className={'s-flex flex-dir'}>
                                                  {
-                                                     amountResult.amount.refundNotes.map((refundNote,refundNoteIndex) => (
+                                                     amount.refundNotes.map((refundNote,refundNoteIndex) => (
                                                          <Typography key={refundNoteIndex} fontWeight="400" fontSize="1.1rem" display="inline" sx={{
                                                              fontSize: 12,
                                                          }}>
@@ -240,13 +273,13 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                                      textDecoration: 'underline',
                                                      cursor: 'help',
                                                  }
-                                             }}>{amountResult.amount.refundNotes}
+                                             }}>{amount.refundNotes}
                                              </Typography>
                                          </HtmlTooltip>
                                          : '--'
                                  }
                             </span>
-                        </div>
+                        </Typography>
                     </div>
 
                     <Box mt={2}>
@@ -256,7 +289,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={amountResult.lostPrice.amounts} totalPrice={amountResult.lostPrice.minTotal} currency={currency} />
+                            <PriceDetail amounts={cheapAmount as Amount[]} totalPrice={lostPrice} currency={currency} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -265,7 +298,7 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{currency}${amountResult.lostPrice.minTotal}</Typography>
+                            }}>{currency}${lostPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
                     <Button variant="contained" disabled={disabledChoose} onClick={submitResult} className={'full-width'} sx={{
@@ -280,14 +313,11 @@ const SliderBox = memo(({amountResult,currency,style,amountsResultsObj,itinerary
     )
 })
 
-const FareCardsSlider = memo(({currency,searchKey,itineraryKey}: {
+const FareCardsSlider = memo(({currency,searchData,nextCheapAmount}: {
     currency:string
-    searchKey:string
-    itineraryKey:string
+    searchData:MregeResultData
+    nextCheapAmount:Amount[]
 }) => {
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
 
     const prevRef = useRef<HTMLButtonElement>(null);
     const nextRef = useRef<HTMLButtonElement>(null);
@@ -295,20 +325,18 @@ const FareCardsSlider = memo(({currency,searchKey,itineraryKey}: {
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
 
-    const amountsResultsObj = useMemo(() => {
-        const searchResult = airSearchData.find(a => a.combinationKey === searchKey)
-        return searchResult
-    }, [searchKey,airSearchData]);
-
-
     const amountsMemo = useMemo(() => {
-        if(!amountsResultsObj) return []
-        const result = getLayeredTopCombos(
-            amountsResultsObj.combinationResult,
-            airportActived,
-            airChoose,itineraryKey)
-        return result
-    }, [amountsResultsObj,airportActived,airChoose]);
+        const result = searchData.amountsMerge
+        .flatMap(item =>
+            item.amounts
+            .filter(am => am.passengerType === 'adt').map(amount => ({
+                itineraryKey: item.itineraryKey,
+                amount
+            }))
+        );
+        return result;
+    }, [searchData]);
+
 
 
     return (
@@ -364,14 +392,17 @@ const FareCardsSlider = memo(({currency,searchKey,itineraryKey}: {
                     }}
                     modules={[Navigation]}>
                 {
-                    amountsMemo.map((amountResult) => (
+                    amountsMemo.map((amountsMerge) => (
                         <SwiperSlide
-                            key={`${amountResult.sourceItem.channelCode}-${amountResult.sourceItem.contextId}-${amountResult.familyCode}`}>
+                            key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}`}>
                             <SliderBox
-                               amountResult={amountResult}
-                               itineraryKey={itineraryKey}
-                               amountsResultsObj={amountsResultsObj as AirSearchData}
-                               currency={currency}/>
+                                amount={amountsMerge.amount}
+                                currency={currency}
+                                nextCheapAmount={nextCheapAmount}
+                                channelCode={searchData.channelCode}
+                                contextId={searchData.contextId}
+                                itineraryKey={amountsMerge.itineraryKey}
+                                />
                         </SwiperSlide>
 
                     ))

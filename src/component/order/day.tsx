@@ -6,10 +6,9 @@ import styles from './styles.module.less'
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import dayjs from "dayjs";
-import {setErrorMsg, setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
+import {setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {FQuery} from "@/types/order.ts";
-import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
-import {deduplicateByChannelCode} from "@/utils/order.ts";
+import {getAgentQuery} from "@/utils/order.ts";
 import {resetAirChoose, setNoData, setSearchDate, switchDay} from "@/store/orderInfo.ts";
 
 interface IDay {
@@ -106,27 +105,8 @@ const DayChoose = memo(() => {
             itineraries:newItineraries
         }
 
-        getAuthorizableRoutingGroupAgent(result).then(res => {
-            if(res.length){
-                const objResult = deduplicateByChannelCode(res)
-                dispatch(setSearchDate(objResult))
-                const allFailed = objResult.every(a => a.succeed !== true)
-                dispatch(setSearchLoad(false))
+        getAgentQuery(result,dispatch)
 
-                if(allFailed){
-                    dispatch(setSearchDate([]))
-                    dispatch(setNoData(true))
-                    dispatch(setErrorMsg('No suitable data'))
-                }
-            }else{
-                dispatch(setSearchLoad(false))
-                dispatch(setNoData(true))
-                dispatch(setErrorMsg('No suitable data'))
-            }
-        }).catch(() => {
-            dispatch(setSearchLoad(false))
-            dispatch(setErrorMsg('Interface error'))
-        })
     }
 
     return (

@@ -5,17 +5,14 @@ import type {
     PriceSummary,
     ResponseItinerary,
     Travelers,
-    LostPriceAmout,
-    AirChoose,
-    ComboItem,
-    CombinationResult,
-    FQueryResult,
-    AirSearchData,
-    ResponseData,
-    Result, Segment
+    FQueryResult, ItinerariesMerge, IamountsMerge, MregeResultAirport, FQuery
 } from "@/types/order.ts";
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
+import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
+import {setNoData, setSearchDate} from "@/store/orderInfo.ts";
+import {setErrorMsg, setSearchLoad} from "@/store/searchInfo.ts";
+import type {AppDispatch} from "@/store";
 dayjs.extend(duration)
 
 export function calculateTotalPriceSummary(
@@ -87,224 +84,6 @@ export function formatDuration(start: string, end: string): string {
 }
 
 
-export function getAdultAmountTotal(amount: Amount): number {
-    return (amount.printAmount || 0) + (amount.taxesAmount || 0);
-}
-
-
-
-export function findLowestAdultCombo(
-    itineraryGroups: ResponseItinerary[][]
-): LostPriceAmout {
-    let result: LostPriceAmout = {
-        minTotal: Infinity,
-        amounts: [],
-    };
-
-    itineraryGroups.forEach(itineraries => {
-        const itineraryMap = new Map<number, ResponseItinerary>();
-        itineraries.forEach(it => itineraryMap.set(it.itineraryNo, it));
-
-        const baseItinerary = itineraryMap.get(0);
-        const returnItineraries = Array.from(itineraryMap.entries())
-        .filter(([no]) => no !== 0)
-        .map(([, it]) => it);
-
-        if (!baseItinerary) return;
-
-        const baseAdt = (baseItinerary.amounts || []).filter(a => a.passengerType === 'adt');
-        if (!baseAdt.length) return;
-
-        // 单程逻辑
-        if (returnItineraries.length === 0) {
-            const minBasePrice = Math.min(...baseAdt.map(getAdultAmountTotal));
-            const baseOptions = baseAdt.filter(a => getAdultAmountTotal(a) === minBasePrice);
-            const baseAmount = baseOptions[Math.floor(Math.random() * baseOptions.length)];
-
-            const total = getAdultAmountTotal(baseAmount);
-
-            if (total < result.minTotal) {
-                result = {
-                    minTotal: Number(total.toFixed(2)),
-                    amounts: [baseAmount],
-                };
-            }
-            return;
-        }
-
-        for (const baseAmount of baseAdt) {
-
-            const returnAdtOptions = returnItineraries.map(it =>
-                (it.amounts || []).filter(
-                    a => a.passengerType === 'adt'
-                )
-            );
-
-            if (returnAdtOptions.some(list => list.length === 0)) continue;
-
-            const returnAmounts: Amount[] = [];
-            for (const list of returnAdtOptions) {
-                const min = Math.min(...list.map(getAdultAmountTotal));
-                const minOptions = list.filter(a => getAdultAmountTotal(a) === min);
-                returnAmounts.push(minOptions[Math.floor(Math.random() * minOptions.length)]);
-            }
-
-            const total = getAdultAmountTotal(baseAmount) +
-                returnAmounts.reduce((sum, a) => sum + getAdultAmountTotal(a), 0);
-
-            if (total < result.minTotal) {
-                result = {
-                    minTotal: Number(total.toFixed(2)),
-                    amounts: [baseAmount, ...returnAmounts],
-                };
-            }
-        }
-    });
-
-    return result;
-}
-
-
-export function applyFilter(
-    itineraries: ResponseItinerary[],
-): ResponseItinerary[] {
-    // 检查是否存在回程段（itineraryNo > 0）
-    const hasReturn = itineraries.some(it => it.itineraryNo > 0);
-    if (!hasReturn) return itineraries;
-
-    // 只过滤回程段（itineraryNo > 0）
-    return itineraries.map(it => {
-        if (it.itineraryNo === 0) return it;
-
-        const filtered = (it.amounts || []).filter(a =>
-            a.passengerType === 'adt'
-        );
-
-        return { ...it, amounts: filtered };
-    });
-}
-
-
-function isSameContext(item: CombinationResult, airChoose: AirChoose): boolean {
-    if (!airChoose.result) return true;
-    return item.contextId === airChoose.result.contextId && item.resultKey === airChoose.result.resultKey;
-}
-
-function getFilteredAmounts(it: ResponseItinerary): Amount[] {
-    const adtAmounts = (it.amounts || []).filter(a => a.passengerType === 'adt');
-    return adtAmounts
-}
-
-function buildNewItineraries(
-    itineraries: ResponseItinerary[],
-    currentNo: number,
-    amount: Amount,
-    isReturn: boolean
-): ResponseItinerary[] {
-    return itineraries.map(i => {
-        if (i.itineraryNo === currentNo) {
-            return { ...i, amounts: [amount] };
-        } else if (!isReturn && i.itineraryNo === 1 && currentNo === 0) {
-            const nextFiltered = (i.amounts || [])
-            return { ...i, amounts: nextFiltered };
-        }
-        return i;
-    });
-}
-
-function calculateLostPrice(
-    newItineraries: ResponseItinerary[],
-    airChoose: AirChoose,
-    isReturn: boolean
-): LostPriceAmout {
-    if (!isReturn) {
-        // 去程组合
-        return findLowestAdultCombo([newItineraries]);
-    }
-
-    let retItineraries = newItineraries;
-
-    const chosenPrev = airChoose.result?.itineraries.find(it => it.itineraryNo === 0);
-
-    retItineraries = retItineraries.map(it => {
-        if (it.itineraryNo === 0 && chosenPrev) return chosenPrev;
-        return it;
-    });
-
-    retItineraries = applyFilter(retItineraries);
-
-    return findLowestAdultCombo([retItineraries]);
-}
-
-function flattenCombos(all: (Array<{ total: number; item: ComboItem }>)[]): ComboItem[] {
-    return all.flatMap(group => group.map(g => g.item));
-}
-
-function getTopLayeredCombos(
-    all: (Array<{ total: number; item: ComboItem }>)[],
-    layerCount: number
-): ComboItem[] {
-    const top: ComboItem[] = [];
-    for (let i = 0; i < layerCount; i++) {
-        let min: { total: number; item: ComboItem } | null = null;
-        for (const group of all) {
-            const candidate = group[i];
-            if (candidate && (!min || candidate.total < min.total)) {
-                min = candidate;
-            }
-        }
-        if (min) top.push(min.item);
-    }
-    return top;
-}
-
-export function getLayeredTopCombos(
-    combinationResult: CombinationResult[],
-    airportActived: number,
-    airChoose: AirChoose,
-    itineraryKey: string
-): ComboItem[] {
-    const isReturn = airportActived === 1;
-    const allLayerCombos: (Array<{ total: number; item: ComboItem }>)[] = [];
-
-    for (const item of combinationResult) {
-        if (!isSameContext(item, airChoose)) continue;
-
-        const itinerary = item.itineraries.find(it => it.itineraryNo === airportActived && itineraryKey === it.itineraryKey);
-        if (!itinerary) continue;
-
-        const filteredAmounts = getFilteredAmounts(itinerary);
-        const layerCombos: { total: number; item: ComboItem }[] = [];
-
-        for (const amount of filteredAmounts) {
-            const newItineraries = buildNewItineraries(item.itineraries, itinerary.itineraryNo, amount, isReturn);
-            const lostPrice = calculateLostPrice(newItineraries, airChoose, isReturn);
-            const total = lostPrice.minTotal;
-
-            layerCombos.push({
-                total,
-                item: {
-                    amount,
-                    itineraryNo: itinerary.itineraryNo,
-                    familyCode: amount.familyCode,
-                    lostPrice,
-                    channelCode: item.channelCode,
-                    resultKey: item.resultKey,
-                    currency: item.currency,
-                    sourceItem: {
-                        ...item,
-                        itineraries: newItineraries
-                    }
-                }
-            });
-        }
-
-        allLayerCombos.push(layerCombos.sort((a, b) => a.total - b.total).slice(0, 8));
-    }
-
-    return isReturn ? flattenCombos(allLayerCombos) : getTopLayeredCombos(allLayerCombos, 8);
-}
-
 export function deduplicateByChannelCode(data: FQueryResult[]): FQueryResult[] {
     const map = new Map<string, FQueryResult>();
 
@@ -325,7 +104,6 @@ export function deduplicateByChannelCode(data: FQueryResult[]): FQueryResult[] {
         if (newTime > oldTime) {
             map.set(key, item);
         } else if (newTime === oldTime) {
-            // 时间一样时优先 isFromCaching === false
             if (existing.response!.isFromCaching && !item.response.isFromCaching) {
                 map.set(key, item);
             }
@@ -335,163 +113,190 @@ export function deduplicateByChannelCode(data: FQueryResult[]): FQueryResult[] {
     return Array.from(map.values());
 }
 
+// 计算amount价格
+export function getAdultAmountTotal(amount: Amount): number {
+    return (amount.printAmount || 0) + (amount.taxesAmount || 0);
+}
 
-export function setSearchDateFnc(data: FQueryResult[]): AirSearchData[] {
-    const originalData = data
-    .filter(item => item.succeed)
-    .map(item => item.response);
-
-    const getFlightKey = (segments: Segment[]): string => {
-        return segments
-        .map(seg => `${seg.departureAirport}-${seg.flightNumber}-${seg.arrivalAirport}`)
-        .join('|');
-    };
-
-    // 以去程结构为 key 做 map
-    const zeroMap = new Map<string, {
-        key: string;
-        contexts: {
-            original: ResponseData;
-            result: Result;
-        }[];
-    }>();
-
-    originalData.forEach(original => {
-        original.results.forEach(result => {
-            const zeroItineraries = result.itineraries.filter(it => it.itineraryNo === 0);
-            zeroItineraries.forEach(zero => {
-                const key = getFlightKey(zero.segments || []);
-                if (!zeroMap.has(key)) {
-                    zeroMap.set(key, {
-                        key,
-                        contexts: []
-                    });
-                }
-                zeroMap.get(key)!.contexts.push({
-                    original,
-                    result
-                });
-            });
-        });
-    });
-
-    // 分组后的组合
-    const groupedResults = Array.from(zeroMap.values()).map(({ key: currentKey, contexts }) => {
-        const combinationResult = contexts.map(({ original, result }) => {
-            const filteredItineraries = result.itineraries.filter(it => {
-                // 回程保留
-                if (it.itineraryNo !== 0) return true;
-
-                // 去程需要结构一致
-                const thisKey = getFlightKey(it.segments || []);
-                return thisKey === currentKey;
-            });
-
-            return {
-                channelCode: original.channelCode,
-                resultType: result.resultType,
-                policies: result.policies,
-                contextId: result.contextId,
-                resultKey: result.resultKey,
-                currency: result.currency,
-                itineraries: filteredItineraries
-            };
-        });
-
-        const cheapest = findLowestAdultCombo(
-            combinationResult.map(r => r.itineraries)
-        );
-
+// 处理初始数据结合
+export const calculateAirResult = (airports:FQueryResult[]): MregeResultAirport[] => {
+    const calculateResult = airports.flatMap(airport => airport.response.results.flatMap(result => {
+        const mergeItinerariesResult = mergeItineraries(result.itineraries)
         return {
-            combinationKey: currentKey,
-            combinationResult,
-            cheapAmount: cheapest
-        };
-    });
-
-    return groupedResults;
-}
-
-interface GetAirResultListParams {
-    airSearchData: AirSearchData[];
-    airportActived: number;
-    airChoose: AirChoose;
-}
-
-export function getAirResultList({airSearchData,airportActived,airChoose}: GetAirResultListParams) {
-    const chooseResult = airChoose.result;
-
-    if (chooseResult) {
-        const matchedItem = airSearchData.find(item =>
-            item.combinationResult.some(
-                a =>
-                    a.resultKey === chooseResult.resultKey &&
-                    a.contextId === chooseResult.contextId
-            )
-        );
-
-        if (matchedItem) {
-            const conRe = matchedItem.combinationResult.find(
-                a =>
-                    a.resultKey === chooseResult.resultKey &&
-                    a.contextId === chooseResult.contextId
-            );
-
-            if (!conRe) return [];
-
-            const baseItineraries = conRe.itineraries.map(it => {
-                if (it.itineraryNo === airportActived - 1) {
-                    const matchedPrev = chooseResult.itineraries.find(i => i.itineraryNo === airportActived - 1);
-                    return matchedPrev || it;
-                }
-
-                if (it.itineraryNo === airportActived) {
-                    const [itineraryWithFilteredAmounts] = applyFilter([it]);
-                    const filteredAmounts = itineraryWithFilteredAmounts.amounts || [];
-
-                    return {
-                        ...it,
-                        amounts: filteredAmounts
-                    };
-                }
-
-                return it;
-            });
-
-            return baseItineraries
-            .filter(it => it.itineraryNo === airportActived)
-            .map(returnItinerary => {
-                const comboItineraries = baseItineraries.map(i => {
-                    if (i.itineraryNo === airportActived) {
-                        return returnItinerary;
-                    }
-                    return i;
-                });
-
-                const cheapest = findLowestAdultCombo([comboItineraries]);
-
-                return {
-                    key: matchedItem.combinationKey,
-                    segments: returnItinerary.segments || [],
-                    cheapAmount: cheapest,
-                    currency: conRe.currency,
-                    itineraryKey: returnItinerary.itineraryKey
-                };
-            });
+            channelCode:airport.response.channelCode,
+            contextId:result.contextId,
+            currency:result.currency,
+            patterns:result.patterns,
+            resultKey:result.resultKey,
+            resultType:result.resultType,
+            teamedKey:result.teamedKey,
+            itinerariesMerge:mergeItinerariesResult
         }
+    }))
+    return calculateResult
+}
+// 合并itineraries数据
+function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
+    // 按 itineraryNo 分组
+    const grouped = data.reduce<Record<number, ResponseItinerary[]>>((acc, cur) => {
+        acc[cur.itineraryNo] = acc[cur.itineraryNo] || [];
+        acc[cur.itineraryNo].push(cur);
+        return acc;
+    }, {});
 
-        return [];
-    }
+    const result: ItinerariesMerge[] = [];
 
-    return airSearchData.map(item => {
-        const conRe = item.combinationResult[0];
-        const itinerarie = conRe?.itineraries.find(it => it.itineraryNo === airportActived)
-        return {
-            key: item.combinationKey,
-            segments: itinerarie?.segments || [],
-            cheapAmount: item.cheapAmount,
-            currency: conRe?.currency,
-            itineraryKey: itinerarie?.itineraryKey || ''
-        };
+    Object.entries(grouped).forEach(([noStr, items]) => {
+        const itineraryNo = Number(noStr);
+
+        // 按 segments 分组
+        const segmentMap: Record<string, ResponseItinerary[]> = {};
+        items.forEach(item => {
+            const segKey = JSON.stringify(item.segments);
+            if (!segmentMap[segKey]) {
+                segmentMap[segKey] = [];
+            }
+            segmentMap[segKey].push(item);
+        });
+
+        // 遍历每组相同 segments
+        Object.entries(segmentMap).forEach(([segKey, list]) => {
+            // 每个行程的 amounts 按价格升序排序
+            const sortedAmountsList = list.map(it => ({
+                itineraryKey: it.itineraryKey,
+                amounts: [...it.amounts].sort(
+                    (a, b) =>
+                        (a.printAmount + a.taxesAmount) -
+                        (b.printAmount + b.taxesAmount)
+                )
+            }));
+
+            // 逐个位置比对取最低价
+            const mergedAmounts: IamountsMerge[] = [
+                {
+                    itineraryKey: '',
+                    amounts: []
+                }
+            ];
+
+            const maxLen = Math.max(...sortedAmountsList.map(sa => sa.amounts.length));
+            for (let i = 0; i < maxLen; i++) {
+                let cheapest: number | null = null;
+                let chosenKey = '';
+                let chosenAmount: Amount | null = null;
+
+                sortedAmountsList.forEach(sa => {
+                    const amt = sa.amounts[i];
+                    if (amt) {
+                        const price = amt.printAmount + amt.taxesAmount;
+                        if (cheapest === null || price < cheapest) {
+                            cheapest = price;
+                            chosenKey = sa.itineraryKey;
+                            chosenAmount = amt;
+                        }
+                    }
+                });
+
+                if (chosenAmount) {
+                    // 如果 amountsMerge 还没有该 itineraryKey，就加一项
+                    let mergeItem = mergedAmounts.find(m => m.itineraryKey === chosenKey);
+                    if (!mergeItem) {
+                        mergeItem = { itineraryKey: chosenKey, amounts: [] };
+                        mergedAmounts.push(mergeItem);
+                    }
+                    mergeItem.amounts.push(chosenAmount);
+                }
+            }
+
+            result.push({
+                segments: JSON.parse(segKey),
+                itineraryNo,
+                amountsMerge: mergedAmounts.filter(m => m.itineraryKey) // 过滤掉空的
+            });
+        });
     });
+
+    return result;
+}
+
+// 获取每段的最低价格
+export function getLowestAmountsByItinerary(data: ItinerariesMerge[]) {
+    // 按 itineraryNo 分组
+    const groupMap = new Map<number, Amount[]>();
+
+    data.forEach(item => {
+        const list: Amount[] = [];
+        item.amountsMerge.forEach(am => {
+            am.amounts.forEach(amount => {
+                if(amount.passengerType === 'adt'){
+                    list.push(amount);
+                }
+            });
+        });
+
+        if (groupMap.has(item.itineraryNo)) {
+            groupMap.get(item.itineraryNo)!.push(...list);
+        } else {
+            groupMap.set(item.itineraryNo, list);
+        }
+    });
+    // 找出每组的最低价
+    const result = Array.from(groupMap.entries()).map(([, amounts]) => {
+        return findLowestAmount(amounts)
+    });
+
+    return result;
+}
+
+// 单独计算最低价
+export function findLowestAmount(amounts: Amount[]): Amount | null {
+    if (amounts.length === 0) return null;
+
+    return amounts.reduce((prev, curr) => {
+        const prevTotal = getAdultAmountTotal(prev);
+        const currTotal = getAdultAmountTotal(curr);
+        return currTotal < prevTotal ? curr : prev;
+    }, amounts[0]);
+}
+
+// 计算amount总价
+export function amountPrice(amounts: Amount[]) {
+    // 先全部转成分来累加
+    const totalCents = amounts.reduce((total, item) => {
+        return total + Math.round(getAdultAmountTotal(item) * 100);
+    }, 0);
+
+    // 最后再转回元并保留两位小数
+    return (totalCents / 100).toFixed(2);
+}
+
+
+export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
+    getAuthorizableRoutingGroupAgent(result).then(res => {
+        if(res.length){
+            const objResult = deduplicateByChannelCode(res)
+            if(objResult.some(objresult => objresult.response.results && objresult.response.results.length)){
+                const mergeAirResult = calculateAirResult(objResult)
+                dispatch(setSearchDate(mergeAirResult))
+            }else{
+                dispatch(setSearchDate([]))
+                dispatch(setNoData(true))
+            }
+            const allFailed = objResult.every(a => a.succeed !== true)
+            dispatch(setSearchLoad(false))
+
+            if(allFailed){
+                dispatch(setSearchDate([]))
+                dispatch(setNoData(true))
+                dispatch(setErrorMsg('No suitable data'))
+            }
+        }else{
+            dispatch(setSearchLoad(false))
+            dispatch(setNoData(true))
+            dispatch(setErrorMsg('No suitable data'))
+        }
+    }).catch(() => {
+        dispatch(setSearchLoad(false))
+        dispatch(setErrorMsg('Interface error'))
+    })
 }

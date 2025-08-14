@@ -1,16 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type {
-    AirChoose, AirSearchData,
+    AirChoose,
     FQuery,
-    FQueryResult, IContact,
-    ItineraryType, Passenger,
+    IContact,
+    ItineraryType, MregeResultAirport, Passenger,
     ResponseItinerary,
     Result,
     Travelers
 } from '@/types/order'
 import dayjs from "dayjs";
-import {setSearchDateFnc} from "@/utils/order.ts";
 
 type IOrder = {
     query: FQuery
@@ -18,7 +17,7 @@ type IOrder = {
     airChoose: AirChoose
     passengers: Passenger[]
     contacts: IContact[]
-    airSearchData: AirSearchData[]
+    airSearchData: MregeResultAirport[]
     noData:boolean
     disabledChoose:boolean
 }
@@ -166,9 +165,9 @@ const orderInfoSlice = createSlice({
                 state.airportActived = state.airportActived - 1
             }
         },
-        setSearchDate: (state, action: PayloadAction<FQueryResult[]|[]>) => {
+        setSearchDate: (state, action: PayloadAction<MregeResultAirport[]|[]>) => {
             if(action.payload.length){
-                const result = setSearchDateFnc(action.payload)
+                const result = action.payload
                 state.airSearchData = result;
             }else{
                 state.airSearchData = [];
