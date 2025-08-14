@@ -1,4 +1,4 @@
-import React, {useMemo , memo, useCallback, useState} from "react";
+import React, {useMemo , memo, useState} from "react";
 import styles from './styles.module.less'
 import {
     Box,
@@ -18,6 +18,7 @@ import {
 import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
 import FilterItemSkeleton from "@/component/order/filterItemSkeleton.tsx";
+import {SearchDataProvider} from "@/context/order/SearchDataContext.tsx";
 
 
 const filterTabArr = [
@@ -74,9 +75,9 @@ const filterTabArr = [
 const FilterTab = memo(() => {
     const [tabValue, setTabValue] = useState('cheapest')
 
-    const handleChange = useCallback((_event: React.SyntheticEvent, newValue: string) => {
+    const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
         setTabValue(newValue);
-    },[])
+    }
 
     return (
         <div className={styles.filterTab}>
@@ -235,10 +236,9 @@ const FilterData = memo(() => {
                     ) : airSearchData.length ? (
                         <div className={styles.filterContent}>
                             {airItem.map((searchData,searchDataIndex) => (
-                                <FilterItem
-                                    key={`${searchData.key}-${searchDataIndex}`}
-                                    searchData={searchData}
-                                />
+                                <SearchDataProvider value={searchData} key={`${searchData.key}-${searchDataIndex}`}>
+                                    <FilterItem />
+                                </SearchDataProvider>
                             ))}
                         </div>
                     ) : (

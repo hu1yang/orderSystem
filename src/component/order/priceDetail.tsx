@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { memo } from "react";
 import type { Amount } from "@/types/order.ts";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
@@ -24,9 +24,9 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
 }) => {
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
 
-    const stopPropagation = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
-    }, []);
+    }
 
     return (
         <div className={styles.priceDetail} onMouseDown={stopPropagation}>

@@ -70,7 +70,7 @@ export interface Cabin {
 }
 export interface Segment {
     isLuggageChecked: boolean|null;
-    sequenceNo: number|null;
+    sequenceNo: number;
     carrier: string;
     flightNumber: string;
     shareToFlightNo: string|null;

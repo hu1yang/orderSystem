@@ -23,7 +23,6 @@ import AirTooltip from "@/component/defult/AirTooltip.tsx";
 
 import type {
     Amount,
-    MregeResultData,
     Segment
 } from "@/types/order.ts";
 
@@ -33,6 +32,7 @@ import {extractTimeWithTimezone} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 
 
 const FlightTimeline = memo(({segments}:{
@@ -186,9 +186,9 @@ const itineraryTypeMap = {
     oneWay: 'One-way',
     round: 'Round-trip',
 } as const
-const FilterItem = memo(({searchData}:{
-    searchData:MregeResultData
-}) => {
+const FilterItem = memo(() => {
+    const searchData = useSearchData();
+
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
@@ -198,7 +198,7 @@ const FilterItem = memo(({searchData}:{
     const [open, setOpen] = useState(false)
 
     const nextCheapAmount = useMemo(() => {
-        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData.channelCode && airSearch.contextId === searchData.contextId)
+        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData?.channelCode && airSearch.contextId === searchData.contextId)
         if(!airFilter) return []
         const airResult = airFilter.itinerariesMerge.filter(it => it.itineraryNo > airportActived)
         const result = getLowestAmountsByItinerary(airResult)
@@ -215,7 +215,7 @@ const FilterItem = memo(({searchData}:{
         }
 
         const currentCheapAmount = findLowestAmount(
-            searchData.amountsMerge?.flatMap(a => a.amounts.filter(am => am.passengerType === 'adt') ?? []) ?? []
+            searchData?.amountsMerge?.flatMap(a => a.amounts.filter(am => am.passengerType === 'adt') ?? []) ?? []
         );
 
         const result  = [
@@ -249,12 +249,12 @@ const FilterItem = memo(({searchData}:{
                             <div className={`${styles.leftInfoDetailTitle}`}>
                                 <div className={`${styles.airTitle} s-flex flex-dir`}>
                                     {
-                                        searchData.segments.map((segment) =>  <span key={segment.flightNumber}>{segment.flightNumber}</span>)
+                                        searchData?.segments.map((segment) =>  <span key={segment.flightNumber}>{segment.flightNumber}</span>)
                                     }
 
                                 </div>
                                 {
-                                    searchData.segments.some(segment => segment.flightMealType) && (
+                                    searchData?.segments.some(segment => segment.flightMealType) && (
                                         <HtmlTooltip title={
                                             <AirTooltip />
                                         }>
@@ -270,7 +270,7 @@ const FilterItem = memo(({searchData}:{
                         <Grid container className={'flex-1'} spacing={2}>
                             <Grid size={12}>
                                 {
-                                    <FlightTimeline segments={searchData.segments} />
+                                    <FlightTimeline segments={searchData?.segments as Segment[]} />
                                 }
                             </Grid>
                         </Grid>
@@ -279,7 +279,7 @@ const FilterItem = memo(({searchData}:{
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
                                 <span>from</span>
-                                <div>{searchData.currency}${lostPrice}</div>
+                                <div>{searchData?.currency}${lostPrice}</div>
                             </div>
                             <div>
                                 <span>{itineraryTypeMap[itineraryType]}</span>
@@ -343,7 +343,7 @@ const FilterItem = memo(({searchData}:{
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider currency={searchData.currency} searchData={searchData} nextCheapAmount={nextCheapAmount as Amount[]} />
+                <FareCardsSlider nextCheapAmount={nextCheapAmount as Amount[]} />
             </div>
         </div>
     )

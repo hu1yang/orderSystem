@@ -14,7 +14,7 @@ import { Navigation } from 'swiper/modules';
 
 
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {Amount, MregeResultData, Result} from "@/types/order.ts";
+import type {Amount, Result} from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
@@ -22,21 +22,21 @@ import {amountPrice, findLowestAmount} from "@/utils/order.ts";
 import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
 import styles from './styles.module.less'
-// Import Swiper styles
 // @ts-ignore
 import 'swiper/css';
 // @ts-ignore
 import 'swiper/css/pagination';
+import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 
 
-const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,itineraryKey}:{
-    currency:string
+const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     amount:Amount
     nextCheapAmount:Amount[]
-    channelCode:string
-    contextId:string
     itineraryKey:string
 }) => {
+    const searchData = useSearchData();
+
+
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -81,7 +81,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
 
     const submitResult = () => {
         dispatch(setDisabledChoose(true))
-        const airport = airSearchData.find(airport => airport.channelCode === channelCode && airport.contextId === contextId)
+        const airport = airSearchData.find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === searchData?.contextId)
         if(!airport) return;
         const filteritMer = airport.itinerariesMerge.filter(itm => itm.itineraryNo === airportActived)
 
@@ -142,7 +142,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
 
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
                     <div>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
                             <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={styles.texts}>
                                  {
@@ -150,7 +150,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                  }
                             </span>
                         </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
                             <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={styles.texts}>
                                  {
@@ -158,7 +158,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                  }
                             </span>
                         </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
                             <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={styles.texts}>
                                  {
@@ -172,12 +172,12 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
 
                     <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
                     <div>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        <div className={`${styles.contentText} s-flex ai-ct`}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
                                      amount.cancelNotes.length ?
-                                         <HtmlTooltip placement="top" sx={{
+                                         <HtmlTooltip placement="left" sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
                                              }
@@ -207,13 +207,13 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                           : '--'
                                  }
                             </span>
-                        </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        </div>
+                        <div className={`${styles.contentText} s-flex ai-ct`}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
                                      amount.changeNotes.length ?
-                                         <HtmlTooltip placement="top" sx={{
+                                         <HtmlTooltip placement="left" sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
                                              }
@@ -243,17 +243,17 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                          : '--'
                                  }
                             </span>
-                        </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={1} className={'s-flex ai-ct'}>
+                        </div>
+                        <div className={`${styles.contentText} s-flex ai-ct`}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={`${styles.texts} elli-1`}>
                                  {
                                      amount.refundNotes.length ?
-                                         <HtmlTooltip placement="top" sx={{
+                                         <HtmlTooltip sx={{
                                              '.MuiTooltip-tooltip': {
                                                  padding: 'var(--pm-16)',
                                              }
-                                         }} title={
+                                         }} placement="left" title={
                                              <div className={'s-flex flex-dir'}>
                                                  {
                                                      amount.refundNotes.map((refundNote,refundNoteIndex) => (
@@ -279,7 +279,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                          : '--'
                                  }
                             </span>
-                        </Typography>
+                        </div>
                     </div>
 
                     <Box mt={2}>
@@ -289,7 +289,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={cheapAmount as Amount[]} totalPrice={lostPrice} currency={currency} />
+                            <PriceDetail amounts={cheapAmount as Amount[]} totalPrice={lostPrice} currency={searchData?.currency as string} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -298,7 +298,7 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{currency}${lostPrice}</Typography>
+                            }}>{searchData?.currency}${lostPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
                     <Button variant="contained" disabled={disabledChoose} onClick={submitResult} className={'full-width'} sx={{
@@ -313,11 +313,10 @@ const SliderBox = memo(({amount,currency,nextCheapAmount,channelCode,contextId,i
     )
 })
 
-const FareCardsSlider = memo(({currency,searchData,nextCheapAmount}: {
-    currency:string
-    searchData:MregeResultData
+const FareCardsSlider = memo(({nextCheapAmount}: {
     nextCheapAmount:Amount[]
 }) => {
+    const searchData = useSearchData();
 
     const prevRef = useRef<HTMLButtonElement>(null);
     const nextRef = useRef<HTMLButtonElement>(null);
@@ -326,7 +325,7 @@ const FareCardsSlider = memo(({currency,searchData,nextCheapAmount}: {
     const [isEnd, setIsEnd] = useState(false);
 
     const amountsMemo = useMemo(() => {
-        const result = searchData.amountsMerge
+        const result = searchData?.amountsMerge
         .flatMap(item =>
             item.amounts
             .filter(am => am.passengerType === 'adt').map(amount => ({
@@ -334,7 +333,7 @@ const FareCardsSlider = memo(({currency,searchData,nextCheapAmount}: {
                 amount
             }))
         );
-        return result;
+        return result!;
     }, [searchData]);
 
 
@@ -397,10 +396,7 @@ const FareCardsSlider = memo(({currency,searchData,nextCheapAmount}: {
                             key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}`}>
                             <SliderBox
                                 amount={amountsMerge.amount}
-                                currency={currency}
                                 nextCheapAmount={nextCheapAmount}
-                                channelCode={searchData.channelCode}
-                                contextId={searchData.contextId}
                                 itineraryKey={amountsMerge.itineraryKey}
                                 />
                         </SwiperSlide>

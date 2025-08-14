@@ -152,7 +152,10 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
         // 按 segments 分组
         const segmentMap: Record<string, ResponseItinerary[]> = {};
         items.forEach(item => {
-            const segKey = JSON.stringify(item.segments);
+            const segKey = item.segments
+                .slice() // 防止改动原数组
+                .sort((a, b) => a.sequenceNo - b.sequenceNo)
+                .map(seg => seg.flightNumber).join('|');
             if (!segmentMap[segKey]) {
                 segmentMap[segKey] = [];
             }
@@ -160,7 +163,7 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
         });
 
         // 遍历每组相同 segments
-        Object.entries(segmentMap).forEach(([segKey, list]) => {
+        Object.entries(segmentMap).forEach(([, list]) => {
             // 每个行程的 amounts 按价格升序排序
             const sortedAmountsList = list.map(it => ({
                 itineraryKey: it.itineraryKey,
@@ -209,7 +212,7 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
             }
 
             result.push({
-                segments: JSON.parse(segKey),
+                segments: list[0].segments,
                 itineraryNo,
                 amountsMerge: mergedAmounts.filter(m => m.itineraryKey) // 过滤掉空的
             });

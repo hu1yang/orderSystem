@@ -57,6 +57,40 @@ const cabinOptions = [
     { label: 'First Class', value: 'f' },
 ];
 
+function setHistorySearch(newItem: ITem) {
+    const key = 'historySearch';
+    const stored = localStorage.getItem(key);
+    let history: typeof newItem[] = [];
+
+    if (stored) {
+        try {
+            history = JSON.parse(stored);
+        } catch {
+            history = [];
+        }
+    }
+
+    const newDeparture = newItem.itineraries[0].departure.airportCode;
+    const newArrival = newItem.itineraries[0].arrival.airportCode;
+
+    // 去重：如果已有同样出发地 + 到达地 的记录，先移除旧的
+    history = history.filter(item => {
+        const oldDeparture = item.itineraries[0].departure.airportCode;
+        const oldArrival = item.itineraries[0].arrival.airportCode;
+        return !(oldDeparture === newDeparture && oldArrival === newArrival);
+    });
+
+    // 插入新项到最前
+    history.unshift(newItem);
+
+    // 限制最多 3 项
+    if (history.length > 3) {
+        history = history.slice(0, 3);
+    }
+
+    localStorage.setItem(key, JSON.stringify(history));
+}
+
 
 const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IAirport}) => {
     return (
@@ -77,11 +111,11 @@ const InputModel = memo(({children,openPop,style}:{
     style?:React.CSSProperties;
 }) => {
 
-    const clickPop = useCallback((event:React.MouseEvent<HTMLDivElement>) => {
+    const clickPop = (event:React.MouseEvent<HTMLDivElement>) => {
         if(openPop){
             openPop(event)
         }
-    },[])
+    }
 
     return (
         <div className={`${styles.inputModel} cursor-p s-flex ai-ct jc-bt`} style={style} onClick={clickPop}>
@@ -275,14 +309,14 @@ const TimerChoose = memo(({isRound}:{
 
     const openPop = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget)
-    }, [isRound])
+    }, [])
 
     const closePop = useCallback(() => {
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur()
         }
         setAnchorEl(null)
-    }, [localDate])
+    }, [])
 
 
 
@@ -380,9 +414,12 @@ const PersonChoose = memo(() => {
         setAnchorEl(event.currentTarget)
     },[])
 
+    const canbinLabel = useMemo(() => {
+        const cabinOption = cabinOptions.find(op => op.value === cabinValue)
+        return cabinOption?.label.split(' Class') ?? 'Economy'
+    }, [cabinValue]);
 
     const closePop = useCallback(() => {
-        // 移除焦点（失焦）
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
         }
@@ -396,7 +433,7 @@ const PersonChoose = memo(() => {
     const PersonChild = memo(() => (
         <div className={`${styles.inputMessage} s-flex jc-ct ai-ct`}>
             <PersonIcon sx={{fontSize: 24}} />
-            <p>{countAll} Passengers , Economy</p>
+            <p>{countAll} Passengers , {canbinLabel}</p>
         </div>
     ))
 
@@ -507,44 +544,6 @@ const SearchComponent = memo(() => {
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
 
     const isRound = useMemo(() => radioType === 'round', [radioType])
-
-
-    function setHistorySearch(newItem: ITem) {
-        const key = 'historySearch';
-        const stored = localStorage.getItem(key);
-        let history: typeof newItem[] = [];
-
-        if (stored) {
-            try {
-                history = JSON.parse(stored);
-            } catch {
-                history = [];
-            }
-        }
-
-        const newDeparture = newItem.itineraries[0].departure.airportCode;
-        const newArrival = newItem.itineraries[0].arrival.airportCode;
-
-        // 去重：如果已有同样出发地 + 到达地 的记录，先移除旧的
-        history = history.filter(item => {
-            const oldDeparture = item.itineraries[0].departure.airportCode;
-            const oldArrival = item.itineraries[0].arrival.airportCode;
-            return !(oldDeparture === newDeparture && oldArrival === newArrival);
-        });
-
-        // 插入新项到最前
-        history.unshift(newItem);
-
-        // 限制最多 3 项
-        if (history.length > 3) {
-            history = history.slice(0, 3);
-        }
-
-        localStorage.setItem(key, JSON.stringify(history));
-    }
-
-
-
 
     const search = () => {
         if(searchLoad) return
