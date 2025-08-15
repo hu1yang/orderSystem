@@ -236,7 +236,7 @@ const PassengerForm = forwardRef((_,ref) => {
                     }
                 }
 
-                passenger.fullName = `${passenger.lastName}/${passenger.firstName}`;
+                passenger.fullName = `${passenger.firstName}/${passenger.lastName}`;
                 passenger.phoneNumber = (passenger.phoneCode + '/' + passenger.phoneNumber).replace(/^\+/, '');
                 delete passenger.phoneCode;
                 delete passenger.firstName;
@@ -319,7 +319,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 rules={{
                                                     validate: (value) => {
                                                         if (!value) {
-                                                            return 'Please enter your Given Name';
+                                                            return 'Please enter your Surname';
                                                         }
 
                                                         return true;
@@ -329,7 +329,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                     <TextField
                                                         {...field}
                                                         fullWidth
-                                                        label="Given Name"
+                                                        label="Surname"
                                                         error={!!fieldState.error}
                                                         onChange={(e) => {
                                                             // 将输入转换为大写并过滤非字母
@@ -348,7 +348,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 rules={{
                                                     validate: (value) => {
                                                         if (!value) {
-                                                            return 'Please enter your Last name';
+                                                            return 'Please enter your Given Name';
                                                         }
 
                                                         return true;
@@ -358,7 +358,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                     <TextField
                                                         {...field}
                                                         fullWidth
-                                                        label="Last name"
+                                                        label="Given Name"
                                                         error={!!fieldState.error}
                                                         onChange={(e) => {
                                                             // 将输入转换为大写并过滤非字母
