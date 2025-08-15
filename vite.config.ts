@@ -32,6 +32,6 @@ export default defineConfig((config) =>{
                     rewrite: (path:string) => path.replace(/^\/agentApi/, '')
                 },
             }
-        }
+        },
     }
 })

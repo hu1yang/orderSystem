@@ -128,9 +128,9 @@ function get<D, T = unknown>(url: string, params?: T , config?: AxiosRequestConf
     })
 }
 
-function post<D, T = unknown>(url: string, params?: T): Promise<D> {
+function post<D, T = unknown>(url: string, params?: T, config?: AxiosRequestConfig): Promise<D> {
     return instance
-    .post(url, normalizeParams(params))
+    .post(url, normalizeParams(params),config)
     .then((response) => response.data as D)
     .catch((error) => {
         console.error(error)
