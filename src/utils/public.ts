@@ -1,6 +1,6 @@
 import {format, addDays, parseISO, differenceInCalendarDays, addMonths} from 'date-fns';
 import dayjs, {type Dayjs} from 'dayjs';
-import type {ITem, QueryGlobalAirports} from "@/types/order.ts";
+import type {Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -116,8 +116,8 @@ export function toLogin () {
     }
     // window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
 }
-export function flattenByCountry(data:QueryGlobalAirports[]) {
-    const map = new Map();
+export function flattenByCountry(data: QueryGlobalAirports[]) {
+    const result: Country[] = [];
 
     data.forEach(item => {
         const {
@@ -131,23 +131,34 @@ export function flattenByCountry(data:QueryGlobalAirports[]) {
             airports
         } = item;
 
-        if (!map.has(countryCode)) {
-            map.set(countryCode, {
+        // 查找国家
+        let country = result.find(c => c.countryCode === countryCode);
+        if (!country) {
+            country = {
                 countryCode,
                 countryCName,
                 countryEName,
                 timeZone,
-                airports: []
-            });
+                cities: []
+            };
+            result.push(country);
         }
 
-        const country = map.get(countryCode);
-
-        airports.forEach(airport => {
-            country.airports.push({
+        // 查找城市
+        let city = country.cities.find(c => c.cityCode === cityCode);
+        if (!city) {
+            city = {
                 cityCode,
                 cityCName,
                 cityEName,
+                airports: []
+            };
+            country.cities.push(city);
+        }
+
+        // 添加机场
+        airports.forEach(airport => {
+            city.airports.push({
                 airportCode: airport.airportCode,
                 airportCName: airport.airportCName,
                 airportEName: airport.airportEName
@@ -155,8 +166,9 @@ export function flattenByCountry(data:QueryGlobalAirports[]) {
         });
     });
 
-    return Array.from(map.values());
+    return result;
 }
+
 
 
 

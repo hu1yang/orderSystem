@@ -26,7 +26,7 @@ import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
 
 import type {
-    FilterAirport,
+    Country,
     FQuery, IAirport, ITem,
     ItineraryType,
     PassengerType,
@@ -97,7 +97,7 @@ const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IA
         <div className={`${styles.addressCard} cursor-p`} style={style}>
             {
                 !!address &&  <div className={'full-width'}>
-                    <span className={'elli-1'}>{address.cityEName}</span>
+                    <span className={'elli-1'}>{address.cityEName}({address.airportCode})</span>
                     <p className={'elli-1'}>{address.airportEName}</p>
                 </div>
             }
@@ -196,19 +196,35 @@ const Airports = memo(() => {
         closePop()
     }
 
-    const [searchList, setSearchList] = useState<FilterAirport[]>([])
+    const [searchList, setSearchList] = useState<Country[]>([])
 
     const searchCity = debounce((value: string) => {
+        if(!value) {
+            setSearchList([])
+            return
+        }
         fuzzyQueryGlobalAirportsAgent(value).then(res => {
             setSearchList(flattenByCountry(res))
         })
     }, 300)
 
     const handleEnter = () => {
-        if(searchList.length){
-            handleInput(searchList[0].airports[0])
+        const firstCountry = searchList[0]
+        const firstCity = firstCountry?.cities?.[0]
+        const firstAirport = firstCity?.airports?.[0]
+
+        if (firstAirport && firstCity && firstCountry) {
+            handleInput({
+                airportEName: firstAirport.airportEName,
+                airportCName: firstAirport.airportCName,
+                airportCode: firstAirport.airportCode,
+                cityCName: firstCity.cityCName,
+                cityCode: firstCity.cityCode,
+                cityEName: firstCity.cityEName
+            })
         }
     }
+
 
 
     return (
@@ -263,32 +279,60 @@ const Airports = memo(() => {
                         {/*</div>*/}
                         {/*<Divider />*/}
                         {
-                            searchList.map((region) => {
-                                return (
-                                    <div key={region.countryCode}>
-                                        <div className={styles.addressArea}>
-                                            <span>{region.countryEName}</span>
-                                        </div>
-                                        <div className={styles.addressBox}>
-                                            <Grid container spacing={2}>
-                                                {
-                                                    region.airports.map(airport => (
-                                                        <Grid key={airport.airportCode}>
-                                                            <div
-                                                                onClick={() => handleInput(airport)}
-                                                                className={`${styles.addressItem} s-flex flex-dir ai-fs jc-ct cursor-p`}>
-                                                                <span>{airport.cityEName}</span>
-                                                                <span>{airport.airportEName}</span>
-                                                            </div>
-                                                        </Grid>
-                                                    ))
-                                                }
-                                            </Grid>
-                                        </div>
-
+                            searchList.map((region) => (
+                                <div key={region.countryCode}>
+                                    <div className={styles.addressArea}>
+                                        <span>{region.countryEName}</span>
                                     </div>
-                                )
-                            })
+
+                                    {
+                                        region.cities.map(city => (
+                                            <div className={styles.addressBox} key={city.cityCode}>
+                                                <Grid container spacing={2}>
+                                                    <Grid>
+                                                        <div
+                                                            onClick={() => handleInput({
+                                                                airportEName:city.cityEName,
+                                                                airportCName:city.cityCName,
+                                                                airportCode:city.cityCode,
+                                                                cityCName:city.cityCName,
+                                                                cityCode:city.cityCode,
+                                                                cityEName:city.cityEName
+                                                            })}
+                                                            className={`${styles.addressItem} s-flex flex-dir ai-fs jc-ct cursor-p`}>
+                                                            <span>{city.cityCName}({city.cityCode})</span>
+                                                            <span>{city.cityEName}(City)</span>
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                                <div className={styles.addressBox}>
+                                                    <Grid container spacing={2}>
+                                                        {
+                                                            city.airports.map(airport => (
+                                                                <Grid key={airport.airportCode}>
+                                                                    <div
+                                                                        onClick={() => handleInput({
+                                                                            airportEName:airport.airportEName,
+                                                                            airportCName:airport.airportCName,
+                                                                            airportCode:airport.airportCode,
+                                                                            cityCName:city.cityCName,
+                                                                            cityCode:city.cityCode,
+                                                                            cityEName:city.cityEName
+                                                                        })}
+                                                                        className={`${styles.addressItem} ${styles.addressItemli} s-flex flex-dir ai-fs jc-ct cursor-p`}>
+                                                                        <span>{airport.airportCName}({airport.airportCode})</span>
+                                                                        <span>{airport.airportEName}</span>
+                                                                    </div>
+                                                                </Grid>
+                                                            ))
+                                                        }
+                                                    </Grid>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            ))
                         }
                     </div>
                 </div>

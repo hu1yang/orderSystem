@@ -296,20 +296,14 @@ export interface QueryGlobalAirports {
 }
 
 export interface IAirport {
-    airportEName: string,
-    airportCName: string,
+    airportEName: string
+    airportCName: string
     airportCode: string
     cityCName:string
-    cityCode: string,
-    cityEName: string,
+    cityCode: string
+    cityEName: string
 }
-export interface FilterAirport {
-    countryCName:string
-    countryCode:string
-    countryEName:string
-    timeZone:number
-    airports:IAirport[]
-}
+
 
 export type ITem = Omit<FQuery, 'itineraries'> & {
     itineraries: {
@@ -369,4 +363,30 @@ export type MregeResultData = Omit<MregeResultAirport, 'itinerariesMerge'> & {
     itineraryNo:number;
     amountsMerge:IamountsMerge[]
     key: string
+}
+
+
+
+// 机场类型
+interface Airport {
+    airportCode: string
+    airportCName: string
+    airportEName: string
+}
+
+// 城市类型
+interface City {
+    cityCode: string
+    cityCName: string
+    cityEName: string
+    airports: Airport[]
+}
+
+// 国家类型
+export interface Country {
+    countryCode: string
+    countryCName: string
+    countryEName: string
+    timeZone: number
+    cities: City[]
 }
