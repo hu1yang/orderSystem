@@ -33,5 +33,8 @@ export default defineConfig((config) =>{
                 },
             }
         },
+        build: {
+            outDir: `build/order`,
+        }
     }
 })

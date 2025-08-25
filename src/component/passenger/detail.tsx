@@ -173,7 +173,7 @@ const Detail = memo(() => {
     },[query,airChoose,contacts])
 
     const backOrder = (orderid:string) => {
-        const referrer = document.referrer
+        const referrer = import.meta.env.VITE_GROUP_APP
         if(referrer){
             const origin = new URL(referrer).origin;
             window.parent.postMessage({
