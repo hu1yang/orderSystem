@@ -212,17 +212,17 @@ const PassengerForm = forwardRef((_,ref) => {
                     }
                 }
 
-                if (passenger.issuedDate) {
-                    const issuedDate = dayjs(passenger.issuedDate).toDate();
-                    if (issuedDate > today) {
-                        setError(`passengers.${i}.issuedDate`, {
-                            type: 'manual',
-                            message: 'Release date cannot be later than today',
-                        });
-                        reject(new Error('Release date cannot be later than today'));
-                        return;
-                    }
-                }
+                // if (passenger.issuedDate) {
+                //     const issuedDate = dayjs(passenger.issuedDate).toDate();
+                //     if (issuedDate > today) {
+                //         setError(`passengers.${i}.issuedDate`, {
+                //             type: 'manual',
+                //             message: 'Release date cannot be later than today',
+                //         });
+                //         reject(new Error('Release date cannot be later than today'));
+                //         return;
+                //     }
+                // }
 
                 if (passenger.expiryDate) {
                     const expiryDate = dayjs(passenger.expiryDate).toDate();
@@ -237,7 +237,7 @@ const PassengerForm = forwardRef((_,ref) => {
                 }
 
                 passenger.fullName = `${passenger.firstName}/${passenger.lastName}`;
-                passenger.phoneNumber = (passenger.phoneCode + '/' + passenger.phoneNumber).replace(/^\+/, '');
+                passenger.phoneNumber = passenger.phoneNumber ? (passenger.phoneCode + '/' + passenger.phoneNumber).replace(/^\+/, '') : '';
                 delete passenger.phoneCode;
                 delete passenger.firstName;
                 delete passenger.lastName;
@@ -451,7 +451,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 )}
                                             />
                                         </Grid>
-                                        <Grid size={4}>
+                                        <Grid size={6}>
                                             <Controller
                                                 name={`passengers.${index}.birthday`}
                                                 control={control}
@@ -482,37 +482,37 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 )}
                                             />
                                         </Grid>
-                                        <Grid size={4}>
-                                            <Controller
-                                                name={`passengers.${index}.issuedDate`}
-                                                control={control}
-                                                rules={{
-                                                    validate: value => value ? true : 'Please provide a date of issuedDate'
-                                                }}
-                                                render={({ field, fieldState }) => (
-                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                        <DatePicker
-                                                            label='Date of issued'
-                                                            format="DD/MM/YYYY"
-                                                            value={field.value ? dayjs(field.value) : null}
-                                                            onChange={(date) => {
-                                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
-                                                                field.onChange(formatted); // 存为字符串
-                                                            }}
-                                                            maxDate={dayjs()}
-                                                            slotProps={{
-                                                                textField: {
-                                                                    fullWidth: true,
-                                                                    error: !!fieldState.error,
-                                                                    helperText: fieldState.error?.message
-                                                                },
-                                                            }}
-                                                        />
-                                                    </LocalizationProvider>
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={4}>
+                                        {/*<Grid size={4}>*/}
+                                        {/*    <Controller*/}
+                                        {/*        name={`passengers.${index}.issuedDate`}*/}
+                                        {/*        control={control}*/}
+                                        {/*        rules={{*/}
+                                        {/*            validate: value => value ? true : 'Please provide a date of issuedDate'*/}
+                                        {/*        }}*/}
+                                        {/*        render={({ field, fieldState }) => (*/}
+                                        {/*            <LocalizationProvider dateAdapter={AdapterDayjs}>*/}
+                                        {/*                <DatePicker*/}
+                                        {/*                    label='Date of issued'*/}
+                                        {/*                    format="DD/MM/YYYY"*/}
+                                        {/*                    value={field.value ? dayjs(field.value) : null}*/}
+                                        {/*                    onChange={(date) => {*/}
+                                        {/*                        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';*/}
+                                        {/*                        field.onChange(formatted); // 存为字符串*/}
+                                        {/*                    }}*/}
+                                        {/*                    maxDate={dayjs()}*/}
+                                        {/*                    slotProps={{*/}
+                                        {/*                        textField: {*/}
+                                        {/*                            fullWidth: true,*/}
+                                        {/*                            error: !!fieldState.error,*/}
+                                        {/*                            helperText: fieldState.error?.message*/}
+                                        {/*                        },*/}
+                                        {/*                    }}*/}
+                                        {/*                />*/}
+                                        {/*            </LocalizationProvider>*/}
+                                        {/*        )}*/}
+                                        {/*    />*/}
+                                        {/*</Grid>*/}
+                                        <Grid size={6}>
                                             <Controller
                                                 name={`passengers.${index}.expiryDate`}
                                                 control={control}
@@ -549,7 +549,9 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 name={`passengers.${index}.phoneNumber`}
                                                 rules={{
                                                     validate: (value) => {
-                                                        if (!value) return 'Please enter the passenger\'s Phone number';
+                                                        if (!value) {
+                                                            return true
+                                                        }
                                                         if (!/^\d+$/.test(value)) return 'Only numbers are allowed';
                                                         return true;
                                                     }
@@ -590,6 +592,9 @@ const PassengerForm = forwardRef((_,ref) => {
                                                 name={`passengers.${index}.emailAddress`}
                                                 rules={{
                                                     validate: (value) => {
+                                                        if (!value) {
+                                                            return true
+                                                        }
                                                         if (!value) {
                                                             return 'Please provide an Email address.';
                                                         }
