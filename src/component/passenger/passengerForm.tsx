@@ -148,9 +148,11 @@ const PassengerForm = forwardRef((_,ref) => {
             for (let i = 0; i < data.passengers.length; i++) {
                 const passenger = data.passengers[i];
 
-                if (passenger.idNumber) {
-                    if (idNumberMap.has(passenger.idNumber)) {
-                        const duplicateIndex = idNumberMap.get(passenger.idNumber)!;
+                if (passenger.idNumber && passenger.idNumber.trim()) {
+                    const cleanIdNumber = passenger.idNumber.trim();
+
+                    if (idNumberMap.has(cleanIdNumber)) {
+                        const duplicateIndex = idNumberMap.get(cleanIdNumber)!;
                         setError(`passengers.${i}.idNumber`, {
                             type: 'manual',
                             message: 'Duplicate ID number with another passenger.',
@@ -162,7 +164,7 @@ const PassengerForm = forwardRef((_,ref) => {
                         reject(new Error('Duplicate ID number in form'));
                         return;
                     }
-                    idNumberMap.set(passenger.idNumber, i);
+                    idNumberMap.set(cleanIdNumber, i);
                 }
 
                 if (passenger.birthday) {
@@ -375,9 +377,6 @@ const PassengerForm = forwardRef((_,ref) => {
                                             <Controller
                                                 name={`passengers.${index}.idNumber`}
                                                 control={control}
-                                                rules={{
-                                                    validate: value => value ? true : 'Please provide an ID number'
-                                                }}
                                                 render={({ field, fieldState }) => (
                                                     <TextField
                                                         {...field}
