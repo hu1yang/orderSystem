@@ -15,6 +15,7 @@ const Order = () => {
     const dispatch = useDispatch()
     const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
     const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
+    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
 
     useEffect(() => {
         dispatch(resetChoose())
@@ -31,7 +32,9 @@ const Order = () => {
             <div className={styles.layoutWidth}>
                 <SearchComponent />
                 {
-                    searchFlag && <DayChoose />
+                    (
+                        searchFlag && itineraryType !== 'multi'
+                    ) && <DayChoose />
                 }
                 <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
                     {

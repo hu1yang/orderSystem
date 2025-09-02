@@ -70,7 +70,10 @@ const DayChoose = memo(() => {
         dispatch(resetAirChoose())
         dispatch(setSearchDate([]))
         dispatch(switchDay(date?.value))
-        dispatch(setLocalDate(date?.value))
+        dispatch(setLocalDate({
+            timer:date?.value,
+            index:0
+        }))
         searchData(date?.value)
     };
 

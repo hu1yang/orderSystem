@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
 import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
 import {setNoData, setSearchDate} from "@/store/orderInfo.ts";
-import {setErrorMsg, setSearchLoad} from "@/store/searchInfo.ts";
+import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
 dayjs.extend(duration)
 
@@ -301,5 +301,6 @@ export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
     }).catch(() => {
         dispatch(setSearchLoad(false))
         dispatch(setErrorMsg('Interface error'))
+        dispatch(setSearchFlag(false))
     })
 }

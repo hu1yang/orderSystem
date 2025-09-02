@@ -15,12 +15,13 @@ import {memo, useCallback, useMemo, useRef, useState} from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ConnectingAirportsIcon from '@mui/icons-material/ConnectingAirports';
+import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import PersonIcon from '@mui/icons-material/Person';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import {format} from 'date-fns';
-
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
@@ -42,8 +43,9 @@ import {getAgentQuery} from "@/utils/order.ts";
 import {debounce, flattenByCountry} from "@/utils/public.ts";
 import type {RootState} from "@/store";
 import {
+    addSearch, delSearch,
     setCabinValue,
-    setDaValue,
+    setDaValue, setErrorMsg,
     setLocalDate,
     setRadioType, setSearchFlag,
     setSearchLoad,
@@ -70,14 +72,24 @@ function setHistorySearch(newItem: ITem) {
         }
     }
 
-    const newDeparture = newItem.itineraries[0].departure.airportCode;
-    const newArrival = newItem.itineraries[0].arrival.airportCode;
-
-    // 去重：如果已有同样出发地 + 到达地 的记录，先移除旧的
+    // 插入前去重
     history = history.filter(item => {
-        const oldDeparture = item.itineraries[0].departure.airportCode;
-        const oldArrival = item.itineraries[0].arrival.airportCode;
-        return !(oldDeparture === newDeparture && oldArrival === newArrival);
+        if (item.itineraryType !== newItem.itineraryType) return true; // 不同类型保留
+
+        // 对比每一程
+        const lengthMatch = item.itineraries.length === newItem.itineraries.length;
+        if (!lengthMatch) return true;
+
+        const allMatch = item.itineraries.every((oldItin, index) => {
+            const newItin = newItem.itineraries[index];
+            return !(
+                oldItin.departure.airportCode === newItin.departure.airportCode &&
+                oldItin.arrival.airportCode === newItin.arrival.airportCode &&
+                oldItin.departureDate === newItin.departureDate
+            );
+        });
+
+        return allMatch; // 如果 allMatch 为 false，说明重复，需要过滤掉
     });
 
     // 插入新项到最前
@@ -158,8 +170,12 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
     </>
 ))
 
-const Airports = memo(() => {
-    const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
+const Airports = memo(({index}:{
+    index:number;
+}) => {
+    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
+
+    const daValue = useMemo(() => searchQuery[index].daValue,[searchQuery,index])
 
     const dispatch = useDispatch();
 
@@ -190,8 +206,11 @@ const Airports = memo(() => {
 
     const handleInput = (airport: IAirport) => {
         dispatch(setDaValue({
-            ...daValue,
-            [types]:airport
+            value:{
+                ...daValue,
+                [types]:airport
+            },
+            index
         }))
         closePop()
     }
@@ -231,18 +250,21 @@ const Airports = memo(() => {
         <div className={`s-flex s-flex ai-ct`}>
             <InputModel openPop={(event) => openPop(event,'departure')}>
                 {
-                    !!daValue.departure && <AddressCard address={daValue.departure} />
+                    daValue.departure ? <AddressCard address={daValue.departure} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>Leaving from</Typography>
                 }
             </InputModel>
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`} onClick={() =>  dispatch(setDaValue({
-                departure:daValue.arrival || null,
-                arrival:daValue.departure || null
+                value:{
+                    departure:daValue.arrival || null,
+                    arrival:daValue.departure || null
+                },
+                index
             }))}>
                 <ConnectingAirportsIcon />
             </div>
             <InputModel openPop={(event) => openPop(event,'arrival')}>
                 {
-                    !!daValue.arrival && <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} />
+                    daValue.arrival ? <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>Going to</Typography>
                 }
             </InputModel>
             <InputPop id='searchInputPop' open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
@@ -341,10 +363,12 @@ const Airports = memo(() => {
     )
 })
 
-const TimerChoose = memo(({isRound}:{
+const TimerChoose = memo(({isRound,index}:{
     isRound: boolean
+    index:number
 }) => {
-    const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
+    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
+    const localDate = useMemo(() => searchQuery[index].localDate,[searchQuery,index])
 
     const dispatch = useDispatch()
 
@@ -363,6 +387,30 @@ const TimerChoose = memo(({isRound}:{
     }, [])
 
 
+    const disabledTimer = useMemo(() => {
+        if (searchQuery.length) {
+            if (index === 0) {
+                // 第一个航段：不能选今天之前
+                return dayjs().startOf('day').toDate()
+            }
+
+            // 其它航段：取 index 之前的最大 localDate
+            const timestamps = searchQuery
+            .slice(0, index) // 取 index 之前
+            .filter(item => item.localDate)
+            .map(item => dayjs(item.localDate as string).valueOf())
+
+            if (timestamps.length) {
+                return new Date(Math.max(...timestamps))
+            }
+
+            // 如果前面都没选日期，也回退到今天
+            return dayjs().startOf('day').toDate()
+        }
+
+        return new Date()
+    }, [index, searchQuery])
+
 
 
     const handleSelect = (val: DateRange | Date | undefined) => {
@@ -370,11 +418,17 @@ const TimerChoose = memo(({isRound}:{
         if(isRound){
             const {to,from} = val as DateRange
             dispatch(setLocalDate({
-                to:dayjs(to).format('YYYY-MM-DD'),
-                from:dayjs(from).format('YYYY-MM-DD')
+                timer : {
+                    to:dayjs(to).format('YYYY-MM-DD'),
+                    from:dayjs(from).format('YYYY-MM-DD')
+                },
+                index
             }))
         }else{
-            dispatch(setLocalDate(dayjs(val as Date).format('YYYY-MM-DD')))
+            dispatch(setLocalDate({
+                timer:dayjs(val as Date).format('YYYY-MM-DD'),
+                index
+            }))
         }
     }
 
@@ -400,7 +454,7 @@ const TimerChoose = memo(({isRound}:{
         <>
             <InputModel openPop={openPop}>
                 <div className={`${styles.inputMessage} s-flex jc-ad flex-row ai-ct full-width`}>
-                    {formatRange}
+                    {!localDate ? <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14}}>Choose date</Typography> : formatRange}
                 </div>
             </InputModel>
             <InputPop id={'dayPicker'} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
@@ -420,7 +474,11 @@ const TimerChoose = memo(({isRound}:{
                                     }).from),
                                 }}
                                 onSelect={handleSelect}
-                                disabled={{ before: new Date() }}
+                                disabled={{ before: disabledTimer }}
+                                defaultMonth={localDate ? new Date((localDate as {
+                                    to:string
+                                    from:string
+                                }).from) : disabledTimer}
                                 numberOfMonths={2}
                                 fixedWeeks
                             />
@@ -429,7 +487,8 @@ const TimerChoose = memo(({isRound}:{
                                 mode="single"
                                 selected={new Date(localDate as string)}
                                 onSelect={handleSelect}
-                                disabled={{ before: new Date() }}
+                                disabled={{ before: disabledTimer }}
+                                defaultMonth={localDate ? new Date(localDate as string) : disabledTimer}
                                 numberOfMonths={1}
                                 fixedWeeks
                             />
@@ -581,10 +640,9 @@ const SearchComponent = memo(() => {
     const dispatch = useDispatch()
 
     const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
-    const localDate = useSelector((state: RootState) => state.searchInfo.localDate)
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
     const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
-    const daValue = useSelector((state: RootState) => state.searchInfo.daValue)
+    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
 
     const isRound = useMemo(() => radioType === 'round', [radioType])
@@ -605,8 +663,17 @@ const SearchComponent = memo(() => {
             itineraries: [],
         }
 
+        const isAllFilled = searchQuery.every(item => item.daValue.departure && item.daValue.arrival && item.localDate)
+
+        if(!isAllFilled){
+            dispatch(setSearchFlag(false))
+            dispatch(setSearchLoad(false))
+            dispatch(setErrorMsg('Please complete the search field'))
+            return
+        }
 
         if (radioType === 'oneWay') {
+            const {daValue , localDate} = searchQuery[0]
             result.itineraries = [
                 {
                     itineraryNo: 0,
@@ -616,6 +683,7 @@ const SearchComponent = memo(() => {
                 },
             ]
         } else if (radioType === 'round') {
+            const {daValue , localDate} = searchQuery[0]
             const { from, to } = localDate as {
                 to:string
                 from:string
@@ -634,6 +702,16 @@ const SearchComponent = memo(() => {
                     departureDate: dayjs(new Date(to)).format('YYYY-MM-DD'),
                 },
             ]
+        }else{
+            result.itineraries = searchQuery.map((searchVal,searchValIndex) => {
+                const {daValue , localDate} = searchVal
+                return {
+                    itineraryNo: searchValIndex,
+                    departureDate: dayjs(new Date(localDate as string)).format('YYYY-MM-DD'),
+                    arrival: daValue.arrival?.airportCode as string,
+                    departure: daValue.departure?.airportCode as string,
+                }
+            })
         }
 
         dispatch(setQuery(result))
@@ -643,15 +721,15 @@ const SearchComponent = memo(() => {
 
         setHistorySearch({
             ...newQuery,
-            itineraries:newQuery.itineraries.map(it => ({...it,departure:daValue.departure as IAirport,
-                arrival:daValue.arrival as IAirport}))
+            itineraries: newQuery.itineraries.map((it,itIndex) => ({
+                ...it,
+                departure: searchQuery[radioType !== 'multi' ? 0 : itIndex].daValue.departure as IAirport,
+                arrival: searchQuery[radioType !== 'multi' ? 0 : itIndex].daValue.arrival as IAirport
+            }))
         })
 
         getAgentQuery(newQuery,dispatch)
-
     }
-
-
 
     return (
         <div className={styles.searchContainer}>
@@ -661,24 +739,63 @@ const SearchComponent = memo(() => {
                 } name="row-radio-buttons-group">
                     <FormControlLabel label="Round-trip" control={<Radio/>} value={'round'}></FormControlLabel>
                     <FormControlLabel label="One-way" control={<Radio/>} value={'oneWay'}></FormControlLabel>
-                    <FormControlLabel label="Multi-city" disabled control={<Radio/>} value={'multi'}></FormControlLabel>
+                    <FormControlLabel label="Multi-city" control={<Radio/>} value={'multi'}></FormControlLabel>
                 </RadioGroup>
             </div>
-            <div className={`s-flex ai-ct jc-bt`}>
-                <Airports />
-                <TimerChoose isRound={isRound} />
-                <PersonChoose />
-                <Button variant="contained" onClick={search} loading={searchLoad} sx={{
-                    width: '120px',
-                    height: '54px',
-                    color: 'white',
-                    fontSize: '1.4rem',
-                    backgroundColor: 'var(--active-color)',
-                }} startIcon={<SearchIcon sx={{width: '2.4rem',height: '2.4rem'}} />}>
-                    Search
-                </Button>
+            <div>
+                <div className={`s-flex jc-bt`}>
+                    <div className={`flex-1`}>
+                        <Grid container spacing={2}>
+                            {
+                                searchQuery.map((_,searchValIndex) => (
+                                    <Grid size={12} key={searchValIndex}>
+                                        <Grid container spacing={1}  sx={{
+                                            alignItems: "center",
+                                        }}>
+                                            <Grid size={6}>
+                                                <Airports index={searchValIndex} />
+                                            </Grid>
+                                            <Grid size={3}>
+                                                <TimerChoose isRound={isRound} index={searchValIndex} />
+                                            </Grid>
+                                            <Grid size={3}>
+                                                {
+                                                    searchValIndex > 0 ? (
+                                                        searchValIndex > 1 && <CancelSharpIcon className={`cursor-p`} onClick={() => dispatch(delSearch(searchValIndex))} sx={{
+                                                            color: 'var(--tips-color)',
+                                                            fontSize: '1.6rem'
+                                                        }}/>
+                                                    ) : <PersonChoose/>
+                                                }
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                ))
+                            }
+                        </Grid>
+                    </div>
+                    <Button variant="contained" onClick={search} loading={searchLoad} sx={{
+                        width: '120px',
+                        height: '54px',
+                        color: 'white',
+                        fontSize: '1.4rem',
+                        backgroundColor: 'var(--active-color)',
+                        ml:'1rem'
+                    }} startIcon={<SearchIcon sx={{width: '2.4rem',height: '2.4rem'}} />}>
+                        Search
+                    </Button>
+                </div>
+                {
+                    radioType === 'multi' && (
+                        <div className={`${styles.addAirBtn} s-flex ai-fs cursor-p`} onClick={() => dispatch(addSearch())}>
+                            <AddCircleOutlineOutlinedIcon sx={{color:'var(--active-color)',mr:'10px'}} />
+                            <Typography variant="button" gutterBottom sx={{ display: 'block' , fontSize: 12, m:0, fontWeight: 'bold', color:'var(--active-color)' }}>
+                                Add another flight
+                            </Typography>
+                        </div>
+                    )
+                }
             </div>
-
         </div>
     );
 })

@@ -1,4 +1,5 @@
-import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import type {CabinLevel, IAirport, ITem, ItineraryType, Travelers} from "@/types/order.ts";
 import dayjs from "dayjs";
 
@@ -9,12 +10,14 @@ interface IdaValue{
 interface SearchInfoType {
     travelers:Travelers[]
     cabinValue:CabinLevel
-    localDate:{
-        to:string
-        from:string
-    } | string
     radioType:ItineraryType
-    daValue:IdaValue
+    searchQuery:{
+        daValue:IdaValue
+        localDate:{
+            to:string
+            from:string
+        } | string | null
+    }[]
     searchFlag:boolean
     searchLoad:boolean
     errorMsg:string|null
@@ -38,12 +41,16 @@ const lcaolDateValue = (isRound:boolean) => {
 const initialState:SearchInfoType = {
     travelers:defaultTravelers,
     cabinValue:'y',
-    localDate: lcaolDateValue(false),
+    searchQuery:[
+        {
+            localDate: lcaolDateValue(false),
+            daValue:{
+                departure:null,
+                arrival:null
+            },
+        }
+    ],
     radioType: 'oneWay',
-    daValue:{
-        departure:null,
-        arrival:null
-    },
     searchFlag:false,
     searchLoad:false,
     errorMsg:null
@@ -54,21 +61,55 @@ const searchInfoSlice = createSlice({
     reducers:{
         setRadioType(state,action:PayloadAction<ItineraryType>){
             state.radioType = action.payload;
-            state.localDate = lcaolDateValue(action.payload === 'round');
-        },
-        setLocalDate(state,action:PayloadAction<{
-            to:string
-            from:string
-        } | string>){
-            if(typeof action.payload !== 'string'){
-                state.radioType = 'round'
-                state.localDate = {
-                    to:action.payload.to,
-                    from:action.payload.from
-                };
+            if(action.payload === 'multi'){
+                state.searchQuery = [
+                    {
+                        ...state.searchQuery[0],
+                        localDate: lcaolDateValue(false),
+                    },
+                    {
+                        localDate: null,
+                        daValue:{
+                            departure:null,
+                            arrival:null
+                        },
+                    }
+                ]
             }else{
-                state.radioType = 'oneWay'
-                state.localDate = action.payload;
+                state.searchQuery = [
+                    {
+                        localDate:lcaolDateValue(action.payload === 'round'),
+                        daValue:state.searchQuery[0].daValue,
+                    }
+                ]
+            }
+        },
+        setLocalDate(
+            state,
+            action: PayloadAction<{
+                timer: { to: string; from: string } | string
+                index: number
+            }>
+        ) {
+            const { timer, index } = action.payload
+
+            if (typeof timer !== 'string') {
+                state.radioType = 'round'
+                state.searchQuery[index].localDate = timer
+            } else {
+                state.searchQuery[index].localDate = timer
+
+                if (state.radioType === 'multi') {
+                    state.searchQuery.forEach((item, itemIndex) => {
+                        if (
+                            itemIndex > index &&
+                            item.localDate &&
+                            dayjs(item.localDate as string).isBefore(dayjs(timer)) // ✅ 小于 timer
+                        ) {
+                            item.localDate = null // ✅ 设置为 null
+                        }
+                    })
+                }
             }
         },
         setTravelers(state, action: PayloadAction<Travelers>) {
@@ -82,38 +123,69 @@ const searchInfoSlice = createSlice({
         setCabinValue(state,action:PayloadAction<CabinLevel>){
             state.cabinValue = action.payload;
         },
-        setDaValue(state,action:PayloadAction<IdaValue>){
-            state.daValue = action.payload;
+        setDaValue(state,action:PayloadAction<{
+            value:IdaValue
+            index:number
+        }>){
+            const {value,index} = action.payload;
+            state.searchQuery[index].daValue = value;
         },
-        setHistory(state,action:PayloadAction<ITem>){
-            const {cabinLevel,itineraryType,travelers,itineraries} = action.payload
-            state.cabinValue = cabinLevel
-            state.radioType = itineraryType
-            if(itineraryType === 'oneWay'){
-                state.localDate = itineraries[0].departureDate
-            }else{
-                state.localDate = {
-                    to: itineraries[1].departureDate,
-                    from: itineraries[0].departureDate,
-                }
-            }
-
-            const newTravelers = defaultTravelers.map((traveler: Travelers) => {
-                const matchedTraveler = travelers.find(
-                    (t) => t.passengerType === traveler.passengerType
-                );
-
-                return {
-                    ...traveler,
-                    passengerCount: matchedTraveler?.passengerCount ?? 0, // 默认值更安全
-                };
+        addSearch(state) {
+            state.searchQuery.push({
+                localDate: null,
+                daValue: {
+                    departure: null,
+                    arrival: null
+                },
             });
+        },
+        delSearch(state, action: PayloadAction<number>) {
+            state.searchQuery.splice(action.payload, 1)
+        },
+        setHistory(state, action: PayloadAction<ITem>) {
+            const { cabinLevel, itineraryType, travelers, itineraries } = action.payload;
 
-            state.travelers = newTravelers
-            state.daValue = {
-                departure:itineraries[0].departure,
-                arrival:itineraries[0].arrival,
+            // 更新舱位和行程类型
+            state.cabinValue = cabinLevel;
+            state.radioType = itineraryType;
+
+            // 更新 searchQuery
+            if (itineraryType === 'multi') {
+                state.searchQuery = itineraries.map(itin => ({
+                    localDate: itin.departureDate,
+                    daValue: {
+                        departure: itin.departure,
+                        arrival: itin.arrival
+                    }
+                }));
+            } else {
+                // 确保 searchQuery 至少有一条
+                if (!state.searchQuery[0]) {
+                    state.searchQuery[0] = {
+                        localDate: null,
+                        daValue: { departure: null, arrival: null }
+                    };
+                }
+
+                const firstItin = itineraries[0];
+                const secondItin = itineraries[1];
+
+                state.searchQuery[0].daValue = {
+                    departure: firstItin.departure,
+                    arrival: firstItin.arrival
+                };
+
+                state.searchQuery[0].localDate =
+                    itineraryType === 'oneWay'
+                        ? firstItin.departureDate
+                        : { from: firstItin.departureDate, to: secondItin?.departureDate ?? firstItin.departureDate };
             }
+
+            // 更新 travelers
+            state.travelers = defaultTravelers.map(defaultT => {
+                const matched = travelers.find(t => t.passengerType === defaultT.passengerType);
+                return { ...defaultT, passengerCount: matched?.passengerCount ?? 0 };
+            });
         },
         setSearchFlag(state,action:PayloadAction<boolean>){
             state.searchFlag = action.payload;
@@ -127,5 +199,18 @@ const searchInfoSlice = createSlice({
         resetSearch: () => initialState
     }
 })
-export const {setRadioType, setLocalDate, setTravelers, setCabinValue, setDaValue, setHistory,setSearchLoad,setErrorMsg,setSearchFlag,resetSearch} = searchInfoSlice.actions
+export const {
+    setRadioType,
+    setLocalDate,
+    setTravelers,
+    setCabinValue,
+    setDaValue,
+    setHistory,
+    setSearchLoad,
+    setErrorMsg,
+    setSearchFlag,
+    addSearch,
+    delSearch,
+    resetSearch
+} = searchInfoSlice.actions
 export default searchInfoSlice.reducer;
