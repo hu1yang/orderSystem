@@ -411,26 +411,44 @@ const TimerChoose = memo(({isRound,index}:{
         return new Date()
     }, [index, searchQuery])
 
+    const [dayChoose, setDayChoose] = useState(1)
 
-
-    const handleSelect = (val: DateRange | Date | undefined) => {
-        if (!val) return
-        if(isRound){
-            const {to,from} = val as DateRange
+    const handleDayClick = useCallback((day: Date) => {
+        if(dayChoose === 1){
+            setDayChoose(2)
             dispatch(setLocalDate({
-                timer : {
-                    to:dayjs(to).format('YYYY-MM-DD'),
-                    from:dayjs(from).format('YYYY-MM-DD')
+                timer:{
+                    from: dayjs(day as Date).format('YYYY-MM-DD'),
+                    to: dayjs(day as Date).format('YYYY-MM-DD'),
                 },
                 index
             }))
+        }
+    },[index,dayChoose,dispatch])
+
+    const handleSelect = useCallback((val: DateRange | Date | undefined) => {
+        if (!val) return
+        if(isRound){
+            const {to,from} = val as DateRange
+            if(dayChoose === 2){
+                dispatch(setLocalDate({
+                    timer:{
+                        from: dayjs(from as Date).format('YYYY-MM-DD'),
+                        to: dayjs(to as Date).format('YYYY-MM-DD'),
+                    },
+                    index
+                }))
+                setDayChoose(1)
+                closePop()
+            }
         }else{
             dispatch(setLocalDate({
                 timer:dayjs(val as Date).format('YYYY-MM-DD'),
                 index
             }))
+            closePop()
         }
-    }
+    },[index,dispatch,dayChoose,isRound,closePop])
 
     const formatRange = useMemo(() => {
         if(!isRound){
@@ -473,6 +491,7 @@ const TimerChoose = memo(({isRound,index}:{
                                         from:string
                                     }).from),
                                 }}
+                                onDayClick={handleDayClick}
                                 onSelect={handleSelect}
                                 disabled={{ before: disabledTimer }}
                                 defaultMonth={localDate ? new Date((localDate as {
@@ -494,11 +513,11 @@ const TimerChoose = memo(({isRound,index}:{
                             />
                         )
                     }
-                    <div className={`s-flex jc-fe`}>
-                        <Button onClick={closePop} variant="contained" sx={{
-                            backgroundColor: 'var(--back-color)',
-                        }}>Choose</Button>
-                    </div>
+                    {/*<div className={`s-flex jc-fe`}>*/}
+                    {/*    <Button onClick={closePop} variant="contained" sx={{*/}
+                    {/*        backgroundColor: 'var(--back-color)',*/}
+                    {/*    }}>Choose</Button>*/}
+                    {/*</div>*/}
                 </div>
             </InputPop>
         </>

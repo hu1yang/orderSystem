@@ -15,6 +15,7 @@ export default defineConfig((config) =>{
             extensions: ['.ts', '.tsx', '.js', '.jsx', '.less', 'css']
         },
         server:{
+            port: 5175,
             proxy:{
                 '/identityApi': {
                     target: env.VITE_IDENTITY_API,
