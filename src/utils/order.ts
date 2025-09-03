@@ -289,6 +289,13 @@ export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
             dispatch(setSearchLoad(false))
 
             if(allFailed){
+                const resultError = res.find(sc => sc.errorCode === 'C-00002')
+                if(resultError){
+                    dispatch(setSearchDate([]))
+                    dispatch(setNoData(true))
+                    dispatch(setErrorMsg(resultError.errorMessage))
+                    return
+                }
                 dispatch(setSearchDate([]))
                 dispatch(setNoData(true))
                 dispatch(setErrorMsg('No suitable data'))
