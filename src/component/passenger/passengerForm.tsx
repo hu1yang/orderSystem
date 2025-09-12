@@ -1,4 +1,4 @@
-import {forwardRef, memo, useEffect, useImperativeHandle, useRef} from "react";
+import {forwardRef, memo, useEffect, useImperativeHandle} from "react";
 import styles from "@/component/passenger/styles.module.less";
 import {
     Grid, FormControl,
@@ -14,7 +14,9 @@ import type {ITravelerSex, Passenger, PassengerType} from "@/types/order.ts";
 import phoneCodesGrouped from '@/assets/phone_codes_grouped.json'
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
+// @ts-ignore
 import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
+// @ts-ignore
 import type {Control} from "react-hook-form/dist/types/form";
 
 type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'Ms'

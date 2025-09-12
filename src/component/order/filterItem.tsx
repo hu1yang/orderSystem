@@ -198,7 +198,7 @@ const FilterItem = memo(() => {
     const [open, setOpen] = useState(false)
 
     const nextCheapAmount = useMemo(() => {
-        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData?.channelCode && airSearch.contextId === searchData.contextId)
+        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData?.channelCode && airSearch.contextId === searchData.contextId && airSearch.resultKey === searchData?.resultKey)
         if(!airFilter) return []
         const airResult = airFilter.itinerariesMerge.filter(it => it.itineraryNo > airportActived)
         const result = getLowestAmountsByItinerary(airResult)

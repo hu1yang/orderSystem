@@ -148,7 +148,8 @@ const FilterData = memo(() => {
             source = source.filter(
                 air =>
                     air.channelCode === airChoose.channelCode &&
-                    air.contextId === airChoose.result?.contextId
+                    air.contextId === airChoose.result?.contextId &&
+                    air.resultKey === airChoose.result?.resultKey
             );
         }
 

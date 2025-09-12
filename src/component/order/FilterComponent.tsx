@@ -278,8 +278,15 @@ const FilterComponent = memo(() => {
             <Divider component="div"/>
             <FilterAccordion title="Departure" render={<RecommendedCheckboxList/>}/>
             <Divider component="div"/>
-            <FilterAccordion title="Arrival" render={<RecommendedCheckboxList/>}/>
-            <Divider component="div"/>
+            {
+                query.itineraryType === 'round' && (
+                    <>
+                        <FilterAccordion title="Arrival" render={<RecommendedCheckboxList/>}/>
+                        <Divider component="div"/>
+                    </>
+                )
+            }
+
             <FilterAccordion
                 title="Timers"
                 render={
@@ -294,7 +301,6 @@ const FilterComponent = memo(() => {
                     </>
                 }
             />
-            <FilterAccordion title="Airports" render={<></>}/>
         </div>
     );
 })

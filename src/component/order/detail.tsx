@@ -81,7 +81,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
     const submitResult = () => {
         dispatch(setDisabledChoose(true))
-        const airport = airSearchData.find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === searchData?.contextId)
+        const airport = airSearchData.find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === searchData?.contextId && airport.resultKey === searchData?.resultKey)
         if(!airport) return;
         const filteritMer = airport.itinerariesMerge.filter(itm => itm.itineraryNo === airportActived)
 
