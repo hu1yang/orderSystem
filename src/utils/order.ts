@@ -275,7 +275,10 @@ export function amountPrice(amounts: Amount[]) {
 
 
 export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
-    getAuthorizableRoutingGroupAgent(result).then(res => {
+    getAuthorizableRoutingGroupAgent({
+        ...result,
+        cacheOnly:false
+    }).then(res => {
         if(res.length){
             const objResult = deduplicateByChannelCode(res)
             if(objResult.some(objresult => objresult.response.results && objresult.response.results.length)){
