@@ -517,9 +517,6 @@ const PassengerForm = forwardRef((_,ref) => {
                                             <Controller
                                                 name={`passengers.${index}.expiryDate`}
                                                 control={control}
-                                                rules={{
-                                                    validate: value => value ? true : 'Please provide a date of expiryDate'
-                                                }}
                                                 render={({ field, fieldState }) => (
                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                         <DatePicker
