@@ -104,18 +104,16 @@ function setHistorySearch(newItem: ITem) {
 }
 
 
-const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IAirport}) => {
-    return (
-        <div className={`${styles.addressCard} cursor-p`} style={style}>
-            {
-                !!address &&  <div className={'full-width'}>
-                    <span className={'elli-1'}>{address.cityEName}({address.airportCode})</span>
-                    <p className={'elli-1'}>{address.airportEName}</p>
-                </div>
-            }
-        </div>
-    )
-})
+const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IAirport}) => (
+    <div className={`${styles.addressCard} cursor-p`} style={style}>
+        {
+            !!address &&  <div className={'full-width'}>
+                <span className={'elli-1'}>{address.cityEName}({address.airportCode})</span>
+                <p className={'elli-1'}>{address.airportEName}</p>
+            </div>
+        }
+    </div>
+))
 
 const InputModel = memo(({children,openPop,style}:{
     children:React.ReactNode,
@@ -143,31 +141,29 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
     closePop:() => void;
     children:React.ReactNode;
 }) => (
-    <>
-        <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-            }}
-            onClose={closePop}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-            }}
-            sx={{
-                marginTop: 'calc(var(--pm-16) * -1)',
-                marginLeft: 'calc(var(--pm-16) * -1)',
-                pointerEvents: open?'auto':'none'
-            }}
-            container={document.body}
-            disableEnforceFocus
-            disableAutoFocus>
-            {children}
-        </Popover>
-    </>
+    <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+        }}
+        onClose={closePop}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+        }}
+        sx={{
+            marginTop: 'calc(var(--pm-16) * -1)',
+            marginLeft: 'calc(var(--pm-16) * -1)',
+            pointerEvents: open?'auto':'none'
+        }}
+        container={document.body}
+        disableEnforceFocus
+        disableAutoFocus>
+        {children}
+    </Popover>
 ))
 
 const Airports = memo(({index}:{
@@ -244,8 +240,6 @@ const Airports = memo(({index}:{
         }
     }
 
-
-
     return (
         <div className={`s-flex s-flex ai-ct`}>
             <InputModel openPop={(event) => openPop(event,'departure')}>
@@ -278,7 +272,7 @@ const Airports = memo(({index}:{
                                            handleEnter(); // 替换成你的逻辑函数
                                        }
                                    }}
-                                   className={`${styles.inputBox} flex-1`}/>
+                                   className={`${styles.inputBox} flex-1`} />
                         </InputModel>
                     </div>
                     <Divider />

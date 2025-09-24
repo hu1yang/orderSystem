@@ -123,7 +123,7 @@ export interface FQuery{
     cabinLevel:CabinLevel
     travelers: Travelers[]
     itineraries:Itineraries[]
-    cacheOnly:boolean
+    cacheOnly?:boolean
 }
 export interface FQueryResult {
     succeed: boolean
