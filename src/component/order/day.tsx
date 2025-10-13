@@ -19,6 +19,9 @@ interface IDay {
     };
     key:string
 }
+
+const weekDaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
 const DayChoose = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
@@ -107,9 +110,7 @@ const DayChoose = memo(() => {
             travelers:newResult.travelers.filter(tr => tr.passengerCount>0),
             itineraries:newItineraries
         }
-
         getAgentQuery(result,dispatch)
-
     }
 
     return (
@@ -134,9 +135,8 @@ const DayChoose = memo(() => {
                                       '&:last-child::before': {
                                           content: 'none'
                                       },
-                                      '&.Mui-selected span':{
+                                      '&.Mui-selected span, &.Mui-selected em':{
                                           color: 'var(--put-border-hover-color) !important',
-
                                       }
                                   },
                                   [`& .${tabsClasses.scrollButtons}`]: {
@@ -153,8 +153,11 @@ const DayChoose = memo(() => {
                                 dayArr.map(item => (
                                     <Tab key={item.key} value={item.key} label={
                                         <div className={`${styles.dayItem} s-flex flex-dir ai-ct`}>
-                                            <div className={styles.dayView}>
+                                            <div className={`${styles.dayView} s-flex flex-dir`}>
                                                 <span>{item.label}</span>
+                                                <em>
+                                                    {weekDaysShort[dayjs(item.value as string).day()]}
+                                                </em>
                                             </div>
                                         </div>
                                     } />
