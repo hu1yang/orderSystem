@@ -79,6 +79,9 @@ const Detail = memo(() => {
     const passengersRef = useRef<{
         submit: () => Promise<Passenger[]>;
     }>(null)
+    const contactRef = useRef<{
+        submit: () => Promise<boolean>;
+    }>(null)
 
     const [open, setOpen] = useState(false)
     const [snackbarCom, setSnackbarCom] = useState<ReactElement>()
@@ -98,7 +101,7 @@ const Detail = memo(() => {
     const handlepaySubmit = useCallback(async () => {
         let passengers:Passenger[]
         try {
-            if(!passengersRef.current) return false
+            if(!passengersRef.current) throw new Error('ref is missing')
             passengers = await passengersRef.current.submit()
         } catch {
             scrollToTarget()
@@ -110,6 +113,19 @@ const Detail = memo(() => {
             );
             return;
         }
+        try {
+            if(!contactRef.current) throw new Error('ref is missing')
+            await contactRef.current.submit()
+        } catch {
+            setOpen(true);
+            setSnackbarCom(
+                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                    Please fill in the contact information
+                </Alert>
+            );
+            return;
+        }
+
 
         // 对每种 passengerType 进行校验
         const mismatch = query.travelers.find(traveler => {
@@ -254,7 +270,7 @@ const Detail = memo(() => {
                             <div className={`${styles.leftDetail}`}>
                                 <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>
                                     <PassengerForm ref={passengersRef} />
-                                    <ContactForm />
+                                    <ContactForm ref={contactRef} />
                                     <div className={styles.package}>
                                         <div className={styles.packgaeTitle}>
                                             Additional Baggage Allowanc

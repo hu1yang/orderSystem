@@ -101,8 +101,8 @@ const PassengerForm = forwardRef((_,ref) => {
     }, [travelers]);
 
     useImperativeHandle(ref, () => ({
-        submit: () => {
-            return new Promise<Passenger[]>((resolve, reject) => {
+        submit: async () => {
+            return await new Promise<Passenger[]>((resolve, reject) => {
                 handleSubmit(
                     (data) => {
                         onSubmit(data)

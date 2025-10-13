@@ -1,4 +1,4 @@
-import {memo, useEffect, useMemo} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useMemo} from "react";
 
 import styles from './styles.module.less'
 import {Controller, useForm} from "react-hook-form";
@@ -23,10 +23,22 @@ type IContactMore = IContact & {
     phoneCode:string
 }
 
-const ContactForm = memo(() => {
+const ContactForm = forwardRef((_,ref) => {
     const dispatch = useDispatch()
 
-    const {control, watch , setValue} = useForm<IContactMore>({
+
+    useImperativeHandle(ref,() => ({
+        submit: async () => {
+            return await new Promise<boolean>((resolve,reject) => {
+                handleSubmit(
+                    () => resolve(true),
+                    () => reject(false)
+                )()
+            })
+        }
+    }))
+
+    const {control, watch , setValue, handleSubmit} = useForm<IContactMore>({
         mode: 'onBlur',
         defaultValues: {
             contactName:'',
@@ -120,8 +132,14 @@ const ContactForm = memo(() => {
                                 name="contactName"
                                 rules={{
                                     validate: (value) => {
-                                        if (!value) {
+                                        const trimmed = value?.trim();
+                                        if (!trimmed) {
                                             return 'Please enter a contact name';
+                                        }
+
+                                        const pattern = /^[a-zA-Z]+\/[a-zA-Z]+$/;
+                                        if (!pattern.test(trimmed)) {
+                                            return 'Name format must be like "Surname/Given Name"';
                                         }
                                         return true;
                                     }
@@ -132,7 +150,7 @@ const ContactForm = memo(() => {
                                         fullWidth
                                         label="Contact name"
                                         error={!!fieldState.error}
-
+                                        helperText={fieldState.error?.message}
                                     />
                                 )}
                             />
