@@ -385,7 +385,7 @@ const TimerChoose = memo(({isRound,index}:{
         if (searchQuery.length) {
             if (index === 0) {
                 // 第一个航段：不能选今天之前
-                return dayjs().startOf('day').toDate()
+                return dayjs().subtract(1, 'day').toDate()
             }
 
             // 其它航段：取 index 之前的最大 localDate

@@ -1,36 +1,37 @@
-import {format, addDays, parseISO, differenceInCalendarDays, addMonths} from 'date-fns';
+import { addDays, addMonths, differenceInCalendarDays, format, parseISO, subDays } from 'date-fns'
 import dayjs, {type Dayjs} from 'dayjs';
 import type {Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
+
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
     isRound: boolean,
     timeValue: string | { from: string; to: string }
 ) {
-    const today = new Date();
-    let targetDate: Date;
+    const today = subDays(new Date(), 1)  // 从昨天开始
+    let targetDate: Date
 
     if (isRound && typeof timeValue === 'object') {
-        // 往返：取 from，加 1 个月
-        targetDate = addMonths(parseISO(timeValue.to), 1);
+        // 往返：取 to，加 1 个月
+        targetDate = addMonths(parseISO(timeValue.to), 1)
     } else if (!isRound && typeof timeValue === 'string') {
         // 单程：直接使用 timeValue，加 1 个月
-        targetDate = addMonths(parseISO(timeValue), 1);
+        targetDate = addMonths(parseISO(timeValue), 1)
     } else {
-        return []; // 无效输入
+        return [] // 无效输入
     }
 
-    const daysCount = differenceInCalendarDays(targetDate, today);
-    if (daysCount < 0) return [];
+    const daysCount = differenceInCalendarDays(targetDate, today)
+    if (daysCount < 0) return []
 
-    const ranges = [];
+    const ranges = []
 
     for (let i = 0; i <= daysCount; i++) {
-        const current = addDays(today, i);
+        const current = addDays(today, i)
 
         if (isRound) {
-            const end = addDays(current, numberValue);
-            const label = `${format(current, 'MMM d')} – ${format(end, 'MMM d')}`;
+            const end = addDays(current, numberValue)
+            const label = `${format(current, 'MMM d')} – ${format(end, 'MMM d')}`
             ranges.push({
                 label,
                 value: {
@@ -38,18 +39,18 @@ export function generateMonthlyDateRanges(
                     from: format(current, 'yyyy-MM-dd'),
                 },
                 key: format(end, 'yyyy-MM-dd'),
-            });
+            })
         } else {
-            const label = format(current, 'MMM d');
+            const label = format(current, 'MMM d')
             ranges.push({
                 label,
                 value: format(current, 'yyyy-MM-dd'),
                 key: format(current, 'yyyy-MM-dd'),
-            });
+            })
         }
     }
 
-    return ranges;
+    return ranges
 }
 
 
