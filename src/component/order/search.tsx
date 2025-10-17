@@ -34,7 +34,7 @@ import type {
 } from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    resetAirChoose, setNoData,
+    resetAirChoose, setCityArr, setNoData,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
@@ -649,6 +649,7 @@ const PersonChoose = memo(() => {
     )
 })
 
+
 const SearchComponent = memo(() => {
     const dispatch = useDispatch()
 
@@ -659,6 +660,15 @@ const SearchComponent = memo(() => {
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
 
     const isRound = useMemo(() => radioType === 'round', [radioType])
+
+    const setCity = () => {
+        const cityArr: IAirport[] = searchQuery.flatMap(city => {
+            const { departure, arrival } = city.daValue
+            return [departure, arrival].filter(Boolean) as IAirport[]
+        })
+
+        dispatch(setCityArr(cityArr))
+    }
 
     const search = () => {
         if(searchLoad) return
@@ -740,6 +750,8 @@ const SearchComponent = memo(() => {
                 arrival: searchQuery[radioType !== 'multi' ? 0 : itIndex].daValue.arrival as IAirport
             }))
         })
+
+        setCity()
 
         getAgentQuery(newQuery,dispatch)
     }

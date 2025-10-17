@@ -226,10 +226,13 @@ const TimeRangeSlider = memo(({label}: {
 const FilterComponent = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
+    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
 
     const arrival = useMemo(() => {
-        return query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
-    }, [query,airportActived]);
+        const arrivalValue = query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
+        const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
+        return result?.airportEName ?? arrivalValue
+    }, [query,airportActived,cityList]);
 
 
     return (

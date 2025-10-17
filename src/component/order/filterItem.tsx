@@ -28,7 +28,7 @@ import type {
 
 import styles from './styles.module.less'
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import {extractTimeWithTimezone} from "@/utils/public.ts";
+import {airlist, extractTimeWithTimezone} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -79,23 +79,40 @@ const FlightTimeline = memo(({segments}:{
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
             <Box textAlign="center">
                 <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.departureTime)}</Typography>
-                <Box
-                    lineHeight={1}
-                    className={'cursor-h'}
-                    sx={{
-                        display: 'inline-block',
-                        mt: 0.5,
-                        px: 1,
-                        py: 0.2,
-                        backgroundColor: '#fff2ec',
-                        color: '#f56c00',
-                        fontSize: '1.1em',
-                        borderRadius: '3px',
-                        fontWeight: 500,
-                    }}
-                >
-                    {flightSegment.departureAirport} {flightSegment.departureTerminal}
-                </Box>
+                <HtmlTooltip placement="bottom" sx={{
+                    '.MuiTooltip-tooltip': {
+                        padding: '10px',
+                    },
+                    minWidth:'120px',
+                    textAlign: 'center'
+                }} title={
+                    <Typography
+                        className={`cursor-h`}
+                        sx={{ color: 'var(--text-color)', fontSize: '1.1rem', mt: 0.5  }}
+                        lineHeight={1}
+                    >
+                        {flightSegment.departureAirport} {flightSegment.departureTerminal}
+                    </Typography>
+                }>
+                    <Box
+                        lineHeight={1}
+                        className={`cursor-h elli-1`}
+                        sx={{
+                            display: 'inline-block',
+                            mt: 0.5,
+                            px: 1,
+                            py: 0.2,
+                            backgroundColor: '#fff2ec',
+                            color: '#f56c00',
+                            fontSize: '1.1em',
+                            borderRadius: '3px',
+                            fontWeight: 500,
+                            width: '90px'
+                        }}
+                    >
+                        {flightSegment.departureAirport} {flightSegment.departureTerminal}
+                    </Box>
+                </HtmlTooltip>
             </Box>
             <HtmlTooltip placement="bottom" sx={{
                 p: 0,
@@ -169,13 +186,29 @@ const FlightTimeline = memo(({segments}:{
             </HtmlTooltip>
             <Box textAlign="center">
                 <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.arrivalTime!)}</Typography>
-                <Typography
-                    className={'cursor-h'}
-                    sx={{ color: '#a0a4af', fontSize: '1.1em', mt: 0.5 }}
-                    lineHeight={1}
-                >
-                    {flightSegment.arrivalAirport} {flightSegment.arrivalTerminal}
-                </Typography>
+                <HtmlTooltip placement="bottom" sx={{
+                    '.MuiTooltip-tooltip': {
+                        padding: '10px',
+                    },
+                    minWidth:'120px',
+                    textAlign: 'center'
+                }} title={
+                    <Typography
+                        className={`cursor-h`}
+                        sx={{ color: 'var(--text-color)', fontSize: '1.1rem', mt: 0.5  }}
+                        lineHeight={1}
+                    >
+                        {flightSegment.arrivalAirport} {flightSegment.arrivalTerminal}
+                    </Typography>
+                }>
+                    <Typography
+                        className={`cursor-h elli-1`}
+                        sx={{ color: '#a0a4af', fontSize: '1.1em', mt: 0.5 , width: '90px' }}
+                        lineHeight={1}
+                    >
+                        {flightSegment.arrivalAirport} {flightSegment.arrivalTerminal}
+                    </Typography>
+                </HtmlTooltip>
             </Box>
         </Box>
     );
@@ -246,12 +279,17 @@ const FilterItem = memo(() => {
                 <div className={`${styles.airInfomation} s-flex ai-ct`}>
                     <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
                         <div className={`${styles.leftInfoDetail} s-flex`}>
+                            <div className={styles.picture}>
+                                <img src={airlist[searchData?.channelCode as string].picture} alt=""/>
+                            </div>
                             <div className={`${styles.leftInfoDetailTitle}`}>
                                 <div className={`${styles.airTitle} s-flex flex-dir`}>
+                                    <span className={styles.airTitleSpan}>{airlist[searchData?.channelCode as string].title}</span>
                                     {
-                                        searchData?.segments.map((segment) =>  <span key={segment.flightNumber}>{segment.flightNumber}</span>)
+                                        searchData?.segments.map((segment) => (
+                                            <Typography variant="body2" gutterBottom sx={{ fontSize: '1rem' , color: 'var(--tips-gary-color)' }} key={segment.flightNumber}>{segment.flightNumber}</Typography>
+                                        ))
                                     }
-
                                 </div>
                                 {
                                     searchData?.segments.some(segment => segment.flightMealType) && (

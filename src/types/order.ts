@@ -391,3 +391,10 @@ export interface Country {
     timeZone: number
     cities: City[]
 }
+
+
+//
+export interface AirlineInfo {
+    picture: string;
+    title: string;
+}

@@ -1,7 +1,12 @@
 import { addDays, addMonths, differenceInCalendarDays, format, parseISO, subDays } from 'date-fns'
 import dayjs, {type Dayjs} from 'dayjs';
-import type {Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
+import type {AirlineInfo, Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
 
+
+import c6 from '@/assets/air/c6.webp'
+import fz from '@/assets/air/fz.webp'
+import b2 from '@/assets/air/b2.webp'
+import ka from '@/assets/air/ka.webp'
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -171,8 +176,6 @@ export function flattenByCountry(data: QueryGlobalAirports[]) {
 }
 
 
-
-
 export function filterValidTrips(data: ITem[]) {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // 清除时间部分，确保只比较日期
@@ -189,4 +192,12 @@ export function filterValidTrips(data: ITem[]) {
 
 export function genRandomKey() {
     return 'key_' + Math.random().toString(36).slice(2, 10);
+}
+
+
+export const airlist: Record<string, AirlineInfo> = {
+    'API-C6-V1': { picture: c6, title: 'Centrum Air' },
+    'API-FZ-V1': { picture: fz, title: 'Flydubai' },
+    'API-B2-V1': { picture: b2, title: 'Belarusian Airlines' },
+    'API-KA-V1': { picture: ka, title: 'Aero Nomad Airlines' }
 }

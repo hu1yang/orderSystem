@@ -123,6 +123,8 @@ const FilterData = memo(() => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const noData = useSelector((state: RootState) => state.ordersInfo.noData)
     const disabledChoose = useSelector((state: RootState) => state.ordersInfo.disabledChoose)
+    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
+    const itineraries = useSelector((state: RootState) => state.ordersInfo.query.itineraries)
 
     const dispatch = useDispatch()
 
@@ -176,6 +178,12 @@ const FilterData = memo(() => {
         dispatch(prevAirChoose())
     }
 
+    const arrival = useMemo(() => {
+        const arrivalValue = itineraries[airportActived].arrival
+        const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
+        return result?.airportEName ?? arrivalValue
+    },[cityList,itineraries,airportActived])
+
     return (
         <div className={`${styles.filterData} flex-1`}>
 
@@ -186,8 +194,8 @@ const FilterData = memo(() => {
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
                         <h2>
                             {
-                                state.ordersInfo.query.itineraries.length?
-                                    `${airportActived + 1}. ${(airportActived === 0) ? 'Departing' : 'Returning'} to ${state.ordersInfo.query.itineraries[airportActived].arrival}`
+                                itineraries.length?
+                                    `${airportActived + 1}. ${(airportActived === 0) ? 'Departing' : 'Returning'} to ${arrival}`
                                     :<></>
                             }
                         </h2>

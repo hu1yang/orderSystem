@@ -20,7 +20,7 @@ interface IDay {
     key:string
 }
 
-const weekDaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const weekDaysShort = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
 const DayChoose = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -156,7 +156,12 @@ const DayChoose = memo(() => {
                                             <div className={`${styles.dayView} s-flex flex-dir`}>
                                                 <span>{item.label}</span>
                                                 <em>
-                                                    {weekDaysShort[dayjs(item.value as string).day()]}
+                                                    {
+                                                        isRound ?
+                                                            `${weekDaysShort[dayjs((item.value as { to: string; from: string; }).from).day()]} - ${weekDaysShort[dayjs((item.value as { to: string; from: string; }).to).day()]}`
+                                                            :
+                                                            weekDaysShort[dayjs(item.value as string).day()]
+                                                    }
                                                 </em>
                                             </div>
                                         </div>
