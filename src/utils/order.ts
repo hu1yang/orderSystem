@@ -133,8 +133,20 @@ export const calculateAirResult = (airports:FQueryResult[]): MregeResultAirport[
             itinerariesMerge:mergeItinerariesResult
         }
     }))
-    return calculateResult
+    const calculateResultSegmentSort = segmentsSort(calculateResult)
+    return calculateResultSegmentSort
 }
+
+export const segmentsSort = (result: MregeResultAirport[]): MregeResultAirport[] => {
+    return result.map(re => ({
+        ...re,
+        itinerariesMerge: re.itinerariesMerge.map(itm => ({
+            ...itm,
+            segments: [...itm.segments].sort((a, b) => a.sequenceNo - b.sequenceNo)
+        }))
+    }))
+}
+
 // 合并itineraries数据
 function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
     // 按 itineraryNo 分组
