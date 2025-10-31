@@ -1,6 +1,6 @@
-import React , {memo} from "react";
+import React, {memo, useMemo} from "react";
 import styles from './styles.module.less'
-import type {Segment} from "@/types/order.ts";
+import type {Amount, Segment} from "@/types/order.ts";
 import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {formatTotalDuration , formatDuration} from "@/utils/order.ts";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
@@ -9,10 +9,17 @@ import LuggageIcon from "@mui/icons-material/Luggage";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import {useLocation} from "react-router";
 
-const FlightTimelineBox = memo(({segments}:{
+const FlightTimelineBox = memo(({segments,amounts}:{
     segments:Segment[]
+    amounts?:Amount[]|null
 }) => {
     const {pathname} = useLocation()
+
+    const amountMemo = useMemo(() => {
+        const amount = amounts?.find(am => am.passengerType === 'adt')
+        return amount ?? null
+    },[amounts])
+
     return (
         <div className={styles.flightTimelineBox}>
             {
@@ -30,17 +37,28 @@ const FlightTimelineBox = memo(({segments}:{
                             <div className={`${styles.airInfomation} s-flex`}>
                                 <div className={`${styles.airInfomationPicture} s-flex ai-ct jc-ct`}>
                                     {
-                                        pathname !== '/passenger' && (
+                                        pathname !== '/passenger' ?
                                             <>
                                                 <LuggageIcon />
                                                 <AdfScannerIcon />
                                             </>
-                                        )
+                                            :
+                                            amountMemo?.luggages?.map(luggage => {
+                                                if(luggage.luggageType === 'hand'){
+                                                    return  <AdfScannerIcon key='hand' />
+                                                }else if(luggage.luggageType === 'checked'){
+                                                    return  <LuggageIcon key='checked' />
+                                                }
+                                            })
+
                                     }
+
                                 </div>
                                 <div className={styles.airInfomationmains}>
                                     <p>Flight number {segment.flightNumber}
-                                        <RestaurantIcon sx={{fontSize: '1.3rem',ml:'10px'}} />
+                                        {
+                                            !!segment.flightMealType && <RestaurantIcon sx={{fontSize: '1.3rem',ml:'10px'}} />
+                                        }
                                     </p>
                                     {
                                         segment.shareToFlightNo && <p>Share Flight number {segment.shareToFlightNo}</p>
