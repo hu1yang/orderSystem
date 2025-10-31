@@ -1,7 +1,7 @@
 import {forwardRef, useEffect, useImperativeHandle, useMemo} from "react";
 
 import styles from './styles.module.less'
-import {Controller, useForm} from "react-hook-form";
+import {Controller, useForm, useWatch} from "react-hook-form";
 import {
     FormControl,
     Grid,
@@ -48,15 +48,25 @@ const ContactForm = forwardRef((_,ref) => {
         }
     });
 
+    const fields = useWatch({
+        control,
+        name: ['contactName', 'emailAddress', 'phoneNumber', 'phoneCode']
+    });
+
+    useEffect(() => {
+        debounceValid({
+            contactName: fields[0],
+            emailAddress: fields[1],
+            phoneNumber: fields[2],
+            phoneCode: fields[3],
+        });
+    }, [fields]);
+
     const watchFields = watch();
 
     const handleCodeChange = (event: SelectChangeEvent) => {
         setValue('phoneCode',event.target.value)
     }
-
-    useEffect(() => {
-        debounceValid(watchFields)
-    }, [watchFields])
 
     const debounceValid = useMemo(() => debounce((
         fields

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import styles from './styles.module.less'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
@@ -19,11 +19,12 @@ import type {Dayjs} from "dayjs";
 import {useNavigate, useParams} from "react-router";
 import {paymentOrderAgent} from "@/utils/request/agent.ts";
 
-const FlightCom = memo(({
-                            type,data
-                        }:{
-    type:'Depart'|'Return'
-}) => {
+const FlightCom = memo((
+    {type, data}:
+    {
+        type: 'Depart' | 'Return'
+        data: any
+    }) => {
     return (
         <div className={styles.flightCom}>
             <div className={`${styles.flightComTitle} s-flex ai-ct`}>
@@ -80,7 +81,7 @@ const Flight = memo(() => {
                     {
                         !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
                             <Grid size={6} key={itinerarie.itineraryKey}>
-                                <FirportInfomation segments={itinerarie.segments} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                                <FirportInfomation segments={itinerarie.segments} index={itinerarieIndex} amounts={itinerarie.amounts} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
                             </Grid>
                         ))
                     }

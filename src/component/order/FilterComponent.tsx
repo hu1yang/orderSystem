@@ -43,6 +43,7 @@ const recommendedArr = [
 
 
 type AirbnbThumbComponentProps = React.HTMLAttributes<HTMLSpanElement> & {
+    'data-index'?: string;
     ownerState: {
         value: number[];
     };

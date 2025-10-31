@@ -395,6 +395,6 @@ export interface Country {
 
 //
 export interface AirlineInfo {
-    picture: string;
-    title: string;
+    picture: string|null
+    title: string
 }

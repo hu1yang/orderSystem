@@ -199,5 +199,6 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-C6-V1': { picture: c6, title: 'Centrum Air' },
     'API-FZ-V1': { picture: fz, title: 'Flydubai' },
     'API-B2-V1': { picture: b2, title: 'Belarusian Airlines' },
-    'API-KA-V1': { picture: ka, title: 'Aero Nomad Airlines' }
+    'API-KA-V1': { picture: ka, title: 'Aero Nomad Airlines' },
+    'API-3T-V1': { picture: null, title: 'Tarco Aviation' },
 }

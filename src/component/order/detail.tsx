@@ -143,7 +143,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
                     <div>
                         <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                            <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={styles.texts}>
                                  {
                                      luggagesMemo.hand ? <strong>{luggagesMemo.hand.luggageCount} {luggagesMemo.hand.luggageSizeType}</strong> : '--'
@@ -159,7 +159,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                             </span>
                         </Typography>
                         <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                            <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                            <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
                             <span className={styles.texts}>
                                  {
                                      luggagesMemo.carry ? <strong>{luggagesMemo.carry.luggageCount} {luggagesMemo.carry.luggageSizeType}</strong> : '--'

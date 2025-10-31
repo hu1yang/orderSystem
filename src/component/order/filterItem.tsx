@@ -33,6 +33,7 @@ import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {useSearchData} from "@/context/order/SearchDataContext.tsx";
+import defaultAir from '@/assets/air/default.webp'
 
 
 const FlightTimeline = memo(({segments}:{
@@ -280,11 +281,11 @@ const FilterItem = memo(() => {
                     <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
                         <div className={`${styles.leftInfoDetail} s-flex`}>
                             <div className={styles.picture}>
-                                <img src={airlist[searchData?.channelCode as string].picture} alt=""/>
+                                <img src={airlist[searchData?.channelCode as string]?.picture ?? defaultAir} alt=""/>
                             </div>
                             <div className={`${styles.leftInfoDetailTitle}`}>
                                 <div className={`${styles.airTitle} s-flex flex-dir`}>
-                                    <span className={styles.airTitleSpan}>{airlist[searchData?.channelCode as string].title}</span>
+                                    <span className={styles.airTitleSpan}>{airlist[searchData?.channelCode as string]?.title ?? searchData?.channelCode}</span>
                                     {
                                         searchData?.segments.map((segment) => (
                                             <Typography variant="body2" gutterBottom sx={{ fontSize: '1rem' , color: 'var(--tips-gary-color)' }} key={segment.flightNumber}>{segment.flightNumber}</Typography>

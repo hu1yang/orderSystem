@@ -1,19 +1,20 @@
-import React, {memo} from "react";
+import {memo} from "react";
 import styles from './styles.module.less'
 import {
     Chip,
     Divider,
 } from "@mui/material";
-import type {Segment} from "@/types/order.ts";
+import type {Amount, Segment} from "@/types/order.ts";
 import { formatDateToShortString, formatFlyingTime} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import {useNavigate} from "react-router";
 
 
-const FirportInfomation = memo(({segments,labelPostion,index}:{
+const FirportInfomation = memo(({segments,labelPostion,index,amounts}:{
     segments:Segment[]
     index:number;
     labelPostion:string
+    amounts?:Amount[]|null
 }) => {
     const navigate = useNavigate()
     const backOrder = () => {
@@ -49,7 +50,7 @@ const FirportInfomation = memo(({segments,labelPostion,index}:{
                 }
 
             </div>
-            <FlightTimelineBox segments={segments} />
+            <FlightTimelineBox segments={segments} amounts={amounts} />
         </div>
     )
 })

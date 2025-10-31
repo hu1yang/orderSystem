@@ -261,7 +261,7 @@ const Detail = memo(() => {
                                 {
                                     !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
                                         <Grid size={6} key={itinerarie.itineraryKey}>
-                                            <FirportInfomation segments={itinerarie.segments} index={itinerarieIndex} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                                            <FirportInfomation segments={itinerarie.segments} amounts={itinerarie.amounts} index={itinerarieIndex} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
                                         </Grid>
                                     ))
                                 }
