@@ -58,6 +58,9 @@ export function calculateTotalPriceSummary(
 
 
 export function formatTotalDuration(times: string[]): string {
+    // 过滤掉空值
+    const validTimes = times.filter((t): t is string => !!t && t.includes(':'))
+    if (validTimes.length === 0) return '--'
 
     const totalMs = times.reduce((acc, timeStr) => {
         const [h, m, s] = timeStr.split(':').map(Number)
