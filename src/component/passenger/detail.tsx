@@ -189,14 +189,11 @@ const Detail = memo(() => {
     },[query,airChoose,contacts])
 
     const backOrder = (orderid:string) => {
-        const referrer = import.meta.env.VITE_AGENT_APP
-        if(referrer){
-            const origin = new URL(referrer).origin;
-            window.parent.postMessage({
-                type:'orderPaySuccess',
-                data:{orderid}
-            },origin)
-        }
+        const origin = new URL(location.origin).origin;
+        window.parent.postMessage({
+            type:'orderPaySuccess',
+            data:{orderid}
+        },origin)
 
         setTimeout(() => {
             navigate('/')

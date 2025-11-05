@@ -244,14 +244,11 @@ const OrderDetail = () => {
     }
 
     const backOrder = () => {
-        const referrer = import.meta.env.VITE_AGENT_APP
-        if(referrer){
-            const origin = new URL(referrer).origin;
-            window.parent.postMessage({
-                type:'orderPaySuccess',
-                data:{orderid:payid}
-            },origin)
-        }
+        const origin = new URL(location.origin).origin;
+        window.parent.postMessage({
+            type:'orderPaySuccess',
+            data:{orderid:payid}
+        },origin)
 
         setTimeout(() => {
             navigate('/')

@@ -7,6 +7,8 @@ import c6 from '@/assets/air/c6.webp'
 import fz from '@/assets/air/fz.webp'
 import b2 from '@/assets/air/b2.webp'
 import ka from '@/assets/air/ka.webp'
+import g9 from '@/assets/air/g9.webp'
+import t3 from '@/assets/air/3t.webp'
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -85,6 +87,7 @@ export function extractTimeWithTimezone(datetimeStr:string) {
 }
 
 export function formatFlyingTime(timeStr:string) {
+    if(!timeStr) return null;
     const [hours, minutes] = timeStr.split(':');
     return `${parseInt(hours)}h ${parseInt(minutes)}m`;
 }
@@ -113,14 +116,10 @@ export function debounce<T extends (...args: any[]) => void>(
 
 
 export function toLogin () {
-    const referrer = import.meta.env.VITE_AGENT_APP
-    if(referrer){
-        const origin = new URL(referrer).origin;
-        window.parent.postMessage({
-            type:'reloadLogOut',
-        },origin)
-    }
-    // window.location.href = `https://www.orientalsky.speedpower.net.cn/manage/agent/login?redirect=${encodeURIComponent(window.location.href)}`;
+    const origin = new URL(location.origin).origin;
+    window.parent.postMessage({
+        type:'reloadLogOut',
+    },origin)
 }
 export function flattenByCountry(data: QueryGlobalAirports[]) {
     const result: Country[] = [];
@@ -200,5 +199,6 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-FZ-V1': { picture: fz, title: 'Flydubai' },
     'API-B2-V1': { picture: b2, title: 'Belarusian Airlines' },
     'API-KA-V1': { picture: ka, title: 'Aero Nomad Airlines' },
-    'API-3T-V1': { picture: null, title: 'Tarco Aviation' },
+    'API-3T-V1': { picture: t3, title: 'Tarco Aviation' },
+    'API-G9-V1': { picture: g9, title: 'Air Arabia' },
 }

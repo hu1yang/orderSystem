@@ -38,7 +38,7 @@ const FirportInfomation = memo(({segments,labelPostion,index,amounts}:{
                     <Divider orientation="vertical" sx={{
                         height: 10
                     }} flexItem/>
-                    <span>Duration {formatFlyingTime(segments[0].totalFlyingTime!)}</span>
+                    <span>{segments[0].totalFlyingTime && `Duration ${formatFlyingTime(segments[0].totalFlyingTime!)}`}</span>
 
                 </div>
                 {
