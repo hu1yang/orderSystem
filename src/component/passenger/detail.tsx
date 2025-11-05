@@ -2,7 +2,7 @@ import React, {Fragment, memo, type ReactElement, useCallback, useMemo, useRef, 
 import styles from './styles.module.less'
 import {
     Alert,
-    Button,
+    Button, CircularProgress,
     Divider,
     Grid,
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
@@ -23,13 +23,15 @@ import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
-import { setPassengers} from "@/store/orderInfo.ts";
+import {setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
     paySubmit:() => void
     pirceResult:PriceSummary
 }) => {
+
+    const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
     const payNow = () => {
         paySubmit()
@@ -44,11 +46,14 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                         <div className={styles.payPriceLabels}>Total</div>
                         <div className={styles.payPricevalue}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
-                    <Button type="submit" sx={{
+                    <Button type="submit" loading={createdLoading} loadingPosition="end" sx={{
                         backgroundColor: 'var(--active-color)',
                         color:'var(--vt-c-white)',
                         fontWeight: 'bold',
-                        fontSize: 18
+                        fontSize: 18,
+                        '&.MuiButton-loading': {
+                            backgroundColor: 'var(--put-border-color)'
+                        },
                     }} fullWidth onClick={payNow}>Booking Now</Button>
                 </div>
             </div>
@@ -58,6 +63,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 })
 
 const Detail = memo(() => {
+    const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
@@ -99,93 +105,99 @@ const Detail = memo(() => {
 
 
     const handlepaySubmit = useCallback(async () => {
-        let passengers:Passenger[]
+        dispatch(setCreatedLoading(true))
         try {
-            if(!passengersRef.current) throw new Error('ref is missing')
-            passengers = await passengersRef.current.submit()
-        } catch {
-            scrollToTarget()
-            setOpen(true);
-            setSnackbarCom(
-                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    Please fill in the passenger information
-                </Alert>
-            );
-            return;
-        }
-        try {
-            if(!contactRef.current) throw new Error('ref is missing')
-            await contactRef.current.submit()
-        } catch {
-            setOpen(true);
-            setSnackbarCom(
-                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    Please fill in the contact information
-                </Alert>
-            );
-            return;
-        }
-
-
-        // 对每种 passengerType 进行校验
-        const mismatch = query.travelers.find(traveler => {
-            const expected = traveler.passengerCount;
-            const actual = passengers.filter(p => p.passengerType === traveler.passengerType).length;
-            return actual !== expected;
-        });
-
-        if (mismatch) {
-            setOpen(true);
-            setSnackbarCom(
-                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    Please select {mismatch.passengerCount} {mismatch.passengerType.toUpperCase()} passenger(s)
-                </Alert>
-            );
-            return;
-        }
-        const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
-        dispatch(setPassengers(passengers))
-
-        const result = {
-            ...airChoose,
-            request:{
-                ...query,
-                travelers:newTravelers
-            },
-            shuttleNumber:'',
-            tLimit:'',
-            remarks:'',
-            passengers,
-            contacts
-        } as OrderCreate
-
-        orderCreateAgent(result).then(res => {
-            if(res.succeed){
-                setOpen(true);
-                setSnackbarCom(
-                    <Alert severity="success" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        {'Order created successfully'}
-                    </Alert>
-                );
-                backOrder(res.response.orderNumber)
-                //
-                // navigate(`/mine/orderDetail/${res.response.orderNumber}`)
-            }else{
+            let passengers:Passenger[]
+            try {
+                if(!passengersRef.current) throw new Error('ref is missing')
+                passengers = await passengersRef.current.submit()
+            } catch {
+                scrollToTarget()
                 setOpen(true);
                 setSnackbarCom(
                     <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        {res.errorMessage}
+                        Please fill in the passenger information
                     </Alert>
                 );
+                return;
             }
-        }).catch(() => {
-            setOpen(true);
-            setSnackbarCom(
-                <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    {'Interface error'}
-                </Alert>
-            );
-        })
+            try {
+                if(!contactRef.current) throw new Error('ref is missing')
+                await contactRef.current.submit()
+            } catch {
+                setOpen(true);
+                setSnackbarCom(
+                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                        Please fill in the contact information
+                    </Alert>
+                );
+                return;
+            }
+
+
+            // 对每种 passengerType 进行校验
+            const mismatch = query.travelers.find(traveler => {
+                const expected = traveler.passengerCount;
+                const actual = passengers.filter(p => p.passengerType === traveler.passengerType).length;
+                return actual !== expected;
+            });
+
+            if (mismatch) {
+                setOpen(true);
+                setSnackbarCom(
+                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                        Please select {mismatch.passengerCount} {mismatch.passengerType.toUpperCase()} passenger(s)
+                    </Alert>
+                );
+                return;
+            }
+            const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
+            dispatch(setPassengers(passengers))
+
+            const result = {
+                ...airChoose,
+                request:{
+                    ...query,
+                    travelers:newTravelers
+                },
+                shuttleNumber:'',
+                tLimit:'',
+                remarks:'',
+                passengers,
+                contacts
+            } as OrderCreate
+
+            await orderCreateAgent(result).then(res => {
+                if(res.succeed){
+                    setOpen(true);
+                    setSnackbarCom(
+                        <Alert severity="success" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                            {'Order created successfully'}
+                        </Alert>
+                    );
+                    backOrder(res.response.orderNumber)
+                    //
+                    // navigate(`/mine/orderDetail/${res.response.orderNumber}`)
+                }else{
+                    setOpen(true);
+                    setSnackbarCom(
+                        <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                            {res.errorMessage}
+                        </Alert>
+                    );
+                }
+            }).catch(() => {
+                setOpen(true);
+                setSnackbarCom(
+                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                        {'Interface error'}
+                    </Alert>
+                );
+            })
+        } finally {
+            dispatch(setCreatedLoading(false))
+        }
+
     },[query,airChoose,contacts])
 
     const backOrder = (orderid:string) => {
@@ -384,6 +396,11 @@ const Detail = memo(() => {
             <Snackbar open={open} autoHideDuration={3000} anchorOrigin={{ vertical:'top', horizontal:'right' }}
                       onClose={handleClose}>
                 {snackbarCom}
+            </Snackbar>
+            <Snackbar open={createdLoading} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Alert severity="success" icon={<CircularProgress size={20} color="inherit" />} variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                    Order creation...
+                </Alert>
             </Snackbar>
         </div>
     )
