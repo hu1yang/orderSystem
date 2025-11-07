@@ -368,7 +368,7 @@ const FilterItem = memo(() => {
                             <Divider sx={{my: 1.5}}/>
                             <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
                             <div >
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Hand baggage</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Personal Item</Typography>
                                 <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Check baggage</Typography>
                                 <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Carry baggage</Typography>
                             </div>

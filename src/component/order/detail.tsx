@@ -1,4 +1,4 @@
-import {memo, useMemo, useRef, useState} from "react";
+import React, {memo, useMemo, useRef, useState} from "react";
 import {useNavigate} from "react-router";
 import {Box, Card, CardContent, Typography, Divider, CardHeader, Button} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -142,30 +142,57 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
                     <div>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                            <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                            <span className={styles.texts}>
-                                 {
-                                     luggagesMemo.hand ? <strong>{luggagesMemo.hand.luggageCount} {luggagesMemo.hand.luggageSizeType}</strong> : '--'
-                                 }
-                            </span>
-                        </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                            <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                            <span className={styles.texts}>
-                                 {
-                                     luggagesMemo.checked ? <strong>{luggagesMemo.checked.luggageCount} {luggagesMemo.checked.luggageSizeType}</strong> : '--'
-                                 }
-                            </span>
-                        </Typography>
-                        <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                            <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                            <span className={styles.texts}>
-                                 {
-                                     luggagesMemo.carry ? <strong>{luggagesMemo.carry.luggageCount} {luggagesMemo.carry.luggageSizeType}</strong> : '--'
-                                 }
-                            </span>
-                        </Typography>
+                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.hand} sx={{
+                            '.MuiTooltip-tooltip': {
+                                fontSize: "1.1rem",
+                                padding: 'var(--pm-16)',
+                            }
+                        }} title={
+                            <div className={styles.texts}>{luggagesMemo.hand ? luggagesMemo.hand.luggageNotes : '--'}</div>
+                        }>
+                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
+                                <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                <span className={styles.texts}>
+                                     {
+                                         luggagesMemo.hand ? <strong>{luggagesMemo.hand.luggageCount} {luggagesMemo.hand.luggageSizeType}</strong> : '--'
+                                     }
+                                </span>
+                            </Typography>
+                        </HtmlTooltip>
+                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.checked} sx={{
+                            '.MuiTooltip-tooltip': {
+                                fontSize: "1.1rem",
+                                padding: 'var(--pm-16)',
+                            }
+                        }} title={
+                            <div className={styles.cityDetailSp}>{luggagesMemo.checked ? luggagesMemo.checked.luggageNotes : '--'}</div>
+                        }>
+                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
+                                <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                <span className={styles.texts}>
+                                     {
+                                         luggagesMemo.checked ? <strong>{luggagesMemo.checked.luggageCount} {luggagesMemo.checked.luggageSizeType}</strong> : '--'
+                                     }
+                                </span>
+                            </Typography>
+                        </HtmlTooltip>
+                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.carry} sx={{
+                            '.MuiTooltip-tooltip': {
+                                fontSize: "1.1rem",
+                                padding: 'var(--pm-16)',
+                            }
+                        }} title={
+                            <span className={styles.cityDetailSp}>{luggagesMemo.carry ? luggagesMemo.carry.luggageNotes : '--'}</span>
+                        }>
+                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
+                                <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                <span className={styles.texts}>
+                                     {
+                                         luggagesMemo.carry ? <strong>{luggagesMemo.carry.luggageCount} {luggagesMemo.carry.luggageSizeType}</strong> : '--'
+                                     }
+                                </span>
+                            </Typography>
+                        </HtmlTooltip>
                     </div>
 
                     <Divider sx={{my: 1.5}}/>

@@ -24,6 +24,7 @@ import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
 import {setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
+import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -354,13 +355,37 @@ const Detail = memo(() => {
                                                                                 </div>
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <div className={styles.cityDetailSp}>{handLuggage?.luggageNotes || '--'}</div>
+                                                                                <HtmlTooltip placement="top" disableHoverListener={!handLuggage} sx={{
+                                                                                    '.MuiTooltip-tooltip': {
+                                                                                        fontSize: "1.1rem",
+                                                                                    }
+                                                                                }} title={
+                                                                                    <div className={styles.cityDetailSp}>{handLuggage ? handLuggage.luggageNotes : '--'}</div>
+                                                                                }>
+                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{handLuggage ? `${handLuggage.luggageCount}${handLuggage.luggageSizeType}` : '--'}</div>
+                                                                                </HtmlTooltip>
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <div className={styles.cityDetailSp}>{carryLuggage?.luggageNotes || '--'}</div>
+                                                                                <HtmlTooltip placement="top" disableHoverListener={!carryLuggage} sx={{
+                                                                                    '.MuiTooltip-tooltip': {
+                                                                                        fontSize: "1.1rem",
+                                                                                    }
+                                                                                }} title={
+                                                                                    <div className={styles.cityDetailSp}>{carryLuggage ? carryLuggage.luggageNotes : '--'}</div>
+                                                                                }>
+                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{carryLuggage ? `${carryLuggage.luggageCount}${carryLuggage.luggageSizeType}` : '--'}</div>
+                                                                                </HtmlTooltip>
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <div className={styles.cityDetailSp}>{checkedLuggage?.luggageNotes || '--'}</div>
+                                                                                <HtmlTooltip placement="top" disableHoverListener={!checkedLuggage} sx={{
+                                                                                    '.MuiTooltip-tooltip': {
+                                                                                        fontSize: "1.1rem",
+                                                                                    }
+                                                                                }} title={
+                                                                                    <div className={styles.cityDetailSp}>{checkedLuggage ? checkedLuggage.luggageNotes : '--'}</div>
+                                                                                }>
+                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{checkedLuggage ? `${checkedLuggage.luggageCount}${checkedLuggage.luggageSizeType}` : '--'}</div>
+                                                                                </HtmlTooltip>
                                                                             </Grid>
                                                                         </Grid>
                                                                     </Grid>

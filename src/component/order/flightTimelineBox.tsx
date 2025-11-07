@@ -8,6 +8,7 @@ import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import LuggageIcon from "@mui/icons-material/Luggage";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import {useLocation} from "react-router";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 
 const FlightTimelineBox = memo(({segments,amounts}:{
     segments:Segment[]
@@ -45,7 +46,7 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                                             :
                                             amountMemo?.luggages?.map(luggage => {
                                                 if(luggage.luggageType === 'hand'){
-                                                    return  <AdfScannerIcon key='hand' />
+                                                    return  <BusinessCenterIcon key='hand' />
                                                 }else if(luggage.luggageType === 'checked'){
                                                     return  <LuggageIcon key='checked' />
                                                 }
