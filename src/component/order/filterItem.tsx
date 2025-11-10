@@ -280,7 +280,7 @@ const FilterItem = memo(() => {
                 <div className={`${styles.airInfomation} s-flex ai-ct`}>
                     <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
                         <div className={`${styles.leftInfoDetail} s-flex`}>
-                            <div className={styles.picture}>
+                            <div className={`${styles.picture} s-flex ai-ct`}>
                                 <img src={airlist[searchData?.channelCode as string]?.picture ?? defaultAir} alt=""/>
                             </div>
                             <div className={`${styles.leftInfoDetailTitle}`}>

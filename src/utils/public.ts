@@ -197,8 +197,8 @@ export function genRandomKey() {
 export const airlist: Record<string, AirlineInfo> = {
     'API-C6-V1': { picture: c6, title: 'Centrum Air' },
     'API-FZ-V1': { picture: fz, title: 'Flydubai' },
-    'API-B2-V1': { picture: b2, title: 'Belarusian Airlines' },
-    'API-KA-V1': { picture: ka, title: 'Aero Nomad Airlines' },
+    'API-B2-V1': { picture: b2, title: 'Belarusian' },
+    'API-KA-V1': { picture: ka, title: 'Aero Nomad' },
     'API-3T-V1': { picture: t3, title: 'Tarco Aviation' },
     'API-G9-V1': { picture: g9, title: 'Air Arabia' },
 }
