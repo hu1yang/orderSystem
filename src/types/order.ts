@@ -1,4 +1,3 @@
-import type {Dayjs} from "dayjs";
 import PriceDetail from "@/component/order/priceDetail.tsx";
 
 export type ItineraryType = 'oneWay'| 'round'| 'multi'
@@ -159,9 +158,9 @@ export interface Passenger {
     idNumber: string
     idCountry: string
     trCountry: string
-    issuedDate: null|Dayjs
-    birthday: null|Dayjs
-    expiryDate: null|Dayjs
+    issuedDate: null|string
+    birthday: null|string
+    expiryDate: null|string
     phoneNumber: string
     emailAddress: string
     passengerIdType: IPassengerIdType

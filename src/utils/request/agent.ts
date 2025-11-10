@@ -9,7 +9,7 @@ import type {
     OrderCreate, QueryGlobalAirports
 } from "@/types/order.ts";
 
-export const getAuthorizableRoutingGroupAgent = (form:FQuery)  => axios.post<FQueryResult[],FQuery>('/agentApi/Service/FlightQuery',form)
+export const flightQueryAgent = (form:FQuery)  => axios.post<FQueryResult[],FQuery>('/agentApi/Service/FlightQuery',form)
 
 export const queryBookingAgent = (form:AirChooseForm) => axios.post<FQueryResultForm,AirChooseForm>('/agentApi/Service/QueryBooking',form)
 

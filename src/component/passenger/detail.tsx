@@ -114,24 +114,16 @@ const Detail = memo(() => {
                 passengers = await passengersRef.current.submit()
             } catch {
                 scrollToTarget()
-                setOpen(true);
-                setSnackbarCom(
-                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        Please fill in the passenger information
-                    </Alert>
-                );
+                setError('error','Please fill in the passenger information')
+
                 return;
             }
             try {
                 if(!contactRef.current) throw new Error('ref is missing')
                 await contactRef.current.submit()
             } catch {
-                setOpen(true);
-                setSnackbarCom(
-                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        Please fill in the contact information
-                    </Alert>
-                );
+                setError('error','Please fill in the contact information')
+
                 return;
             }
 
@@ -144,12 +136,8 @@ const Detail = memo(() => {
             });
 
             if (mismatch) {
-                setOpen(true);
-                setSnackbarCom(
-                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        Please select {mismatch.passengerCount} {mismatch.passengerType.toUpperCase()} passenger(s)
-                    </Alert>
-                );
+                setError('error',`Please select ${mismatch.passengerCount} ${mismatch.passengerType.toUpperCase()} passenger(s)`)
+
                 return;
             }
             const newTravelers = query.travelers.filter(traveler => traveler.passengerCount>0)
@@ -170,30 +158,17 @@ const Detail = memo(() => {
 
             await orderCreateAgent(result).then(res => {
                 if(res.succeed){
-                    setOpen(true);
-                    setSnackbarCom(
-                        <Alert severity="success" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                            {'Order created successfully'}
-                        </Alert>
-                    );
+                    setError('success','Order created successfully')
                     backOrder(res.response.orderNumber)
                     //
                     // navigate(`/mine/orderDetail/${res.response.orderNumber}`)
                 }else{
-                    setOpen(true);
-                    setSnackbarCom(
-                        <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                            {res.errorMessage}
-                        </Alert>
-                    );
+                    setError('error',res.errorMessage)
+
                 }
             }).catch(() => {
-                setOpen(true);
-                setSnackbarCom(
-                    <Alert severity="error" variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                        {'Interface error'}
-                    </Alert>
-                );
+                setError('error','Interface error')
+
             })
         } finally {
             dispatch(setCreatedLoading(false))
@@ -226,6 +201,15 @@ const Detail = memo(() => {
             return found?.luggages || [];
         });
     }, [airChoose.result]);
+
+    const setError = useCallback((type:'success'|'error',msg:string) => {
+        setOpen(true);
+        setSnackbarCom(
+            <Alert severity={type} variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+                {msg}
+            </Alert>
+        );
+    },[open])
 
 
     return (
@@ -279,7 +263,7 @@ const Detail = memo(() => {
                             {/*<Passenger />*/}
                             <div className={`${styles.leftDetail}`}>
                                 <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>
-                                    <PassengerForm ref={passengersRef} />
+                                    <PassengerForm ref={passengersRef} setErrorFnc={setError} />
                                     <ContactForm ref={contactRef} />
                                     <div className={styles.package}>
                                         <div className={styles.packgaeTitle}>

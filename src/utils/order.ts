@@ -9,7 +9,7 @@ import type {
 } from "@/types/order.ts";
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
-import {getAuthorizableRoutingGroupAgent} from "@/utils/request/agent.ts";
+import {flightQueryAgent} from "@/utils/request/agent.ts";
 import {setNoData, setSearchDate} from "@/store/orderInfo.ts";
 import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
@@ -290,7 +290,7 @@ export function amountPrice(amounts: Amount[]) {
 
 
 export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
-    getAuthorizableRoutingGroupAgent({
+    flightQueryAgent({
         ...result,
         cacheOnly:false
     }).then(res => {

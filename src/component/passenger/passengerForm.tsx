@@ -1,10 +1,11 @@
 import {forwardRef, memo, useEffect, useImperativeHandle} from "react";
+import * as XLSX from 'xlsx'
 import styles from "@/component/passenger/styles.module.less";
 import {
     Grid, FormControl,
     InputLabel,
-    TextField, MenuItem, Select,  Chip,
-    InputAdornment, type SelectChangeEvent, ListSubheader, Divider,
+    TextField, MenuItem, Select, Chip,
+    InputAdornment, type SelectChangeEvent, ListSubheader, Divider, Button, styled,
 } from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -12,12 +13,26 @@ import {Controller, useFieldArray, useForm, useWatch} from "react-hook-form";
 import dayjs from 'dayjs';
 import type {ITravelerSex, Passenger, PassengerType} from "@/types/order.ts";
 import phoneCodesGrouped from '@/assets/phone_codes_grouped.json'
-import {useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 import type {RootState} from "@/store";
 // @ts-ignore
 import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
 // @ts-ignore
 import type {Control} from "react-hook-form/dist/types/form";
+
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 type PassengerTitle = 'Master' | 'Miss' | 'Mr' | 'Mrs' | 'Ms'
 const titleMapping = {
@@ -67,7 +82,23 @@ const PhoneCodeCom = memo(({handleCodeChangeCom,fieldState,index,control}:{
     )
 })
 
-const PassengerForm = forwardRef((_,ref) => {
+const passengerTypes = {
+    adt: 'Adult',
+    chd: 'Child',
+    inf: 'Infant',
+} as const;
+
+function formatDateString(dateStr?: string | null) {
+    if (!dateStr) return null
+    const parts = dateStr.trim().split('/')
+    if (parts.length !== 3) return null
+    const [day, month, year] = parts
+    return `${year.padStart(4,'0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+}
+
+const PassengerForm = forwardRef(({setErrorFnc}:{
+    setErrorFnc:(type:'success'|'error',msg:string) => void
+},ref) => {
     const travelers = useSelector((state: RootState)=> state.ordersInfo.query.travelers)
 
     useEffect(() => {
@@ -254,7 +285,72 @@ const PassengerForm = forwardRef((_,ref) => {
 
 
 
+    const changeUploadFile = async (event: { target: HTMLInputElement; }) => {
+        const input = event.target as HTMLInputElement
+        const files = input.files
+        if (!files || files.length === 0) return
+        const file = files[0]
 
+        try {
+            const data = await file.arrayBuffer()
+            const workbook = XLSX.read(data, { type: 'array', cellDates: true })
+            const sheetName = workbook.SheetNames[0]
+            const worksheet = workbook.Sheets[sheetName]
+
+            const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
+                raw: false,
+                defval: '',
+                dateNF: 'dd/mm/yyyy'
+            })
+
+            const passenger: (Passenger & { phoneCode?: string })[] = []
+
+            jsonData.forEach(data => {
+                const titleRaw = data['Title'] || ''
+                const title = titleRaw ? titleRaw[0].toUpperCase() + titleRaw.slice(1) : ''
+                passenger.push({
+                    title,
+                    firstName: data['First Name(Given Name)'] || '',
+                    lastName: data['Last Name(Surname)'] || '',
+                    idNumber: data['Passport Number'] || '',
+                    idCountry: data['Nationality'] || '',
+                    trCountry: data['Passport Issued Country'] || '',
+                    issuedDate: null,
+                    birthday: formatDateString(data['DOB (dd/mm/yyyy)']) ?? null,
+                    expiryDate: formatDateString(data['Passport Expiry (dd/mm/yyyy)']) ?? null,
+                    phoneNumber: '',
+                    emailAddress: '',
+                    passengerIdType: 'pp',
+                    passengerType: (data['Pax Type'] || '').toLowerCase() ?? 'adt',
+                    passengerSexType: data['Gender'] === 'male' ? 'm' : 'f',
+                    phoneCode: '+86',
+                })
+            })
+
+            const passengerCount = travelers.reduce((acc, cur) => acc + cur.passengerCount, 0)
+            if (passengerCount !== passenger.length) {
+                setErrorFnc('error','Passenger numbers do not meet requirements')
+                return
+            }
+
+            const typeMismatch = travelers.every(traveler => {
+                const count = passenger.filter(p => p.passengerType === traveler.passengerType).length
+                return count === traveler.passengerCount
+            })
+
+            if (!typeMismatch) {
+                setErrorFnc('error','Passenger type does not match')
+                return
+            }
+
+            replace(passenger)
+
+        } catch {
+            setErrorFnc('error','Please upload a suitable file.')
+        } finally {
+            event.target.value = '' // ✅ 确保可以重新上传同一个文件
+        }
+    }
 
     const handleCodeChange = (event: SelectChangeEvent,index:number) => {
         setValue(`passengers.${index}.phoneCode`,event.target.value)
@@ -268,6 +364,20 @@ const PassengerForm = forwardRef((_,ref) => {
                 </div>
             </div>
             <div className={styles.commonBox}>
+                <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                >
+                    Upload passenger information
+                    <VisuallyHiddenInput
+                        type="file"
+                        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        onChange={changeUploadFile}
+                    />
+                </Button>
                 <form>
                     {
                         fields.map((field,index) => {
@@ -286,7 +396,7 @@ const PassengerForm = forwardRef((_,ref) => {
                             }
                             return (
                                 <div key={field.id} style={{margin:'30px 0'}}>
-                                    <Divider style={{marginBottom:'30px'}}>Passenger ({field.passengerType})</Divider>
+                                    <Divider style={{marginBottom:'30px'}}>Passenger ({passengerTypes[field.passengerType]})</Divider>
                                     <Grid container spacing={2}>
                                         <Grid size={4}>
                                             <Controller
@@ -649,7 +759,7 @@ const PassengerForm = forwardRef((_,ref) => {
                                                         <Select {...field} id="passengerType-select" disabled label="passenger Type">
                                                             <MenuItem value="adt">Adult</MenuItem>
                                                             <MenuItem value="chd">Child</MenuItem>
-                                                            <MenuItem value="inf">infant</MenuItem>
+                                                            <MenuItem value="inf">Infant</MenuItem>
                                                         </Select>
                                                     </FormControl>
                                                 )}

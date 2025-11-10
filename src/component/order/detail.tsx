@@ -1,4 +1,4 @@
-import React, {memo, useMemo, useRef, useState} from "react";
+import {memo, useMemo, useRef, useState} from "react";
 import {useNavigate} from "react-router";
 import {Box, Card, CardContent, Typography, Divider, CardHeader, Button} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
