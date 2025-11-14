@@ -17,7 +17,7 @@ import {
 import LuggageIcon from "@mui/icons-material/Luggage";
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-
+import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
 import FareCardsSlider from "@/component/order/detail.tsx";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
 
@@ -276,6 +276,15 @@ const FilterItem = memo(() => {
                         <AdfScannerIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
                         <span>Included</span>
                     </div>
+                    {
+                        !!searchData?.teamedKey && (
+                            <div className={`${styles.tipsIcon} ${styles.tipsIconWarning} s-flex ai-ct`}>
+                                <GroupAddTwoToneIcon sx={{fontSize:14, color: 'var(--vt-c-white)' }} />
+                                <span>Teamd</span>
+                            </div>
+                        )
+                    }
+
                 </div>
                 <div className={`${styles.airInfomation} s-flex ai-ct`}>
                     <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>

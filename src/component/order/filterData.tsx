@@ -117,7 +117,6 @@ const FilterTab = memo(() => {
 
 
 const FilterData = memo(() => {
-    const state = useSelector((state: RootState) => state)
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
@@ -133,14 +132,6 @@ const FilterData = memo(() => {
         const segment = airChoose.result.itineraries[airportActived - 1].segments
         return segment
     }, [airChoose.result,airportActived]);
-
-    // const updatedTime = useMemo(() => {
-    //     if(!state.ordersInfo.airportList.length){
-    //         return ''
-    //     }
-    //     const time = state.ordersInfo.airportList[0].updatedTime
-    //     return dayjs(time).format('HH:mm:ss') || ''
-    // }, [state.ordersInfo.airportList,airportActived]);
 
 
     const airItem = useMemo(() => {
