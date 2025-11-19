@@ -10,7 +10,7 @@ import HtmlTooltip from "../defult/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {extractTimeWithTimezone, genRandomKey} from "@/utils/public.ts";
+import {extractTimeWithTimezone} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
 import {
     formatTotalDuration,
@@ -19,6 +19,9 @@ import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
 import FilterItemSkeleton from "@/component/order/filterItemSkeleton.tsx";
 import {SearchDataProvider} from "@/context/order/SearchDataContext.tsx";
+import dayjs from "dayjs";
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 
 const filterTabArr = [
@@ -118,10 +121,12 @@ const FilterTab = memo(() => {
 
 const FilterData = memo(() => {
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const noData = useSelector((state: RootState) => state.ordersInfo.noData)
     const disabledChoose = useSelector((state: RootState) => state.ordersInfo.disabledChoose)
+    const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
     const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
     const itineraries = useSelector((state: RootState) => state.ordersInfo.query.itineraries)
 
@@ -133,9 +138,54 @@ const FilterData = memo(() => {
         return segment
     }, [airChoose.result,airportActived]);
 
+    const filterDatas = useMemo(() => {
+        return airSearchData
+        // 1. 航司过滤
+        .filter(a => filterData.airline.includes(a.channelCode))
+        // 2. 筛选 itinerariesMerge 内部数据
+        .map(a => {
+            const filteredItineraries = a.itinerariesMerge.filter(im => {
+                if (im.itineraryNo !== airportActived) return true;
+
+                const { departure, arrival } = filterData.filterTime[im.itineraryNo];
+                const [depMin, depMax] = departure;
+                const [arrMin, arrMax] = arrival;
+
+                // 跳过筛选的情况
+                const noDep = depMin === 0 && depMax === 24;
+                const noArr = arrMin === 0 && arrMax === 24;
+
+                if (noDep && noArr) return true; // 不筛选
+
+                const segmentsSort = [...im.segments].sort(
+                    (x, y) => x.sequenceNo - y.sequenceNo
+                );
+
+                const depTime = dayjs(segmentsSort[0].departureTime);
+                const arrTime = dayjs(segmentsSort[segmentsSort.length - 1].arrivalTime);
+
+                // 构造筛选时间点（当天日期 + 指定小时）
+                const depMinTime = depTime.startOf('day').add(depMin, 'hour');
+                const depMaxTime = depTime.startOf('day').add(depMax, 'hour');
+                const arrMinTime = arrTime.startOf('day').add(arrMin, 'hour');
+                const arrMaxTime = arrTime.startOf('day').add(arrMax, 'hour');
+
+                const includedD = noDep || depTime.isBetween(depMinTime, depMaxTime, null, '[]');
+                const includedA = noArr || arrTime.isBetween(arrMinTime, arrMaxTime, null, '[]');
+
+                return includedD && includedA;
+            });
+
+            return {
+                ...a,
+                itinerariesMerge: filteredItineraries,
+            };
+        })
+        .filter(a => a.itinerariesMerge.length > 0);
+    }, [airSearchData, filterData, airportActived]);
 
     const airItem = useMemo(() => {
-        let source = airSearchData;
+        let source = filterDatas;
 
         if (airChoose.channelCode && airChoose.result) {
             source = source.filter(
@@ -147,20 +197,18 @@ const FilterData = memo(() => {
         }
 
         const result = source
-        .flatMap(({ itinerariesMerge, ...rest }) =>
-            itinerariesMerge
-            .filter(it => it.itineraryNo === airportActived)
-            .map(it => ({
-                ...rest,
-                segments: it.segments,
-                itineraryNo: it.itineraryNo,
-                amountsMerge: it.amountsMerge,
-                key: genRandomKey(),
-            }))
-        );
-
-        return result;
-    }, [airSearchData, airportActived, airChoose]);
+            .flatMap(({ itinerariesMerge, ...rest }) =>
+                itinerariesMerge
+                .filter(it => it.itineraryNo === airportActived)
+                .map(it => ({
+                    ...rest,
+                    segments: it.segments,
+                    itineraryNo: it.itineraryNo,
+                    amountsMerge: it.amountsMerge,
+                }))
+            );
+        return result ?? [];
+    }, [airportActived, airChoose,filterDatas]);
 
 
 
@@ -174,6 +222,36 @@ const FilterData = memo(() => {
         const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
         return result?.airportEName ?? arrivalValue
     },[cityList,itineraries,airportActived])
+
+
+    const renderContent = () => {
+        if (disabledChoose || searchLoad) {
+            return <FilterItemSkeleton />;
+        }
+
+        if (noData || airItem?.length === 0) {
+            return (
+                <Box component="section" sx={{ p: 2 }}>
+                    <Typography variant="h4" gutterBottom>
+                        No data found
+                    </Typography>
+                </Box>
+            );
+        }
+
+        return (
+            <div className={styles.filterContent}>
+                {airItem.map((searchData, searchDataIndex) => (
+                    <SearchDataProvider
+                        value={searchData}
+                        key={searchData.contextId ?? searchDataIndex}
+                    >
+                        <FilterItem />
+                    </SearchDataProvider>
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div className={`${styles.filterData} flex-1`}>
@@ -224,28 +302,7 @@ const FilterData = memo(() => {
 
                 </div>
                 {/*<FilterTab />*/}
-                {
-                    disabledChoose ? (
-                        <FilterItemSkeleton />
-                    ) : noData ? (
-                        <Box component="section" sx={{ p: 2 }}>
-                            <Typography variant="h4" gutterBottom>
-                                No data found
-                            </Typography>
-                        </Box>
-                    ) : airSearchData.length ? (
-                        <div className={styles.filterContent}>
-                            {airItem.map((searchData,searchDataIndex) => (
-                                <SearchDataProvider value={searchData} key={`${searchData.key}-${searchDataIndex}`}>
-                                    <FilterItem />
-                                </SearchDataProvider>
-                            ))}
-                        </div>
-                    ) : (
-                        <FilterItemSkeleton />
-                    )
-                }
-
+                {renderContent()}
             </div>
         </div>
     )

@@ -22,6 +22,13 @@ type IOrder = {
     disabledChoose:boolean
     cityList: IAirport[]
     createdLoading:boolean
+    filterData:{
+        airline:string[]
+        filterTime:{
+            departure:number[]
+            arrival:number[]
+        }[]
+    }
 }
 const initialState: IOrder = {
     query:{
@@ -58,7 +65,11 @@ const initialState: IOrder = {
     noData:false,
     disabledChoose:false,
     cityList: [],
-    createdLoading:false
+    createdLoading:false,
+    filterData:{
+        airline:[],
+        filterTime:[]
+    }
 }
 
 const orderInfoSlice = createSlice({
@@ -217,6 +228,18 @@ const orderInfoSlice = createSlice({
         setCreatedLoading(state, action: PayloadAction<boolean>) {
             state.createdLoading = action.payload
         },
+        setFilterData(state, action: PayloadAction<{
+            airline?: string[]
+            filterTime?: {
+                departure:number[]
+                arrival:number[]
+            }[]
+        }>) {
+            state.filterData = {
+                airline:action.payload.airline ?? state.filterData.airline,
+                filterTime:action.payload.filterTime ?? state.filterData.filterTime,
+            }
+        },
         resetChoose: () => initialState
     },
 })
@@ -242,6 +265,7 @@ export const {
     switchDay,
     setDisabledChoose,
     setCityArr,
-    setCreatedLoading
+    setCreatedLoading,
+    setFilterData
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

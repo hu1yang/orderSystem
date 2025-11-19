@@ -280,7 +280,7 @@ const FilterItem = memo(() => {
                         !!searchData?.teamedKey && (
                             <div className={`${styles.tipsIcon} ${styles.tipsIconWarning} s-flex ai-ct`}>
                                 <GroupAddTwoToneIcon sx={{fontSize:14, color: 'var(--vt-c-white)' }} />
-                                <span>Teamd</span>
+                                <span>Promo</span>
                             </div>
                         )
                     }

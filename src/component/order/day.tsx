@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import {setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {FQuery} from "@/types/order.ts";
 import {getAgentQuery} from "@/utils/order.ts";
-import {resetAirChoose, setNoData, setSearchDate, switchDay} from "@/store/orderInfo.ts";
+import {resetAirChoose, setFilterData, setNoData, setSearchDate, switchDay} from "@/store/orderInfo.ts";
 
 interface IDay {
     label:string;
@@ -20,7 +20,7 @@ interface IDay {
     key:string
 }
 
-const weekDaysShort = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+const weekDaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const DayChoose = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -88,6 +88,7 @@ const DayChoose = memo(() => {
         dispatch(setNoData(false))
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
+        dispatch(setFilterData({ airline: [] , filterTime: [] }));
         const newResult = {...query}
         let newItineraries = newResult.itineraries
         if(isRound){
@@ -118,7 +119,7 @@ const DayChoose = memo(() => {
             <div className={`${styles.dayChoose} flex-1`}>
                 {
                     !!dayValue && (
-                        <Tabs value={dayValue} onChange={handleChange}  variant="scrollable"
+                        <Tabs value={dayValue} onChange={handleChange} variant="scrollable"
                               scrollButtons
                               aria-label="visible arrows tabs example"
                               sx={{
@@ -151,7 +152,13 @@ const DayChoose = memo(() => {
                               }}>
                             {
                                 dayArr.map(item => (
-                                    <Tab key={item.key} value={item.key} label={
+                                    <Tab key={item.key} value={item.key} disabled={searchLoad} sx={{
+                                        '&.Mui-disabled':{
+                                            'span, em':{
+                                                color:'var(--tips-gary-color) !important'
+                                            }
+                                        }
+                                    }} label={
                                         <div className={`${styles.dayItem} s-flex flex-dir ai-ct`}>
                                             <div className={`${styles.dayView} s-flex flex-dir`}>
                                                 <span>{item.label}</span>

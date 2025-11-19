@@ -38,7 +38,7 @@ export function generateMonthlyDateRanges(
 
         if (isRound) {
             const end = addDays(current, numberValue)
-            const label = `${format(current, 'MMM d')} – ${format(end, 'MMM d')}`
+            const label = `${format(current, 'd MMM')} – ${format(end, 'd MMM')}`
             ranges.push({
                 label,
                 value: {
@@ -48,7 +48,7 @@ export function generateMonthlyDateRanges(
                 key: format(end, 'yyyy-MM-dd'),
             })
         } else {
-            const label = format(current, 'MMM d')
+            const label = format(current, 'd MMM')
             ranges.push({
                 label,
                 value: format(current, 'yyyy-MM-dd'),
