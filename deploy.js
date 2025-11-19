@@ -5,7 +5,7 @@ import util from 'util';
 const ssh = new NodeSSH();
 const asyncExec = util.promisify(exec);
 
-const remotePath = '/opt/static/intl';
+const remotePath = '/opt/static/intl-test';
 
 async function buildProject() {
     console.log('开始打包项目...');
