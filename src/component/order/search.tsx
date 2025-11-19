@@ -34,7 +34,7 @@ import type {
 } from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    resetAirChoose, setCityArr, setNoData,
+    resetAirChoose, setCityArr, setFilterData, setNoData,
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
@@ -678,6 +678,7 @@ const SearchComponent = memo(() => {
         dispatch(setSearchDate([]))
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
+        dispatch(setFilterData({ airline: [] , filterTime: [] }));
 
         const result: FQuery = {
             itineraryType: radioType,

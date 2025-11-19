@@ -10,7 +10,7 @@ import type {
 import dayjs from "dayjs";
 import duration from 'dayjs/plugin/duration'
 import {flightQueryAgent} from "@/utils/request/agent.ts";
-import {setNoData, setSearchDate} from "@/store/orderInfo.ts";
+import {setFilterData, setNoData, setSearchDate} from "@/store/orderInfo.ts";
 import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
 dayjs.extend(duration)
@@ -189,7 +189,6 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
                 )
             }));
 
-            // 逐个位置比对取最低价
             const mergedAmounts: IamountsMerge[] = [
                 {
                     itineraryKey: '',
@@ -239,31 +238,32 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
 
 // 获取每段的最低价格
 export function getLowestAmountsByItinerary(data: ItinerariesMerge[]) {
-    // 按 itineraryNo 分组
-    const groupMap = new Map<number, Amount[]>();
+    const groupMap = new Map<number, { minAmount: Amount | null, minTotal: number }>();
 
-    data.forEach(item => {
-        const list: Amount[] = [];
-        item.amountsMerge.forEach(am => {
-            am.amounts.forEach(amount => {
-                if(amount.passengerType === 'adt'){
-                    list.push(amount);
-                }
-            });
-        });
+    for (const item of data) {
+        const itineraryNo = item.itineraryNo;
 
-        if (groupMap.has(item.itineraryNo)) {
-            groupMap.get(item.itineraryNo)!.push(...list);
-        } else {
-            groupMap.set(item.itineraryNo, list);
+        if (!groupMap.has(itineraryNo)) {
+            groupMap.set(itineraryNo, { minAmount: null, minTotal: Infinity });
         }
-    });
-    // 找出每组的最低价
-    const result = Array.from(groupMap.entries()).map(([, amounts]) => {
-        return findLowestAmount(amounts)
-    });
 
-    return result;
+        const group = groupMap.get(itineraryNo)!;
+
+        for (const am of item.amountsMerge) {
+            for (const amount of am.amounts) {
+                if (amount.passengerType !== 'adt') continue;
+
+                const total = getAdultAmountTotal(amount);
+
+                if (total < group.minTotal) {
+                    group.minTotal = total;
+                    group.minAmount = amount;
+                }
+            }
+        }
+    }
+
+    return Array.from(groupMap.values()).map(g => g.minAmount);
 }
 
 // 单独计算最低价
@@ -289,43 +289,56 @@ export function amountPrice(amounts: Amount[]) {
 }
 
 
-export function getAgentQuery(result:FQuery,dispatch:AppDispatch){
-    flightQueryAgent({
-        ...result,
-        cacheOnly:false
-    }).then(res => {
-        if(res.length){
-            const objResult = deduplicateByChannelCode(res)
-            if(objResult.some(objresult => objresult.response.results && objresult.response.results.length)){
-                const mergeAirResult = calculateAirResult(objResult)
-                dispatch(setSearchDate(mergeAirResult))
-            }else{
-                dispatch(setSearchDate([]))
-                dispatch(setNoData(true))
-            }
-            const allFailed = objResult.every(a => a.succeed !== true)
-            dispatch(setSearchLoad(false))
+export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
+    try {
+        const res = await flightQueryAgent({
+            ...result,
+            cacheOnly: false
+        });
 
-            if(allFailed){
-                const resultError = res.find(sc => sc.errorCode === 'C-00002')
-                if(resultError){
-                    dispatch(setSearchDate([]))
-                    dispatch(setNoData(true))
-                    dispatch(setErrorMsg(resultError.errorMessage))
-                    return
-                }
-                dispatch(setSearchDate([]))
-                dispatch(setNoData(true))
-                dispatch(setErrorMsg('No suitable data'))
-            }
-        }else{
-            dispatch(setSearchLoad(false))
-            dispatch(setNoData(true))
-            dispatch(setErrorMsg('No suitable data'))
+        if (!res.length) {
+            return handleNoResult(dispatch, 'No suitable data');
         }
-    }).catch(() => {
-        dispatch(setSearchLoad(false))
-        dispatch(setErrorMsg('Interface error'))
-        dispatch(setSearchFlag(false))
-    })
+
+        const objResult = deduplicateByChannelCode(res);
+        const allFailed = objResult.every(a => !a.succeed);
+
+        if (allFailed) {
+            const err = res.find(r => r.errorCode === 'C-00002');
+            return handleNoResult(dispatch, err?.errorMessage ?? 'No suitable data');
+        }
+
+        const hasResults = objResult.some(o => o.response.results && o.response.results.length);
+        if (!hasResults) {
+            return handleNoResult(dispatch, 'No suitable data');
+        }
+
+        const mergeAirResult = calculateAirResult(objResult);
+        dispatch(setSearchDate(mergeAirResult));
+
+        dispatch(
+            setFilterData({
+                airline: [...new Set(mergeAirResult.map(i => i.channelCode))],
+                filterTime: result.itineraries.map(() => ({
+                    departure:[0,24],
+                    arrival:[0,24],
+                }))
+            })
+        );
+
+        dispatch(setSearchLoad(false));
+    } catch {
+        dispatch(setSearchLoad(false));
+        dispatch(setErrorMsg('Interface error'));
+        dispatch(setSearchFlag(false));
+    }
+}
+
+// 🔥 单独抽出“无数据统一处理逻辑”
+function handleNoResult(dispatch: AppDispatch, message: string) {
+    dispatch(setSearchDate([]));
+    dispatch(setFilterData({ airline: [] , filterTime: [] }));
+    dispatch(setNoData(true));
+    dispatch(setErrorMsg(message));
+    dispatch(setSearchLoad(false));
 }

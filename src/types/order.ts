@@ -362,7 +362,7 @@ export type MregeResultData = Omit<MregeResultAirport, 'itinerariesMerge'> & {
     segments: Segment[];
     itineraryNo:number;
     amountsMerge:IamountsMerge[]
-    key: string
+    key?: string
 }
 
 

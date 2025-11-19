@@ -1,45 +1,15 @@
 import {Box, Checkbox, Divider, FormControlLabel, FormGroup, Slider, SliderThumb, Typography} from "@mui/material";
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import LuggageIcon from '@mui/icons-material/Luggage';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LocalAirportIcon from '@mui/icons-material/LocalAirport';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Brightness2Icon from '@mui/icons-material/Brightness2';
 import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import styles from './styles.module.less'
-import {memo, useMemo, useState} from "react";
+import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import * as React from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-
-
-const recommendedArr = [
-    {
-        icon: <FlightTakeoffIcon/>,
-        label: 'Nonstop',
-        value: 'nonstop'
-    },
-    {
-        icon: <LuggageIcon/>,
-        label: 'Baggage',
-        value: 'baggage'
-    },
-    {
-        icon: <BusinessCenterIcon/>,
-        label: 'Work',
-        value: 'work'
-    },
-    {
-        icon: <LocalAirportIcon/>,
-        label: 'Airport',
-        value: 'airport'
-    },
-    {
-        icon: <div>CO2e</div>,
-        label: 'Low Emissions',
-        value: 'co2'
-    }
-]
+import {airlist, debounce} from "@/utils/public.ts";
+import defaultAir from "@/assets/air/default.webp";
+import {setFilterData} from "@/store/orderInfo.ts";
 
 
 type AirbnbThumbComponentProps = React.HTMLAttributes<HTMLSpanElement> & {
@@ -71,11 +41,22 @@ const AirbnbThumbComponent = memo((props: AirbnbThumbComponentProps) => {
     );
 })
 
-const FilterAccordion = memo(({title, render}: {
+const FilterAccordion = memo(({title, render,clear,clearFilter}: {
     title: string;
-    render: React.ReactNode;
+    render: React.ReactNode
+    clear:boolean
+    clearFilter?:() => void
 }) => {
     const [open, setOpen] = useState(true)
+
+    const clearFnc = (event:React.MouseEvent) => {
+        event.preventDefault()
+        event.stopPropagation()
+        if(clearFilter){
+            clearFilter()
+        }
+    }
+
     return (
         <div className={styles.filterAccordion}>
             <div className={`${styles.filterHeader} s-flex jc-bt ai-ct cursor-p`} onClick={() => setOpen(!open)}>
@@ -83,15 +64,20 @@ const FilterAccordion = memo(({title, render}: {
                     <span>{title}</span>
                 </div>
                 <div className={`s-flex ai-ct cursor-p`}>
-                    <Box
-                        sx={{
-                            cursor: 'pointer', color: 'var(--active-color)', '&:hover': {
-                                textDecoration: 'underline',
-                            }
-                        }}
-                    >
-                        Clear
-                    </Box>
+                    {
+                        clear && (
+                            <Box
+                                onClick={clearFnc}
+                                sx={{
+                                    cursor: 'pointer', color: 'var(--active-color)', '&:hover': {
+                                        textDecoration: 'underline',
+                                    }
+                                }}
+                            >
+                                Clear
+                            </Box>
+                        )
+                    }
                     <ExpandMoreIcon sx={{
                         fontSize: 24,
                         fontWeight: 400,
@@ -109,53 +95,76 @@ const FilterAccordion = memo(({title, render}: {
     )
 })
 
-// --- 新增组件: 推荐项复用 ---
-const RecommendedCheckboxList = memo(() => (
-    <FormGroup>
-        {recommendedArr.map((item) => (
-            <FormControlLabel
-                key={item.value}
-                control={
-                    <Checkbox
-                        disabled={true}
-                        defaultChecked
-                        value={item.value}
-                        sx={{
-                            'svg': {
-                                fontSize: 24,
-                                fill: 'var(--text-color)'
-                            }
-                        }}
-                    />
-                }
-                label={
-                    <div className={`${styles.checkLabel} s-flex ai-ct`}>
-                        <div className={`${styles.icons} s-flex ai-ct`}>{item.icon}</div>
-                        <span>{item.label}</span>
-                    </div>
-                }
-                sx={{
-                    borderRadius: 'var(--put-border-raduis)',
-                    marginRight: 0,
-                    marginLeft: 0,
-                    marginTop: '5px',
-                    '&:hover': {
-                        backgroundColor: 'var(--vt-c-white)',
+const RecommendedCheckboxList = () => {
+    const dispatch = useDispatch()
+
+    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
+    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
+    const alineList = useMemo(() => [...new Set(airSearchData.map(i => i.channelCode))],[airSearchData])
+
+    const handleChange = (val:string) => {
+        const value = filterData.airline.includes(val)
+            ? filterData.airline.filter(v => v !== val)
+            : [...filterData.airline, val]
+        dispatch(setFilterData({
+            airline: value
+        }))
+    }
+
+    return (
+        <FormGroup>
+            {alineList.map((item) => (
+                <FormControlLabel
+                    key={item}
+                    control={
+                        <Checkbox
+                            checked={filterData.airline.includes(item)}
+                            onChange={() => handleChange(item)}
+                            sx={{
+                                'svg': {
+                                    fontSize: 24,
+                                    fill: 'var(--text-color)'
+                                }
+                            }}
+                        />
                     }
-                }}
-            />
-        ))}
-    </FormGroup>
-));
+                    label={
+                        <div className={`${styles.checkLabel} s-flex ai-ct`}>
+                            <div className={`${styles.icons} s-flex ai-ct`}>
+                                <img src={airlist[item]?.picture ?? defaultAir} alt=""/>
+                            </div>
+                            <span>{airlist[item].title}</span>
+                        </div>
+                    }
+                    sx={{
+                        borderRadius: 'var(--put-border-raduis)',
+                        marginRight: 0,
+                        marginLeft: 0,
+                        marginTop: '5px',
+                        '&:hover': {
+                            backgroundColor: 'var(--vt-c-white)',
+                        }
+                    }}
+                />
+            ))}
+        </FormGroup>
+    )
+}
 
 // --- 新增组件: 时间滑块复用 ---
-const TimeRangeSlider = memo(({label}: {
-    label: string;
+const TimeRangeSlider = memo(({label,filterTimevalue,changeFilterTimeFnc,disabled}: {
+    label: string
+    filterTimevalue: number[]
+    changeFilterTimeFnc: (val:number[]) => void
+    disabled:boolean
 }) => {
     const formatTime = (v: number) => String(v).padStart(2, '0') + ':00';
 
-    const [slider, setSlider] = useState([0, 24])
+    const [slider, setSlider] = useState([0,24])
 
+    useEffect(() => {
+        setSlider(filterTimevalue)
+    }, [filterTimevalue]);
     return (
         <Box sx={{width: '100%', mx: 'auto'}}>
             <Typography gutterBottom className={`${styles.timerTitle} s-flex ai-ct`}>
@@ -165,14 +174,21 @@ const TimeRangeSlider = memo(({label}: {
                 </span>
             </Typography>
             <Slider
-                disabled
                 value={slider}
+                disabled={disabled}
                 onChange={(_, newValue) => {
                     let [start, end] = newValue as number[];
-                    start = Math.min(start, 18);
+                    start = Math.min(start, 24);
                     end = Math.max(end, 0);
                     if (start > end) start = end;
                     setSlider([start, end]);
+                }}
+                onChangeCommitted={(_, newValue) => {
+                    let [start, end] = newValue as number[];
+                    start = Math.min(start, 24);
+                    end = Math.max(end, 0);
+                    if (start > end) start = end;
+                    changeFilterTimeFnc([start, end])
                 }}
                 min={0}
                 max={24}
@@ -225,9 +241,14 @@ const TimeRangeSlider = memo(({label}: {
 });
 
 const FilterComponent = memo(() => {
+    const dispatch = useDispatch()
+
     const query = useSelector((state: RootState) => state.ordersInfo.query)
+    const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
+    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
+
 
     const arrival = useMemo(() => {
         const arrivalValue = query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
@@ -235,6 +256,40 @@ const FilterComponent = memo(() => {
         return result?.airportEName ?? arrivalValue
     }, [query,airportActived,cityList]);
 
+    const changeFilterTime = useCallback(
+        debounce((value: number[], index: number, type: 'arrival' | 'departure') => {
+            dispatch(
+                setFilterData({
+                    filterTime: filterData.filterTime.map((fl, flIndex) => {
+                        if (flIndex === index) {
+                            return {
+                                ...fl,
+                                [type]: value, // ← 创建新对象，保证不可变
+                            }
+                        }
+                        return fl
+                    }),
+                })
+            )
+        },200),
+        [filterData]
+    )
+
+    const clearFilter = useCallback((index:number) => {
+        dispatch(
+            setFilterData({
+                filterTime: filterData.filterTime.map((fl, flIndex) => {
+                    if (flIndex === index) {
+                        return {
+                            departure:[0,24],
+                            arrival:[0,24]
+                        }
+                    }
+                    return fl
+                }),
+            })
+        )
+    },[filterData])
 
     return (
         <div className={styles.filterContainer}>
@@ -242,69 +297,47 @@ const FilterComponent = memo(() => {
                 <div className={`${styles.titleBox} s-flex ai-ct jc-bt`}>
                     <div className={styles.title}>
                         <span>Filters (Departure)</span>
-                        {/*<p>43 flights found</p>*/}
                     </div>
-                    {/*<Box*/}
-                    {/*    sx={{*/}
-                    {/*        cursor: 'pointer',*/}
-                    {/*        color: 'var(--active-color)',*/}
-                    {/*        '&:hover': {*/}
-                    {/*            textDecoration: 'underline',*/}
-                    {/*        },*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    {/*    Clear All*/}
-                    {/*</Box>*/}
                 </div>
                 <div className={`${styles.filterLiBox} s-flex flex-wrap`}>
                     <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
                         <div className={styles.label}>
                             <span>Departing to {arrival}</span>
                         </div>
-                        {/*<CloseIcon/>*/}
                     </div>
+                    {
+                        filterData.airline.map(item => (
+                            <div className={`${styles.fliterLi} s-flex ai-st cursor-p`} key={item}>
+                                <div className={styles.label}>
+                                    <span>{airlist[item].title}</span>
+                                </div>
+                            </div>
+                        ))
+                    }
 
-                    {/*<div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>*/}
-                    {/*    <div className={styles.label}>*/}
-                    {/*        <span>Nonstop</span>*/}
-                    {/*    </div>*/}
-                    {/*    <CloseIcon/>*/}
-                    {/*</div>*/}
-                    <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
-                        <div className={styles.label}>
-                            <span>All Airlines</span>
-                        </div>
-                        {/*<CloseIcon/>*/}
-                    </div>
 
                 </div>
             </div>
             <Divider component="div"/>
-            <FilterAccordion title="Departure" render={<RecommendedCheckboxList/>}/>
-            <Divider component="div"/>
+            <FilterAccordion title="Airlines" clear={false} render={<RecommendedCheckboxList/>}/>
+            <Divider component="div" />
             {
-                query.itineraryType === 'round' && (
-                    <>
-                        <FilterAccordion title="Arrival" render={<RecommendedCheckboxList/>}/>
-                        <Divider component="div"/>
-                    </>
-                )
+                !searchLoad && filterData.filterTime.map((filterTime,filterTimeIndex) => (
+                    <FilterAccordion
+                        title={`Times (${query.itineraries[filterTimeIndex].arrival})`}
+                        key={filterTimeIndex}
+                        clear={true}
+                        clearFilter={() => clearFilter(filterTimeIndex)}
+                        render={
+                            <>
+                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.departure} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'departure')} label={`Departure Time:`} />
+                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.arrival} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'arrival')} label={`Arrival Time:`} />
+                            </>
+                        }
+                    />
+                ))
             }
 
-            <FilterAccordion
-                title="Timers"
-                render={
-                    <>
-                        {
-                            query.itineraries.map((itinerarie,itinerarieIndex) => (
-                                <TimeRangeSlider key={itinerarieIndex}
-                                    label={`Departing from ${itinerarie[itinerarieIndex === 0?'departure':'arrival']}:`}
-                                />
-                            ))
-                        }
-                    </>
-                }
-            />
         </div>
     );
 })
