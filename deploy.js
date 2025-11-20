@@ -4,13 +4,19 @@ import util from 'util';
 
 const ssh = new NodeSSH();
 const asyncExec = util.promisify(exec);
+const env = process.env.DEPLOY_ENV;
 
-const remotePath = '/opt/static/intl';
+const remotePath =
+    env === 'prod'
+        ? '/opt/static/intl'
+        : '/opt/static/intl-test';
 
 async function buildProject() {
     console.log('开始打包项目...');
-    // 如果你用 yarn 就改成 yarn build
-    await asyncExec('yarn build');
+    const buildCmd = env === 'prod' ? 'yarn build' : 'yarn build:test';
+    console.log(remotePath)
+    console.log(buildCmd)
+    await asyncExec(buildCmd);
     console.log('项目打包完成');
 }
 
@@ -18,9 +24,9 @@ async function deploy() {
     try {
         await buildProject();
         await ssh.connect({
-            host: '39.104.79.0',
-            username: 'root',
-            password: 'SpeedPower3722'
+            host: '',
+            username: '',
+            password: ''
         });
 
         console.log('连接成功');
