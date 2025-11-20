@@ -7,7 +7,7 @@ import axios, {
 import Cookie from 'js-cookie'
 import {normalizeParams, toLogin} from "@/utils/public.ts";
 
-const isProd = import.meta.env.MODE === 'production';
+const isDev = import.meta.env.MODE === 'development';
 const baseMap: Record<string, string> = {
     '/identityApi': import.meta.env.VITE_IDENTITY_API,
     '/groupApi': import.meta.env.VITE_GROUP_API,
@@ -30,7 +30,7 @@ axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 // 请求拦截器
 instance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-        if (isProd && config.url) {
+        if (!isDev && config.url) {
             const matchedPrefix = Object.keys(baseMap).find(prefix =>
                 config.url!.startsWith(prefix)
             );
