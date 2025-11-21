@@ -5,7 +5,7 @@ import {
     Grid, FormControl,
     InputLabel,
     TextField, MenuItem, Select, Chip,
-    InputAdornment, type SelectChangeEvent, ListSubheader, Divider, Button, styled,
+    InputAdornment, type SelectChangeEvent, ListSubheader, Divider, Button, styled, Stack,
 } from "@mui/material";
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,6 +21,8 @@ import type {ControllerFieldState} from "react-hook-form/dist/types/controller";
 import type {Control} from "react-hook-form/dist/types/form";
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -284,6 +286,18 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
     };
 
 
+    const downTemplate = async () => {
+        const res = await fetch(`${import.meta.env.VITE_BASE}/passengerTemplate.xlsx`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'passengerTemplate.xlsx';
+        link.click();
+
+        URL.revokeObjectURL(url);
+    };
 
     const changeUploadFile = async (event: { target: HTMLInputElement; }) => {
         const input = event.target as HTMLInputElement
@@ -300,12 +314,12 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
             const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
                 raw: false,
                 defval: '',
-                dateNF: 'dd/mm/yyyy'
             })
 
             const passenger: (Passenger & { phoneCode?: string })[] = []
 
             jsonData.forEach(data => {
+                if(!data['Sequence']) return
                 const titleRaw = data['Title'] || ''
                 const title = titleRaw ? titleRaw[0].toUpperCase() + titleRaw.slice(1) : ''
                 passenger.push({
@@ -367,7 +381,6 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                 <Button
                     component="label"
                     role={undefined}
-                    variant="contained"
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
                 >
@@ -790,7 +803,19 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                     }
                 </form>
                 <Chip label={
-                    <span>Please enter the name exactly as it appears on your travel documents for check-in. If the name is incorrect, you may not be able to board your flight and a cancellation fee will be charged.</span>
+                    <Stack spacing={2} direction="column">
+                        <span>Please enter the name exactly as it appears on your travel documents for check-in. If the name is incorrect, you may not be able to board your flight and a cancellation fee will be charged.</span>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            color="success"
+                            tabIndex={-1}
+                            startIcon={<CloudDownloadIcon />}
+                            onClick={downTemplate}
+                        >
+                            Download passenger template
+                        </Button>
+                    </Stack>
                 } sx={{
                     borderRadius: 0,
                     fontSize: 12,
