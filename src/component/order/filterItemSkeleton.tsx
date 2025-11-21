@@ -7,7 +7,7 @@ const FilterItemSkeleton = memo(() => {
     return (
         <Box>
             {
-                [...Array(3)].map((_, i) => (
+                [...Array(6)].map((_, i) => (
                     <div key={i} className={styles.filterItem} style={{
                         backgroundColor:'var(--vt-c-white)',
                         padding:'12px var(--pm-16) 16px',

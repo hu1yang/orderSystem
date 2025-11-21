@@ -244,7 +244,7 @@ const FilterData = memo(() => {
                 {airItem.map((searchData, searchDataIndex) => (
                     <SearchDataProvider
                         value={searchData}
-                        key={searchData.contextId ?? searchDataIndex}
+                        key={searchDataIndex}
                     >
                         <FilterItem />
                     </SearchDataProvider>

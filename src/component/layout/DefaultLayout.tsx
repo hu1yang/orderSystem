@@ -1,19 +1,16 @@
 import {Outlet, useLocation} from "react-router";
 import {useEffect} from "react";
-// import Cookie from "js-cookie";
-// import {toLogin} from "@/utils/public.ts";
-// import {getIdentityAgent} from "@/utils/request/agent.ts";
+import Cookie from "js-cookie";
+import {toLogin} from "@/utils/public.ts";
 
 const DefaultLayout = () => {
     const {pathname} = useLocation()
-    // useEffect(() => {
-    //     const isToken = Cookie.get('token')
-    //     if(!isToken){
-    //         toLogin()
-    //     }else{
-    //         getIdentityAgent()
-    //     }
-    // }, []);
+    useEffect(() => {
+        const isToken = Cookie.get('token')
+        if(!isToken){
+            toLogin()
+        }
+    }, []);
 
     useEffect(() => {
         window.scrollTo({
@@ -23,11 +20,7 @@ const DefaultLayout = () => {
     }, [pathname]);
 
     return (
-        <div>
-            <div>
-                <Outlet />
-            </div>
-        </div>
+        <Outlet/>
     )
 }
 
