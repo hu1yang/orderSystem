@@ -9,6 +9,7 @@ import b2 from '@/assets/air/b2.webp'
 import ka from '@/assets/air/ka.webp'
 import g9 from '@/assets/air/g9.webp'
 import t3 from '@/assets/air/3t.webp'
+import rq from '@/assets/air/rq.webp'
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -201,4 +202,5 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-KA-V1': { picture: ka, title: 'Aero Nomad' },
     'API-3T-V1': { picture: t3, title: 'Tarco Aviation' },
     'API-G9-V1': { picture: g9, title: 'Air Arabia' },
+    'API-RQ-V1': { picture: rq, title: 'Kam Air' },
 }
