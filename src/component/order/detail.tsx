@@ -123,9 +123,9 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     }
 
     return (
-        <Box sx={{width: 250}}>
+        <Box sx={{width: 'var(--card-width)'}}>
             <Card className={'cursor-p'} sx={{
-                width: 250, borderRadius: '4px', padding: '16px 24px',
+                width: 'var(--card-width)', borderRadius: '4px', padding: '16px 24px',
                 boxShadow: 'inset 0 0 0 3px transparent',
                 '.MuiCardContent-root': {
                     padding: '0'
@@ -401,7 +401,7 @@ const FareCardsSlider = memo(({nextCheapAmount}: {
             }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                 <ArrowForwardIosIcon/>
             </Box>
-            <Swiper slidesPerView={2.8} spaceBetween={5} grabCursor={true} pagination={{clickable: true}}
+            <Swiper slidesPerView={'auto'} spaceBetween={5} grabCursor={true} pagination={{clickable: true}}
                     onBeforeInit={(swiper) => {
                         // @ts-ignore
                         swiper.params.navigation.prevEl = prevRef.current;

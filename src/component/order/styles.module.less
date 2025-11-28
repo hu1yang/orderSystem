@@ -1,3 +1,21 @@
+:root{
+    --airline-width:120px;
+    --put-width: 240px;
+    --put-height: 54px;
+    --vice-width: 310px;
+    --weight-size: 1.7rem;
+    --price-width: 300px;
+}
+@media (max-width: 1400px) {
+    :root{
+        --airline-width:100px;
+        --put-width: 210px;
+        --put-height: 54px;
+        --vice-width: 260px;
+        --weight-size: 1.5rem;
+        --price-width: 250px;
+    }
+}
 .searchContainer{
     border-radius: var(--border-radius);
     background: var(--vt-c-white);
@@ -255,7 +273,7 @@
 }
 
 .filterContainer{
-    width: 310px;
+    width: var(--vice-width);
     font-size: 1rem;
     margin-inline-end: 8px;
     padding: 26px 14px 16px 8px;
@@ -479,7 +497,7 @@
                                 .leftInfoDetailTitle{
                                     padding: 0 8px;
                                     .airTitle{
-                                        width: 120px;
+                                        width: var(--airline-width);
                                         .airTitleSpan{
                                             color: var(--text-color);
                                             font-size: 1.1em;
@@ -500,7 +518,7 @@
                             }
                         }
                         .rightInfo{
-                            width: 300px;
+                            width: var(--price-width);
                             padding-left: 15px;
                             flex: 0 0 auto;
                             .priceBox{
@@ -514,7 +532,7 @@
                                     div{
                                         color: var(--text-color);
                                         font-weight: bold;
-                                        font-size: 1.7em;
+                                        font-size: var(--weight-size);
                                         margin-left: 2px;
                                         line-height: 1;
                                     }
@@ -665,6 +683,9 @@
                 margin: 0 2px;
             }
         }
+    }
+    :global .swiper-slide{
+        width: var(--card-width);
     }
 }
 

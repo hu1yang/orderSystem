@@ -176,6 +176,10 @@ const Detail = memo(() => {
 
     },[query,airChoose,contacts])
 
+    const backOrderNav = () => {
+        navigate('/')
+    }
+
     const backOrder = (orderid:string) => {
         const origin = new URL(location.origin).origin;
         window.parent.postMessage({
@@ -184,7 +188,7 @@ const Detail = memo(() => {
         },origin)
 
         setTimeout(() => {
-            navigate('/')
+            backOrderNav()
         },500)
     }
 
@@ -211,13 +215,12 @@ const Detail = memo(() => {
         );
     },[open])
 
-
     return (
         <div className={`${styles.detailContainer} s-flex flex-dir`}>
             <div className={styles.detailHeader}>
                 <div className={styles.wContainer100}>
                     <div className={styles.setpContainer}>
-                        <Stepper activeStep={0} sx={{
+                        <Stepper activeStep={1} sx={{
                             width: '100%',
                             '.MuiSvgIcon-root': {
                                 width: '1.4em',
@@ -234,7 +237,11 @@ const Detail = memo(() => {
                             },
                             '.MuiStepConnector-line':{
                                 borderWidth: 4,
-                                borderImage: 'linear-gradient(to right, var(--active-color) 50%, var(--put-border-color) 50%) 1 !important'
+                                // borderImage: 'linear-gradient(to right, var(--active-color) 50%, var(--put-border-color) 50%) 1 !important'
+                            },
+                            '.Mui-active .MuiStepConnector-line': {
+                                borderColor: 'var(--active-color)',
+
                             }
                         }}>
                             <Step>
@@ -243,10 +250,19 @@ const Detail = memo(() => {
                             <Step>
                                 <StepLabel />
                             </Step>
+                            <Step>
+                                <StepLabel />
+                            </Step>
                         </Stepper>
-                        <div className={`s-flex jc-bt ai-ct`}>
+                        <div className={'s-flex'}>
+                            <Typography className={'flex-1'} fontWeight={400} fontSize={14} color={'var(--active-color)'}>
+                                Choose a suitable flight
+                                <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrderNav}>
+                                    <span>Change Flight</span>
+                                </div>
+                            </Typography>
                             <Typography fontWeight={400} fontSize={14} color={'var(--active-color)'}>Fill in your info</Typography>
-                            <Typography fontWeight={400} fontSize={14} color={'var(--text-color)'}>Finalize your payment</Typography>
+                            <Typography className={'flex-1'} textAlign={'right'} fontWeight={400} fontSize={14} color={'var(--text-color)'}>Finalize your payment</Typography>
                         </div>
                     </div>
                     <div className={`s-flex jc-bt`}>
