@@ -108,7 +108,7 @@ const FlightTimeline = memo(({segments}:{
                             fontSize: '1.1em',
                             borderRadius: '3px',
                             fontWeight: 500,
-                            width: '90px'
+                            width: '80px'
                         }}
                     >
                         {flightSegment.departureAirport} {flightSegment.departureTerminal}
@@ -326,7 +326,7 @@ const FilterItem = memo(() => {
                     <div className={`${styles.rightInfo} s-flex jc-fe ai-ct`}>
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
-                                <span>from</span>
+                                {/*<span>from</span>*/}
                                 <div>{searchData?.currency}${lostPrice}</div>
                             </div>
                             <div>

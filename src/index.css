@@ -20,8 +20,6 @@
 
     --border-radius: 8px;
 
-    --put-width: 240px;
-    --put-height: 54px;
     --put-border-color: #dadfe6;
     --put-border-hover-color: var(--active-color);
     --put-border-raduis: 4px;
@@ -32,6 +30,12 @@
     --tips-gary-color: #8592a6;
     --keynote-text: #05939f;
 
+}
+
+@media (max-width: 1400px) {
+    :root {
+        --main-width: 1000px;
+    }
 }
 
 /* semantic color variables for this project */

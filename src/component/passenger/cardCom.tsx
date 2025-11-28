@@ -33,7 +33,7 @@ const CardCom = memo(({pirceResult}:{
     }
 
     return (
-        <Card sx={{minWidth: 376, boxShadow: '0 4px 16px 0 rgba(69,88,115,.2)'}}>
+        <Card sx={{minWidth: 'var(--price-card-width)', boxShadow: '0 4px 16px 0 rgba(69,88,115,.2)'}}>
             <CardHeader title={
                 <div onClick={setPirce} className={'cursor-p s-flex ai-ct'}>
                     <span>Price Details</span>
