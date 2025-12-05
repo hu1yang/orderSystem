@@ -19,6 +19,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ConnectingAirportsIcon from '@mui/icons-material/ConnectingAirports';
 import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import PersonIcon from '@mui/icons-material/Person';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
 import {format} from 'date-fns';
@@ -128,7 +129,7 @@ const InputModel = memo(({children,openPop,style}:{
     }
 
     return (
-        <div className={`${styles.inputModel} cursor-p s-flex ai-ct jc-bt`} style={style} onClick={clickPop}>
+        <div className={`${styles.inputModel} cursor-p s-flex ai-ct jc-bt flex-1`} style={style} onClick={clickPop}>
             {children}
         </div>
     )
@@ -518,7 +519,7 @@ const TimerChoose = memo(({isRound,index}:{
     )
 })
 
-const PersonChoose = memo(() => {
+const PersonChoose = () => {
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
     const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
 
@@ -546,12 +547,14 @@ const PersonChoose = memo(() => {
         return travelers.reduce((sum, t) => sum + t.passengerCount, 0)
     }, [travelers]);
 
-    const PersonChild = memo(() => (
+    const PersonChild = () => (
         <div className={`${styles.inputMessage} s-flex jc-ct ai-ct`}>
-            <PersonIcon sx={{fontSize: 24}} />
-            <p>{countAll} Passengers , {canbinLabel}</p>
+            {
+                countAll > 1 ? <PeopleAltIcon sx={{fontSize: 24}} /> : <PersonIcon sx={{fontSize: 24}} />
+            }
+            <p style={{marginLeft: '10px'}}>{countAll} Passengers , {canbinLabel}</p>
         </div>
-    ))
+    )
 
     const Counter = memo(({value}:{
         value:PassengerType;
@@ -647,10 +650,10 @@ const PersonChoose = memo(() => {
             </InputPop>
         </>
     )
-})
+}
 
 
-const SearchComponent = memo(() => {
+const SearchComponent = () => {
     const dispatch = useDispatch()
 
     const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
@@ -801,13 +804,15 @@ const SearchComponent = memo(() => {
                         </Grid>
                     </div>
                     <Button variant="contained" onClick={search} loading={searchLoad} sx={{
-                        width: '120px',
-                        height: '54px',
+                        height: 'var(--put-height)',
                         color: 'white',
-                        fontSize: '1.4rem',
+                        fontSize: '1.2rem',
                         backgroundColor: 'var(--active-color)',
-                        ml:'1rem'
-                    }} startIcon={<SearchIcon sx={{width: '2.4rem',height: '2.4rem'}} />}>
+                        ml:'.6rem',
+                        '.MuiButton-startIcon': {
+                            m:0
+                        }
+                    }} startIcon={<SearchIcon sx={{width: '1.9rem',height: '1.9rem'}} />}>
                         Search
                     </Button>
                 </div>
@@ -824,6 +829,6 @@ const SearchComponent = memo(() => {
             </div>
         </div>
     );
-})
+}
 
 export default SearchComponent;

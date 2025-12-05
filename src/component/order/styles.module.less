@@ -5,15 +5,19 @@
     --vice-width: 310px;
     --weight-size: 1.7rem;
     --price-width: 300px;
+    --pop-width: 450px;
+    --card-width: 250px;
 }
 @media (max-width: 1400px) {
     :root{
         --airline-width:100px;
         --put-width: 210px;
-        --put-height: 54px;
+        --put-height: 48px;
         --vice-width: 260px;
         --weight-size: 1.5rem;
         --price-width: 250px;
+        --pop-width: 380px;
+        --card-width: 230px;
     }
 }
 .searchContainer{
@@ -33,7 +37,7 @@
 }
 
 .inputModel{
-    width: var(--put-width);
+    width: 100%;
     height: var(--put-height);
     border: 1px solid;
     border-color: var(--put-border-color);
@@ -95,10 +99,10 @@
 }
 
 .inputMessage{
-    font-size: 1.4rem;
+    font-size: 1rem;
     height: 100%;
     p{
-        font-size: .8em;
+        font-size: 1em;
         font-weight: bold;
     }
 }
@@ -106,7 +110,7 @@
 
 
 .popBox{
-    width: 450px;
+    width: var(--pop-width);
     font-size: 1rem;
     user-select: none;
     .popBoxSearch{
