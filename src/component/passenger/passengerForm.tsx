@@ -249,17 +249,17 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                     }
                 }
 
-                // if (passenger.issuedDate) {
-                //     const issuedDate = dayjs(passenger.issuedDate).toDate();
-                //     if (issuedDate > today) {
-                //         setError(`passengers.${i}.issuedDate`, {
-                //             type: 'manual',
-                //             message: 'Release date cannot be later than today',
-                //         });
-                //         reject(new Error('Release date cannot be later than today'));
-                //         return;
-                //     }
-                // }
+                if (passenger.issuedDate) {
+                    const issuedDate = dayjs(passenger.issuedDate).toDate();
+                    if (issuedDate > today) {
+                        setError(`passengers.${i}.issuedDate`, {
+                            type: 'manual',
+                            message: 'Release date cannot be later than today',
+                        });
+                        reject(new Error('Release date cannot be later than today'));
+                        return;
+                    }
+                }
 
                 if (passenger.expiryDate) {
                     const expiryDate = dayjs(passenger.expiryDate).toDate();
@@ -575,7 +575,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                                                 )}
                                             />
                                         </Grid>
-                                        <Grid size={6}>
+                                        <Grid size={4}>
                                             <Controller
                                                 name={`passengers.${index}.birthday`}
                                                 control={control}
@@ -606,37 +606,34 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                                                 )}
                                             />
                                         </Grid>
-                                        {/*<Grid size={4}>*/}
-                                        {/*    <Controller*/}
-                                        {/*        name={`passengers.${index}.issuedDate`}*/}
-                                        {/*        control={control}*/}
-                                        {/*        rules={{*/}
-                                        {/*            validate: value => value ? true : 'Please provide a date of issuedDate'*/}
-                                        {/*        }}*/}
-                                        {/*        render={({ field, fieldState }) => (*/}
-                                        {/*            <LocalizationProvider dateAdapter={AdapterDayjs}>*/}
-                                        {/*                <DatePicker*/}
-                                        {/*                    label='Date of issued'*/}
-                                        {/*                    format="DD/MM/YYYY"*/}
-                                        {/*                    value={field.value ? dayjs(field.value) : null}*/}
-                                        {/*                    onChange={(date) => {*/}
-                                        {/*                        const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';*/}
-                                        {/*                        field.onChange(formatted); // 存为字符串*/}
-                                        {/*                    }}*/}
-                                        {/*                    maxDate={dayjs()}*/}
-                                        {/*                    slotProps={{*/}
-                                        {/*                        textField: {*/}
-                                        {/*                            fullWidth: true,*/}
-                                        {/*                            error: !!fieldState.error,*/}
-                                        {/*                            helperText: fieldState.error?.message*/}
-                                        {/*                        },*/}
-                                        {/*                    }}*/}
-                                        {/*                />*/}
-                                        {/*            </LocalizationProvider>*/}
-                                        {/*        )}*/}
-                                        {/*    />*/}
-                                        {/*</Grid>*/}
-                                        <Grid size={6}>
+                                        <Grid size={4}>
+                                            <Controller
+                                                name={`passengers.${index}.issuedDate`}
+                                                control={control}
+                                                render={({ field, fieldState }) => (
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label='Date of issued'
+                                                            format="DD/MM/YYYY"
+                                                            value={field.value ? dayjs(field.value) : null}
+                                                            onChange={(date) => {
+                                                                const formatted = date ? dayjs(date).format('YYYY-MM-DD') : '';
+                                                                field.onChange(formatted); // 存为字符串
+                                                            }}
+                                                            maxDate={dayjs()}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    error: !!fieldState.error,
+                                                                    helperText: fieldState.error?.message
+                                                                },
+                                                            }}
+                                                        />
+                                                    </LocalizationProvider>
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={4}>
                                             <Controller
                                                 name={`passengers.${index}.expiryDate`}
                                                 control={control}
