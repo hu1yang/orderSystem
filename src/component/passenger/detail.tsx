@@ -257,9 +257,9 @@ const Detail = memo(() => {
                         <div className={'s-flex'}>
                             <Typography className={'flex-1'} fontWeight={400} fontSize={14} color={'var(--active-color)'}>
                                 Choose a suitable flight
-                                <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrderNav}>
+                                <span className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrderNav}>
                                     <span>Change Flight</span>
-                                </div>
+                                </span>
                             </Typography>
                             <Typography fontWeight={400} fontSize={14} color={'var(--active-color)'}>Fill in your info</Typography>
                             <Typography className={'flex-1'} textAlign={'right'} fontWeight={400} fontSize={14} color={'var(--text-color)'}>Finalize your payment</Typography>
