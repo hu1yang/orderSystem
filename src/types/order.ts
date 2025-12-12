@@ -219,7 +219,7 @@ export interface GroupBalance{
     branchId: string;
     agentId: string;
     isLocked:boolean;
-    currency:'USD';
+    currency:string;
     balance:string|number;
     operator: string;
     updatedTime: string;
