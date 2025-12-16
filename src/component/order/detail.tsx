@@ -1,6 +1,6 @@
 import {memo, useMemo, useRef, useState} from "react";
 import {useNavigate} from "react-router";
-import {Box, Card, CardContent, Typography, Divider, CardHeader, Button} from '@mui/material';
+import {Box, Card, CardContent, Typography, Divider, CardHeader, Button, type SxProps, type Theme} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -340,6 +340,20 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     )
 })
 
+const arrowBaseSx: SxProps<Theme> = {
+    position: 'absolute',
+    top: '40%',
+    zIndex: 3,
+    cursor: 'pointer',
+    background: 'var(--vt-c-white)',
+    border: '1px solid var(--put-border-color)',
+    borderRadius: '4px',
+    boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
+    color: 'var(--active-color)',
+    width: 48,
+    height: 48,
+};
+
 const FareCardsSlider = memo(({nextCheapAmount}: {
     nextCheapAmount:Amount[]
 }) => {
@@ -367,38 +381,22 @@ const FareCardsSlider = memo(({nextCheapAmount}: {
 
     return (
         <Box position="relative" px={0} py={.2} className={styles.fareCardsSlider}>
-            <Box ref={prevRef} sx={{
-                position: 'absolute',
-                left: 0,
-                top: '40%',
-                zIndex: 99,
-                cursor: 'pointer',
-                background: 'var(--vt-c-white)',
-                border: '1px solid var(--put-border-color)',
-                borderRadius: '4px',
-                boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
-                color: 'var(--active-color)',
-                width: 48,
-                height: 48,
-                opacity: amountsMemo.length < 3 || isBeginning ? 0 : 1,
-            }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <Box ref={prevRef} sx={[
+                arrowBaseSx,
+                {
+                    left: 0,
+                    opacity: amountsMemo.length < 3 || isBeginning ? 0 : 1,
+                },
+            ]} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                 <ArrowBackIosNewIcon/>
             </Box>
-            <Box ref={nextRef} sx={{
-                position: 'absolute',
-                right: 0,
-                top: '40%',
-                zIndex: 99,
-                cursor: 'pointer',
-                background: 'var(--vt-c-white)',
-                border: '1px solid var(--put-border-color)',
-                borderRadius: '4px',
-                boxShadow: '0 4px 8px 0 rgba(15, 41, 77, .08)',
-                color: 'var(--active-color)',
-                width: 48,
-                height: 48,
-                opacity: amountsMemo.length < 3 || isEnd ? 0 : 1,
-            }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <Box ref={nextRef} sx={[
+                arrowBaseSx,
+                {
+                    right: 0,
+                    opacity: amountsMemo.length < 3 || isEnd ? 0 : 1,
+                },
+            ]} display={'flex'} alignItems={'center'} justifyContent={'center'}>
                 <ArrowForwardIosIcon/>
             </Box>
             <Swiper slidesPerView={'auto'} spaceBetween={5} grabCursor={true} pagination={{clickable: true}}
