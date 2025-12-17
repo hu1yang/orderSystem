@@ -10,6 +10,12 @@ import ka from '@/assets/air/ka.webp'
 import g9 from '@/assets/air/g9.webp'
 import t3 from '@/assets/air/3t.webp'
 import rq from '@/assets/air/rq.webp'
+import sm from '@/assets/air/sm.webp'
+import j9 from '@/assets/air/j9.webp'
+import xy from '@/assets/air/xy.webp'
+import f3 from '@/assets/air/f3.webp'
+import gj from '@/assets/air/gj.webp'
+import pc from '@/assets/air/pc.webp'
 
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
@@ -203,4 +209,11 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-3T-V1': { picture: t3, title: 'Tarco Aviation' },
     'API-G9-V1': { picture: g9, title: 'Air Arabia' },
     'API-RQ-V1': { picture: rq, title: 'Kam Air' },
+    'API-J4-V1': { picture: null, title: 'Badr Airlines' },
+    'API-SM-V1': { picture: sm, title: 'Air Cairo' },
+    'API-J9-V1': { picture: j9, title: 'Jazeera' },
+    'API-XY-V1': { picture: xy, title: 'Flynas' },
+    'API-F3-V1': { picture: f3, title: 'Flyadeal' },
+    'API-PC-V1': { picture: pc, title: 'Pegasus Airlines' },
+    'API-GJ-V1': { picture: gj, title: '長龍航空' },
 }
