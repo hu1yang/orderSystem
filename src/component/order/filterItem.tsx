@@ -34,6 +34,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 import defaultAir from '@/assets/air/default.webp'
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 
 
 const FlightTimeline = memo(({segments}:{
@@ -220,7 +221,7 @@ const itineraryTypeMap = {
     oneWay: 'One-way',
     round: 'Round-trip',
 } as const
-const FilterItem = memo(() => {
+const FilterItem = () => {
     const searchData = useSearchData();
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
@@ -238,6 +239,34 @@ const FilterItem = memo(() => {
         const result = getLowestAmountsByItinerary(airResult)
         return result
     }, [airSearchData,searchData,airportActived]);
+
+
+    const amountsMemo = useMemo(() => {
+        const result = searchData?.amountsMerge
+        .flatMap(item =>
+            item.amounts
+            .filter(am => am.passengerType === 'adt').map(amount => ({
+                itineraryKey: item.itineraryKey,
+                amount
+            }))
+        );
+        return result!;
+    }, [searchData]);
+
+    const luggageIncludes = useMemo(() => {
+        const result = {
+            checked: false,
+            hand: false,
+            carry: false,
+        }
+
+        amountsMemo.forEach(item => item.amount.luggages.forEach(luggage => {
+            if (luggage.luggageType === 'checked') result.checked = true
+            if (luggage.luggageType === 'hand') result.hand = true
+            if (luggage.luggageType === 'carry') result.carry = true
+        }))
+        return result
+    }, [amountsMemo]);
 
     const cheapAmount = useMemo(() => {
         let beforeAmount: Amount[] = [];
@@ -272,8 +301,15 @@ const FilterItem = memo(() => {
             <div className={styles.filterItemBox}>
                 <div className={`${styles.filterTips} s-flex ai-ct`}>
                     <div className={`${styles.tipsIcon} s-flex ai-ct`}>
-                        <LuggageIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
-                        <AdfScannerIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        {
+                            luggageIncludes.carry && <AdfScannerIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        }
+                        {
+                            luggageIncludes.checked && <LuggageIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        }
+                        {
+                            luggageIncludes.hand && <BusinessCenterIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
+                        }
                         <span>Included</span>
                     </div>
                     {
@@ -391,10 +427,10 @@ const FilterItem = memo(() => {
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider nextCheapAmount={nextCheapAmount as Amount[]} />
+                <FareCardsSlider nextCheapAmount={nextCheapAmount as Amount[]} amountsMemo={amountsMemo} />
             </div>
         </div>
     )
-})
+}
 
 export default FilterItem
