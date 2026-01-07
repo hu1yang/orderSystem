@@ -340,6 +340,11 @@ export interface IamountsMerge {
     itineraryKey:string
 }
 
+export interface Iamount {
+    amount: Amount
+    itineraryKey:string
+}
+
 export interface ItinerariesMerge{
     segments: Segment[];
     itineraryNo:number;

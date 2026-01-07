@@ -14,7 +14,7 @@ import { Navigation } from 'swiper/modules';
 
 
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {Amount, Result} from "@/types/order.ts";
+import type {Amount, Iamount, Result} from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
@@ -131,12 +131,30 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                     padding: '0'
                 },
             }}>
-                <CardHeader sx={{
-                    p: 0
-                }} title={
-                    <Typography fontWeight="bold" fontSize="1.6rem"
-                                gutterBottom>{amount.familyName}</Typography>
-                }/>
+                <CardHeader
+                    sx={{
+                        p: 0,
+                        '& .MuiCardHeader-content': {
+                            minWidth: 0,
+                        },
+                    }}
+                    title={
+                        <Typography
+                            fontWeight="bold"
+                            fontSize="1.6rem"
+                            sx={{
+                                lineHeight: '2.2rem',
+                                height: '4.4rem',
+                                display: '-webkit-box',
+                                WebkitBoxOrient: 'vertical',
+                                WebkitLineClamp: 2,
+                                overflow: 'hidden',
+                            }}
+                        >
+                            {amount.familyName}
+                        </Typography>
+                    }
+                />
                 <CardContent>
                     <Divider sx={{my: 1.5}}/>
 
@@ -354,10 +372,10 @@ const arrowBaseSx: SxProps<Theme> = {
     height: 48,
 };
 
-const FareCardsSlider = memo(({nextCheapAmount}: {
+const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
     nextCheapAmount:Amount[]
+    amountsMemo:Iamount[]
 }) => {
-    const searchData = useSearchData();
 
     const prevRef = useRef<HTMLButtonElement>(null);
     const nextRef = useRef<HTMLButtonElement>(null);
@@ -365,17 +383,7 @@ const FareCardsSlider = memo(({nextCheapAmount}: {
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
 
-    const amountsMemo = useMemo(() => {
-        const result = searchData?.amountsMerge
-        .flatMap(item =>
-            item.amounts
-            .filter(am => am.passengerType === 'adt').map(amount => ({
-                itineraryKey: item.itineraryKey,
-                amount
-            }))
-        );
-        return result!;
-    }, [searchData]);
+
 
 
 
