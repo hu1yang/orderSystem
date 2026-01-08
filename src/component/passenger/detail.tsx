@@ -1,14 +1,14 @@
 import React, {Fragment, memo, type ReactElement, useCallback, useMemo, useRef, useState} from "react";
 import styles from './styles.module.less'
 import {
-    Alert,
+    Alert, Box,
     Button, CircularProgress,
     Divider,
     Grid,
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
-import type {OrderCreate, Passenger, PriceSummary} from '@/types/order.ts'
+import type { OrderCreate, Passenger, PriceSummary } from '@/types/order.ts'
 import type {RootState} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -214,7 +214,6 @@ const Detail = memo(() => {
             </Alert>
         );
     },[open])
-
     return (
         <div className={`${styles.detailContainer} s-flex flex-dir`}>
             <div className={styles.detailHeader}>
@@ -241,7 +240,9 @@ const Detail = memo(() => {
                             },
                             '.Mui-active .MuiStepConnector-line': {
                                 borderColor: 'var(--active-color)',
-
+                            },
+                            '.Mui-completed': {
+                                color: 'var(--active-color) !important',
                             }
                         }}>
                             <Step>
@@ -267,15 +268,18 @@ const Detail = memo(() => {
                     </div>
                     <div className={`s-flex jc-bt`}>
                         <div className={`${styles.gap} ${styles.wContainer}`}>
-                            <Grid container spacing={2}>
+                            <Box component="section" sx={{ p: 2, border: '1px solid var(--put-border-color)',borderRadius:'var(--border-radius)' }}>
+                                <Grid container spacing={2}>
                                 {
-                                    !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
-                                        <Grid size={6} key={itinerarie.itineraryKey}>
-                                            <FirportInfomation segments={itinerarie.segments} amounts={itinerarie.amounts} index={itinerarieIndex} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                                    !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
+                                        <Grid size={12} key={itinerarie.itineraryKey}>
+                                            <FirportInfomation segments={itinerarie.segments}
+                                                           amounts={itinerarie.amounts ?? null} />
                                         </Grid>
                                     ))
                                 }
-                            </Grid>
+                                </Grid>
+                            </Box>
                             {/*<Passenger />*/}
                             <div className={`${styles.leftDetail}`}>
                                 <div className={`${styles.wContainer} s-flex flex-dir`} ref={targetRef}>

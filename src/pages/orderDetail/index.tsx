@@ -79,9 +79,9 @@ const Flight = memo(() => {
                 <div className={styles.flightTips}>All times are in local time</div>
                 <Grid container spacing={2}>
                     {
-                        !!airChoose.result && airChoose.result.itineraries.map((itinerarie,itinerarieIndex) => (
+                        !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
                             <Grid size={6} key={itinerarie.itineraryKey}>
-                                <FirportInfomation segments={itinerarie.segments} index={itinerarieIndex} amounts={itinerarie.amounts} labelPostion={((airChoose.result!.itineraries.length - 1) > itinerarieIndex) ? 'Depart':'Return'} />
+                                <FirportInfomation segments={itinerarie.segments} amounts={itinerarie.amounts} />
                             </Grid>
                         ))
                     }

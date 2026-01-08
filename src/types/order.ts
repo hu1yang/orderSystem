@@ -54,6 +54,10 @@ export interface Amount {
     othersNotes: string[];
     luggages: Luggage[];
     amountKeys?: string[];
+    fareCodes:string[]
+    commissionRebate:string
+    commissionAmount:string
+    cabinCodes:string[]
 }
 export interface StopInfo {
     stopTime: string|number;
