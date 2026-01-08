@@ -73,7 +73,7 @@ export function formatTotalDuration(times: string[]): string {
     const hours = Math.floor(total.asHours()) // 用 asHours 得到小数再取整
     const minutes = total.minutes()
 
-    return `${hours}h ${minutes}m`
+    return `${hours}h ${minutes?`${minutes}m`:''}`
 }
 
 export function formatDuration(start: string, end: string): string {

@@ -6,6 +6,7 @@ import App from './App.tsx'
 import {createTheme, ThemeProvider} from "@mui/material";
 import {Provider} from 'react-redux'
 import {store} from '@/store/index.ts'
+import "@/assets/iconfont/iconfont.css"
 
 const theme = createTheme({
     components: {

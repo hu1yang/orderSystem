@@ -217,3 +217,9 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-PC-V1': { picture: pc, title: 'Pegasus Airlines' },
     'API-GJ-V1': { picture: gj, title: '長龍航空' },
 }
+
+export const cabinOptions = [
+    { label: 'Economy Class', value: 'y' },
+    { label: 'Business Class', value: 'c' },
+    { label: 'First Class', value: 'f' },
+];

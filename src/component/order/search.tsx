@@ -41,7 +41,7 @@ import {
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
 import dayjs from "dayjs";
 import {getAgentQuery} from "@/utils/order.ts";
-import {debounce, flattenByCountry} from "@/utils/public.ts";
+import {cabinOptions, debounce, flattenByCountry} from "@/utils/public.ts";
 import type {RootState} from "@/store";
 import {
     addSearch, delSearch,
@@ -54,11 +54,7 @@ import {
 } from "@/store/searchInfo.ts";
 
 
-const cabinOptions = [
-    { label: 'Economy Class', value: 'y' },
-    { label: 'Business Class', value: 'c' },
-    { label: 'First Class', value: 'f' },
-];
+
 
 function setHistorySearch(newItem: ITem) {
     const key = 'historySearch';

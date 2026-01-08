@@ -746,6 +746,8 @@
 
 .flightTimelineBox{
     font-size: 1rem;
+    --time-line-width: 50px;
+    --time-line-before-width: 62px;
     .flightTimeline{
         position: relative;
         &::before{
@@ -753,18 +755,19 @@
             position: absolute;
             height: 90%;
             border-right: 2px solid var(--put-border-color);
-            left: 58px;
+            left: var(--time-line-before-width);
             top: 50%;
             transform: translateY(-50%);
         }
         .airinfoLine{
             font-size: 1rem;
             .timer{
-                font-size: 1.2em;
+                font-size: 1.3em;
                 font-weight: 700;
                 color: var(--text-color);
-                width: 38px;
+                width: var(--time-line-width);
                 margin-right: 40px;
+                position: relative;
             }
             .airTitle{
                 span{
@@ -778,12 +781,12 @@
             font-size: 1rem;
             padding: var(--pm-16) 0;
             .airInfomationPicture{
-                width: 38px;
+                width: var(--time-line-width);
                 margin-right: 40px;
             }
             .airInfomationmains{
                 p{
-                    font-size: 1em;
+                    font-size: 1.1em;
                     color: var(--tips-gary-color);
                 }
             }
@@ -797,7 +800,7 @@
             position: absolute;
             height: 100%;
             border-right: 2px dashed var(--put-border-color);
-            left: 58px;
+            left: var(--time-line-before-width);
             top: 50%;
             transform: translateY(-50%);
         }
