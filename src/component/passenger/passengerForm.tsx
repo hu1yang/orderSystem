@@ -785,7 +785,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                                                             <InputLabel htmlFor="passengerSexType-select">{t('passenger.passengerSexType')}</InputLabel>
                                                             <Select {...field} id="passengerSexType-select" label={t('passenger.passengerSexType')}>
                                                                 <MenuItem value="m">{t('order.Male')}</MenuItem>
-                                                                <MenuItem value="f">{t('order.Male')}</MenuItem>
+                                                                <MenuItem value="f">{t('order.Female')}</MenuItem>
                                                             </Select>
                                                         </FormControl>
                                                     )}
