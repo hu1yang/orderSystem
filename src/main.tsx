@@ -15,17 +15,17 @@ const theme = createTheme({
         MuiInputBase: {
             styleOverrides: {
                 root: {
-                    fontSize: '16px', // 根元素字体
+                    fontSize: '1.3rem', // 根元素字体
                 },
                 input: {
-                    fontSize: '16px', // 输入框内部字体
+                    fontSize: '1.3rem', // 输入框内部字体
                 },
             },
         },
         MuiFormHelperText:{
             styleOverrides: {
                 root: {
-                    fontSize: '14px',
+                    fontSize: '1.2rem',
                     marginLeft: 0,
                     marginRight: 0
                 },
@@ -35,7 +35,7 @@ const theme = createTheme({
         MuiInputLabel: {
             styleOverrides: {
                 root: {
-                    fontSize: '16px',
+                    fontSize: '1.3rem',
                 },
             },
         },
@@ -43,9 +43,9 @@ const theme = createTheme({
         MuiSelect: {
             styleOverrides: {
                 select: { // 直接控制选择框的文本
-                    fontSize: '16px',
+                    fontSize: '1.3rem',
                     '&.MuiInput-input': {
-                        fontSize: '16px', // 明确指定输入部分
+                        fontSize: '1.3rem', // 明确指定输入部分
                     },
                 },
             },
@@ -54,17 +54,17 @@ const theme = createTheme({
         MuiMenuItem: {
             styleOverrides: {
                 root: {
-                    fontSize: '16px', // 下拉选项字体
+                    fontSize: '1.3rem', // 下拉选项字体
                     '&.Mui-selected': { // 选中状态的选项
-                        fontSize: '16px',
+                        fontSize: '1.3rem',
                     },
                     '&.MuiListSubheader-root':{
-                        fontsize: '14px',
+                        fontsize: '1.2rem',
                     },
                     '&.MuiMenuItem-root':{
-                        fontSize: '16px',
+                        fontSize: '1.3rem',
                         'em':{
-                            fontSize: '16px',
+                            fontSize: '1.3rem',
 
                         }
                     }
@@ -76,13 +76,13 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiTypography-root': {
-                        fontSize: '16px', // 标题和星期
+                        fontSize: '1.3rem', // 标题和星期
                     },
                     '& .MuiPickersDay-root': {
-                        fontSize: '16px', // 日期按钮
+                        fontSize: '1.3rem', // 日期按钮
                     },
                     '.MuiPickersCalendarHeader-label':{
-                        fontSize: '16px', // 日期按钮
+                        fontSize: '1.3rem', // 日期按钮
                     }
                 },
             },
@@ -91,7 +91,7 @@ const theme = createTheme({
         MuiPickersInputBase: {
             styleOverrides: {
                 root: {
-                    fontSize: '16px', // 日期按钮
+                    fontSize: '1.3rem', // 日期按钮
                 },
             },
         },
