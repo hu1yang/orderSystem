@@ -7,12 +7,14 @@ import type {
     Travelers,
     FQueryResult, ItinerariesMerge, IamountsMerge, MregeResultAirport, FQuery
 } from "@/types/order.ts";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 import duration from 'dayjs/plugin/duration'
 import {flightQueryAgent} from "@/utils/request/agent.ts";
 import {setFilterData, setNoData, setSearchDate} from "@/store/orderInfo.ts";
 import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
+import {t} from "i18next";
+
 dayjs.extend(duration)
 
 export function calculateTotalPriceSummary(
@@ -329,7 +331,7 @@ export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
         dispatch(setSearchLoad(false));
     } catch {
         dispatch(setSearchLoad(false));
-        dispatch(setErrorMsg('Interface error'));
+        dispatch(setErrorMsg(t('passenger.interfaceError')));
         dispatch(setSearchFlag(false));
     }
 }

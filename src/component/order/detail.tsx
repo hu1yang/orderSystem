@@ -27,6 +27,7 @@ import 'swiper/css';
 // @ts-ignore
 import 'swiper/css/pagination';
 import {useSearchData} from "@/context/order/SearchDataContext.tsx";
+import {useTranslation} from "react-i18next";
 
 
 const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
@@ -34,6 +35,8 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     nextCheapAmount:Amount[]
     itineraryKey:string
 }) => {
+    const {t} = useTranslation()
+
     const searchData = useSearchData();
 
 
@@ -144,11 +147,12 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                             fontSize="1.6rem"
                             sx={{
                                 lineHeight: '2.2rem',
-                                height: '4.4rem',
+                                height: '4.5rem',
                                 display: '-webkit-box',
                                 WebkitBoxOrient: 'vertical',
                                 WebkitLineClamp: 2,
                                 overflow: 'hidden',
+                                wordBreak:'break-word'
                             }}
                         >
                             {amount.familyName}
@@ -158,7 +162,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                 <CardContent>
                     <Divider sx={{my: 1.5}}/>
 
-                    <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
+                    <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>{t('passenger.baggage')}</Typography>
                     <div>
                         <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.hand} sx={{
                             '.MuiTooltip-tooltip': {
@@ -215,7 +219,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
                     <Divider sx={{my: 1.5}}/>
 
-                    <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
+                    <Typography fontWeight="bold" fontSize="1.1rem">{t('order.fareRules')}</Typography>
                     <div>
                         <div className={`${styles.contentText} s-flex ai-ct`}>
                             <AccessTimeIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
@@ -351,7 +355,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                         mt:'10px',
                         borderRadius:'2px',
                         backgroundColor:'#f68201'
-                    }}>Select</Button>
+                    }}>{t('order.select')}</Button>
                 </CardContent>
             </Card>
         </Box>
@@ -382,9 +386,6 @@ const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
 
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
-
-
-
 
 
     return (

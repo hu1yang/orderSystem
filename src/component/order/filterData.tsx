@@ -10,17 +10,17 @@ import HtmlTooltip from "../defult/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {extractTimeWithTimezone} from "@/utils/public.ts";
+import {extractTimeWithTimezone, formatLocale} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
 import {
     formatTotalDuration,
 } from "@/utils/order.ts";
-import {format} from "date-fns";
 import FilterItem from "@/component/order/filterItem.tsx";
 import FilterItemSkeleton from "@/component/order/filterItemSkeleton.tsx";
 import {SearchDataProvider} from "@/context/order/SearchDataContext.tsx";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 import isBetween from 'dayjs/plugin/isBetween';
+import {useTranslation} from "react-i18next";
 dayjs.extend(isBetween);
 
 
@@ -120,6 +120,8 @@ const FilterTab = memo(() => {
 
 
 const FilterData = memo(() => {
+    const {t} = useTranslation()
+
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
     const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
@@ -210,9 +212,6 @@ const FilterData = memo(() => {
         return result ?? [];
     }, [airportActived, airChoose,filterDatas]);
 
-
-
-
     const prevChooseAir = () => {
         dispatch(prevAirChoose())
     }
@@ -233,7 +232,7 @@ const FilterData = memo(() => {
             return (
                 <Box component="section" sx={{ p: 2 }}>
                     <Typography variant="h4" gutterBottom>
-                        No data found
+                        {t('order.noData')}
                     </Typography>
                 </Box>
             );
@@ -255,17 +254,14 @@ const FilterData = memo(() => {
 
     return (
         <div className={`${styles.filterData} flex-1`}>
-
             <div className={styles.filterBox}>
-
                 <div className={styles.filterHeader}>
                     <div className={styles.stackedColor}></div>
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
                         <h2>
                             {
-                                itineraries.length?
-                                    `${airportActived + 1}. ${(airportActived === 0) ? 'Departing' : 'Returning'} to ${arrival}`
-                                    :<></>
+                                itineraries.length &&
+                                    `${airportActived + 1}. ${(airportActived === 0) ? t('order.departingTo',{airport:arrival}) : t('order.returningTo',{airport:arrival})}`
                             }
                         </h2>
                         <div className={`s-flex ai-fs cursor-p`}>
@@ -276,7 +272,7 @@ const FilterData = memo(() => {
                         prevAir ?
                             <div className={`${styles.prevCom} s-flex jc-bt ai-ct`}>
                                 <div className={`${styles.prevComInfo} s-flex ai-ct`}>
-                                    <Chip label={(airportActived === 0) ? 'Depart':'Return'} size={'small'} sx={{
+                                    <Chip label={(airportActived === 0) ? t('order.depart'):t('order.return')} size={'small'} sx={{
                                         background: 'var(--active-color)',
                                         borderRadius: '4px',
                                         fontSize: '1rem',
@@ -287,14 +283,14 @@ const FilterData = memo(() => {
                                         }
                                     }}/>
                                     <div className={styles.airInfos}>
-                                        <span>{format(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
+                                        <span>{formatLocale(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
                                         <span>{extractTimeWithTimezone(prevAir[0].departureTime)} – {extractTimeWithTimezone(prevAir.at(-1)?.arrivalTime as string)}</span>
                                         <span>{prevAir[0].departureAirport} – {prevAir.at(-1)?.arrivalAirport}</span>
                                         <span>{formatTotalDuration(prevAir.map(segment => segment.totalFlyingTime) as string[])}</span>
                                     </div>
                                 </div>
                                 <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={prevChooseAir}>
-                                    <span>Change Flight</span>
+                                    <span>{t('passenger.changeFlight')}</span>
                                 </div>
                             </div>
                             :<></>

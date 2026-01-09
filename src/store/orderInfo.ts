@@ -9,7 +9,7 @@ import type {
     Result,
     Travelers
 } from '@/types/order'
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 
 type IOrder = {
     query: FQuery

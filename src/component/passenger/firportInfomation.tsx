@@ -8,6 +8,7 @@ import type {Amount, Segment} from "@/types/order.ts";
 import {airlist, formatDateToShortString, formatFlyingTime} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import defaultAir from "@/assets/air/default.webp";
+import {useTranslation} from "react-i18next";
 
 const Itinerary = memo(({segments}:{
     segments:Segment[]
@@ -35,6 +36,8 @@ const FirportInfomation = memo(({segments,amounts}:{
     segments:Segment[]
     amounts:Amount[]|null
 }) => {
+    const {t} = useTranslation()
+
     return (
         <div className={styles.firportInfomation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
@@ -59,7 +62,7 @@ const FirportInfomation = memo(({segments,amounts}:{
                     <Divider orientation="vertical" variant="middle" sx={{
                         height: 10
                     }} flexItem/>
-                    <span>{segments[0].totalFlyingTime && `Duration ${formatFlyingTime(segments[0].totalFlyingTime!)}`}</span>
+                    <span>{segments[0].totalFlyingTime && `${t('passenger.duration')} ${formatFlyingTime(segments[0].totalFlyingTime!)}`}</span>
                 </div>
             </div>
             <FlightTimelineBox segments={segments} amounts={amounts} />

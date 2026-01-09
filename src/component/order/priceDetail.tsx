@@ -5,6 +5,7 @@ import type { RootState } from "@/store";
 import styles from "@/component/order/styles.module.less";
 import { Divider } from "@mui/material";
 import {getAdultAmountTotal} from "@/utils/order.ts";
+import {useTranslation} from "react-i18next";
 
 const passengerTypes = {
     adt: 'Adult',
@@ -12,17 +13,14 @@ const passengerTypes = {
     inf: 'Infant',
 } as const;
 
-const itineraryTypeMap = {
-    multi: 'Multi-city',
-    oneWay: 'One-way',
-    round: 'Round-trip',
-} as const;
 
 const PriceDetail = memo(({ amounts, currency, totalPrice }: {
     amounts: Amount[];
     currency: string;
     totalPrice: number|string
 }) => {
+    const {t} = useTranslation()
+
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
 
     const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -42,22 +40,22 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
                         <div key={`${amount.passengerType}-${amountIndex}`}>
                             <div className={`${styles.priceTitle} s-flex ai-ct jc-fe`}>
                                 <div className={styles.priceFlight}>{currency}${totals[amountIndex]}</div>
-                                <p>/{passengerTypes[amount.passengerType]}</p>
+                                <p>/{t(`order.${passengerTypes[amount.passengerType]}`)}</p>
                             </div>
                             <div className={`${styles.priceTips} s-flex jc-fe`}>
-                                Avg. {itineraryTypeMap[itineraryType]} price per passenger
+                                {t('order.avgTips',{type:t(`order.${itineraryType}`)})}
                             </div>
                             <div className={styles.details}>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
-                                    <span>{passengerTypes[amount.passengerType]} Ticket</span>
+                                    <span>{t(`order.${passengerTypes[amount.passengerType]}`)} {t(`order.tickets`)}</span>
                                     <span>{currency}${totals[amountIndex]} × 1</span>
                                 </div>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
-                                    <span>Fare</span>
+                                    <span>{t(`passenger.Fare`)}</span>
                                     <span>{currency}${amount.printAmount} × 1</span>
                                 </div>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
-                                    <span>Taxes & fees</span>
+                                    <span>{t(`passenger.taxesFees`)}</span>
                                     <span>{currency}${amount.taxesAmount} × 1</span>
                                 </div>
                             </div>
@@ -66,7 +64,7 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
                     ))
                 }
                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
-                    <span>Current Total</span>
+                    <span>{t(`order.currentTotal`)}</span>
                     <span>{currency}${totalPrice}</span>
                 </div>
             </div>

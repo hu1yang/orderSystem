@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styles from './styles.module.less'
 import type { RootState } from "@/store";
 import type {PriceSummary} from "@/types/order.ts";
+import {useTranslation} from "react-i18next";
 
 const passengerTypes = {
     adt: 'Adult',
@@ -19,6 +20,9 @@ const passengerTypes = {
 const CardCom = memo(({pirceResult}:{
     pirceResult: PriceSummary
 }) => {
+    const { t } = useTranslation()
+
+
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
 
     const buggaegs = useMemo(() => {
@@ -36,7 +40,7 @@ const CardCom = memo(({pirceResult}:{
         <Card sx={{minWidth: 'var(--price-card-width)', boxShadow: '0 4px 16px 0 rgba(69,88,115,.2)'}}>
             <CardHeader title={
                 <div onClick={setPirce} className={'cursor-p s-flex ai-ct'}>
-                    <span>Price Details</span>
+                    <span>{t('passenger.priceDetails')}</span>
                     <ExpandMoreIcon sx={{
                         transition: 'transform .2s ease-in-out',
                         transform: !priceHide ? 'rotate(0deg)' : 'rotate(180deg)',
@@ -61,7 +65,9 @@ const CardCom = memo(({pirceResult}:{
                             <div className={styles.priceCom} key={`${amount.familyName}-${amount.familyCode}-${amountIndex}`}>
                                 <div key={`${amount.familyName}-${amount.familyCode}-c1`} className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
                                     <div className={`${styles.labels} s-flex ai-ct`}>
-                                        <span>Tickets({pirceResult.perType[amount.passengerType].count} {passengerTypes[amount.passengerType]})</span>
+                                        <span>
+                                            {t('order.tickets')}({pirceResult.perType[amount.passengerType].count} {t(`order.${passengerTypes[amount.passengerType]}`)})
+                                        </span>
                                     </div>
                                     <div className={styles.values}>
                                         <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].totalPrice}</span>
@@ -71,7 +77,9 @@ const CardCom = memo(({pirceResult}:{
                                      style={{maxHeight: !priceHide ? '0px' : '1000px'}}>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
                                         <div className={`${styles.labels} s-flex ai-ct`}>
-                                            <span>{passengerTypes[amount.passengerType]}s (Passenger {pirceResult.perType[amount.passengerType].count})</span>
+                                            <span>
+                                                {t('passenger.passengerCount',{type:t(`order.${passengerTypes[amount.passengerType]}`),count:pirceResult.perType[amount.passengerType].count})}
+                                            </span>
                                         </div>
                                         <div className={styles.values}>
                                             <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].unitPrice} × {pirceResult.perType[amount.passengerType].count}</span>
@@ -79,7 +87,7 @@ const CardCom = memo(({pirceResult}:{
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
                                         <div className={`${styles.labels} s-flex ai-ct`}>
-                                            <span style={{fontSize: 12}}>Fare</span>
+                                            <span style={{fontSize: 12}}>{t('passenger.Fare')}</span>
                                         </div>
                                         <div className={styles.values}>
                                             <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].printAmount} × {pirceResult.perType[amount.passengerType].count}</span>
@@ -87,7 +95,7 @@ const CardCom = memo(({pirceResult}:{
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
                                         <div className={`${styles.labels} s-flex ai-ct`}>
-                                            <span style={{fontSize: 12}}>Taxes & fees</span>
+                                            <span style={{fontSize: 12}}>{t('passenger.taxesFees')}</span>
                                         </div>
                                         <div className={styles.values}>
                                             <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].taxesAmount} × {pirceResult.perType[amount.passengerType].count}</span>
@@ -104,7 +112,7 @@ const CardCom = memo(({pirceResult}:{
                         <div className={`${styles.priceBox} s-flex flex-dir ai-ct jc-bt`} key={buggaegIndex}>
                             <div className={`${styles.priceli} s-flex ai-ct jc-bt full-width`}>
                                 <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                    <span>Baggage-{buggaegIndex + 1}</span>
+                                    <span>{t('passenger.baggage')}-{buggaegIndex + 1}</span>
                                 </div>
 
                             </div>
@@ -120,19 +128,19 @@ const CardCom = memo(({pirceResult}:{
                                                     },
                                                 }} title={
                                                     <>
-                                                        <Typography fontSize={14} color={'var(--text-color)'}>({amount.passengerType})Free baggage
-                                                            allowance: <strong
+                                                        <Typography fontSize={14} color={'var(--text-color)'}>({amount.passengerType})
+                                                            {t('passenger.freeBaggageAllowance')}: <strong
                                                                 style={{color: 'var(--text-color)', fontSize: 14, fontWeight: 'bold'}}>{luggage.luggageCount}
-                                                                {luggage.luggageSizeType}</strong> per passenger</Typography>
+                                                                {luggage.luggageSizeType}</strong> {t('passenger.perPassenger')}</Typography>
                                                     </>
 
                                                 }>
                                                     <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                                        <span style={{fontSize: 12}}>{amount.familyName}: {luggage.luggageType} baggage</span>
+                                                        <span style={{fontSize: 12}}>{amount.familyName}: {luggage.luggageType} {t('passenger.baggage')}</span>
                                                     </div>
                                                 </HtmlTooltip>
                                                 <div className={styles.values}>
-                                                    <span style={{fontSize: 12, color: '#06aebd'}}>Free</span>
+                                                    <span style={{fontSize: 12, color: '#06aebd'}}>{t('passenger.free')}</span>
                                                 </div>
                                             </div>
                                         ))
@@ -159,7 +167,7 @@ const CardCom = memo(({pirceResult}:{
             }}>
                 <div className={`s-flex flex-dir jc-fe ai-fe full-width`}>
                     <div className={`${styles.priceLine} s-flex jc-bt ai-ct full-width`}>
-                        <div className={styles.labels}>Total</div>
+                        <div className={styles.labels}>{t('passenger.total')}</div>
                         <div className={styles.prices}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
                 </div>

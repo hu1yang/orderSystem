@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import {setContacts} from "@/store/orderInfo.ts";
 import {debounce} from "@/utils/public.ts";
 import {getAgentSettingAgent} from "@/utils/request/agent.ts";
+import {useTranslation} from "react-i18next";
 
 type IContactMore = IContact & {
     phoneCode:string
@@ -25,6 +26,7 @@ type IContactMore = IContact & {
 
 const ContactForm = forwardRef((_,ref) => {
     const dispatch = useDispatch()
+    const {t} = useTranslation();
 
 
     useImperativeHandle(ref,() => ({
@@ -131,7 +133,7 @@ const ContactForm = forwardRef((_,ref) => {
     return (
         <div className={styles.contactFormContainer}>
             <div className={styles.contactTitle}>
-                Contact Details
+                {t('passenger.contactDetails')}
             </div>
             <div className={styles.commonBox}>
                 <form>
@@ -144,12 +146,12 @@ const ContactForm = forwardRef((_,ref) => {
                                     validate: (value) => {
                                         const trimmed = value?.trim();
                                         if (!trimmed) {
-                                            return 'Please enter a contact name';
+                                            return t('passenger.enterCountactName');
                                         }
 
                                         const pattern = /^[a-zA-Z]+\/[a-zA-Z]+$/;
                                         if (!pattern.test(trimmed)) {
-                                            return 'Name format must be like "Surname/Given Name"';
+                                            return t('passenger.enterName');
                                         }
                                         return true;
                                     }
@@ -158,7 +160,7 @@ const ContactForm = forwardRef((_,ref) => {
                                     <TextField
                                         {...field}
                                         fullWidth
-                                        label="Contact name"
+                                        label={t('passenger.contactName')}
                                         error={!!fieldState.error}
                                         helperText={fieldState.error?.message}
                                     />
@@ -172,11 +174,11 @@ const ContactForm = forwardRef((_,ref) => {
                                 rules={{
                                     validate: (value) => {
                                         if (!value) {
-                                            return 'Please provide an Email address.';
+                                            return t('passenger.enterEmail');
                                         }
                                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                                         if (!emailRegex.test(value)) {
-                                            return 'Please enter a valid Email address.';
+                                            return t('passenger.validEmail');
                                         }
                                         return true;
                                     }
@@ -185,7 +187,7 @@ const ContactForm = forwardRef((_,ref) => {
                                     <TextField
                                         {...field}
                                         fullWidth
-                                        label="Email"
+                                        label={t('passenger.email')}
                                         error={!!fieldState.error}
                                     />
                                 )}
@@ -197,18 +199,18 @@ const ContactForm = forwardRef((_,ref) => {
                                 name="phoneNumber"
                                 rules={{
                                     validate: (value) => {
-                                        if (!value) return 'Please enter the passenger\'s Phone number';
-                                        if (!/^\d+$/.test(value)) return 'Only numbers are allowed';
+                                        if (!value) return t('passenger.enterPhoneNumber');
+                                        if (!/^\d+$/.test(value)) return t('passenger.phoneNumberAllowed');
                                         return true;
                                     }
                                 }}
                                 render={({field, fieldState}) => (
                                     <TextField
-                                        label="Mobile phone"
+                                        label={t('passenger.mobilePhone')}
                                         variant="outlined"
                                         {...field}
                                         type={'tel'}
-                                        placeholder="Mobile phone"
+                                        placeholder={t('passenger.mobilePhone')}
                                         error={!!fieldState.error}
                                         onChange={e => {
                                             const val = e.target.value;
