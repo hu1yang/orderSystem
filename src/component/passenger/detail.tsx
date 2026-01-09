@@ -25,12 +25,14 @@ import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
 import {setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
+import {useTranslation} from "react-i18next";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
     paySubmit:() => void
     pirceResult:PriceSummary
 }) => {
+    const {t} = useTranslation()
 
     const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
     const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
@@ -44,7 +46,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
             <div className={styles.payContainer}>
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
-                        <div className={styles.payPriceLabels}>Total</div>
+                        <div className={styles.payPriceLabels}>{t('passenger.total')}</div>
                         <div className={styles.payPricevalue}>{resultAir?.currency}${pirceResult.totalPrice}</div>
                     </div>
                     <Button type="submit" loading={createdLoading} loadingPosition="end" sx={{
@@ -55,7 +57,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                         '&.MuiButton-loading': {
                             backgroundColor: 'var(--put-border-color)'
                         },
-                    }} fullWidth onClick={payNow}>Booking Now</Button>
+                    }} fullWidth onClick={payNow}>{t('passenger.bookingNow')}</Button>
                 </div>
             </div>
         </div>
@@ -64,6 +66,8 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 })
 
 const Detail = memo(() => {
+    const { t } = useTranslation()
+
     const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -114,7 +118,7 @@ const Detail = memo(() => {
                 passengers = await passengersRef.current.submit()
             } catch {
                 scrollToTarget()
-                setError('error','Please fill in the passenger information')
+                setError('error',t('passenger.fillPassengerInfo'))
 
                 return;
             }
@@ -122,7 +126,7 @@ const Detail = memo(() => {
                 if(!contactRef.current) throw new Error('ref is missing')
                 await contactRef.current.submit()
             } catch {
-                setError('error','Please fill in the contact information')
+                setError('error',t('passenger.fillContactInfo'))
 
                 return;
             }
@@ -136,7 +140,7 @@ const Detail = memo(() => {
             });
 
             if (mismatch) {
-                setError('error',`Please select ${mismatch.passengerCount} ${mismatch.passengerType.toUpperCase()} passenger(s)`)
+                setError('error',t('passenger.selectPassengerCount',{count:mismatch.passengerCount,type:mismatch.passengerType}))
 
                 return;
             }
@@ -158,7 +162,7 @@ const Detail = memo(() => {
 
             await orderCreateAgent(result).then(res => {
                 if(res.succeed){
-                    setError('success','Order created successfully')
+                    setError('success',t('passenger.orderCreatedSuccessfully'))
                     backOrder(res.response.orderNumber)
                     //
                     // navigate(`/mine/orderDetail/${res.response.orderNumber}`)
@@ -167,7 +171,7 @@ const Detail = memo(() => {
 
                 }
             }).catch(() => {
-                setError('error','Interface error')
+                setError('error',t('passenger.interfaceError'))
 
             })
         } finally {
@@ -257,13 +261,13 @@ const Detail = memo(() => {
                         </Stepper>
                         <div className={'s-flex'}>
                             <Typography className={'flex-1'} fontWeight={400} fontSize={14} color={'var(--active-color)'}>
-                                Choose a suitable flight
+                                {t('passenger.chooseFlight')}
                                 <span className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrderNav}>
-                                    <span>Change Flight</span>
+                                    <span>{t('passenger.changeFlight')}</span>
                                 </span>
                             </Typography>
-                            <Typography fontWeight={400} fontSize={14} color={'var(--active-color)'}>Fill in your info</Typography>
-                            <Typography className={'flex-1'} textAlign={'right'} fontWeight={400} fontSize={14} color={'var(--text-color)'}>Finalize your payment</Typography>
+                            <Typography fontWeight={400} fontSize={14} color={'var(--active-color)'}>{t('passenger.chooseFlight')}</Typography>
+                            <Typography className={'flex-1'} textAlign={'right'} fontWeight={400} fontSize={14} color={'var(--text-color)'}>{t('passenger.finalizePayment')}</Typography>
                         </div>
                     </div>
                     <div className={`s-flex jc-bt`}>
@@ -287,7 +291,7 @@ const Detail = memo(() => {
                                     <ContactForm ref={contactRef} />
                                     <div className={styles.package}>
                                         <div className={styles.packgaeTitle}>
-                                            Additional Baggage Allowanc
+                                            {t('passenger.additionalBaggageAllowanc')}
                                         </div>
                                         <div className={styles.commonBox}>
                                             <div className={styles.packageContent}>
@@ -298,7 +302,7 @@ const Detail = memo(() => {
                                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
                                                                 <img src={personal_no} alt=""/>
                                                             </div>
-                                                            <div className={styles.packageliNames}>Personal Item</div>
+                                                            <div className={styles.packageliNames}>{t('passenger.personalItem')}</div>
 
                                                         </div>
                                                     </Grid>
@@ -307,7 +311,7 @@ const Detail = memo(() => {
                                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
                                                                 <img src={carryOn} alt=""/>
                                                             </div>
-                                                            <div className={styles.packageliNames}>Carry-on baggage</div>
+                                                            <div className={styles.packageliNames}>{t('order.carryBagger')}</div>
 
 
                                                         </div>
@@ -317,7 +321,7 @@ const Detail = memo(() => {
                                                             <div className={`${styles.packageliPicture} s-flex ai-ct jc-ct`}>
                                                                 <img src={checkIn} alt=""/>
                                                             </div>
-                                                            <div className={styles.packageliNames}>Checked baggage</div>
+                                                            <div className={styles.packageliNames}>{t('order.checkedBagger')}</div>
 
                                                         </div>
                                                     </Grid>
@@ -355,7 +359,7 @@ const Detail = memo(() => {
                                                                     <Grid size={12}>
                                                                         <Grid container>
                                                                             <Grid size={3}>
-                                                                                <div className={styles.cityDetail}>Passenger
+                                                                                <div className={styles.cityDetail}>{t('passenger.passenger')}
                                                                                 </div>
                                                                             </Grid>
                                                                             <Grid size={3}>
@@ -428,7 +432,7 @@ const Detail = memo(() => {
             </Snackbar>
             <Snackbar open={createdLoading} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert severity="success" icon={<CircularProgress size={20} color="inherit" />} variant="filled" sx={{ width: '100%', fontSize: 18 }}>
-                    Order creation...
+                    {t('passenger.orderCreation')}
                 </Alert>
             </Snackbar>
         </div>

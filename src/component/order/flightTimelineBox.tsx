@@ -9,17 +9,19 @@ import LuggageIcon from "@mui/icons-material/Luggage";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import {useLocation} from "react-router";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 import {Stack, Typography} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
+import {useTranslation} from "react-i18next";
 
 
 const ThatDay = memo(({ timer, segments }: {
     timer: string
     segments: Segment[]
 }) => {
+
     const departure = segments[0]?.departureTime
 
     return dayjs(departure).isSame(timer, 'day') ||  <Typography variant="caption" gutterBottom sx={{
@@ -39,6 +41,8 @@ const FlightTimelineBox = memo(({segments,amounts}:{
     segments:Segment[]
     amounts?:Amount[]|null
 }) => {
+    const {t} = useTranslation()
+
     const {pathname} = useLocation()
 
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
@@ -51,7 +55,7 @@ const FlightTimelineBox = memo(({segments,amounts}:{
 
     const canbinLabel = useMemo(() => {
         const cabinOption = cabinOptions.find(op => op.value === cabinValue)
-        return cabinOption?.label
+        return t(`order.${cabinOption?.label}`) ?? t('order.economy')
     }, [cabinValue]);
 
 
@@ -64,12 +68,11 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                         <div className={styles.flightTimeline}>
                             <div className={`${styles.airinfoLine} s-flex ai-ct`}>
                                 <div className={styles.timer}>
-
                                     {segmentIndex>0 && <ThatDay segments={segments} timer={segment.departureTime} />}
                                     {extractTimeWithTimezone(segment.departureTime)}</div>
                                 <div className={styles.airTitle}>
                                     <span> {segment.departureAirport}</span>
-                                    <span> {segment.carrier} Airport</span>
+                                    <span> {segment.carrier} {t('passenger.airport')}</span>
                                     <span> {segment.departureTerminal}</span>
                                 </div>
                             </div>
@@ -94,21 +97,21 @@ const FlightTimelineBox = memo(({segments,amounts}:{
 
                                 </div>
                                 <div className={styles.airInfomationmains}>
-                                    <p>Flight number: {segment.flightNumber}
+                                    <p>{t('passenger.flightNumber')}: {segment.flightNumber}
                                         {
                                             !!segment.flightMealType && <RestaurantIcon sx={{fontSize: '1.3rem',ml:'10px'}} />
                                         }
                                         &nbsp;&nbsp;{canbinLabel}
                                     </p>
                                     {
-                                        segment.shareToFlightNo && <p>Share Flight number: {segment.shareToFlightNo}</p>
+                                        segment.shareToFlightNo && <p>{t('passenger.shareFlightNumber')}: {segment.shareToFlightNo}</p>
                                     }
-                                    <p>Aircraft Model: {segment.aircraftModel}</p>
+                                    <p>{t('passenger.aircraftModel')}: {segment.aircraftModel}</p>
                                     <Stack direction="row" spacing={0.5} sx={{
                                         alignItems: "center",
                                     }}>
                                         <AccessTimeIcon fontSize="small" sx={{color:'var(--tips-gary-color)'}} />
-                                        <p>Flight time: {formatTotalDuration([segment.totalFlyingTime!])}</p>
+                                        <p>{t('passenger.flightTime')}: {formatTotalDuration([segment.totalFlyingTime!])}</p>
                                     </Stack>
                                 </div>
                             </div>
@@ -119,7 +122,7 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                                 </div>
                                 <div className={styles.airTitle}>
                                     <span> {segment.arrivalAirport}</span>
-                                    <span> {segment.carrier} Airport</span>
+                                    <span> {segment.carrier} {t('passenger.airport')}</span>
                                     <span> {segment.arrivalTerminal}</span>
                                 </div>
                             </div>
@@ -128,7 +131,7 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                             segmentIndex < segments.length -1  && (
                                 <div className={styles.transfer}>
                                     <div className={`${styles.transferInfo} s-flex flex-dir`}>
-                                            <span>Transfer in {segments[segmentIndex].arrivalAirport} {
+                                            <span>{t('passenger.transferIn',{airport:segments[segmentIndex].arrivalAirport})} {
                                                 formatDuration(segments[segmentIndex + 1].departureTime,segments[segmentIndex].arrivalTime)
                                             }</span>
                                         {
@@ -141,7 +144,7 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                                                         color: 'var(--price-color)',
                                                         mr:'5px'
                                                     }} />
-                                                    <span>Different Terminal</span>
+                                                    <span>{t('passenger.differentTerminal')}</span>
                                                 </div>
                                             )
                                         }

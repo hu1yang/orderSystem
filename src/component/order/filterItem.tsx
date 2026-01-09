@@ -35,11 +35,13 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 import defaultAir from '@/assets/air/default.webp'
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import {useTranslation} from "react-i18next";
 
 
 const FlightTimeline = memo(({segments}:{
     segments:Segment[]
 }) => {
+    const {t} = useTranslation()
 
     const flightSegment = useMemo(() => {
 
@@ -124,7 +126,7 @@ const FlightTimeline = memo(({segments}:{
             }} title={
                 <FlightTimelineBox segments={segments} />
             }>
-                <Box flex="1" mx={2} position="relative" className={`cursor-p`}>
+                <Box flex="1" mx={1} position="relative" className={`cursor-p`}>
                     {/* 线条 */}
                     <Box
                         sx={{
@@ -181,7 +183,7 @@ const FlightTimeline = memo(({segments}:{
                         }}
                     >
                         {
-                            segments.length < 2 ? 'Nonstop' : flightSegment.transferTime
+                            segments.length < 2 ? t('order.nonstop') : flightSegment.transferTime
                         }
                     </Typography>
                 </Box>
@@ -216,12 +218,8 @@ const FlightTimeline = memo(({segments}:{
     );
 })
 
-const itineraryTypeMap = {
-    multi: 'Multi-city',
-    oneWay: 'One-way',
-    round: 'Round-trip',
-} as const
 const FilterItem = () => {
+    const {t} = useTranslation()
     const searchData = useSearchData();
 
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
@@ -310,13 +308,13 @@ const FilterItem = () => {
                         {
                             luggageIncludes.hand && <BusinessCenterIcon sx={{fontSize:14, color: 'var(--keynote-text)' }} />
                         }
-                        <span>Included</span>
+                        <span>{t('order.included')}</span>
                     </div>
                     {
                         !!searchData?.teamedKey && (
                             <div className={`${styles.tipsIcon} ${styles.tipsIconWarning} s-flex ai-ct`}>
                                 <GroupAddTwoToneIcon sx={{fontSize:14, color: 'var(--vt-c-white)' }} />
-                                <span>Promo</span>
+                                <span>{t('order.promo')}</span>
                             </div>
                         )
                     }
@@ -366,7 +364,7 @@ const FilterItem = () => {
                                 <div>{searchData?.currency}${lostPrice}</div>
                             </div>
                             <div>
-                                <span>{itineraryTypeMap[itineraryType]}</span>
+                                <span>{t(`order.${itineraryType}`)}</span>
                             </div>
                         </div>
                         {/*<Button variant='contained' onClick={openMore} sx={{*/}
@@ -387,7 +385,7 @@ const FilterItem = () => {
                             width: '110px'
 
                         }}>
-                            {!open?'Select':'Hide'}
+                            {!open?t('order.select'):t('order.hide')}
                         </Button>
                     </div>
                 </div>
@@ -406,23 +404,26 @@ const FilterItem = () => {
                         <CardHeader sx={{
                             p: 0
                         }} title={
-                            <Typography fontWeight="bold" fontSize="1.6rem"
-                                        gutterBottom>Fare type</Typography>
+                            <Typography fontWeight="bold" fontSize="1.6rem" sx={{
+                                height:'4.5rem',
+                                mb: 0
+                            }}
+                                        gutterBottom>{t('order.fareType')}</Typography>
                         } />
                         <CardContent>
                             <Divider sx={{my: 1.5}}/>
-                            <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>Baggage</Typography>
+                            <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>{t('passenger.baggage')}</Typography>
                             <div >
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Personal Item</Typography>
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Check baggage</Typography>
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Carry baggage</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('passenger.personalItem')}</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('passenger.checkedBagger')}</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('passenger.carryBagger')}</Typography>
                             </div>
                             <Divider sx={{my: 1.5}}/>
-                            <Typography fontWeight="bold" fontSize="1.1rem">Fare Rules</Typography>
+                            <Typography fontWeight="bold" fontSize="1.1rem">{t('order.fareRules')}</Typography>
                             <div>
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Cancellation</Typography>
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Rebooking</Typography>
-                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>Refund</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('order.cancellation')}</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('order.rebooking')}</Typography>
+                                <Typography fontWeight="400" fontSize="1.1rem" mt={1}>{t('order.refund')}</Typography>
                             </div>
                         </CardContent>
                     </Card>

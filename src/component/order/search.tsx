@@ -22,7 +22,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import * as React from "react";
-import {format} from 'date-fns';
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
@@ -39,9 +38,9 @@ import {
     setQuery, setSearchDate
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 import {getAgentQuery} from "@/utils/order.ts";
-import {cabinOptions, debounce, flattenByCountry} from "@/utils/public.ts";
+import {cabinOptions, debounce, flattenByCountry, formatLocale, localeDate} from "@/utils/public.ts";
 import type {RootState} from "@/store";
 import {
     addSearch, delSearch,
@@ -52,7 +51,7 @@ import {
     setSearchLoad,
     setTravelers
 } from "@/store/searchInfo.ts";
-
+import {useTranslation} from "react-i18next";
 
 
 
@@ -166,6 +165,7 @@ const InputPop = memo(({id,open,anchorEl,closePop,children}:{
 const Airports = memo(({index}:{
     index:number;
 }) => {
+    const {t} = useTranslation()
     const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
 
     const daValue = useMemo(() => searchQuery[index].daValue,[searchQuery,index])
@@ -241,7 +241,7 @@ const Airports = memo(({index}:{
         <div className={`s-flex s-flex ai-ct`}>
             <InputModel openPop={(event) => openPop(event,'departure')}>
                 {
-                    daValue.departure ? <AddressCard address={daValue.departure} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>Leaving from</Typography>
+                    daValue.departure ? <AddressCard address={daValue.departure} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>{t('order.leavingFrom')}</Typography>
                 }
             </InputModel>
             <div className={`${styles.cycleAddress} s-flex ai-ct jc-ct cursor-p`} onClick={() =>  dispatch(setDaValue({
@@ -255,7 +255,7 @@ const Airports = memo(({index}:{
             </div>
             <InputModel openPop={(event) => openPop(event,'arrival')}>
                 {
-                    daValue.arrival ? <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>Going to</Typography>
+                    daValue.arrival ? <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>{t('order.goingTo')}</Typography>
                 }
             </InputModel>
             <InputPop id='searchInputPop' open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
@@ -358,6 +358,8 @@ const TimerChoose = memo(({isRound,index}:{
     isRound: boolean
     index:number
 }) => {
+    const {t} = useTranslation()
+
     const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
     const localDate = useMemo(() => searchQuery[index].localDate,[searchQuery,index])
 
@@ -443,7 +445,7 @@ const TimerChoose = memo(({isRound,index}:{
 
     const formatRange = useMemo(() => {
         if(!isRound){
-            return <p>{localDate && format(new Date(localDate as string) as Date, 'EEE, MMM dd')}</p>
+            return <p>{localDate && formatLocale(new Date(localDate as string) as Date, 'EEE, MMM dd')}</p>
         }else{
             const {from,to} = localDate as {
                 to:string
@@ -451,9 +453,9 @@ const TimerChoose = memo(({isRound,index}:{
             }
             return (
                 <>
-                    <p>{from && format(new Date(from), 'EEE, MMM dd')}</p>
+                    <p>{from && formatLocale(new Date(from), 'EEE, MMM dd')}</p>
                     <p>-</p>
-                    <p>{to && format(new Date(to), 'EEE, MMM dd')}</p>
+                    <p>{to && formatLocale(new Date(to), 'EEE, MMM dd')}</p>
                 </>
             )
         }
@@ -463,7 +465,7 @@ const TimerChoose = memo(({isRound,index}:{
         <>
             <InputModel openPop={openPop}>
                 <div className={`${styles.inputMessage} s-flex jc-ad flex-row ai-ct full-width`}>
-                    {!localDate ? <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14}}>Choose date</Typography> : formatRange}
+                    {!localDate ? <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14}}>{t('order.chooseDate')}</Typography> : formatRange}
                 </div>
             </InputModel>
             <InputPop id={'dayPicker'} open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
@@ -471,6 +473,7 @@ const TimerChoose = memo(({isRound,index}:{
                     {
                         isRound ? (
                             <DayPicker
+                                locale={localeDate}
                                 mode="range"
                                 selected={{
                                     to: new Date((localDate as {
@@ -494,6 +497,7 @@ const TimerChoose = memo(({isRound,index}:{
                             />
                         ) : (
                             <DayPicker
+                                locale={localeDate}
                                 mode="single"
                                 selected={new Date(localDate as string)}
                                 onSelect={handleSelect}
@@ -516,6 +520,8 @@ const TimerChoose = memo(({isRound,index}:{
 })
 
 const PersonChoose = () => {
+    const {t} = useTranslation()
+
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
     const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
 
@@ -529,7 +535,7 @@ const PersonChoose = () => {
 
     const canbinLabel = useMemo(() => {
         const cabinOption = cabinOptions.find(op => op.value === cabinValue)
-        return cabinOption?.label.split(' Class') ?? 'Economy'
+        return t(`order.${cabinOption?.label}`) ?? t('order.economy')
     }, [cabinValue]);
 
     const closePop = useCallback(() => {
@@ -548,7 +554,7 @@ const PersonChoose = () => {
             {
                 countAll > 1 ? <PeopleAltIcon sx={{fontSize: 24}} /> : <PersonIcon sx={{fontSize: 24}} />
             }
-            <p style={{marginLeft: '10px'}}>{countAll} Passengers , {canbinLabel}</p>
+            <p style={{marginLeft: '10px'}}>{t('order.passengersCount',{count:countAll})} , {canbinLabel}</p>
         </div>
     )
 
@@ -616,18 +622,18 @@ const PersonChoose = () => {
                     <Divider />
                     <div className={styles.personContainer}>
                         <div className={styles.tips}>
-                            <span>Please select the exact number of passengers to view the best prices</span>
+                            <span>{t('order.passengerCountTips')}</span>
                         </div>
                         <div className={styles.checkBox}>
                             {
                                 travelers.map(traveler => {
                                     switch (traveler.passengerType){
                                         case 'adt':
-                                            return <PersonCheck key={traveler.passengerType} title='Adults' tips='12+ years old' value={traveler.passengerType} />
+                                            return <PersonCheck key={traveler.passengerType} title={t('order.Adults')} tips={t('order.AdultsTips')} value={traveler.passengerType} />
                                         case 'chd':
-                                            return <PersonCheck key={traveler.passengerType} title='Children' tips='2–11 years old' value={traveler.passengerType} />
+                                            return <PersonCheck key={traveler.passengerType} title={t('order.Childrens')} tips={t('order.ChildrensTips')} value={traveler.passengerType} />
                                         case 'inf':
-                                            return <PersonCheck key={traveler.passengerType} title='Infants on lap' tips='Under 2 years old' value={traveler.passengerType} />
+                                            return <PersonCheck key={traveler.passengerType} title={t('order.Infants')} tips={t('order.InfantsTips')} value={traveler.passengerType} />
                                     }
                                 })
                             }
@@ -636,7 +642,7 @@ const PersonChoose = () => {
                             <Select labelId='Cabin' size='small' value={cabinValue} onChange={(event) => dispatch(setCabinValue(event.target.value))} id='Cabin' sx={{ width: '100%' }}>
                                 {
                                     cabinOptions.map(option => (
-                                        <MenuItem value={option.value} key={option.value}>{option.label}</MenuItem>
+                                        <MenuItem value={option.value} key={option.value}>{t(`order.${option.label}`)}</MenuItem>
                                     ))
                                 }
                             </Select>
@@ -650,6 +656,7 @@ const PersonChoose = () => {
 
 
 const SearchComponent = () => {
+    const {t} = useTranslation()
     const dispatch = useDispatch()
 
     const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
@@ -762,9 +769,9 @@ const SearchComponent = () => {
                 <RadioGroup row value={radioType} onChange={
                     (event) => dispatch(setRadioType(event.target.value as ItineraryType))
                 } name="row-radio-buttons-group">
-                    <FormControlLabel label="Round-trip" control={<Radio/>} value={'round'}></FormControlLabel>
-                    <FormControlLabel label="One-way" control={<Radio/>} value={'oneWay'}></FormControlLabel>
-                    <FormControlLabel label="Multi-city" control={<Radio/>} value={'multi'}></FormControlLabel>
+                    <FormControlLabel label={t('order.multi')} control={<Radio/>} value={'round'}></FormControlLabel>
+                    <FormControlLabel label={t('order.oneWay')} control={<Radio/>} value={'oneWay'}></FormControlLabel>
+                    <FormControlLabel label={t('order.round')} control={<Radio/>} value={'multi'}></FormControlLabel>
                 </RadioGroup>
             </div>
             <div>
@@ -809,7 +816,7 @@ const SearchComponent = () => {
                             m:0
                         }
                     }} startIcon={<SearchIcon sx={{width: '1.9rem',height: '1.9rem'}} />}>
-                        Search
+                        {t('order.search')}
                     </Button>
                 </div>
                 {
@@ -817,7 +824,7 @@ const SearchComponent = () => {
                         <div className={`${styles.addAirBtn} s-flex ai-fs cursor-p`} onClick={() => dispatch(addSearch())}>
                             <AddCircleOutlineOutlinedIcon sx={{color:'var(--active-color)',mr:'10px'}} />
                             <Typography variant="button" gutterBottom sx={{ display: 'block' , fontSize: 12, m:0, fontWeight: 'bold', color:'var(--active-color)' }}>
-                                Add another flight
+                                {t('order.addAnotherFlight')}
                             </Typography>
                         </div>
                     )

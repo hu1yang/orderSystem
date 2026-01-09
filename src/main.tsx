@@ -7,6 +7,7 @@ import {createTheme, ThemeProvider} from "@mui/material";
 import {Provider} from 'react-redux'
 import {store} from '@/store/index.ts'
 import "@/assets/iconfont/iconfont.css"
+import '@/i18n/index.tsx'
 
 const theme = createTheme({
     components: {
@@ -99,7 +100,7 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <BrowserRouter  basename={import.meta.env.VITE_BASE}>
+      <BrowserRouter basename={import.meta.env.VITE_BASE}>
           <ThemeProvider theme={theme}>
               <Provider store={store}>
                   <App />

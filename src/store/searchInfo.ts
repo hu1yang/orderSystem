@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type {CabinLevel, IAirport, ITem, ItineraryType, Travelers} from "@/types/order.ts";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 
 interface IdaValue{
     arrival: IAirport|null

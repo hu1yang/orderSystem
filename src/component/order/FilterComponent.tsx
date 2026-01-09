@@ -10,6 +10,7 @@ import type {RootState} from "@/store";
 import {airlist, debounce} from "@/utils/public.ts";
 import defaultAir from "@/assets/air/default.webp";
 import {setFilterData} from "@/store/orderInfo.ts";
+import {useTranslation} from "react-i18next";
 
 
 type AirbnbThumbComponentProps = React.HTMLAttributes<HTMLSpanElement> & {
@@ -47,6 +48,8 @@ const FilterAccordion = memo(({title, render,clear,clearFilter}: {
     clear:boolean
     clearFilter?:() => void
 }) => {
+    const {t} = useTranslation()
+
     const [open, setOpen] = useState(true)
 
     const clearFnc = (event:React.MouseEvent) => {
@@ -74,7 +77,7 @@ const FilterAccordion = memo(({title, render,clear,clearFilter}: {
                                     }
                                 }}
                             >
-                                Clear
+                                {t('order.clear')}
                             </Box>
                         )
                     }
@@ -241,6 +244,7 @@ const TimeRangeSlider = memo(({label,filterTimevalue,changeFilterTimeFnc,disable
 });
 
 const FilterComponent = memo(() => {
+    const {t} = useTranslation();
     const dispatch = useDispatch()
 
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -296,13 +300,13 @@ const FilterComponent = memo(() => {
             <div className={styles.filterbox}>
                 <div className={`${styles.titleBox} s-flex ai-ct jc-bt`}>
                     <div className={styles.title}>
-                        <span>Filters (Departure)</span>
+                        <span>{t('order.filters')} ({(airportActived === 0) ? t('order.departure') : t('order.arrival')})</span>
                     </div>
                 </div>
                 <div className={`${styles.filterLiBox} s-flex flex-wrap`}>
                     <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
                         <div className={styles.label}>
-                            <span>Departing to {arrival}</span>
+                            <span>{t('order.departingTo',{airport:arrival})}</span>
                         </div>
                     </div>
                     {
@@ -319,19 +323,19 @@ const FilterComponent = memo(() => {
                 </div>
             </div>
             <Divider component="div"/>
-            <FilterAccordion title="Airlines" clear={false} render={<RecommendedCheckboxList/>}/>
+            <FilterAccordion title={t('order.airlines')} clear={false} render={<RecommendedCheckboxList/>}/>
             <Divider component="div" />
             {
                 !searchLoad && filterData.filterTime.map((filterTime,filterTimeIndex) => (
                     <FilterAccordion
-                        title={`Times (${query.itineraries[filterTimeIndex].arrival})`}
+                        title={t('order.timers',{arrival:query.itineraries[filterTimeIndex].arrival})}
                         key={filterTimeIndex}
                         clear={true}
                         clearFilter={() => clearFilter(filterTimeIndex)}
                         render={
                             <>
-                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.departure} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'departure')} label={`Departure Time:`} />
-                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.arrival} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'arrival')} label={`Arrival Time:`} />
+                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.departure} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'departure')} label={`${t('order.departureTime')}:`} />
+                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.arrival} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'arrival')} label={`${t('order.arrivalTIme')}:`} />
                             </>
                         }
                     />

@@ -1,7 +1,9 @@
-import { addDays, addMonths, differenceInCalendarDays, format, parseISO, subDays } from 'date-fns'
-import dayjs, {type Dayjs} from 'dayjs';
-import type {AirlineInfo, Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
+import {addDays, addMonths, differenceInCalendarDays, format, type Locale, parseISO, subDays} from 'date-fns'
 
+import {type Dayjs} from 'dayjs';
+import dayjs from '@/utils/dayjs.ts';
+import type {AirlineInfo, Country, ITem, QueryGlobalAirports} from "@/types/order.ts";
+import { zhCN, enUS,ru } from 'date-fns/locale'
 
 import c6 from '@/assets/air/c6.webp'
 import fz from '@/assets/air/fz.webp'
@@ -17,11 +19,22 @@ import f3 from '@/assets/air/f3.webp'
 import gj from '@/assets/air/gj.webp'
 import pc from '@/assets/air/pc.webp'
 
+export const dayjsLocaleMap: Record<string, Locale> = {
+    'zh_CN': zhCN,
+    'en_US': enUS,
+    'ru_RU': ru
+}
+
+export const localeDate  = dayjsLocaleMap[localStorage.getItem('locale') || 'zh_CN']
+
+export const formatLocale = (time:Date,type:string) => format(time,type,{locale:localeDate})
+
 export function generateMonthlyDateRanges(
     numberValue: number = 1,
     isRound: boolean,
     timeValue: string | { from: string; to: string }
 ) {
+
     const today = subDays(new Date(), 1)  // 从昨天开始
     let targetDate: Date
 
@@ -43,9 +56,12 @@ export function generateMonthlyDateRanges(
     for (let i = 0; i <= daysCount; i++) {
         const current = addDays(today, i)
 
+        const locale = localStorage.getItem('locale') || 'zh_CN'
+        const formatType = locale === 'zh_CN' ? 'MMM d' : 'd MMM'
+
         if (isRound) {
             const end = addDays(current, numberValue)
-            const label = `${format(current, 'd MMM')} – ${format(end, 'd MMM')}`
+            const label = `${formatLocale(current, formatType)} – ${formatLocale(end, formatType)}`
             ranges.push({
                 label,
                 value: {
@@ -55,7 +71,7 @@ export function generateMonthlyDateRanges(
                 key: format(end, 'yyyy-MM-dd'),
             })
         } else {
-            const label = format(current, 'd MMM')
+            const label = formatLocale(current, formatType)
             ranges.push({
                 label,
                 value: format(current, 'yyyy-MM-dd'),
@@ -219,7 +235,7 @@ export const airlist: Record<string, AirlineInfo> = {
 }
 
 export const cabinOptions = [
-    { label: 'Economy Class', value: 'y' },
-    { label: 'Business Class', value: 'c' },
-    { label: 'First Class', value: 'f' },
+    { label: 'economy', value: 'y' },
+    { label: 'business', value: 'c' },
+    { label: 'first', value: 'f' },
 ];

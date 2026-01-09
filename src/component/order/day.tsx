@@ -5,7 +5,7 @@ import {Tab, Tabs, tabsClasses} from "@mui/material";
 import styles from './styles.module.less'
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import dayjs from "dayjs";
+import dayjs from '@/utils/dayjs.ts';
 import {setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {FQuery} from "@/types/order.ts";
 import {getAgentQuery} from "@/utils/order.ts";

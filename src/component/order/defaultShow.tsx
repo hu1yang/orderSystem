@@ -6,7 +6,9 @@ import {filterValidTrips, formatDateToShortString} from "@/utils/public.ts";
 import {useDispatch} from "react-redux";
 import {setHistory} from "@/store/searchInfo.ts";
 import banner from "@/assets/banner.png";
+import {useTranslation} from "react-i18next";
 const DefaultShow = memo(() => {
+    const {t} = useTranslation()
     const dispatch = useDispatch()
 
     const [historyList, setHistoryList] = useState<ITem[]>([])
@@ -29,7 +31,7 @@ const DefaultShow = memo(() => {
                         <Typography variant="h6" component="h2" style={{
                             marginBottom: '1rem',
                         }}>
-                            Recent Searches
+                            {t('order.recentSearches')}
                         </Typography>
                         <Grid container spacing={2}>
                             {
@@ -53,10 +55,10 @@ const DefaultShow = memo(() => {
                                                 <CardContent>
                                                     <div className={'flex jc-bt ai-ct'}>
                                                         <Typography sx={{ color: 'text.secondary' }}>
-                                                            {history.travelers?.reduce((total, t) => total + (t.passengerCount || 0), 0)} Passenger
+                                                            {t('order.passengersCount',{count:history.travelers?.reduce((total, t) => total + (t.passengerCount || 0), 0)})}
                                                         </Typography>
                                                         <Typography sx={{ color: 'text.secondary' }}>
-                                                            {history.itineraryType}
+                                                            {t(`order.${history.itineraryType}`)}
                                                         </Typography>
                                                     </div>
                                                 </CardContent>
