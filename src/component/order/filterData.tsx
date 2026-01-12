@@ -223,7 +223,7 @@ const FilterData = memo(() => {
     },[cityList,itineraries,airportActived])
 
 
-    const renderContent = () => {
+    const RenderContent = () => {
         if (disabledChoose || searchLoad) {
             return <FilterItemSkeleton />;
         }
@@ -283,7 +283,7 @@ const FilterData = memo(() => {
                                         }
                                     }}/>
                                     <div className={styles.airInfos}>
-                                        <span>{formatLocale(prevAir[0].departureTime, 'EEE, MMM dd')}</span>
+                                        <span>{formatLocale(new Date(prevAir[0].departureTime), 'EEE, MMM dd')}</span>
                                         <span>{extractTimeWithTimezone(prevAir[0].departureTime)} – {extractTimeWithTimezone(prevAir.at(-1)?.arrivalTime as string)}</span>
                                         <span>{prevAir[0].departureAirport} – {prevAir.at(-1)?.arrivalAirport}</span>
                                         <span>{formatTotalDuration(prevAir.map(segment => segment.totalFlyingTime) as string[])}</span>
@@ -298,7 +298,7 @@ const FilterData = memo(() => {
 
                 </div>
                 {/*<FilterTab />*/}
-                {renderContent()}
+                <RenderContent />
             </div>
         </div>
     )

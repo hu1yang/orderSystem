@@ -280,6 +280,7 @@ const FilterComponent = memo(() => {
     )
 
     const clearFilter = useCallback((index:number) => {
+        if(airportActived !== index) return false
         dispatch(
             setFilterData({
                 filterTime: filterData.filterTime.map((fl, flIndex) => {
@@ -293,7 +294,7 @@ const FilterComponent = memo(() => {
                 }),
             })
         )
-    },[filterData])
+    },[filterData,airportActived])
 
     return (
         <div className={styles.filterContainer}>
@@ -330,7 +331,7 @@ const FilterComponent = memo(() => {
                     <FilterAccordion
                         title={t('order.timers',{arrival:query.itineraries[filterTimeIndex].arrival})}
                         key={filterTimeIndex}
-                        clear={true}
+                        clear={airportActived === filterTimeIndex}
                         clearFilter={() => clearFilter(filterTimeIndex)}
                         render={
                             <>
