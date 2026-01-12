@@ -38,8 +38,9 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import {useTranslation} from "react-i18next";
 
 
-const FlightTimeline = memo(({segments}:{
+const FlightTimeline = memo(({segments,luggageIncludes}:{
     segments:Segment[]
+    luggageIncludes:Record<'checked' | 'hand' | 'carry', boolean>
 }) => {
     const {t} = useTranslation()
 
@@ -124,7 +125,7 @@ const FlightTimeline = memo(({segments}:{
                     maxWidth: 600, // 或设置固定宽度 width: 300
                 },
             }} title={
-                <FlightTimelineBox segments={segments} />
+                <FlightTimelineBox luggageIncludes={luggageIncludes} segments={segments} />
             }>
                 <Box flex="1" mx={1} position="relative" className={`cursor-p`}>
                     {/* 线条 */}
@@ -352,7 +353,7 @@ const FilterItem = () => {
                         <Grid container className={'flex-1'} spacing={2}>
                             <Grid size={12}>
                                 {
-                                    <FlightTimeline segments={searchData?.segments as Segment[]} />
+                                    <FlightTimeline segments={searchData?.segments as Segment[]} luggageIncludes={luggageIncludes} />
                                 }
                             </Grid>
                         </Grid>

@@ -37,9 +37,10 @@ const ThatDay = memo(({ timer, segments }: {
     </Typography>
 })
 
-const FlightTimelineBox = memo(({segments,amounts}:{
+const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
     segments:Segment[]
     amounts?:Amount[]|null
+    luggageIncludes?:Record<'checked' | 'hand' | 'carry', boolean>
 }) => {
     const {t} = useTranslation()
 
@@ -57,8 +58,6 @@ const FlightTimelineBox = memo(({segments,amounts}:{
         const cabinOption = cabinOptions.find(op => op.value === cabinValue)
         return t(`order.${cabinOption?.label}`) ?? t('order.economy')
     }, [cabinValue]);
-
-
 
     return (
         <div className={styles.flightTimelineBox}>
@@ -81,8 +80,15 @@ const FlightTimelineBox = memo(({segments,amounts}:{
                                     {
                                         pathname !== '/passenger' ?
                                             <>
-                                                <LuggageIcon />
-                                                <AdfScannerIcon />
+                                                {
+                                                    luggageIncludes?.carry && <AdfScannerIcon key='carry' />
+                                                }
+                                                {
+                                                    luggageIncludes?.checked && <LuggageIcon key='checked' />
+                                                }
+                                                {
+                                                    luggageIncludes?.hand && <BusinessCenterIcon key='hand' />
+                                                }
                                             </>
                                             :
                                             amountMemo?.luggages?.map(luggage => {

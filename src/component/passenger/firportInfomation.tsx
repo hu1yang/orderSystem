@@ -9,6 +9,8 @@ import {airlist, formatDateToShortString, formatFlyingTime} from "@/utils/public
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import defaultAir from "@/assets/air/default.webp";
 import {useTranslation} from "react-i18next";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
 
 const Itinerary = memo(({segments}:{
     segments:Segment[]
@@ -38,6 +40,8 @@ const FirportInfomation = memo(({segments,amounts}:{
 }) => {
     const {t} = useTranslation()
 
+    const channelCode = useSelector((state: RootState) => state.ordersInfo.airChoose.channelCode)
+
     return (
         <div className={styles.firportInfomation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
@@ -52,7 +56,7 @@ const FirportInfomation = memo(({segments,amounts}:{
                 {/*    }*/}
                 {/*}}/>*/}
 
-                <Avatar alt="Remy Sharp" src={airlist['API-C6-V1']?.picture ?? defaultAir}  sx={{ width: 46, height: 46 }} />
+                <Avatar alt={airlist[channelCode].title} src={airlist[channelCode]?.picture ?? defaultAir}  sx={{ width: 46, height: 46 }} />
                 <div className={`${styles.firportDateLabel} s-flex ai-ct`}>
                     <Itinerary segments={segments} />
                     <Divider orientation="vertical" variant="middle" sx={{
