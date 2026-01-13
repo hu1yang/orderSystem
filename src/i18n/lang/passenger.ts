@@ -72,6 +72,8 @@ export const passengerEn = {
         transferIn:"Transfer in {{airport}}",
         differentTerminal:"Different Terminal",
         duration:"Duration",
+        error:"Error",
+        success:"Success",
     }
 }
 
@@ -149,6 +151,8 @@ export const passengerCN = {
         transferIn:"在{{airport}}转机",
         differentTerminal:"不同的航站楼",
         duration:"时长",
+        error:"错误",
+        success:"成功",
     }
 }
 
@@ -226,6 +230,7 @@ export const passengerRU = {
         transferIn:"Трансфер в {{airport}}",
         differentTerminal:"Разный терминал",
         duration:"Продолжительность",
-
+        error:"Ошибка",
+        success:"Успех",
     }
 }

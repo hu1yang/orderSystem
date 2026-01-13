@@ -1,7 +1,7 @@
 import React, {Fragment, memo, type ReactElement, useCallback, useMemo, useRef, useState} from "react";
 import styles from './styles.module.less'
 import {
-    Alert, Box,
+    Alert, AlertTitle, Box,
     Button, CircularProgress,
     Divider,
     Grid,
@@ -213,7 +213,8 @@ const Detail = memo(() => {
     const setError = useCallback((type:'success'|'error',msg:string) => {
         setOpen(true);
         setSnackbarCom(
-            <Alert severity={type} variant="filled" sx={{ width: '100%', fontSize: 18 }}>
+            <Alert severity={type} variant="filled" sx={{ minWidth: '300px', fontSize: 12 }}>
+                <AlertTitle fontSize={16}>{t(`passenger.${type}`)}</AlertTitle>
                 {msg}
             </Alert>
         );

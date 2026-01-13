@@ -386,6 +386,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                     role={undefined}
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
+                    size={'large'}
                 >
                     {t('passenger.uploadPassengerInformation')}
                     <VisuallyHiddenInput
@@ -412,7 +413,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                             }
                             return (
                                 <div key={field.id} style={{margin:'30px 0'}}>
-                                    <Divider style={{marginBottom:'30px'}}>{t('passenger.passenger')} ({passengerTypes[field.passengerType]})</Divider>
+                                    <Divider style={{marginBottom:'30px'}}>{t('passenger.passenger')} ({t(`order.${passengerTypes[field.passengerType]}`)})</Divider>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Grid container spacing={2}>
                                             <Grid size={4}>
@@ -806,6 +807,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                             role={undefined}
                             color="success"
                             tabIndex={-1}
+                            size={'large'}
                             startIcon={<CloudDownloadIcon />}
                             onClick={downTemplate}
                         >
