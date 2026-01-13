@@ -386,7 +386,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                     role={undefined}
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
-                    size={'large'}
+                    sx={{fontSize:12}}
                 >
                     {t('passenger.uploadPassengerInformation')}
                     <VisuallyHiddenInput
@@ -807,7 +807,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                             role={undefined}
                             color="success"
                             tabIndex={-1}
-                            size={'large'}
+                            sx={{fontSize:12}}
                             startIcon={<CloudDownloadIcon />}
                             onClick={downTemplate}
                         >
@@ -815,6 +815,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                         </Button>
                     </Stack>
                 } sx={{
+                    width:'100%',
                     borderRadius: 0,
                     fontSize: 12,
                     backgroundColor: '#f5f7fa',

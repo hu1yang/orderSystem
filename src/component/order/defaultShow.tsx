@@ -2,7 +2,7 @@ import {Box, Card, CardActionArea, CardContent, CardHeader, Grid, Typography} fr
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {memo, useEffect, useState} from "react";
 import type {ITem} from "@/types/order.ts";
-import {filterValidTrips, formatDateToShortString} from "@/utils/public.ts";
+import {filterValidTrips, formatDateToShortString, isZhCN} from "@/utils/public.ts";
 import {useDispatch} from "react-redux";
 import {setHistory} from "@/store/searchInfo.ts";
 import banner from "@/assets/banner.png";
@@ -48,7 +48,7 @@ const DefaultShow = memo(() => {
                                                 },
                                             }}>
                                                 <CardHeader title={
-                                                    `${history.itineraries[0].departure.cityEName}(${history.itineraries[0].departure.airportCode}) - ${history.itineraries[0].arrival.cityEName}(${history.itineraries[0].arrival.airportCode})`
+                                                    `${history.itineraries[0].departure[isZhCN?'cityCName':'cityEName']}(${history.itineraries[0].departure.airportCode}) - ${history.itineraries[0].arrival[isZhCN?'cityCName':'cityEName']}(${history.itineraries[0].arrival.airportCode})`
                                                 } subheader={
                                                     formatDateToShortString(history.itineraries[0].departureDate)
                                                 } action={<KeyboardArrowRightIcon fontSize="large" />} />

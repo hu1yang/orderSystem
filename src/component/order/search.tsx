@@ -40,7 +40,7 @@ import {
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
 import dayjs from '@/utils/dayjs.ts';
 import {getAgentQuery} from "@/utils/order.ts";
-import {cabinOptions, debounce, flattenByCountry, formatLocale, localeDate} from "@/utils/public.ts";
+import {cabinOptions, debounce, flattenByCountry, formatLocale, isZhCN, localeDate} from "@/utils/public.ts";
 import type {RootState} from "@/store";
 import {
     addSearch, delSearch,
@@ -105,7 +105,7 @@ const AddressCard = memo(({style,address}:{style?:React.CSSProperties,address:IA
         {
             !!address &&  <div className={'full-width'}>
                 <span className={'elli-1'}>{address.cityEName}({address.airportCode})</span>
-                <p className={'elli-1'}>{address.airportEName}</p>
+                <p className={'elli-1'}>{address[isZhCN?'airportCName':'airportEName']}</p>
             </div>
         }
     </div>

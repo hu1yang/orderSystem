@@ -2,8 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { orderCN, orderEn, orderRU } from '@/i18n/lang/order'
 import { passengerCN, passengerEn, passengerRU } from '@/i18n/lang/passenger'
-
-const locale = localStorage.getItem('locale') || 'zh_CN'
+import {getLocale as locale} from "@/utils/public.ts";
 
 i18n.use(initReactI18next).init({
     resources: {
