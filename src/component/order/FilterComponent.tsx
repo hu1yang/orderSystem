@@ -7,7 +7,7 @@ import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import * as React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {airlist, debounce} from "@/utils/public.ts";
+import {airlist, debounce, isZhCN} from "@/utils/public.ts";
 import defaultAir from "@/assets/air/default.webp";
 import {setFilterData} from "@/store/orderInfo.ts";
 import {useTranslation} from "react-i18next";
@@ -257,7 +257,7 @@ const FilterComponent = memo(() => {
     const arrival = useMemo(() => {
         const arrivalValue = query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
         const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
-        return result?.airportEName ?? arrivalValue
+        return result?.[isZhCN?'airportCName':'airportEName'] ?? arrivalValue
     }, [query,airportActived,cityList]);
 
     const changeFilterTime = useCallback(

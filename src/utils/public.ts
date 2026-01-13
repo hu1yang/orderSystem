@@ -25,7 +25,11 @@ export const dayjsLocaleMap: Record<string, Locale> = {
     'ru_RU': ru
 }
 
-export const localeDate  = dayjsLocaleMap[localStorage.getItem('locale') || 'zh_CN']
+export const getLocale = (localStorage.getItem('locale') || 'zh_CN')
+
+export const localeDate  = dayjsLocaleMap[getLocale]
+
+export const isZhCN = String(getLocale) === 'zh_CN'
 
 export const formatLocale = (time:Date,type:string) => format(time,type,{locale:localeDate})
 
@@ -56,8 +60,7 @@ export function generateMonthlyDateRanges(
     for (let i = 0; i <= daysCount; i++) {
         const current = addDays(today, i)
 
-        const locale = localStorage.getItem('locale') || 'zh_CN'
-        const formatType = locale === 'zh_CN' ? 'MMM d' : 'd MMM'
+        const formatType = getLocale === 'zh_CN' ? 'MMM d' : 'd MMM'
 
         if (isRound) {
             const end = addDays(current, numberValue)

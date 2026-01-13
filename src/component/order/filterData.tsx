@@ -10,7 +10,7 @@ import HtmlTooltip from "../defult/Tooltip";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {extractTimeWithTimezone, formatLocale} from "@/utils/public.ts";
+import {extractTimeWithTimezone, formatLocale, isZhCN} from "@/utils/public.ts";
 import {prevAirChoose} from "@/store/orderInfo.ts";
 import {
     formatTotalDuration,
@@ -219,7 +219,7 @@ const FilterData = memo(() => {
     const arrival = useMemo(() => {
         const arrivalValue = itineraries[airportActived].arrival
         const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
-        return result?.airportEName ?? arrivalValue
+        return result?.[isZhCN?'airportCName':'airportEName'] ?? arrivalValue
     },[cityList,itineraries,airportActived])
 
 
