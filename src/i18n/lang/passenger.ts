@@ -74,6 +74,8 @@ export const passengerEn = {
         duration:"Duration",
         error:"Error",
         success:"Success",
+        priceInvalidation:"Price Invalidation",
+        priceInvalidationTips:"Please return to place the order again",
     }
 }
 
@@ -153,6 +155,8 @@ export const passengerCN = {
         duration:"时长",
         error:"错误",
         success:"成功",
+        priceInvalidation:"价格失效",
+        priceInvalidationTips:"请返回重新下单。",
     }
 }
 
@@ -232,5 +236,7 @@ export const passengerRU = {
         duration:"Продолжительность",
         error:"Ошибка",
         success:"Успех",
+        priceInvalidation:"Ценовое обесценение",
+        priceInvalidationTips:"Пожалуйста, вернитесь, чтобы оформить заказ снова.",
     }
 }

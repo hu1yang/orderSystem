@@ -53,7 +53,7 @@ instance.interceptors.request.use(
         if (config.method === 'post') {
             if (config.data instanceof FormData) {
                 config.data.append('timeStamp', date.toString())
-            } else {
+            } else if(!Array.isArray(config.data)) {
                 config.data = {
                     ...config.data,
                     timeStamp: date,

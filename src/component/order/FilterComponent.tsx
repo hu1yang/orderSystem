@@ -250,15 +250,21 @@ const FilterComponent = memo(() => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
+    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
     const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
 
 
     const arrival = useMemo(() => {
         const arrivalValue = query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival
-        const result = cityList.find(city => city.cityCode === arrivalValue || city.airportCode === arrivalValue)
-        return result?.[isZhCN?'airportCName':'airportEName'] ?? arrivalValue
-    }, [query,airportActived,cityList]);
+
+        const cityArr = searchQuery.flatMap(city => {
+            const { departure, arrival } = city.daValue
+            return [departure, arrival].filter(Boolean)
+        })
+
+        const result = cityArr.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
+        return result ? `${result?.[isZhCN?'airportCName':'airportEName']}(${arrivalValue})` : arrivalValue
+    }, [query,airportActived,searchQuery]);
 
     const changeFilterTime = useCallback(
         debounce((value: number[], index: number, type: 'arrival' | 'departure') => {

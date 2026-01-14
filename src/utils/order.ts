@@ -9,8 +9,8 @@ import type {
 } from "@/types/order.ts";
 import dayjs from '@/utils/dayjs.ts';
 import duration from 'dayjs/plugin/duration'
-import {flightQueryAgent} from "@/utils/request/agent.ts";
-import {setFilterData, setNoData, setSearchDate} from "@/store/orderInfo.ts";
+import {flightQueryAgent, queryGlobalAirportsAgent} from "@/utils/request/agent.ts";
+import {setCityArr, setFilterData, setNoData, setSearchDate} from "@/store/orderInfo.ts";
 import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
 import {t} from "i18next";
@@ -290,6 +290,23 @@ export function amountPrice(amounts: Amount[]) {
     return (totalCents / 100).toFixed(2);
 }
 
+export function getAirports(data:MregeResultAirport[],dispatch: AppDispatch){
+    const airports = Array.from(
+        new Set(
+            data.flatMap(item =>
+                item.itinerariesMerge.flatMap(itinerary =>
+                    itinerary.segments.flatMap(segment => [
+                        segment.arrivalAirport,
+                        segment.departureAirport,
+                    ])
+                )
+            ).filter(Boolean)
+        )
+    );
+    queryGlobalAirportsAgent(airports).then(res => {
+        dispatch(setCityArr(res))
+    })
+}
 
 export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
     try {
@@ -327,7 +344,7 @@ export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
                 }))
             })
         );
-
+        getAirports(mergeAirResult,dispatch)
         dispatch(setSearchLoad(false));
     } catch {
         dispatch(setSearchLoad(false));

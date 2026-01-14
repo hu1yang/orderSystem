@@ -2,9 +2,9 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type {
     AirChoose,
-    FQuery, IAirport,
+    FQuery,
     IContact,
-    ItineraryType, MregeResultAirport, Passenger,
+    ItineraryType, MregeResultAirport, Passenger, QueryAirport,
     ResponseItinerary,
     Result,
     Travelers
@@ -20,7 +20,7 @@ type IOrder = {
     airSearchData: MregeResultAirport[]
     noData:boolean
     disabledChoose:boolean
-    cityList: IAirport[]
+    cityList: QueryAirport[]
     createdLoading:boolean
     filterData:{
         airline:string[]
@@ -222,7 +222,7 @@ const orderInfoSlice = createSlice({
         setDisabledChoose(state, action: PayloadAction<boolean>) {
             state.disabledChoose = action.payload
         },
-        setCityArr(state, action: PayloadAction<IAirport[]>) {
+        setCityArr(state, action: PayloadAction<QueryAirport[]>) {
             state.cityList = action.payload
         },
         setCreatedLoading(state, action: PayloadAction<boolean>) {
