@@ -769,9 +769,9 @@ const SearchComponent = () => {
                 <RadioGroup row value={radioType} onChange={
                     (event) => dispatch(setRadioType(event.target.value as ItineraryType))
                 } name="row-radio-buttons-group">
-                    <FormControlLabel label={t('order.multi')} control={<Radio/>} value={'round'}></FormControlLabel>
+                    <FormControlLabel label={t('order.round')} control={<Radio/>} value={'round'}></FormControlLabel>
                     <FormControlLabel label={t('order.oneWay')} control={<Radio/>} value={'oneWay'}></FormControlLabel>
-                    <FormControlLabel label={t('order.round')} control={<Radio/>} value={'multi'}></FormControlLabel>
+                    <FormControlLabel label={t('order.multi')} control={<Radio/>} value={'multi'}></FormControlLabel>
                 </RadioGroup>
             </div>
             <div>
