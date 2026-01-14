@@ -7,10 +7,11 @@ import {queryBookingAgent} from "@/utils/request/agent.ts";
 import {setResult} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 const Passenger = () => {
     const navigate = useNavigate()
-
+    const {t} = useTranslation()
 
     const state = useSelector((state: RootState) => state.ordersInfo)
     const load = useRef(false);
@@ -67,20 +68,20 @@ const Passenger = () => {
                 <DialogTitle sx={{
                     fontSize: '1.5rem',
                 }}>
-                    {"Price Invalidation"}
+                    {t('passenger.priceInvalidation')}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description" sx={{
                         fontSize: '1.3rem',
                     }}>
-                        Please return to place the order again
+                        {t('passenger.priceInvalidationTips')}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={returnBack} autoFocus sx={{
                         fontSize: '1.3rem',
                     }}>
-                        Return
+                        {t('order.return')}
                     </Button>
                 </DialogActions>
             </Dialog>

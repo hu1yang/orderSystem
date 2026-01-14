@@ -1,38 +1,62 @@
-import {memo} from "react";
+import {memo, useCallback, useMemo} from "react";
 import styles from './styles.module.less'
 import {
     Avatar,
     Divider, Stack
 } from "@mui/material";
 import type {Amount, Segment} from "@/types/order.ts";
-import {airlist, formatDateToShortString, formatFlyingTime} from "@/utils/public.ts";
+import {airlist, formatDateToShortString, formatFlyingTime, isZhCN} from "@/utils/public.ts";
 import FlightTimelineBox from "@/component/order/flightTimelineBox.tsx";
 import defaultAir from "@/assets/air/default.webp";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import type {RootState} from "@/store";
 
-const Itinerary = memo(({segments}:{
-    segments:Segment[]
-}) => {
-    const arrival = segments[0].departureAirport
-    let departure = ''
-    if(segments.length === 1){
-        departure = segments[0].arrivalAirport
-    }else{
-        departure = segments[segments.length-1].arrivalAirport
-    }
+const Itinerary = memo(({ segments }: { segments: Segment[] }) => {
+    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList);
+
+    const airportDetail = useCallback(
+        (value: string) => {
+            const result = cityList.find(
+                city => city.cityCode === value || city.airportCode === value
+            );
+
+            return result
+                ? `${value} ${result[isZhCN ? 'cityCName' : 'cityEName']}`
+                : value;
+        },
+        [cityList]
+    );
+
+    const itineraryDetail = useMemo(() => {
+        if (!segments?.length) {
+            return { from: '', to: '' };
+        }
+
+        const from = segments[0].departureAirport;
+        const to = segments[segments.length - 1].arrivalAirport;
+
+        return {
+            from: airportDetail(from),
+            to: airportDetail(to),
+        };
+    }, [segments, airportDetail]);
+
     return (
-        <Stack direction="row" spacing={0.5} sx={{
-            justifyContent: "space-around",
-            alignItems: "center",
-        }}>
-            <span>{arrival}</span>
-            <i className={'iconfont icon-oneway'} style={{fontSize:'1.6rem'}} />
-            <span>{departure}</span>
+        <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+                justifyContent: 'space-around',
+                alignItems: 'center',
+            }}
+        >
+            <span>{itineraryDetail.from}</span>
+            <i className="iconfont icon-oneway" style={{ fontSize: '1.6rem' }} />
+            <span>{itineraryDetail.to}</span>
         </Stack>
-    )
-})
+    );
+});
 
 const FirportInfomation = memo(({segments,amounts}:{
     segments:Segment[]
@@ -56,7 +80,7 @@ const FirportInfomation = memo(({segments,amounts}:{
                 {/*    }*/}
                 {/*}}/>*/}
 
-                <Avatar alt={airlist[channelCode].title} src={airlist[channelCode]?.picture ?? defaultAir}  sx={{ width: 46, height: 46 }} />
+                <Avatar alt={airlist[channelCode].title} src={airlist[channelCode]?.picture ?? defaultAir} sx={{ width: 40, height: 40 }} />
                 <div className={`${styles.firportDateLabel} s-flex ai-ct`}>
                     <Itinerary segments={segments} />
                     <Divider orientation="vertical" variant="middle" sx={{

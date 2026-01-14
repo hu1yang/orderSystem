@@ -1,7 +1,7 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, useCallback, useMemo} from "react";
 import styles from './styles.module.less'
 import type {Amount, Segment} from "@/types/order.ts";
-import {cabinOptions, extractTimeWithTimezone} from "@/utils/public.ts";
+import {cabinOptions, extractTimeWithTimezone, isZhCN} from "@/utils/public.ts";
 import {formatTotalDuration , formatDuration} from "@/utils/order.ts";
 import DataUsageIcon from "@mui/icons-material/DataUsage";
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
@@ -46,6 +46,7 @@ const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
 
     const {pathname} = useLocation()
 
+    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
     const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
 
 
@@ -59,6 +60,11 @@ const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
         return t(`order.${cabinOption?.label}`) ?? t('order.economy')
     }, [cabinValue]);
 
+    const airportDetail = useCallback((value:string) => {
+        const result = cityList.find(city => city.cityCode === value || city.airportCode === value)
+        return result ? `${value} ${result?.[isZhCN?'airportCName':'airportEName']}` : value
+    },[cityList])
+
     return (
         <div className={styles.flightTimelineBox}>
             {
@@ -70,8 +76,7 @@ const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
                                     {segmentIndex>0 && <ThatDay segments={segments} timer={segment.departureTime} />}
                                     {extractTimeWithTimezone(segment.departureTime)}</div>
                                 <div className={styles.airTitle}>
-                                    <span> {segment.departureAirport}</span>
-                                    <span> {segment.carrier} {t('passenger.airport')}</span>
+                                    <span> {airportDetail(segment.departureAirport)}</span>
                                     <span> {segment.departureTerminal}</span>
                                 </div>
                             </div>
@@ -127,8 +132,7 @@ const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
                                     {extractTimeWithTimezone(segment.arrivalTime)}
                                 </div>
                                 <div className={styles.airTitle}>
-                                    <span> {segment.arrivalAirport}</span>
-                                    <span> {segment.carrier} {t('passenger.airport')}</span>
+                                    <span> {airportDetail(segment.arrivalAirport)}</span>
                                     <span> {segment.arrivalTerminal}</span>
                                 </div>
                             </div>

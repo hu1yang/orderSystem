@@ -54,6 +54,7 @@ export const orderEn = {
         currentTotal:"Current Total",
         depart:"Depart",
         'return':"Return",
+        searchField:"Please complete the search field",
     }
 }
 
@@ -112,6 +113,7 @@ export const orderCN = {
         currentTotal:"当前总计",
         depart:"出发",
         'return':"到达",
+        searchField:"请填写搜索字段",
     }
 }
 
@@ -170,5 +172,6 @@ export const orderRU = {
         currentTotal:"Текущая сумма",
         depart:"Отправление",
         'return':"приезжать",
+        searchField:"Пожалуйста, заполните поле поиска.",
     }
 }

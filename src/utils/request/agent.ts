@@ -6,10 +6,11 @@ import type {
     FQuery,
     FQueryResult,
     FQueryResultForm,
-    OrderCreate, QueryGlobalAirports
+    OrderCreate, QueryAirport, QueryGlobalAirports
 } from "@/types/order.ts";
 
 export const flightQueryAgent = (form:FQuery)  => axios.post<FQueryResult[],FQuery>('/agentApi/Service/FlightQuery',form)
+export const queryGlobalAirportsAgent = (form:string[])  => axios.post<QueryAirport[],string[]>('/agentApi/Configs/QueryGlobalAirports',form)
 
 export const queryBookingAgent = (form:AirChooseForm) => axios.post<FQueryResultForm,AirChooseForm>('/agentApi/Service/QueryBooking',form)
 

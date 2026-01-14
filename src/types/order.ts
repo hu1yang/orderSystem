@@ -299,6 +299,22 @@ export interface QueryGlobalAirports {
     }[]
 }
 
+export interface QueryAirport {
+    id: string
+    countryCode: string,
+    countryEName: string,
+    countryCName: string,
+    cityEName: string,
+    cityCName: string,
+    cityCode: string,
+    airportEName: string,
+    airportCName: string,
+    airportCode: string
+    timeZone:number
+    operator:string
+    updatedTime:string
+}
+
 export interface IAirport {
     airportEName: string
     airportCName: string
