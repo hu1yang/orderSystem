@@ -316,7 +316,7 @@ export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
         });
 
         if (!res.length) {
-            return handleNoResult(dispatch, 'No suitable data');
+            return handleNoResult(dispatch, t('order.noSuitableData'));
         }
 
         const objResult = deduplicateByChannelCode(res);
@@ -324,12 +324,12 @@ export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
 
         if (allFailed) {
             const err = res.find(r => r.errorCode === 'C-00002');
-            return handleNoResult(dispatch, err?.errorMessage ?? 'No suitable data');
+            return handleNoResult(dispatch, err?.errorMessage ?? t('order.noSuitableData'));
         }
 
         const hasResults = objResult.some(o => o.response.results && o.response.results.length);
         if (!hasResults) {
-            return handleNoResult(dispatch, 'No suitable data');
+            return handleNoResult(dispatch, t('order.noSuitableData'));
         }
 
         const mergeAirResult = calculateAirResult(objResult);

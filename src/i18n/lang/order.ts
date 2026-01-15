@@ -55,6 +55,7 @@ export const orderEn = {
         depart:"Depart",
         'return':"Return",
         searchField:"Please complete the search field",
+        noSuitableData:"No suitable data",
     }
 }
 
@@ -114,6 +115,7 @@ export const orderCN = {
         depart:"出发",
         'return':"到达",
         searchField:"请填写搜索字段",
+        noSuitableData:"没有合适的数据",
     }
 }
 
@@ -173,5 +175,6 @@ export const orderRU = {
         depart:"Отправление",
         'return':"приезжать",
         searchField:"Пожалуйста, заполните поле поиска.",
+        noSuitableData:"Подходящих данных нет.",
     }
 }

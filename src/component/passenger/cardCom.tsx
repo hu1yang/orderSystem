@@ -136,7 +136,7 @@ const CardCom = memo(({pirceResult}:{
 
                                                 }>
                                                     <div className={`${styles.labels} s-flex ai-ct cursor-p`}>
-                                                        <span style={{fontSize: 12}}>{amount.familyName}: {luggage.luggageType} {t('passenger.baggage')}</span>
+                                                        <span style={{fontSize: 12}}>{amount.familyName}: {t(`passenger.${luggage.luggageType}Bagger`)}</span>
                                                     </div>
                                                 </HtmlTooltip>
                                                 <div className={styles.values}>
