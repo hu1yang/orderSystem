@@ -8,7 +8,7 @@ import {
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
-import type { OrderCreate, Passenger, PriceSummary } from '@/types/order.ts'
+import type {Luggage, OrderCreate, Passenger, PriceSummary} from '@/types/order.ts'
 import type {RootState} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -219,6 +219,30 @@ const Detail = memo(() => {
             </Alert>
         );
     },[open])
+
+    const LuggageCell = ({ luggage }: { luggage?: Luggage }) => (
+        <HtmlTooltip
+            placement="top"
+            disableHoverListener={!luggage}
+            sx={{
+                '.MuiTooltip-tooltip': {
+                    fontSize: '1.1rem',
+                },
+            }}
+            title={
+                <div className={styles.cityDetailSp}>
+                    {luggage ? luggage.luggageNotes : '--'}
+                </div>
+            }
+        >
+            <div className={`${styles.cityDetailSp} cursor-p`}>
+                {luggage
+                    ? `${luggage.luggageCount}${luggage.luggageSizeType}`
+                    : '--'}
+            </div>
+        </HtmlTooltip>
+    );
+
     return (
         <div className={`${styles.detailContainer} s-flex flex-dir`}>
             <div className={styles.detailHeader}>
@@ -331,25 +355,21 @@ const Detail = memo(() => {
                                                     my:'20px'
                                                 }} />
                                                 {
-                                                    airChoose.result ? airChoose.result.itineraries.map((itinerarie, index) => {
+                                                    airChoose.result?.itineraries.map((itinerarie, index) => {
                                                         const {segments} = itinerarie;
-                                                        const handLuggage = luggages[index]?.find(l => l.luggageType === 'hand');
-                                                        const carryLuggage = luggages[index]?.find(l => l.luggageType === 'carry');
-                                                        const checkedLuggage = luggages[index]?.find(l => l.luggageType === 'checked');
+
+                                                        const luggageMap = luggages[index]?.reduce((acc, cur) => {
+                                                            acc[cur.luggageType] = cur;
+                                                            return acc;
+                                                        }, {} as Record<'hand'|'carry'|'checked', Luggage>) || {};
+
+                                                        const { hand, carry, checked } = luggageMap;
 
 
-                                                        // 处理城市显示逻辑
-                                                        let cityText = '';
-                                                        if (segments.length === 1) {
-                                                            cityText = `${segments[0].departureAirport} - ${segments[0].arrivalAirport}`;
-                                                        } else if (segments.length > 1) {
-                                                            // 多段航班：起点 + 所有中间到达点
-                                                            const stops = [
-                                                                segments[0].departureAirport,
-                                                                ...segments.map(seg => seg.arrivalAirport)
-                                                            ];
-                                                            cityText = stops.join(' - ');
-                                                        }
+                                                        const cityText = [
+                                                            segments[0]?.departureAirport,
+                                                            ...segments.map(seg => seg.arrivalAirport),
+                                                        ].join(' - ');
 
                                                         return (
                                                             <Fragment key={index}>
@@ -364,37 +384,13 @@ const Detail = memo(() => {
                                                                                 </div>
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <HtmlTooltip placement="top" disableHoverListener={!handLuggage} sx={{
-                                                                                    '.MuiTooltip-tooltip': {
-                                                                                        fontSize: "1.1rem",
-                                                                                    }
-                                                                                }} title={
-                                                                                    <div className={styles.cityDetailSp}>{handLuggage ? handLuggage.luggageNotes : '--'}</div>
-                                                                                }>
-                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{handLuggage ? `${handLuggage.luggageCount}${handLuggage.luggageSizeType}` : '--'}</div>
-                                                                                </HtmlTooltip>
+                                                                                <LuggageCell luggage={hand} />
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <HtmlTooltip placement="top" disableHoverListener={!carryLuggage} sx={{
-                                                                                    '.MuiTooltip-tooltip': {
-                                                                                        fontSize: "1.1rem",
-                                                                                    }
-                                                                                }} title={
-                                                                                    <div className={styles.cityDetailSp}>{carryLuggage ? carryLuggage.luggageNotes : '--'}</div>
-                                                                                }>
-                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{carryLuggage ? `${carryLuggage.luggageCount}${carryLuggage.luggageSizeType}` : '--'}</div>
-                                                                                </HtmlTooltip>
+                                                                                <LuggageCell luggage={carry} />
                                                                             </Grid>
                                                                             <Grid size={3}>
-                                                                                <HtmlTooltip placement="top" disableHoverListener={!checkedLuggage} sx={{
-                                                                                    '.MuiTooltip-tooltip': {
-                                                                                        fontSize: "1.1rem",
-                                                                                    }
-                                                                                }} title={
-                                                                                    <div className={styles.cityDetailSp}>{checkedLuggage ? checkedLuggage.luggageNotes : '--'}</div>
-                                                                                }>
-                                                                                    <div className={`${styles.cityDetailSp} cursor-p`}>{checkedLuggage ? `${checkedLuggage.luggageCount}${checkedLuggage.luggageSizeType}` : '--'}</div>
-                                                                                </HtmlTooltip>
+                                                                                <LuggageCell luggage={checked} />
                                                                             </Grid>
                                                                         </Grid>
                                                                     </Grid>
@@ -404,7 +400,7 @@ const Detail = memo(() => {
                                                                 }}/>
                                                             </Fragment>
                                                         );
-                                                    }) : <></>
+                                                    })
                                                 }
                                             </div>
                                         </div>

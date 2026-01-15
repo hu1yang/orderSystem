@@ -118,12 +118,16 @@ const FlightTimelineBox = memo(({segments,amounts,luggageIncludes}:{
                                         segment.shareToFlightNo && <p>{t('passenger.shareFlightNumber')}: {segment.shareToFlightNo}</p>
                                     }
                                     <p>{t('passenger.aircraftModel')}: {segment.aircraftModel}</p>
-                                    <Stack direction="row" spacing={0.5} sx={{
-                                        alignItems: "center",
-                                    }}>
-                                        <AccessTimeIcon fontSize="small" sx={{color:'var(--tips-gary-color)'}} />
-                                        <p>{t('passenger.flightTime')}: {formatTotalDuration([segment.totalFlyingTime!])}</p>
-                                    </Stack>
+                                    {
+                                        !!segment.totalFlyingTime && (
+                                            <Stack direction="row" spacing={0.5} sx={{
+                                                alignItems: "center",
+                                            }}>
+                                                <AccessTimeIcon fontSize="small" sx={{color:'var(--tips-gary-color)'}} />
+                                                <p>{t('passenger.flightTime')}: {formatTotalDuration([segment.totalFlyingTime!])}</p>
+                                            </Stack>
+                                        )
+                                    }
                                 </div>
                             </div>
                             <div className={`${styles.airinfoLine} s-flex ai-ct`}>
