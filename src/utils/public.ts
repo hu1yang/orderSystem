@@ -18,6 +18,7 @@ import xy from '@/assets/air/xy.webp'
 import f3 from '@/assets/air/f3.webp'
 import gj from '@/assets/air/gj.webp'
 import pc from '@/assets/air/pc.webp'
+import fs from '@/assets/air/fs.webp'
 
 export const dayjsLocaleMap: Record<string, Locale> = {
     'zh_CN': zhCN,
@@ -235,6 +236,7 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-F3-V1': { picture: f3, title: 'Flyadeal' },
     'API-PC-V1': { picture: pc, title: 'Pegasus Airlines' },
     'API-GJ-V1': { picture: gj, title: '長龍航空' },
+    'API-FS-V1': { picture: fs, title: 'FlyArystan' },
 }
 
 export const cabinOptions = [

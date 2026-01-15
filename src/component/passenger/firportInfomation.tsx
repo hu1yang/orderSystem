@@ -22,7 +22,7 @@ const Itinerary = memo(({ segments }: { segments: Segment[] }) => {
             );
 
             return result
-                ? `${value} ${result[isZhCN ? 'cityCName' : 'cityEName']}`
+                ? `${result[isZhCN ? 'cityCName' : 'cityEName']}(${value})`
                 : value;
         },
         [cityList]
