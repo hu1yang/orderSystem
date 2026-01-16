@@ -27,8 +27,8 @@ const CardCom = memo(({pirceResult}:{
 
     const buggaegs = useMemo(() => {
         if(!resultAir) return []
-        return resultAir.itineraries.map(it => it.amounts.filter(am => am.luggages.length))
-    }, []);
+        return resultAir.itineraries.map(it => it.amounts.filter(am => Array.isArray(am.luggages) && am.luggages.length > 0))
+    }, [resultAir]);
 
     const [priceHide, setPriceHide] = useState(false)
 

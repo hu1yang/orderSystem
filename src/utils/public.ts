@@ -19,6 +19,8 @@ import f3 from '@/assets/air/f3.webp'
 import gj from '@/assets/air/gj.webp'
 import pc from '@/assets/air/pc.webp'
 import fs from '@/assets/air/fs.webp'
+import k9 from '@/assets/air/k9.webp'
+import j4 from '@/assets/air/j4.png'
 
 export const dayjsLocaleMap: Record<string, Locale> = {
     'zh_CN': zhCN,
@@ -229,7 +231,7 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-3T-V1': { picture: t3, title: 'Tarco Aviation' },
     'API-G9-V1': { picture: g9, title: 'Air Arabia' },
     'API-RQ-V1': { picture: rq, title: 'Kam Air' },
-    'API-J4-V1': { picture: null, title: 'Badr Airlines' },
+    'API-J4-V1': { picture: j4, title: 'Badr Airlines' },
     'API-SM-V1': { picture: sm, title: 'Air Cairo' },
     'API-J9-V1': { picture: j9, title: 'Jazeera' },
     'API-XY-V1': { picture: xy, title: 'Flynas' },
@@ -237,6 +239,7 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-PC-V1': { picture: pc, title: 'Pegasus Airlines' },
     'API-GJ-V1': { picture: gj, title: '長龍航空' },
     'API-FS-V1': { picture: fs, title: 'FlyArystan' },
+    'API-K9-V1': { picture: k9, title: 'Tez Jet Airlines' },
 }
 
 export const cabinOptions = [
