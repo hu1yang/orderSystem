@@ -353,7 +353,7 @@ export async function getAgentQuery(
 
     const token = Cookie.get('token')
     try {
-        const res = await fetch('/agentApi/Service/StreamQuery', {
+        const res = await fetch(import.meta.env.VITE_AGENT_API + '/Service/StreamQuery', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
