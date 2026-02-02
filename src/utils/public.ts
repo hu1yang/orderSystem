@@ -21,6 +21,7 @@ import pc from '@/assets/air/pc.webp'
 import fs from '@/assets/air/fs.webp'
 import k9 from '@/assets/air/k9.webp'
 import j4 from '@/assets/air/j4.png'
+import {resolveLocale} from "@/utils/local.ts";
 
 export const dayjsLocaleMap: Record<string, Locale> = {
     'zh_CN': zhCN,
@@ -28,7 +29,9 @@ export const dayjsLocaleMap: Record<string, Locale> = {
     'ru_RU': ru
 }
 
-export const getLocale = (localStorage.getItem('locale') || 'zh_CN')
+
+
+export const getLocale = resolveLocale()
 
 export const localeDate  = dayjsLocaleMap[getLocale]
 

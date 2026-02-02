@@ -9,11 +9,18 @@ import type {
 } from "@/types/order.ts";
 import dayjs from '@/utils/dayjs.ts';
 import duration from 'dayjs/plugin/duration'
-import {flightQueryAgent, queryGlobalAirportsAgent} from "@/utils/request/agent.ts";
-import {setCityArr, setFilterData, setNoData, setSearchDate} from "@/store/orderInfo.ts";
+import {queryGlobalAirportsAgent} from "@/utils/request/agent.ts";
+import {
+    resetSearchDate,
+    setCityArr,
+    setFilterData,
+    setFilterDataFilterTime,
+    setSearchDate
+} from "@/store/orderInfo.ts";
 import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
 import {t} from "i18next";
+import Cookie from "js-cookie";
 
 dayjs.extend(duration)
 
@@ -124,31 +131,29 @@ export function getAdultAmountTotal(amount: Amount): number {
 }
 
 // 处理初始数据结合
-export const calculateAirResult = (airports:FQueryResult[]): MregeResultAirport[] => {
-    const calculateResult = airports.flatMap(airport => airport.response.results.flatMap(result => {
+export const calculateAirResult = (airport:FQueryResult): MregeResultAirport[] => {
+
+    const calculateResult = airport.response.results.flatMap(result => {
         const mergeItinerariesResult = mergeItineraries(result.itineraries)
         return {
             channelCode:airport.response.channelCode,
+            updatedTime:airport.response.updatedTime,
             contextId:result.contextId,
             currency:result.currency,
             patterns:result.patterns,
             resultKey:result.resultKey,
             resultType:result.resultType,
             teamedKey:result.teamedKey,
-            itinerariesMerge:mergeItinerariesResult
+            itinerariesMerge:segmentsSort(mergeItinerariesResult)
         }
-    }))
-    const calculateResultSegmentSort = segmentsSort(calculateResult)
-    return calculateResultSegmentSort
+    })
+    return calculateResult
 }
 
-export const segmentsSort = (result: MregeResultAirport[]): MregeResultAirport[] => {
-    return result.map(re => ({
-        ...re,
-        itinerariesMerge: re.itinerariesMerge.map(itm => ({
-            ...itm,
-            segments: [...itm.segments].sort((a, b) => a.sequenceNo - b.sequenceNo)
-        }))
+export const segmentsSort = (result: ItinerariesMerge[]): ItinerariesMerge[] => {
+    return result.map(itm => ({
+        ...itm,
+        segments: [...itm.segments].sort((a, b) => a.sequenceNo - b.sequenceNo)
     }))
 }
 
@@ -290,74 +295,178 @@ export function amountPrice(amounts: Amount[]) {
     return (totalCents / 100).toFixed(2);
 }
 
-export function getAirports(data:MregeResultAirport[],dispatch: AppDispatch){
+export function getAirports(data:FQueryResult[],dispatch: AppDispatch){
     const airports = Array.from(
         new Set(
-            data.flatMap(item =>
-                item.itinerariesMerge.flatMap(itinerary =>
-                    itinerary.segments.flatMap(segment => [
-                        segment.arrivalAirport,
-                        segment.departureAirport,
-                    ])
-                )
-            ).filter(Boolean)
+            data.flatMap(d => d.response.results.flatMap(re => re.itineraries.flatMap(it => it.segments.flatMap(segment => [
+                segment.arrivalAirport,
+                segment.departureAirport,
+            ])))).filter(Boolean)
         )
     );
     queryGlobalAirportsAgent(airports).then(res => {
-        dispatch(setCityArr(res))
+        if(res.length){
+            dispatch(setCityArr(res))
+        }
     })
 }
 
-export async function getAgentQuery(result: FQuery, dispatch: AppDispatch) {
+type SSEMessage = {
+    event?: string
+    data?: string
+}
+
+function parseSSE(
+    buffer: string,
+    onMessage: (msg: SSEMessage) => void
+): string {
+    const events = buffer.split('\n\n')
+
+    // 最后一个可能是不完整的
+    const remaining = events.pop() ?? ''
+
+    for (const eventBlock of events) {
+        if (!eventBlock.trim()) continue
+
+        const msg: SSEMessage = {}
+        const lines = eventBlock.split('\n')
+
+        for (const line of lines) {
+            if (line.startsWith('event:')) {
+                msg.event = line.slice(6).trim()
+            } else if (line.startsWith('data:')) {
+                msg.data = (msg.data ?? '') + line.slice(5).trim()
+            }
+        }
+
+        onMessage(msg)
+    }
+
+    return remaining
+}
+
+export async function getAgentQuery(
+    result: FQuery,
+    dispatch: AppDispatch
+) {
+    dispatch(setSearchLoad(true))
+
+    const token = Cookie.get('token')
     try {
-        const res = await flightQueryAgent({
-            ...result,
-            cacheOnly: false
-        });
-
-        if (!res.length) {
-            return handleNoResult(dispatch, t('order.noSuitableData'));
-        }
-
-        const objResult = deduplicateByChannelCode(res);
-        const allFailed = objResult.every(a => !a.succeed);
-
-        if (allFailed) {
-            const err = res.find(r => r.errorCode === 'C-00002');
-            return handleNoResult(dispatch, err?.errorMessage ?? t('order.noSuitableData'));
-        }
-
-        const hasResults = objResult.some(o => o.response.results && o.response.results.length);
-        if (!hasResults) {
-            return handleNoResult(dispatch, t('order.noSuitableData'));
-        }
-
-        const mergeAirResult = calculateAirResult(objResult);
-        dispatch(setSearchDate(mergeAirResult));
-
-        dispatch(
-            setFilterData({
-                airline: [...new Set(mergeAirResult.map(i => i.channelCode))],
-                filterTime: result.itineraries.map(() => ({
-                    departure:[0,24],
-                    arrival:[0,24],
-                }))
+        const res = await fetch('/agentApi/Service/StreamQuery', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                ...result,
+                cacheOnly: false
             })
-        );
-        getAirports(mergeAirResult,dispatch)
-        dispatch(setSearchLoad(false));
+        })
+
+        if (!res.body) throw new Error('no stream')
+
+        const reader = res.body.getReader()
+        const decoder = new TextDecoder('utf-8')
+
+        let buffer = ''
+        const allResults:FQueryResult[] = []
+        let shouldStop = false
+        while (!shouldStop) {
+            const { value, done } = await reader.read()
+            if (done) break
+
+            buffer += decoder.decode(value, { stream: true })
+
+            buffer = parseSSE(buffer, msg => {
+                if (!msg.data) return
+
+                if (msg.data === "<BOF>"){
+                    console.log('stream')
+                    dispatch(
+                        setFilterDataFilterTime(result.itineraries.map(() => ({
+                            departure:[0,24],
+                            arrival:[0,24],
+                        })))
+                    );
+                }
+                if (!["<EOF>","<BOF>"].includes(msg.data)) {
+                    const data = JSON.parse(msg.data)
+
+                    allResults.push(data)
+                    const mergeAirResult = calculateAirResult(data)
+                    dispatch(setSearchDate(mergeAirResult))
+                }
+
+                if (msg.data === "<EOF>") {
+                    console.log('done')
+                    if (!allResults.length) {
+                        return handleNoResult(dispatch, t('order.noSuitableData'))
+                    }
+                    getAirports(allResults, dispatch)
+                    dispatch(setSearchLoad(false))
+                    shouldStop = true
+                }
+            })
+        }
+        await reader.cancel()
     } catch {
-        dispatch(setSearchLoad(false));
-        dispatch(setErrorMsg(t('passenger.interfaceError')));
-        dispatch(setSearchFlag(false));
+        dispatch(setSearchLoad(false))
+        dispatch(setErrorMsg(t('passenger.interfaceError')))
+        dispatch(setSearchFlag(false))
     }
 }
 
+// export async function getAgentQuery_Copy(result: FQuery, dispatch: AppDispatch) {
+//     try {
+//         const res = await flightQueryAgent({
+//             ...result,
+//             cacheOnly: false
+//         });
+//
+//         if (!res.length) {
+//             return handleNoResult(dispatch, t('order.noSuitableData'));
+//         }
+//
+//         const objResult = deduplicateByChannelCode(res);
+//         const allFailed = objResult.every(a => !a.succeed);
+//
+//         if (allFailed) {
+//             const err = res.find(r => r.errorCode === 'C-00002');
+//             return handleNoResult(dispatch, err?.errorMessage ?? t('order.noSuitableData'));
+//         }
+//
+//         const hasResults = objResult.some(o => o.response.results && o.response.results.length);
+//         if (!hasResults) {
+//             return handleNoResult(dispatch, t('order.noSuitableData'));
+//         }
+//
+//         const mergeAirResult = calculateAirResult(objResult);
+//         dispatch(setSearchDate(mergeAirResult));
+//
+//         dispatch(
+//             setFilterData({
+//                 airline: [...new Set(mergeAirResult.map(i => i.channelCode))],
+//                 filterTime: result.itineraries.map(() => ({
+//                     departure:[0,24],
+//                     arrival:[0,24],
+//                 }))
+//             })
+//         );
+//         getAirports(mergeAirResult,dispatch)
+//         dispatch(setSearchLoad(false));
+//     } catch {
+//         dispatch(setSearchLoad(false));
+//         dispatch(setErrorMsg(t('passenger.interfaceError')));
+//         dispatch(setSearchFlag(false));
+//     }
+// }
+
 // 🔥 单独抽出“无数据统一处理逻辑”
 function handleNoResult(dispatch: AppDispatch, message: string) {
-    dispatch(setSearchDate([]));
+    dispatch(resetSearchDate());
     dispatch(setFilterData({ airline: [] , filterTime: [] }));
-    dispatch(setNoData(true));
     dispatch(setErrorMsg(message));
     dispatch(setSearchLoad(false));
 }

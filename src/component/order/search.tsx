@@ -34,8 +34,8 @@ import type {
 } from "@/types/order.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    resetAirChoose, setFilterData, setNoData,
-    setQuery, setSearchDate
+    resetAirChoose, resetSearchDate, setFilterData,
+    setQuery
 } from "@/store/orderInfo.ts";
 import {fuzzyQueryGlobalAirportsAgent} from "@/utils/request/agent.ts";
 import dayjs from '@/utils/dayjs.ts';
@@ -669,10 +669,9 @@ const SearchComponent = () => {
 
     const search = () => {
         if(searchLoad) return
-        dispatch(setNoData(false))
 
         dispatch(resetAirChoose())
-        dispatch(setSearchDate([]))
+        dispatch(resetSearchDate())
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
         dispatch(setFilterData({ airline: [] , filterTime: [] }));

@@ -3,11 +3,11 @@ import {Box, Grid, Skeleton} from '@mui/material'
 import styles from './styles.module.less'
 
 
-const FilterItemSkeleton = memo(() => {
+const FilterItemSkeleton = memo(({skeletonCount=6}:{skeletonCount?:number}) => {
     return (
         <Box>
             {
-                [...Array(6)].map((_, i) => (
+                [...Array(skeletonCount)].map((_, i) => (
                     <div key={i} className={styles.filterItem} style={{
                         backgroundColor:'var(--vt-c-white)',
                         padding:'12px var(--pm-16) 16px',
