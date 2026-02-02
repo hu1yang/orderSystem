@@ -4,12 +4,10 @@ import type {
     AirChoose,
     FQuery,
     IContact,
-    ItineraryType, MregeResultAirport, Passenger, QueryAirport,
+    MregeResultAirport, Passenger, QueryAirport,
     ResponseItinerary,
     Result,
-    Travelers
 } from '@/types/order'
-import dayjs from '@/utils/dayjs.ts';
 
 type IOrder = {
     query: FQuery
@@ -18,7 +16,6 @@ type IOrder = {
     passengers: Passenger[]
     contacts: IContact[]
     airSearchData: MregeResultAirport[]
-    noData:boolean
     disabledChoose:boolean
     cityList: QueryAirport[]
     createdLoading:boolean
@@ -62,7 +59,6 @@ const initialState: IOrder = {
             phoneNumber: '',
         }
     ],
-    noData:false,
     disabledChoose:false,
     cityList: [],
     createdLoading:false,
@@ -78,65 +74,6 @@ const orderInfoSlice = createSlice({
     reducers: {
         setQuery: (state, action: PayloadAction<FQuery>) => {
             state.query = action.payload
-        },
-        setQueryValue: <K extends keyof FQuery>(
-            state: IOrder,
-            action: PayloadAction<{ name: K; values: FQuery[K] }>
-        ) => {
-            state.query[action.payload.name] = action.payload.values
-        },
-        setQueryType: (state, action: PayloadAction<ItineraryType>) => {
-            const itinerarie = state.query.itineraries[0]
-            switch (action.payload) {
-                case 'oneWay':
-                    state.query.itineraries = [{...itinerarie}]
-                    break
-                case 'round':
-                    state.query.itineraries = [
-                        {...itinerarie},
-                        {
-                            itineraryNo: 1,
-                            arrival: itinerarie.departure,
-                            departureDate: dayjs(itinerarie.departureDate).add(1, 'day').format('YYYY-MM-DD'),
-                            departure: itinerarie.arrival,
-                        },
-                    ]
-                    break
-            }
-            state.query.itineraryType = action.payload
-        },
-        setTravelers: (state, action: PayloadAction<Travelers>) => {
-            const {passengerType, passengerCount} = action.payload
-            const index = state.query.travelers.findIndex(t => t.passengerType === passengerType)
-            if (index !== -1) {
-                state.query.travelers[index].passengerCount = passengerCount
-            }
-        },
-        setQueryDate: (state, action: PayloadAction<string[]>) => {
-            const newItineraries = [...state.query.itineraries]
-
-            switch (state.query.itineraryType) {
-                case 'oneWay':
-                    newItineraries[0].departureDate = action.payload[0]
-                    break
-                case 'round':
-                    newItineraries[0].departureDate = action.payload[0]
-                    newItineraries[1].departureDate = action.payload[1]
-                    break
-                case 'multi':
-                    break
-
-            }
-            state.query.itineraries = newItineraries;
-        },
-        updateItineraries: (state,action: PayloadAction<string[]>) => {
-            state.query = {
-                ...state.query,
-                itineraries:state.query.itineraries.map((itinerarie,itinerarieIndex) => ({
-                    ...itinerarie,
-                    departureDate: action.payload[itinerarieIndex]
-                }))
-            }
         },
         setChannelCode: (state,action: PayloadAction<string>) => {
             state.airChoose.channelCode = action.payload
@@ -180,14 +117,22 @@ const orderInfoSlice = createSlice({
                 state.airportActived = state.airportActived - 1
             }
         },
-        setSearchDate: (state, action: PayloadAction<MregeResultAirport[]|[]>) => {
+        setSearchDate: (state, action: PayloadAction<MregeResultAirport[]>) => {
             if(action.payload.length){
                 const result = action.payload
-                state.airSearchData = result;
-            }else{
-                state.airSearchData = [];
-            }
+                state.airSearchData.push(...result)
 
+                state.filterData = {
+                    ...state.filterData,
+                    airline:[
+                        ...state.filterData.airline,
+                        action.payload[0]?.channelCode
+                    ]
+                }
+            }
+        },
+        resetSearchDate: (state) => {
+            state.airSearchData = [];
         },
         resetAirChoose:(state) => {
             state.airportActived = 0
@@ -195,9 +140,6 @@ const orderInfoSlice = createSlice({
                 result: null,
                 channelCode:'',
             }
-        },
-        setNoData: (state, action: PayloadAction<boolean>) => {
-            state.noData = action.payload
         },
         switchDay:(state, action: PayloadAction<{
             to:string
@@ -240,6 +182,15 @@ const orderInfoSlice = createSlice({
                 filterTime:action.payload.filterTime ?? state.filterData.filterTime,
             }
         },
+        setFilterDataFilterTime(state, action: PayloadAction<{
+            departure:number[]
+            arrival:number[]
+        }[]>) {
+            state.filterData = {
+                ...state.filterData,
+                filterTime:action.payload
+            }
+        },
         resetChoose: () => initialState
     },
 })
@@ -247,13 +198,8 @@ const orderInfoSlice = createSlice({
 
 export const {
     setQuery,
-    setQueryType,
-    setQueryValue,
-    setTravelers,
     setChannelCode,
     setResult,
-    updateItineraries,
-    setQueryDate,
     setResultItineraries,
     setPassengers,
     setContacts,
@@ -261,11 +207,12 @@ export const {
     prevAirChoose,
     setSearchDate,
     resetChoose,
-    setNoData,
     switchDay,
     setDisabledChoose,
     setCityArr,
     setCreatedLoading,
-    setFilterData
+    setFilterData,
+    setFilterDataFilterTime,
+    resetSearchDate
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

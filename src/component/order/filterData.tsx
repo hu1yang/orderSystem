@@ -21,6 +21,8 @@ import {SearchDataProvider} from "@/context/order/SearchDataContext.tsx";
 import dayjs from '@/utils/dayjs.ts';
 import isBetween from 'dayjs/plugin/isBetween';
 import {useTranslation} from "react-i18next";
+import {t} from "i18next";
+import type {MregeResultData} from "@/types/order.ts";
 dayjs.extend(isBetween);
 
 
@@ -118,6 +120,45 @@ const FilterTab = memo(() => {
     )
 })
 
+const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
+    airItem:MregeResultData[]
+    searchLoad:boolean
+    disabledChoose:boolean
+}) => {
+    const isEmpty = airItem.length === 0 && !searchLoad
+
+    if (isEmpty) {
+        return (
+            <Box component="section" sx={{ p: 2 }}>
+                <Typography variant="h4" gutterBottom>
+                    {t('order.noData')}
+                </Typography>
+            </Box>
+        );
+    }
+
+    return (
+        <Box component="section">
+            {
+                !disabledChoose && (
+                    <div className={styles.filterContent}>
+                        {airItem.map((searchData, searchDataIndex) => (
+                            <SearchDataProvider
+                                value={searchData}
+                                key={searchDataIndex}
+                            >
+                                <FilterItem />
+                            </SearchDataProvider>
+                        ))}
+                    </div>
+                )
+            }
+            {
+                (searchLoad || disabledChoose) && <FilterItemSkeleton skeletonCount={3} />
+            }
+        </Box>
+    );
+});
 
 const FilterData = memo(() => {
     const {t} = useTranslation()
@@ -126,10 +167,9 @@ const FilterData = memo(() => {
     const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-    const noData = useSelector((state: RootState) => state.ordersInfo.noData)
     const disabledChoose = useSelector((state: RootState) => state.ordersInfo.disabledChoose)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
-    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
+    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
     const itineraries = useSelector((state: RootState) => state.ordersInfo.query.itineraries)
 
     const dispatch = useDispatch()
@@ -219,44 +259,12 @@ const FilterData = memo(() => {
     const arrival = useMemo(() => {
         const arrivalValue = itineraries[airportActived].arrival
 
-        const cityArr = searchQuery.flatMap(city => {
-            const { departure, arrival } = city.daValue
-            return [departure, arrival].filter(Boolean)
-        })
-
-        const result = cityArr.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
+        const result = cityList.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
         return result ? `${result?.[isZhCN?'airportCName':'airportEName']}(${arrivalValue})` : arrivalValue
-    },[searchQuery,itineraries,airportActived])
+    },[cityList,itineraries,airportActived])
 
 
-    const RenderContent = () => {
-        if (disabledChoose || searchLoad) {
-            return <FilterItemSkeleton />;
-        }
 
-        if (noData || airItem?.length === 0) {
-            return (
-                <Box component="section" sx={{ p: 2 }}>
-                    <Typography variant="h4" gutterBottom>
-                        {t('order.noData')}
-                    </Typography>
-                </Box>
-            );
-        }
-
-        return (
-            <div className={styles.filterContent}>
-                {airItem.map((searchData, searchDataIndex) => (
-                    <SearchDataProvider
-                        value={searchData}
-                        key={searchDataIndex}
-                    >
-                        <FilterItem />
-                    </SearchDataProvider>
-                ))}
-            </div>
-        );
-    };
 
     return (
         <div className={`${styles.filterData} flex-1`}>
@@ -304,7 +312,7 @@ const FilterData = memo(() => {
 
                 </div>
                 {/*<FilterTab />*/}
-                <RenderContent />
+                <RenderContent airItem={airItem} searchLoad={searchLoad} disabledChoose={disabledChoose} />
             </div>
         </div>
     )

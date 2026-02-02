@@ -380,6 +380,7 @@ export interface MregeResultAirport {
     resultKey: string
     resultType: ResultType
     teamedKey:null
+    updatedTime:string
     itinerariesMerge: ItinerariesMerge[]
 }
 

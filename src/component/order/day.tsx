@@ -9,7 +9,12 @@ import dayjs from '@/utils/dayjs.ts';
 import {setLocalDate, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {FQuery} from "@/types/order.ts";
 import {getAgentQuery} from "@/utils/order.ts";
-import {resetAirChoose, setFilterData, setNoData, setSearchDate, switchDay} from "@/store/orderInfo.ts";
+import {
+    resetAirChoose,
+    resetSearchDate,
+    setFilterData,
+    switchDay
+} from "@/store/orderInfo.ts";
 
 interface IDay {
     label:string;
@@ -71,7 +76,7 @@ const DayChoose = memo(() => {
         const date = dayArr.find(day => day.key === newValue)
         if(!date) return
         dispatch(resetAirChoose())
-        dispatch(setSearchDate([]))
+        dispatch(resetSearchDate())
         dispatch(switchDay(date?.value))
         dispatch(setLocalDate({
             timer:date?.value,
@@ -85,7 +90,6 @@ const DayChoose = memo(() => {
         from:string
     }) => {
         if(searchLoad) return
-        dispatch(setNoData(false))
         dispatch(setSearchLoad(true))
         dispatch(setSearchFlag(true))
         dispatch(setFilterData({ airline: [] , filterTime: [] }));

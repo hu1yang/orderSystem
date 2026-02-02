@@ -53,7 +53,7 @@ const initialState:SearchInfoType = {
     radioType: 'oneWay',
     searchFlag:false,
     searchLoad:false,
-    errorMsg:null
+    errorMsg:null,
 }
 const searchInfoSlice = createSlice({
     name:'searchInfo',
@@ -211,6 +211,6 @@ export const {
     setSearchFlag,
     addSearch,
     delSearch,
-    resetSearch
+    resetSearch,
 } = searchInfoSlice.actions
 export default searchInfoSlice.reducer;
