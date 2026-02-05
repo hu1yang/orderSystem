@@ -242,7 +242,7 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-PC-V1': { picture: pc, title: 'Pegasus Airlines' },
     'API-GJ-V1': { picture: gj, title: '長龍航空' },
     'API-FS-V1': { picture: fs, title: 'FlyArystan' },
-    'API-K9-V1': { picture: k9, title: 'Tez Jet Airlines' },
+    'API-K9-V1': { picture: k9, title: 'TezJet' },
 }
 
 export const cabinOptions = [

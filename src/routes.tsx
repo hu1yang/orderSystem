@@ -5,6 +5,7 @@ import Load from "@/component/load";
 
 const LazyOrder = lazy(() => import('@/pages/order'))
 const LazyPassenger = lazy(() => import('@/pages/passenger'))
+const LazyNotFound = lazy(() => import('@/pages/notFound'))
 // const LazyMine = lazy(() => import('@/pages/mine'))
 // const LazyOrderDetail = lazy(() => import('@/pages/orderDetail'))
 
@@ -17,6 +18,7 @@ const AppRoutes:React.FC = () => (
                 {/*<Route path='/mine/orderDetail/:payid' element={<LazyOrderDetail />} />*/}
                 <Route path={'/passenger'} element={<LazyPassenger />} />
             </Route>
+            <Route path="*" element={<LazyNotFound />} />
         </Routes>
     </Suspense>
 )

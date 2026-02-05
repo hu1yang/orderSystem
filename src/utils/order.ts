@@ -304,11 +304,13 @@ export function getAirports(data:FQueryResult[],dispatch: AppDispatch){
             ])))).filter(Boolean)
         )
     );
-    queryGlobalAirportsAgent(airports).then(res => {
-        if(res.length){
-            dispatch(setCityArr(res))
-        }
-    })
+    if(airports && airports.length > 0){
+        queryGlobalAirportsAgent(airports).then(res => {
+            if(res.length){
+                dispatch(setCityArr(res))
+            }
+        })
+    }
 }
 
 type SSEMessage = {
@@ -350,7 +352,7 @@ export async function getAgentQuery(
     dispatch: AppDispatch
 ) {
     dispatch(setSearchLoad(true))
-
+    let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
     const token = Cookie.get('token')
     try {
         const res = await fetch(import.meta.env.VITE_AGENT_API + '/Service/StreamQuery', {
@@ -365,9 +367,15 @@ export async function getAgentQuery(
             })
         })
 
+        if (res.status === 401) {
+            interfaceError(dispatch)
+
+            return
+        }
+
         if (!res.body) throw new Error('no stream')
 
-        const reader = res.body.getReader()
+        reader = res.body.getReader()
         const decoder = new TextDecoder('utf-8')
 
         let buffer = ''
@@ -393,7 +401,10 @@ export async function getAgentQuery(
                 }
                 if (!["<EOF>","<BOF>"].includes(msg.data)) {
                     const data = JSON.parse(msg.data)
-
+                    if(!data.succeed){
+                        console.error(data.errorMessage)
+                        return
+                    }
                     allResults.push(data)
                     const mergeAirResult = calculateAirResult(data)
                     dispatch(setSearchDate(mergeAirResult))
@@ -412,10 +423,16 @@ export async function getAgentQuery(
         }
         await reader.cancel()
     } catch {
-        dispatch(setSearchLoad(false))
-        dispatch(setErrorMsg(t('passenger.interfaceError')))
-        dispatch(setSearchFlag(false))
+        interfaceError(dispatch)
+    } finally {
+        console.log('Reader End')
+        reader?.cancel()
     }
+}
+function interfaceError(dispatch: AppDispatch){
+    dispatch(setSearchLoad(false))
+    dispatch(setErrorMsg(t('passenger.interfaceError')))
+    dispatch(setSearchFlag(false))
 }
 
 // export async function getAgentQuery_Copy(result: FQuery, dispatch: AppDispatch) {
