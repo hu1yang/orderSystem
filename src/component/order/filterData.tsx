@@ -127,7 +127,7 @@ const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
 }) => {
     const isEmpty = airItem.length === 0 && !searchLoad
 
-    if (isEmpty) {
+    if (isEmpty && !disabledChoose) {
         return (
             <Box component="section" sx={{ p: 2 }}>
                 <Typography variant="h4" gutterBottom>
