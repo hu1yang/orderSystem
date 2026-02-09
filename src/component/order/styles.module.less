@@ -20,6 +20,41 @@
         --card-width: 230px;
     }
 }
+.fixHeader{
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: var(--vt-c-white);
+    width: 100%;
+    z-index: 99;
+    box-shadow: 0 4px 16px -4px rgba(69, 88, 115, .2);
+    opacity: var(--com-opacity);
+    transition: 0.3s opacity ease-in-out;
+    .fixHeaderContent{
+        width: var(--main-width);
+        margin: 0 auto;
+        .airInfo{
+            flex: 0;
+            width: 100%;
+            .firportSet{
+                padding: 4px 8px !important;
+                span{
+                    font-size: 1.1em !important;
+                    margin-left: 8px;
+                }
+
+            }
+        }
+        .chooseDay{
+            flex: 1;
+            .dayContent{
+                margin-left: auto;
+                margin-right: 0;
+            }
+        }
+    }
+}
+
 .searchContainer{
     border-radius: var(--border-radius);
     background: var(--vt-c-white);
@@ -230,9 +265,9 @@
 .dayContainer{
     font-size: 1rem;
     margin: 16px 0;
-    position: sticky;
-    top: 0;
-    z-index: 9;
+    //position: sticky;
+    //top: 0;
+    //z-index: 9;
     .dayChoose{
         width: 0;
         background: var(--vt-c-white);
@@ -437,22 +472,7 @@
                         padding-right: 24px;
                     }
                 }
-                .firportSet{
-                    background: rgba(50,100,255,.08);
-                    display: inline-flex;
-                    border-radius: 11px;
-                    padding: 2px 8px;
-                    vertical-align: middle;
-                    margin-left: 8px;
-                    span{
-                        font-size: 1em;
-                        color: var(--active-color);
-                        font-weight: 400;
-                    }
-                    &:hover{
-                        outline: 1px solid var(--active-color);
-                    }
-                }
+
             }
         }
         .filterContent{
@@ -833,4 +853,20 @@
     font-size: 1.1rem;
     margin-top: 8px;
     line-height: 19px;
+}
+.firportSet{
+    background: rgba(50,100,255,.08);
+    display: inline-flex;
+    border-radius: 11px;
+    padding: 2px 8px;
+    vertical-align: middle;
+    margin-left: 8px;
+    span{
+        font-size: 1em;
+        color: var(--active-color);
+        font-weight: 400;
+    }
+    &:hover{
+        outline: 1px solid var(--active-color);
+    }
 }

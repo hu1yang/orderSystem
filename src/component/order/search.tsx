@@ -550,11 +550,11 @@ const PersonChoose = () => {
     }, [travelers]);
 
     const PersonChild = () => (
-        <div className={`${styles.inputMessage} s-flex jc-ct ai-ct`}>
+        <div className={`${styles.inputMessage} s-flex jc-ct ai-ct flex-1`}>
             {
                 countAll > 1 ? <PeopleAltIcon sx={{fontSize: 24}} /> : <PersonIcon sx={{fontSize: 24}} />
             }
-            <p style={{marginLeft: '10px'}}>{t('order.passengersCount',{count:countAll})} , {canbinLabel}</p>
+            <p className={'flex-1 elli-1'} style={{marginLeft: '10px',width: 0}}>{t('order.passengersCount',{count:countAll})} , {canbinLabel}</p>
         </div>
     )
 

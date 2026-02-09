@@ -87,6 +87,13 @@ const orderInfoSlice = createSlice({
                 state.airportActived += 1;
             }
         },
+        resultBackOrder(state){
+            state.airportActived = 0
+            state.airChoose = {
+                result: null,
+                channelCode: ''
+            }
+        },
         setResultItineraries: (state, action: PayloadAction<ResponseItinerary>) => {
             if (!state.airChoose.result) return;
 
@@ -213,6 +220,7 @@ export const {
     setCreatedLoading,
     setFilterData,
     setFilterDataFilterTime,
-    resetSearchDate
+    resetSearchDate,
+    resultBackOrder
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer
