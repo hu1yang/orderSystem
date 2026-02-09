@@ -23,7 +23,7 @@ import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
-import {setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
+import {resultBackOrder, setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import {useTranslation} from "react-i18next";
 
@@ -182,6 +182,9 @@ const Detail = memo(() => {
 
     const backOrderNav = () => {
         navigate('/')
+        setTimeout(() => {
+            dispatch(resultBackOrder())
+        },200)
     }
 
     const backOrder = (orderid:string) => {

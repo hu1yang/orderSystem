@@ -83,6 +83,10 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
 
     const submitResult = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        })
         dispatch(setDisabledChoose(true))
         const airport = airSearchData.find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === searchData?.contextId && airport.resultKey === searchData?.resultKey)
         if(!airport) return;

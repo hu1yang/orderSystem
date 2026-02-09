@@ -1,4 +1,4 @@
-import {memo, useEffect, useMemo, useState} from "react";
+import {forwardRef, useEffect, useMemo, useState} from "react";
 
 import {generateMonthlyDateRanges} from "@/utils/public.ts";
 import {Tab, Tabs, tabsClasses} from "@mui/material";
@@ -27,7 +27,7 @@ interface IDay {
 
 const weekDaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-const DayChoose = memo(() => {
+const DayChoose = forwardRef<HTMLDivElement>((_, ref) => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
 
@@ -119,7 +119,7 @@ const DayChoose = memo(() => {
     }
 
     return (
-        <div className={`${styles.dayContainer} s-flex jc-bt`}>
+        <div className={`${styles.dayContainer} s-flex jc-bt`} ref={ref}>
             <div className={`${styles.dayChoose} flex-1`}>
                 {
                     !!dayValue && (
@@ -148,7 +148,7 @@ const DayChoose = memo(() => {
                                       '&.Mui-disabled': { opacity: 0.3 },
                                   },
                                   '.MuiSvgIcon-root':{
-                                      fontSize: 24,
+                                      fontSize: 34,
                                   },
                                   '.MuiTabs-indicator': {
                                       backgroundColor: 'var(--text-color)',

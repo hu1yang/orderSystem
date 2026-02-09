@@ -2,24 +2,42 @@ import SearchComponent from "@/component/order/search";
 import styles from './styles.module.less'
 import FilterData from "@/component/order/filterData.tsx";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
-import {resetChoose, } from "@/store/orderInfo.ts";
+import {useEffect, useRef} from "react";
 import type {RootState} from "@/store";
 import DefaultShow from "@/component/order/defaultShow.tsx";
 import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
 import {Alert, Snackbar} from "@mui/material";
-import {resetSearch, setErrorMsg} from "@/store/searchInfo.ts";
+import { setErrorMsg } from "@/store/searchInfo.ts";
+import FixHeader from "@/component/order/fixHeader.tsx";
 
 const Order = () => {
     const dispatch = useDispatch()
+
+    const dayRef = useRef<HTMLDivElement|null>(null);
+
     const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
     const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
     const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
+    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData);
 
     useEffect(() => {
-        dispatch(resetChoose())
-        dispatch(resetSearch())
+        const onScroll = () => {
+            const root = document.documentElement
+            const el = dayRef.current
+            if(!el) return
+            const rect = el.getBoundingClientRect()
+            if (rect.top <= 30) {
+                root.style.setProperty('--com-opacity', '1')
+            }else{
+                root.style.setProperty('--com-opacity', '0')
+            }
+
+        }
+        window.addEventListener("scroll", onScroll);
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+        }
     },[])
 
 
@@ -30,11 +48,14 @@ const Order = () => {
     return (
         <div className={styles.orderLayout}>
             <div className={styles.layoutWidth}>
+                {
+                    airSearchData.length > 0 && <FixHeader />
+                }
                 <SearchComponent />
                 {
                     (
                         searchFlag && itineraryType !== 'multi'
-                    ) && <DayChoose />
+                    ) && <DayChoose ref={dayRef} />
                 }
                 <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
                     {

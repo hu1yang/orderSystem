@@ -30,6 +30,8 @@
     --tips-gary-color: #8592a6;
     --keynote-text: #05939f;
 
+    --com-opacity:0;
+
 }
 
 @media (max-width: 1400px) {

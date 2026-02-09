@@ -56,6 +56,7 @@ export const orderEn = {
         'return':"Return",
         searchField:"Please complete the search field",
         noSuitableData:"No suitable data",
+        edit:"Edit",
     }
 }
 
@@ -116,13 +117,14 @@ export const orderCN = {
         'return':"到达",
         searchField:"请填写搜索字段",
         noSuitableData:"没有合适的数据",
+        edit:"编辑",
     }
 }
 
 export const orderRU = {
     order:{
         carryBagger:'Ручная кладь',
-        checkedBagger:'Зарегистрированный багаж',
+        checkedBagger:'Багаж',
         Adult:'Взрослый',
         Child:'ребенок',
         Infant:'Билеты',
@@ -148,7 +150,7 @@ export const orderRU = {
         recentSearches:'Недавние поиски',
         multi:'сложный маршрут',
         oneWay:'В одну сторону',
-        round:'поездка туда и обратно',
+        round:'туда и обратно',
         filters:'фильтр',
         departure:'Откуда',
         arrival:'Куда',
@@ -164,11 +166,11 @@ export const orderRU = {
         promo:"Промоакция",
         nonstop:"прямой",
         fareType:"Тип тарифа",
-        cancellation:"Правила отмены",
-        rebooking:"Правила переноса",
-        refund:"Правила отступление",
-        fareRules:"Правила тарифов",
-        select:"Выбирать",
+        cancellation:"Отмена",
+        rebooking:"Обмен",
+        refund:"Возврат",
+        fareRules:"правило тариф",
+        select:"Выберите",
         hide:"Скрывать",
         avgTips:"Средняя стоимость {{type}} на одного пассажира.",
         currentTotal:"Текущая сумма",
@@ -176,5 +178,6 @@ export const orderRU = {
         'return':"Куда",
         searchField:"Пожалуйста, заполните поле поиска.",
         noSuitableData:"Подходящих данных нет.",
+        edit:"Изм.",
     }
 }
