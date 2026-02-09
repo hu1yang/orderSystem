@@ -27,7 +27,7 @@ const Order = () => {
             const el = dayRef.current
             if(!el) return
             const rect = el.getBoundingClientRect()
-            if (rect.top <= 30) {
+            if (rect.top <= 10) {
                 root.style.setProperty('--com-opacity', '1')
             }else{
                 root.style.setProperty('--com-opacity', '0')
