@@ -23,7 +23,7 @@ import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
 import {useNavigate} from "react-router";
-import {resultBackOrder, setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
+import {resetAirChoose, setCreatedLoading, setDisabledChoose, setPassengers} from "@/store/orderInfo.ts";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import {useTranslation} from "react-i18next";
 
@@ -181,9 +181,11 @@ const Detail = memo(() => {
     },[query,airChoose,contacts])
 
     const backOrderNav = () => {
+        dispatch(setDisabledChoose(true))
         navigate('/')
         setTimeout(() => {
-            dispatch(resultBackOrder())
+            dispatch(resetAirChoose())
+            dispatch(setDisabledChoose(false))
         },200)
     }
 
