@@ -6,7 +6,7 @@ import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineE
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DayChoose from "@/component/order/day.tsx";
 import BorderColorSharpIcon from '@mui/icons-material/BorderColorSharp';
-import {useMemo} from "react";
+import {forwardRef, useMemo} from "react";
 import {cabinOptions, isZhCN} from "@/utils/public.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
@@ -14,7 +14,7 @@ import type {RootState} from "@/store";
 import dayjs from "@/utils/dayjs.ts";
 
 
-const FixHeader = () => {
+const FixHeader = forwardRef<HTMLDivElement>((_,ref) => {
     const {t} = useTranslation();
 
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -39,7 +39,6 @@ const FixHeader = () => {
     },[query.itineraries,cityList])
 
     const journey = useMemo(() => {
-        console.log(itinerariesMemo)
         return itinerariesMemo.find(i => i.itineraryNo === airportActived) || null
     },[itinerariesMemo,airportActived])
 
@@ -50,7 +49,7 @@ const FixHeader = () => {
         })
     }
     return (
-        <div className={styles.fixHeader}>
+        <div className={styles.fixHeader} ref={ref}>
             <div className={`${styles.fixHeaderContent} flex`}>
                 {
                     journey && (
@@ -95,6 +94,6 @@ const FixHeader = () => {
             </div>
         </div>
     )
-}
+})
 
 export default FixHeader

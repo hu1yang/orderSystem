@@ -15,6 +15,7 @@ const Order = () => {
     const dispatch = useDispatch()
 
     const dayRef = useRef<HTMLDivElement|null>(null);
+    const fixRef = useRef<HTMLDivElement|null>(null);
 
     const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
     const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
@@ -23,18 +24,20 @@ const Order = () => {
 
     useEffect(() => {
         const onScroll = () => {
-            const root = document.documentElement
             const el = dayRef.current
-            if(!el) return
+            const fixDom = fixRef.current
+            if(!el || !fixDom) return
             const rect = el.getBoundingClientRect()
             if (rect.top <= 10) {
-                root.style.setProperty('--com-opacity', '1')
+                fixDom.style.setProperty('--com-opacity', '1')
+                fixDom.style.setProperty('--com-ZIndex', '99')
             }else{
-                root.style.setProperty('--com-opacity', '0')
+                fixDom.style.setProperty('--com-opacity', '0')
+                fixDom.style.setProperty('--com-ZIndex', '-1')
             }
 
         }
-        window.addEventListener("scroll", onScroll);
+        window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
             window.removeEventListener("scroll", onScroll);
         }
@@ -49,7 +52,7 @@ const Order = () => {
         <div className={styles.orderLayout}>
             <div className={styles.layoutWidth}>
                 {
-                    airSearchData.length > 0 && <FixHeader />
+                    airSearchData.length > 0 && <FixHeader ref={fixRef} />
                 }
                 <SearchComponent />
                 {

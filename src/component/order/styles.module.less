@@ -21,15 +21,18 @@
     }
 }
 .fixHeader{
+    --com-opacity:0;
+    --com-ZIndex:-1;
+
     position: fixed;
     left: 0;
     top: 0;
     background: var(--vt-c-white);
     width: 100%;
-    z-index: 99;
+    z-index: var(--com-ZIndex);
     box-shadow: 0 4px 16px -4px rgba(69, 88, 115, .2);
     opacity: var(--com-opacity);
-    transition: 0.3s opacity ease-in-out;
+    transition: 0.3s opacity ease-in-out, z-index 0s 0.3s;
     .fixHeaderContent{
         width: var(--main-width);
         margin: 0 auto;
@@ -60,8 +63,6 @@
     background: var(--vt-c-white);
     padding: 8px 16px 16px;
     box-shadow: 0 8px 20px 0 rgba(15, 41, 77, .12);
-    position: relative;
-    z-index: 100;
     .addAirBtn{
         padding: var(--pm-16);
         border: dashed 1px var(--put-border-color);
