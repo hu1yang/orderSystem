@@ -57,9 +57,9 @@ const FixHeader = () => {
                         <div className={`${styles.airInfo} flex jc-ct flex-dir`}>
                             <Stack direction="row" alignItems={'center'} spacing={.5} sx={{lineHeight:1}}>
                                 <Stack direction="row" spacing={0.5} sx={{lineHeight:1}}>
-                                    <Typography component="span" sx={{fontSize:'1.7rem',fontWeight:700}}>{journey?.departureName}({journey?.departure})</Typography>
+                                    <Typography component="span" sx={{fontSize:'1.7rem',fontWeight:700}}>{journey?.departureName??'--'}({journey?.departure})</Typography>
                                     <i className="iconfont icon-oneway" style={{ fontSize: '2rem' }} />
-                                    <Typography component="span" sx={{fontSize:'1.7rem',fontWeight:700}}>{journey?.arrivalName}({journey?.arrival})</Typography>
+                                    <Typography component="span" sx={{fontSize:'1.7rem',fontWeight:700}}>{journey?.arrivalName??'--'}({journey?.arrival})</Typography>
                                 </Stack>
                                 <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backTop}>
                                     <BorderColorSharpIcon sx={{fontSize: 14,color: 'var(--active-color)'}} />
