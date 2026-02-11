@@ -129,7 +129,7 @@ export function formatDateToShortString(dateStr: string|Dayjs): string {
 }
 
 // 防抖
-export function debounce<T extends (...args: any[]) => void>(
+export function debounce<T extends (...args: unknown[]) => void>(
     fn: T,
     delay: number
 ): (...args: Parameters<T>) => void {
@@ -146,6 +146,16 @@ export function debounce<T extends (...args: any[]) => void>(
     };
 }
 
+export function throttle<T extends (...args: unknown[]) => void>(fn: T, wait = 100) {
+  let lastTime = 0;
+  return (...args: Parameters<T>) => {
+    const now = Date.now();
+    if (now - lastTime >= wait) {
+      lastTime = now;
+      fn(...args);
+    }
+  };
+}
 
 export function toLogin () {
     const origin = new URL(location.origin).origin;

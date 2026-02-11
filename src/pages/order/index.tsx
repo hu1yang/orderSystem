@@ -10,6 +10,7 @@ import FilterComponent from "@/component/order/FilterComponent.tsx";
 import {Alert, Snackbar} from "@mui/material";
 import { setErrorMsg } from "@/store/searchInfo.ts";
 import FixHeader from "@/component/order/fixHeader.tsx";
+import {throttle} from "@/utils/public.ts";
 
 const Order = () => {
     const dispatch = useDispatch()
@@ -23,20 +24,21 @@ const Order = () => {
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData);
 
     useEffect(() => {
-        const onScroll = () => {
+
+        const onScroll = throttle(() => {
             const el = dayRef.current
             const fixDom = fixRef.current
-            if(!el || !fixDom) return
+            if (!el || !fixDom) return
             const rect = el.getBoundingClientRect()
             if (rect.top <= 10) {
                 fixDom.style.setProperty('--com-opacity', '1')
                 fixDom.style.setProperty('--com-ZIndex', '99')
-            }else{
+            } else {
                 fixDom.style.setProperty('--com-opacity', '0')
                 fixDom.style.setProperty('--com-ZIndex', '-1')
             }
+        }, 16)
 
-        }
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => {
             window.removeEventListener("scroll", onScroll);

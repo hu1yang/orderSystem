@@ -61,7 +61,7 @@ const FixHeader = forwardRef<HTMLDivElement>((_,ref) => {
                                     <Typography component="span" sx={{fontSize:'1.7rem',fontWeight:700}}>{journey?.arrivalName??'--'}({journey?.arrival})</Typography>
                                 </Stack>
                                 <div className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backTop}>
-                                    <BorderColorSharpIcon sx={{fontSize: 14,color: 'var(--active-color)'}} />
+                                    <BorderColorSharpIcon sx={{fontSize: 12,color: 'var(--active-color)'}} />
                                     <span>{t('order.edit')}</span>
                                 </div>
                                 <div />
