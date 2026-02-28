@@ -4,7 +4,6 @@ import Brightness2Icon from '@mui/icons-material/Brightness2';
 import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
 import styles from './styles.module.less'
 import {memo, useCallback, useEffect, useMemo, useState} from "react";
-import * as React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {airlist, debounce, isZhCN} from "@/utils/public.ts";
@@ -262,14 +261,14 @@ const FilterComponent = memo(() => {
     }, [query,airportActived,cityList]);
 
     const changeFilterTime = useCallback(
-        debounce((value: number[], index: number, type: 'arrival' | 'departure') => {
+        debounce((value, index, type) => {
             dispatch(
                 setFilterData({
                     filterTime: filterData.filterTime.map((fl, flIndex) => {
                         if (flIndex === index) {
                             return {
                                 ...fl,
-                                [type]: value, // ← 创建新对象，保证不可变
+                                [type as 'arrival' | 'departure']: value, // ← 创建新对象，保证不可变
                             }
                         }
                         return fl

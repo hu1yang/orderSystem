@@ -1,3 +1,5 @@
+import {memo, useCallback, useMemo, useRef, useState} from "react";
+
 import {
     Button,
     Divider, FormControl,
@@ -10,8 +12,6 @@ import {
     RadioGroup, Select, Stack,
     Typography
 } from '@mui/material';
-import styles from './styles.module.less'
-import {memo, useCallback, useMemo, useRef, useState} from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -21,10 +21,11 @@ import CancelSharpIcon from '@mui/icons-material/CancelSharp';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SearchIcon from '@mui/icons-material/Search';
-import * as React from "react";
 
 import {DayPicker, type DateRange} from "react-day-picker";
 import "react-day-picker/style.css";
+
+import styles from './styles.module.less'
 
 import type {
     Country,
@@ -210,12 +211,12 @@ const Airports = memo(({index}:{
 
     const [searchList, setSearchList] = useState<Country[]>([])
 
-    const searchCity = debounce((value: string) => {
+    const searchCity = debounce((value) => {
         if(!value) {
             setSearchList([])
             return
         }
-        fuzzyQueryGlobalAirportsAgent(value).then(res => {
+        fuzzyQueryGlobalAirportsAgent(value as string).then(res => {
             setSearchList(flattenByCountry(res))
         })
     }, 300)

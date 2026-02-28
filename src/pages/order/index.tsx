@@ -1,22 +1,26 @@
-import SearchComponent from "@/component/order/search";
-import styles from './styles.module.less'
-import FilterData from "@/component/order/filterData.tsx";
-import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef} from "react";
+
+import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
+import { setErrorMsg } from "@/store/searchInfo.ts";
+
+import {throttle} from "@/utils/public.ts";
+
+import SearchComponent from "@/component/order/search";
+import FilterData from "@/component/order/filterData.tsx";
 import DefaultShow from "@/component/order/defaultShow.tsx";
 import DayChoose from "@/component/order/day.tsx";
 import FilterComponent from "@/component/order/FilterComponent.tsx";
-import {Alert, Snackbar} from "@mui/material";
-import { setErrorMsg } from "@/store/searchInfo.ts";
 import FixHeader from "@/component/order/fixHeader.tsx";
-import {throttle} from "@/utils/public.ts";
+
+import {Alert, Snackbar} from "@mui/material";
+
+import styles from './styles.module.less'
 
 const Order = () => {
     const dispatch = useDispatch()
 
     const dayRef = useRef<HTMLDivElement|null>(null);
-    const fixRef = useRef<HTMLDivElement|null>(null);
 
     const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
     const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
@@ -27,15 +31,15 @@ const Order = () => {
 
         const onScroll = throttle(() => {
             const el = dayRef.current
-            const fixDom = fixRef.current
-            if (!el || !fixDom) return
+            const root = document.documentElement
+            if (!el || !root) return
             const rect = el.getBoundingClientRect()
             if (rect.top <= 10) {
-                fixDom.style.setProperty('--com-opacity', '1')
-                fixDom.style.setProperty('--com-ZIndex', '99')
+                root.style.setProperty('--com-opacity', '1')
+                root.style.setProperty('--com-ZIndex', '99')
             } else {
-                fixDom.style.setProperty('--com-opacity', '0')
-                fixDom.style.setProperty('--com-ZIndex', '-1')
+                root.style.setProperty('--com-opacity', '0')
+                root.style.setProperty('--com-ZIndex', '-1')
             }
         }, 16)
 
@@ -54,7 +58,7 @@ const Order = () => {
         <div className={styles.orderLayout}>
             <div className={styles.layoutWidth}>
                 {
-                    airSearchData.length > 0 && <FixHeader ref={fixRef} />
+                    airSearchData.length > 0 && <FixHeader />
                 }
                 <SearchComponent />
                 {

@@ -1,6 +1,7 @@
-import styles from './styles.module.less'
 import {Typography} from "@mui/material";
+
 import loadingFly from '@/assets/loading-fly.gif'
+import styles from './styles.module.less'
 
 const Load = () => {
     return (

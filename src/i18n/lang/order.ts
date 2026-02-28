@@ -57,6 +57,7 @@ export const orderEn = {
         searchField:"Please complete the search field",
         noSuitableData:"No suitable data",
         edit:"Edit",
+        mealsTips:"Inflight meals are available",
     }
 }
 
@@ -118,6 +119,7 @@ export const orderCN = {
         searchField:"请填写搜索字段",
         noSuitableData:"没有合适的数据",
         edit:"编辑",
+        mealsTips:"机上提供餐食。",
     }
 }
 
@@ -179,5 +181,6 @@ export const orderRU = {
         searchField:"Пожалуйста, заполните поле поиска.",
         noSuitableData:"Подходящих данных нет.",
         edit:"Изм.",
+        mealsTips:"На борту самолета можно заказать питание.",
     }
 }

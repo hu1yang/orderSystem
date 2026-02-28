@@ -1,13 +1,16 @@
-import styles from './styles.module.less'
-import Detail from "@/component/passenger/detail.tsx";
 import {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "@/store";
-import {queryBookingAgent} from "@/utils/request/agent.ts";
-import {setResult} from "@/store/orderInfo.ts";
 import {useNavigate} from "react-router";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import type {RootState} from "@/store";
+import {useDispatch, useSelector} from "react-redux";
+import {setResult} from "@/store/orderInfo.ts";
 import {useTranslation} from "react-i18next";
+
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+
+import Detail from "@/component/passenger/detail.tsx";
+import {queryBookingAgent} from "@/utils/request/agent.ts";
+
+import styles from './styles.module.less'
 
 const Passenger = () => {
     const navigate = useNavigate()

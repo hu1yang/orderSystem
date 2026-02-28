@@ -1,33 +1,35 @@
 import {memo, useMemo, useRef, useState} from "react";
 import {useNavigate} from "react-router";
+
+import type {RootState} from "@/store";
+import {useDispatch, useSelector} from "react-redux";
+import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
+
+import {amountPrice, findLowestAmount} from "@/utils/order.ts";
+
+import type {Amount, Iamount, Result} from "@/types/order.ts";
+
+import {useSearchData} from "@/context/order/SearchDataContext.tsx";
+import {useTranslation} from "react-i18next";
+
 import {Box, Card, CardContent, Typography, Divider, CardHeader, Button, type SxProps, type Theme} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import LuggageIcon from '@mui/icons-material/Luggage';
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-
 
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import type {Amount, Iamount, Result} from "@/types/order.ts";
-import {useDispatch, useSelector} from "react-redux";
-import type {RootState} from "@/store";
 import PriceDetail from "@/component/order/priceDetail.tsx";
-import {amountPrice, findLowestAmount} from "@/utils/order.ts";
-import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 import styles from './styles.module.less'
-// @ts-ignore
-import 'swiper/css';
-// @ts-ignore
-import 'swiper/css/pagination';
-import {useSearchData} from "@/context/order/SearchDataContext.tsx";
-import {useTranslation} from "react-i18next";
+import type {NavigationOptions} from "swiper/types";
 
 
 const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
@@ -414,10 +416,10 @@ const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
             </Box>
             <Swiper slidesPerView={'auto'} spaceBetween={5} grabCursor={true} pagination={{clickable: true}}
                     onBeforeInit={(swiper) => {
-                        // @ts-ignore
-                        swiper.params.navigation.prevEl = prevRef.current;
-                        // @ts-ignore
-                        swiper.params.navigation.nextEl = nextRef.current;
+                        const navigation = swiper.params.navigation as NavigationOptions;
+
+                        navigation.prevEl = prevRef.current;
+                        navigation.nextEl = nextRef.current;
                     }}
                     onProgress={(_, progress) => {
                         setIsBeginning(progress <= 0);

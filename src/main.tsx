@@ -1,11 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router';
-import './index.css'
-import App from './App.tsx'
-import {createTheme, ThemeProvider} from "@mui/material";
 import {Provider} from 'react-redux'
 import {store} from '@/store/index.ts'
+
+import App from './App.tsx'
+
+import {createTheme, ThemeProvider} from "@mui/material";
+import type {} from '@mui/x-date-pickers/themeAugmentation'
+
+import './index.css'
 import "@/assets/iconfont/iconfont.css"
 import '@/i18n/index.tsx'
 

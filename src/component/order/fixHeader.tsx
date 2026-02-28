@@ -1,4 +1,12 @@
-import styles from "./styles.module.less"
+import { useMemo } from "react";
+import type {RootState} from "@/store";
+import {useSelector} from "react-redux";
+import {useTranslation} from "react-i18next";
+
+import dayjs from "@/utils/dayjs.ts";
+
+import {cabinOptions, isZhCN} from "@/utils/public.ts";
+
 import {Stack, Typography} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -6,15 +14,11 @@ import AirlineSeatReclineExtraIcon from '@mui/icons-material/AirlineSeatReclineE
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DayChoose from "@/component/order/day.tsx";
 import BorderColorSharpIcon from '@mui/icons-material/BorderColorSharp';
-import {forwardRef, useMemo} from "react";
-import {cabinOptions, isZhCN} from "@/utils/public.ts";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import type {RootState} from "@/store";
-import dayjs from "@/utils/dayjs.ts";
+
+import styles from "./styles.module.less"
 
 
-const FixHeader = forwardRef<HTMLDivElement>((_,ref) => {
+const FixHeader = () => {
     const {t} = useTranslation();
 
     const query = useSelector((state: RootState) => state.ordersInfo.query)
@@ -49,7 +53,7 @@ const FixHeader = forwardRef<HTMLDivElement>((_,ref) => {
         })
     }
     return (
-        <div className={styles.fixHeader} ref={ref}>
+        <div className={styles.fixHeader}>
             <div className={`${styles.fixHeaderContent} flex`}>
                 {
                     journey && (
@@ -94,6 +98,6 @@ const FixHeader = forwardRef<HTMLDivElement>((_,ref) => {
             </div>
         </div>
     )
-})
+}
 
 export default FixHeader
