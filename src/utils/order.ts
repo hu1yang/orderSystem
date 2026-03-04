@@ -21,6 +21,7 @@ import {setErrorMsg, setSearchFlag, setSearchLoad} from "@/store/searchInfo.ts";
 import type {AppDispatch} from "@/store";
 import {t} from "i18next";
 import Cookie from "js-cookie";
+import {toLogin} from "@/utils/public.ts";
 
 dayjs.extend(duration)
 
@@ -369,7 +370,7 @@ export async function getAgentQuery(
 
         if (res.status === 401) {
             interfaceError(dispatch)
-
+            toLogin()
             return
         }
 
