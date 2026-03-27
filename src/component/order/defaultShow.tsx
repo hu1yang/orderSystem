@@ -1,13 +1,13 @@
 import {Box, Card, CardActionArea, CardContent, CardHeader, Grid, Typography} from "@mui/material";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import {memo, useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import type {ITem} from "@/types/order.ts";
 import {filterValidTrips, formatDateToShortString, isZhCN} from "@/utils/public.ts";
 import {useDispatch} from "react-redux";
 import {setHistory} from "@/store/searchInfo.ts";
 import banner from "@/assets/banner.png";
 import {useTranslation} from "react-i18next";
-const DefaultShow = memo(() => {
+const DefaultShow = () => {
     const {t} = useTranslation()
     const dispatch = useDispatch()
 
@@ -76,6 +76,6 @@ const DefaultShow = memo(() => {
             <img src={banner} alt="" style={{width:'100%',marginTop:'var(--pm-16)'}} />
         </div>
     )
-})
+}
 
 export default DefaultShow

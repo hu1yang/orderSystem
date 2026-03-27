@@ -242,7 +242,7 @@ const TimeRangeSlider = memo(({label,filterTimevalue,changeFilterTimeFnc,disable
     );
 });
 
-const FilterComponent = memo(() => {
+const FilterComponent = () => {
     const {t} = useTranslation();
     const dispatch = useDispatch()
 
@@ -345,6 +345,6 @@ const FilterComponent = memo(() => {
 
         </div>
     );
-})
+}
 
 export default FilterComponent;
