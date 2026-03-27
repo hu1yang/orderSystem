@@ -77,7 +77,7 @@ const filterTabArr = [
     },
 ];
 
-const FilterTab = memo(() => {
+const FilterTab = () => {
     const [tabValue, setTabValue] = useState('cheapest')
 
     const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
@@ -102,7 +102,7 @@ const FilterTab = memo(() => {
                             <Box className={`${styles.tabItem} s-flex flex-dir`}>
                                 <span className={`s-flex ai-ct`}>{item.title}
                                     {item.tips && <HtmlTooltip placement={'top'} title={
-                                       <p style={{fontSize: 12 , color: 'var(--text-color)'}}>Our sorting method considers factors such as price, duration, and number of stops to provide you with a variety of options</p>
+                                        <p style={{fontSize: 12 , color: 'var(--text-color)'}}>Our sorting method considers factors such as price, duration, and number of stops to provide you with a variety of options</p>
                                     }>
                                         <ErrorOutlineIcon sx={{
                                             fontSize: 18,
@@ -118,7 +118,7 @@ const FilterTab = memo(() => {
             </Tabs>
         </div>
     )
-})
+}
 
 const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
     airItem:MregeResultData[]
@@ -160,7 +160,7 @@ const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
     );
 });
 
-const FilterData = memo(() => {
+const FilterData = () => {
     const {t} = useTranslation()
 
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
@@ -275,7 +275,7 @@ const FilterData = memo(() => {
                         <h2>
                             {
                                 itineraries.length &&
-                                    `${airportActived + 1}. ${(airportActived === 0) ? t('order.departingTo',{airport:arrival}) : t('order.returningTo',{airport:arrival})}`
+                                `${airportActived + 1}. ${(airportActived === 0) ? t('order.departingTo',{airport:arrival}) : t('order.returningTo',{airport:arrival})}`
                             }
                         </h2>
                         <div className={`s-flex ai-fs cursor-p`}>
@@ -316,6 +316,6 @@ const FilterData = memo(() => {
             </div>
         </div>
     )
-})
+}
 
 export default FilterData;

@@ -65,7 +65,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
     )
 })
 
-const Detail = memo(() => {
+const Detail = () => {
     const { t } = useTranslation()
 
     const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
@@ -304,14 +304,14 @@ const Detail = memo(() => {
                         <div className={`${styles.gap} ${styles.wContainer}`}>
                             <Box component="section" sx={{ p: 2, border: '1px solid var(--put-border-color)',borderRadius:'var(--border-radius)' }}>
                                 <Grid container spacing={2}>
-                                {
-                                    !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
-                                        <Grid size={12} key={itinerarie.itineraryKey}>
-                                            <FirportInfomation segments={itinerarie.segments}
-                                                           amounts={itinerarie.amounts ?? null} />
-                                        </Grid>
-                                    ))
-                                }
+                                    {
+                                        !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
+                                            <Grid size={12} key={itinerarie.itineraryKey}>
+                                                <FirportInfomation segments={itinerarie.segments}
+                                                                   amounts={itinerarie.amounts ?? null} />
+                                            </Grid>
+                                        ))
+                                    }
                                 </Grid>
                             </Box>
                             {/*<Passenger />*/}
@@ -439,6 +439,6 @@ const Detail = memo(() => {
             </Snackbar>
         </div>
     )
-})
+}
 
 export default Detail;

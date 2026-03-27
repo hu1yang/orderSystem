@@ -44,6 +44,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
     const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
     const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
+    const searchLoad = useSelector((state:RootState) => state.searchInfo.searchLoad)
     const query = useSelector((state: RootState) => state.ordersInfo.query)
     const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
@@ -356,7 +357,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                             }}>{searchData?.currency}${lostPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
-                    <Button variant="contained" disabled={disabledChoose} onClick={submitResult} className={'full-width'} sx={{
+                    <Button variant="contained" disabled={searchLoad || disabledChoose} onClick={submitResult} className={'full-width'} sx={{
                         fontSize: '1.2rem',
                         mt:'10px',
                         borderRadius:'2px',

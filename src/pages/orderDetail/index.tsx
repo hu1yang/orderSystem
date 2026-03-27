@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useMemo, useRef, useState} from "react";
+import React, { useEffect, useMemo, useRef, useState} from "react";
 import {
     Alert,
     Button,
@@ -15,62 +15,61 @@ import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
 import stylesPass from '@/component/passenger/styles.module.less'
 import {formatDateToShortString} from "@/utils/public.ts";
-import type {Dayjs} from "dayjs";
 import {useNavigate, useParams} from "react-router";
 import {paymentOrderAgent} from "@/utils/request/agent.ts";
 
-const FlightCom = memo((
-    {type, data}:
-    {
-        type: 'Depart' | 'Return'
-        data: any
-    }) => {
-    return (
-        <div className={styles.flightCom}>
-            <div className={`${styles.flightComTitle} s-flex ai-ct`}>
-                <div className={styles.tipX}>
-                    <span>{type}</span>
-                </div>
-                <span>{data.date}</span>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;{data.route}</span>
-            </div>
-            <div className={styles.flightDetail}>
-                <Grid container spacing={2}>
-                    <Grid size={6.5}>
-                        <div className={styles.tripBox}>
-                            <div className={`${styles.tripli} s-flex ai-ct`}>
-                                <div className={styles.timer}>{data.departure_time}</div>
-                                <div className={styles.info}>{data.departure_airport} {data.departure_airport_full}</div>
-                            </div>
-                            <div className={styles.timeConsuming}>{data.duration}</div>
-                            <div className={`${styles.tripli} s-flex ai-ct`}>
-                                <div className={styles.timer}>{data.arrival_time}</div>
-                                <div className={styles.info}>{data.arrival_airport_full}</div>
-                            </div>
-                            <div className={styles.lines}></div>
-                        </div>
+// const FlightCom = memo((
+//     {type, data}:
+//     {
+//         type: 'Depart' | 'Return'
+//         data: any
+//     }) => {
+//     return (
+//         <div className={styles.flightCom}>
+//             <div className={`${styles.flightComTitle} s-flex ai-ct`}>
+//                 <div className={styles.tipX}>
+//                     <span>{type}</span>
+//                 </div>
+//                 <span>{data.date}</span>
+//                 <span>&nbsp;&nbsp;&nbsp;&nbsp;{data.route}</span>
+//             </div>
+//             <div className={styles.flightDetail}>
+//                 <Grid container spacing={2}>
+//                     <Grid size={6.5}>
+//                         <div className={styles.tripBox}>
+//                             <div className={`${styles.tripli} s-flex ai-ct`}>
+//                                 <div className={styles.timer}>{data.departure_time}</div>
+//                                 <div className={styles.info}>{data.departure_airport} {data.departure_airport_full}</div>
+//                             </div>
+//                             <div className={styles.timeConsuming}>{data.duration}</div>
+//                             <div className={`${styles.tripli} s-flex ai-ct`}>
+//                                 <div className={styles.timer}>{data.arrival_time}</div>
+//                                 <div className={styles.info}>{data.arrival_airport_full}</div>
+//                             </div>
+//                             <div className={styles.lines}></div>
+//                         </div>
+//
+//                     </Grid>
+//                     <Grid size={5.5}>
+//                         <div className={styles.airT}>
+//                             <div className={`${styles.titles} s-flex ai-ct`}>
+//                                 <img src="https://ak-s.tripcdn.com/modules/flight/airline-logo/mu.eec5d02ff22677659574d07e6ab0943e.png" alt=""/>
+//                                 <span>{data.airline} {data.flight_number}</span>
+//                             </div>
+//                             <div className={`${styles.airTtips} s-flex flex-wrap`}>
+//                                 <div className={styles.airl}>{data.class}</div>
+//                                 <div className={styles.airl}>{data.aircraft}</div>
+//                                 <div className={styles.airl}>Meal</div>
+//                             </div>
+//                         </div>
+//                     </Grid>
+//                 </Grid>
+//             </div>
+//         </div>
+//     )
+// })
 
-                    </Grid>
-                    <Grid size={5.5}>
-                        <div className={styles.airT}>
-                            <div className={`${styles.titles} s-flex ai-ct`}>
-                                <img src="https://ak-s.tripcdn.com/modules/flight/airline-logo/mu.eec5d02ff22677659574d07e6ab0943e.png" alt=""/>
-                                <span>{data.airline} {data.flight_number}</span>
-                            </div>
-                            <div className={`${styles.airTtips} s-flex flex-wrap`}>
-                                <div className={styles.airl}>{data.class}</div>
-                                <div className={styles.airl}>{data.aircraft}</div>
-                                <div className={styles.airl}>Meal</div>
-                            </div>
-                        </div>
-                    </Grid>
-                </Grid>
-            </div>
-        </div>
-    )
-})
-
-const Flight = memo(() => {
+const Flight = () => {
     const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
     return (
         <div className={styles.flightContent}>
@@ -89,9 +88,9 @@ const Flight = memo(() => {
             </div>
         </div>
     )
-})
+}
 
-const Passenger = memo(() => {
+const Passenger = () => {
     const passengers = useSelector((state: RootState) => state.ordersInfo.passengers)
 
 
@@ -146,7 +145,7 @@ const Passenger = memo(() => {
                                         <span>Date of birth: </span>
                                     </div>
                                     <div className={styles.values}>
-                                        <span>{formatDateToShortString(passenger.birthday as Dayjs)}</span>
+                                        <span>{formatDateToShortString(passenger.birthday as string)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -157,9 +156,9 @@ const Passenger = memo(() => {
             </div>
         </div>
     )
-})
+}
 
-const Contact = memo(() => {
+const Contact = () => {
     const contacts = useSelector((state: RootState) => state.ordersInfo.contacts)
     return (
         <div className={styles.passengerContent}>
@@ -196,7 +195,7 @@ const Contact = memo(() => {
             </div>
         </div>
     )
-})
+}
 
 const OrderDetail = () => {
     const {payid} = useParams()
