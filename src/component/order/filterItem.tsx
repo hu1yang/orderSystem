@@ -223,11 +223,7 @@ const FilterItem = () => {
     const {t} = useTranslation()
     const searchData = useSearchData();
 
-    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType)
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-
+    const {airChoose, airportActived, airSearchData, query} = useSelector((state: RootState) => state.ordersInfo)
 
     const [open, setOpen] = useState(false)
 
@@ -365,7 +361,7 @@ const FilterItem = () => {
                                 <div>{searchData?.currency}${lostPrice}</div>
                             </div>
                             <div>
-                                <span>{t(`order.${itineraryType}`)}</span>
+                                <span>{t(`order.${query.itineraryType}`)}</span>
                             </div>
                         </div>
                         {/*<Button variant='contained' onClick={openMore} sx={{*/}

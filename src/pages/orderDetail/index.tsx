@@ -201,10 +201,7 @@ const OrderDetail = () => {
     const {payid} = useParams()
     const navigate = useNavigate()
 
-
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-
+    const {airChoose,query} = useSelector((state: RootState) => state.ordersInfo)
 
     const [payLoad, setPayLoad] = useState(false)
 

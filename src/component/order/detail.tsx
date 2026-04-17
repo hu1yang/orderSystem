@@ -38,16 +38,10 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     itineraryKey:string
 }) => {
     const {t} = useTranslation()
-
     const searchData = useSearchData();
 
-
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const disabledChoose = useSelector((state:RootState) => state.ordersInfo.disabledChoose)
     const searchLoad = useSelector((state:RootState) => state.searchInfo.searchLoad)
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
+    const {airChoose,airSearchData,query,disabledChoose,airportActived} = useSelector((state: RootState) => state.ordersInfo)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()

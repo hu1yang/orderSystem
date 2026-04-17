@@ -21,6 +21,8 @@ import pc from '@/assets/air/pc.webp'
 import fs from '@/assets/air/fs.webp'
 import k9 from '@/assets/air/k9.webp'
 import j4 from '@/assets/air/j4.png'
+import rx from '@/assets/air/rx.webp'
+
 import {resolveLocale} from "@/utils/local.ts";
 
 export const dayjsLocaleMap: Record<string, Locale> = {
@@ -253,6 +255,7 @@ export const airlist: Record<string, AirlineInfo> = {
     'API-GJ-V1': { picture: gj, title: '長龍航空' },
     'API-FS-V1': { picture: fs, title: 'FlyArystan' },
     'API-K9-V1': { picture: k9, title: 'TezJet' },
+    'API-RX-V1': { picture: rx, title: 'Riyadh Air' },
 }
 
 export const cabinOptions = [

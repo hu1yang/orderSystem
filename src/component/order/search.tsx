@@ -360,11 +360,11 @@ const TimerChoose = memo(({isRound,index}:{
     index:number
 }) => {
     const {t} = useTranslation()
+    const dispatch = useDispatch()
 
     const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
-    const localDate = useMemo(() => searchQuery[index].localDate,[searchQuery,index])
 
-    const dispatch = useDispatch()
+    const localDate = useMemo(() => searchQuery[index].localDate,[searchQuery,index])
 
     const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
     const open = Boolean(anchorEl)
@@ -523,8 +523,8 @@ const TimerChoose = memo(({isRound,index}:{
 const PersonChoose = () => {
     const {t} = useTranslation()
 
-    const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
-    const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
+    const {travelers, cabinValue} = useSelector((state: RootState) => state.searchInfo)
+
 
     const dispatch = useDispatch()
 
@@ -660,11 +660,13 @@ const SearchComponent = () => {
     const {t} = useTranslation()
     const dispatch = useDispatch()
 
-    const radioType = useSelector((state: RootState) => state.searchInfo.radioType)
-    const cabinValue = useSelector((state: RootState) => state.searchInfo.cabinValue)
-    const travelers = useSelector((state: RootState) => state.searchInfo.travelers)
-    const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
-    const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
+    const {
+        searchLoad,
+        searchQuery,
+        travelers,
+        cabinValue,
+        radioType
+    } = useSelector((state: RootState) => state.searchInfo)
 
     const isRound = useMemo(() => radioType === 'round', [radioType])
 

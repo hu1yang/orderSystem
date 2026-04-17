@@ -21,9 +21,7 @@ import styles from "./styles.module.less"
 const FixHeader = () => {
     const {t} = useTranslation();
 
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
+    const {cityList, query, airportActived} = useSelector((state: RootState) => state.ordersInfo)
 
     const canbinLabel = useMemo(() => {
         const cabinOption = cabinOptions.find(op => op.value === query.cabinLevel)
