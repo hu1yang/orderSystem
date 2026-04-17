@@ -22,10 +22,8 @@ const Order = () => {
 
     const dayRef = useRef<HTMLDivElement|null>(null);
 
-    const searchFlag = useSelector((state: RootState) => state.searchInfo.searchFlag)
-    const errMessage = useSelector((state: RootState) => state.searchInfo.errorMsg);
-    const itineraryType = useSelector((state: RootState) => state.ordersInfo.query.itineraryType);
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData);
+    const {errorMsg, searchFlag} = useSelector((state: RootState) => state.searchInfo);
+    const {query, airSearchData} = useSelector((state: RootState) => state.ordersInfo);
 
     useEffect(() => {
 
@@ -63,7 +61,7 @@ const Order = () => {
                 <SearchComponent />
                 {
                     (
-                        searchFlag && itineraryType !== 'multi'
+                        searchFlag && query.itineraryType !== 'multi'
                     ) && <DayChoose ref={dayRef} />
                 }
                 <div className={`${styles.mainContainer} s-flex jc-bt ai-fs`}>
@@ -79,7 +77,7 @@ const Order = () => {
             </div>
             <Snackbar
                 anchorOrigin={{ vertical:'top', horizontal:'right' }}
-                open={!!errMessage}
+                open={!!errorMsg}
                 autoHideDuration={2000}
                 onClose={errClose}
             >
@@ -89,7 +87,7 @@ const Order = () => {
                     variant="filled"
                     sx={{ fontSize: '1.3rem', fontWeight: 'bold' }}
                 >
-                    {errMessage}
+                    {errorMsg}
                 </Alert>
             </Snackbar>
         </div>

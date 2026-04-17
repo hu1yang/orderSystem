@@ -34,8 +34,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 }) => {
     const {t} = useTranslation()
 
-    const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
-    const resultAir = useSelector((state: RootState) => state.ordersInfo.airChoose.result)
+    const {createdLoading,airChoose} = useSelector((state: RootState) => state.ordersInfo)
     const payNow = () => {
         paySubmit()
     }
@@ -47,7 +46,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
                         <div className={styles.payPriceLabels}>{t('passenger.total')}</div>
-                        <div className={styles.payPricevalue}>{resultAir?.currency}${pirceResult.totalPrice}</div>
+                        <div className={styles.payPricevalue}>{airChoose.result?.currency}${pirceResult.totalPrice}</div>
                     </div>
                     <Button type="submit" loading={createdLoading} loadingPosition="end" sx={{
                         backgroundColor: 'var(--active-color)',
@@ -68,10 +67,8 @@ const NextStep = memo(({paySubmit,pirceResult}:{
 const Detail = () => {
     const { t } = useTranslation()
 
-    const createdLoading = useSelector((state: RootState) => state.ordersInfo.createdLoading)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
-    const contacts = useSelector((state: RootState)=> state.ordersInfo.contacts)
+    const {contacts,query,airChoose,createdLoading} = useSelector((state: RootState)=> state.ordersInfo)
+
     const navigate = useNavigate()
 
     const dispatch = useDispatch()

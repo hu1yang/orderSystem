@@ -100,8 +100,8 @@ const FilterAccordion = memo(({title, render,clear,clearFilter}: {
 const RecommendedCheckboxList = () => {
     const dispatch = useDispatch()
 
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
-    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
+    const {airSearchData,filterData} = useSelector((state: RootState) => state.ordersInfo)
+
     const alineList = useMemo(() => [...new Set(airSearchData.map(i => i.channelCode))],[airSearchData])
 
     const handleChange = (val:string) => {
@@ -246,12 +246,8 @@ const FilterComponent = () => {
     const {t} = useTranslation();
     const dispatch = useDispatch()
 
-    const query = useSelector((state: RootState) => state.ordersInfo.query)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
-    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
-
+    const {filterData, cityList, airportActived, query} = useSelector((state: RootState) => state.ordersInfo)
 
     const arrival = useMemo(() => {
         const arrivalValue = query.itineraries.find(its => its.itineraryNo === airportActived)?.arrival

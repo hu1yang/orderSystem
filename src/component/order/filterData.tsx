@@ -163,14 +163,15 @@ const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
 const FilterData = () => {
     const {t} = useTranslation()
 
-    const airSearchData = useSelector((state: RootState) => state.ordersInfo.airSearchData)
-    const filterData = useSelector((state: RootState) => state.ordersInfo.filterData)
-    const airportActived = useSelector((state: RootState) => state.ordersInfo.airportActived)
-    const airChoose = useSelector((state: RootState) => state.ordersInfo.airChoose)
-    const disabledChoose = useSelector((state: RootState) => state.ordersInfo.disabledChoose)
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
-    const cityList = useSelector((state: RootState) => state.ordersInfo.cityList)
-    const itineraries = useSelector((state: RootState) => state.ordersInfo.query.itineraries)
+    const {
+        airSearchData,
+        filterData,
+        airportActived,
+        airChoose,
+        disabledChoose,
+        cityList, query
+    } = useSelector((state: RootState) => state.ordersInfo)
 
     const dispatch = useDispatch()
 
@@ -257,11 +258,11 @@ const FilterData = () => {
     }
 
     const arrival = useMemo(() => {
-        const arrivalValue = itineraries[airportActived].arrival
+        const arrivalValue = query.itineraries[airportActived].arrival
 
         const result = cityList.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
         return result ? `${result?.[isZhCN?'airportCName':'airportEName']}(${arrivalValue})` : arrivalValue
-    },[cityList,itineraries,airportActived])
+    },[cityList,query.itineraries,airportActived])
 
 
 
@@ -274,7 +275,7 @@ const FilterData = () => {
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
                         <h2>
                             {
-                                itineraries.length &&
+                                query.itineraries.length &&
                                 `${airportActived + 1}. ${(airportActived === 0) ? t('order.departingTo',{airport:arrival}) : t('order.returningTo',{airport:arrival})}`
                             }
                         </h2>
