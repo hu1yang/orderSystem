@@ -1,6 +1,6 @@
 import {forwardRef, useEffect, useMemo, useState} from "react";
 
-import {generateMonthlyDateRanges} from "@/utils/public.ts";
+import {generateMonthlyDateRanges, weekDaysShort} from "@/utils/public.ts";
 import {Tab, Tabs, tabsClasses} from "@mui/material";
 import styles from './styles.module.less'
 import {useDispatch, useSelector} from "react-redux";
@@ -25,7 +25,6 @@ interface IDay {
     key:string
 }
 
-const weekDaysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const DayChoose = forwardRef<HTMLDivElement>((_, ref) => {
     const query = useSelector((state: RootState) => state.ordersInfo.query)

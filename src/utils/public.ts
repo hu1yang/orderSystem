@@ -39,6 +39,15 @@ export const localeDate  = dayjsLocaleMap[getLocale]
 
 export const isZhCN = String(getLocale) === 'zh_CN'
 
+const week = {
+    zh_CN:['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    en_US:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    ru_RU:['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
+}
+
+
+export const weekDaysShort =  week[getLocale]
+
 export const formatLocale = (time:Date,type:string) => format(time,type,{locale:localeDate})
 
 export function generateMonthlyDateRanges(
@@ -263,3 +272,4 @@ export const cabinOptions = [
     { label: 'business', value: 'c' },
     { label: 'first', value: 'f' },
 ];
+
