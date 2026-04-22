@@ -12,7 +12,18 @@ import type {Amount, Iamount, Result} from "@/types/order.ts";
 import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 import {useTranslation} from "react-i18next";
 
-import {Box, Card, CardContent, Typography, Divider, CardHeader, Button, type SxProps, type Theme} from '@mui/material';
+import {
+    Box,
+    Card,
+    CardContent,
+    Typography,
+    Divider,
+    CardHeader,
+    Button,
+    Stack,
+    type SxProps,
+    type Theme,
+} from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -47,11 +58,21 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
     const navigate = useNavigate()
 
     const luggagesMemo = useMemo(() => {
-        const hand = amount.luggages.find(luggage => luggage.luggageType === 'hand') ?? null
-        const checked = amount.luggages.find(luggage => luggage.luggageType === 'checked') ?? null
-        const carry = amount.luggages.find(luggage => luggage.luggageType === 'carry') ?? null
+        const group = (type: string) => {
+            const list = amount.luggages.filter(l => l.luggageType === type)
+            if (!list.length) return null
+
+            return {
+                list,
+                display: `${list.map(l => l.luggageCount).join('+')} ${list[0].luggageSizeType}`,
+                notes: list.map(l => l.luggageNotes).filter(Boolean)
+            }
+        }
+
         return {
-            hand,checked,carry
+            hand: group('hand'),
+            checked: group('checked'),
+            carry: group('carry')
         }
     }, [amount.luggages]);
 
@@ -126,6 +147,21 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
         },500)
     }
 
+    const luggageConfig = [
+        {
+            key: 'hand',
+            icon: BusinessCenterIcon,
+        },
+        {
+            key: 'checked',
+            icon: LuggageIcon,
+        },
+        {
+            key: 'carry',
+            icon: AdfScannerIcon,
+        }
+    ] as const
+
     return (
         <Box sx={{width: 'var(--card-width)'}}>
             <Card className={'cursor-p'} sx={{
@@ -165,57 +201,48 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
 
                     <Typography fontWeight="bold" fontSize="1.1rem" mt={1}>{t('passenger.baggage')}</Typography>
                     <div>
-                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.hand} sx={{
-                            '.MuiTooltip-tooltip': {
-                                fontSize: "1.1rem",
-                                padding: 'var(--pm-16)',
-                            }
-                        }} title={
-                            <div className={styles.texts}>{luggagesMemo.hand ? luggagesMemo.hand.luggageNotes : '--'}</div>
-                        }>
-                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                                <BusinessCenterIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts}>
-                                     {
-                                         luggagesMemo.hand ? <strong>{luggagesMemo.hand.luggageCount} {luggagesMemo.hand.luggageSizeType}</strong> : '--'
-                                     }
-                                </span>
-                            </Typography>
-                        </HtmlTooltip>
-                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.checked} sx={{
-                            '.MuiTooltip-tooltip': {
-                                fontSize: "1.1rem",
-                                padding: 'var(--pm-16)',
-                            }
-                        }} title={
-                            <div className={styles.cityDetailSp}>{luggagesMemo.checked ? luggagesMemo.checked.luggageNotes : '--'}</div>
-                        }>
-                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                                <LuggageIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts}>
-                                     {
-                                         luggagesMemo.checked ? <strong>{luggagesMemo.checked.luggageCount} {luggagesMemo.checked.luggageSizeType}</strong> : '--'
-                                     }
-                                </span>
-                            </Typography>
-                        </HtmlTooltip>
-                        <HtmlTooltip placement="left" disableHoverListener={!luggagesMemo.carry} sx={{
-                            '.MuiTooltip-tooltip': {
-                                fontSize: "1.1rem",
-                                padding: 'var(--pm-16)',
-                            }
-                        }} title={
-                            <span className={styles.cityDetailSp}>{luggagesMemo.carry ? luggagesMemo.carry.luggageNotes : '--'}</span>
-                        }>
-                            <Typography fontWeight="400" fontSize="1.1rem" mt={'8px'} className={'s-flex ai-ct'}>
-                                <AdfScannerIcon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
-                                <span className={styles.texts}>
-                                     {
-                                         luggagesMemo.carry ? <strong>{luggagesMemo.carry.luggageCount} {luggagesMemo.carry.luggageSizeType}</strong> : '--'
-                                     }
-                                </span>
-                            </Typography>
-                        </HtmlTooltip>
+                        {
+                            luggageConfig.map(({key, icon: Icon}) => {
+                                const data = luggagesMemo[key]
+
+                                return (
+                                    <HtmlTooltip
+                                        key={key}
+                                        placement="left"
+                                        disableHoverListener={!data}
+                                        sx={{
+                                            '.MuiTooltip-tooltip': {
+                                                fontSize: "1.1rem",
+                                                padding: 'var(--pm-16)',
+                                            }
+                                        }}
+                                        title={
+                                            <Stack>
+                                                {
+                                                    data?.notes.map((note, index) => (
+                                                        <div className={styles.texts} key={index}>{note}</div>
+                                                    ))
+                                                }
+                                            </Stack>
+                                        }
+                                    >
+                                        <Typography
+                                            fontWeight="400"
+                                            fontSize="1.1rem"
+                                            mt={'8px'}
+                                            className={'s-flex ai-ct'}
+                                        >
+                                            <Icon sx={{fontSize: 16, color: '#00b894', mr: 0.5}}/>
+                                            <span className={styles.texts}>
+                                                {
+                                                    data ? <strong>{data.display}</strong> : '--'
+                                                }
+                                            </span>
+                                        </Typography>
+                                    </HtmlTooltip>
+                                )
+                            })
+                        }
                     </div>
 
                     <Divider sx={{my: 1.5}}/>

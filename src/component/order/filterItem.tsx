@@ -36,6 +36,7 @@ import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 import defaultAir from '@/assets/air/default.webp'
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import {useTranslation} from "react-i18next";
+import dayjs from "dayjs";
 
 
 const FlightTimeline = memo(({segments,luggageIncludes}:{
@@ -79,6 +80,12 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
         }
 
     }, [segments]);
+
+    const diffDay = useMemo(() => {
+        const start = dayjs(flightSegment.departureTime)
+        const end = dayjs(flightSegment.arrivalTime)
+        return end.startOf('day').diff(start.startOf('day'), 'day')
+    },[flightSegment])
 
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
@@ -189,7 +196,17 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
                     </Typography>
                 </Box>
             </HtmlTooltip>
-            <Box textAlign="center">
+            <Box textAlign="center" sx={{position:'relative'}}>
+                {
+                    !!diffDay && (
+                        <Typography fontSize="1.2rem" color={'var(--price-color)'} lineHeight={1} sx={{
+                            position:'absolute',
+                            top: '-15px',
+                            left:'50%',
+                            transform:'translateX(-50%)'
+                        }}>+{diffDay}</Typography>
+                    )
+                }
                 <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.arrivalTime!)}</Typography>
                 <HtmlTooltip placement="bottom" sx={{
                     '.MuiTooltip-tooltip': {
