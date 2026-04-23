@@ -257,14 +257,30 @@ const FilterData = () => {
         dispatch(prevAirChoose())
     }
 
-    const arrival = useMemo(() => {
-        const arrivalValue = query.itineraries[airportActived].arrival
+    const formatAirport = (code?: string) => {
+      if (!code) return ''
 
-        const result = cityList.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
-        return result ? `${result?.[isZhCN?'airportCName':'airportEName']}(${arrivalValue})` : arrivalValue
-    },[cityList,query.itineraries,airportActived])
+      const city = cityList.find(
+          c => c?.cityCode === code || c?.airportCode === code
+      )
 
+      return city
+          ? `${city[isZhCN ? 'airportCName' : 'airportEName']}(${code})`
+          : code
+    }
 
+    const { departure: departureText, arrival: arrivalText } = useMemo(() => {
+      const itinerary = query.itineraries?.[airportActived]
+
+      if (!itinerary) {
+        return { departure: '', arrival: '' }
+      }
+
+      return {
+        departure: formatAirport(itinerary.departure),
+        arrival: formatAirport(itinerary.arrival),
+      }
+    }, [cityList, query.itineraries, airportActived])
 
 
     return (
@@ -274,10 +290,7 @@ const FilterData = () => {
                     <div className={styles.stackedColor}></div>
                     <div className={`s-flex jc-bt ai-ct ${styles.filterHeaderTitle}`}>
                         <h2>
-                            {
-                                query.itineraries.length &&
-                                `${airportActived + 1}. ${(airportActived === 0) ? t('order.departingTo',{airport:arrival}) : t('order.returningTo',{airport:arrival})}`
-                            }
+                            {t('order.departingTo', { airport: departureText })} - {t('order.arriveTo', { airport: arrivalText })}
                         </h2>
                         <div className={`s-flex ai-fs cursor-p`}>
                             {/*<span>*Last updated: {updatedTime}</span>*/}
