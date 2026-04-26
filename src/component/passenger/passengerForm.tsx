@@ -104,7 +104,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
 },ref) => {
     const {t} = useTranslation()
 
-    const travelers = useSelector((state: RootState)=> state.ordersInfo.query.travelers)
+    const {travelers,itineraries} = useSelector((state: RootState)=> state.ordersInfo.query)
 
     useEffect(() => {
         const newPassengers: (
@@ -178,8 +178,8 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
 
     const onSubmit = (data: { passengers: (Passenger & { phoneCode?: string })[] }) => {
         return new Promise<void>((resolve, reject) => {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            // const today = new Date();
+            const today = dayjs(itineraries[0].departureDate).startOf('day')
 
             const idNumberMap = new Map<string, number>();
 
@@ -206,9 +206,9 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                 }
 
                 if (passenger.birthday) {
-                    const birthDate = dayjs(passenger.birthday).toDate();
+                    const birthDate = dayjs(passenger.birthday)
 
-                    if (birthDate > today) {
+                    if (birthDate.isAfter(today)) {
                         setError(`passengers.${i}.birthday`, {
                             type: 'manual',
                             message: 'Birthday cannot be in the future.',
@@ -217,12 +217,7 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                         return;
                     }
 
-                    const age =
-                        today.getFullYear() - birthDate.getFullYear() -
-                        (today.getMonth() < birthDate.getMonth() ||
-                        (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())
-                            ? 1
-                            : 0);
+                    const age = today.diff(birthDate, 'year')
 
                     if (passenger.passengerType === 'adt' && age < 12) {
                         setError(`passengers.${i}.birthday`, {
@@ -253,8 +248,8 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                 }
 
                 if (passenger.issuedDate) {
-                    const issuedDate = dayjs(passenger.issuedDate).toDate();
-                    if (issuedDate > today) {
+                    const issuedDate = dayjs(passenger.issuedDate);
+                    if (issuedDate.isAfter(today)) {
                         setError(`passengers.${i}.issuedDate`, {
                             type: 'manual',
                             message: 'Release date cannot be later than today',
@@ -265,8 +260,8 @@ const PassengerForm = forwardRef(({setErrorFnc}:{
                 }
 
                 if (passenger.expiryDate) {
-                    const expiryDate = dayjs(passenger.expiryDate).toDate();
-                    if (expiryDate < today) {
+                    const expiryDate = dayjs(passenger.expiryDate);
+                    if (expiryDate.isBefore(today)) {
                         setError(`passengers.${i}.expiryDate`, {
                             type: 'manual',
                             message: 'The certificate expiration date cannot be less than today',
