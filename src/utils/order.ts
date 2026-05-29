@@ -32,12 +32,12 @@ export function calculateTotalPriceSummary(
     const passengerCountMap = travelers.reduce<Record<PassengerType, number>>((acc, t) => {
         acc[t.passengerType as PassengerType] = t.passengerCount;
         return acc;
-    }, { adt: 0, chd: 0, inf: 0 });
+    }, {adt: 0, chd: 0, inf: 0});
 
     const perType: Record<PassengerType, PriceDetail> = {
-        adt: { printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.adt },
-        chd: { printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.chd },
-        inf: { printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.inf },
+        adt: {printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.adt},
+        chd: {printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.chd},
+        inf: {printAmount: 0, taxesAmount: 0, unitPrice: 0, totalPrice: 0, count: passengerCountMap.inf},
     };
 
     for (const itinerary of itineraries) {
@@ -75,7 +75,7 @@ export function formatTotalDuration(times: string[]): string {
     const totalMs = times.reduce((acc, timeStr) => {
         const [h, m, s] = timeStr.split(':').map(Number)
         if (isNaN(h) || isNaN(m) || isNaN(s)) return acc // 跳过非法值
-        const d = dayjs.duration({ hours: h, minutes: m, seconds: s })
+        const d = dayjs.duration({hours: h, minutes: m, seconds: s})
         return acc + d.asMilliseconds()
     }, 0)
 
@@ -83,7 +83,7 @@ export function formatTotalDuration(times: string[]): string {
     const hours = Math.floor(total.asHours()) // 用 asHours 得到小数再取整
     const minutes = total.minutes()
 
-    return `${hours}h ${minutes?`${minutes}m`:''}`
+    return `${hours}h ${minutes ? `${minutes}m` : ''}`
 }
 
 export function formatDuration(start: string, end: string): string {
@@ -132,20 +132,20 @@ export function getAdultAmountTotal(amount: Amount): number {
 }
 
 // 处理初始数据结合
-export const calculateAirResult = (airport:FQueryResult): MregeResultAirport[] => {
+export const calculateAirResult = (airport: FQueryResult): MregeResultAirport[] => {
 
     const calculateResult = airport.response.results.flatMap(result => {
         const mergeItinerariesResult = mergeItineraries(result.itineraries)
         return {
-            channelCode:airport.response.channelCode,
-            updatedTime:airport.response.updatedTime,
-            contextId:result.contextId,
-            currency:result.currency,
-            patterns:result.patterns,
-            resultKey:result.resultKey,
-            resultType:result.resultType,
-            teamedKey:result.teamedKey,
-            itinerariesMerge:segmentsSort(mergeItinerariesResult)
+            channelCode: airport.response.channelCode,
+            updatedTime: airport.response.updatedTime,
+            contextId: result.contextId,
+            currency: result.currency,
+            patterns: result.patterns,
+            resultKey: result.resultKey,
+            resultType: result.resultType,
+            teamedKey: result.teamedKey,
+            itinerariesMerge: segmentsSort(mergeItinerariesResult)
         }
     })
     return calculateResult
@@ -176,9 +176,9 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
         const segmentMap: Record<string, ResponseItinerary[]> = {};
         items.forEach(item => {
             const segKey = item.segments
-                .slice() // 防止改动原数组
-                .sort((a, b) => a.sequenceNo - b.sequenceNo)
-                .map(seg => seg.flightNumber).join('|');
+            .slice() // 防止改动原数组
+            .sort((a, b) => a.sequenceNo - b.sequenceNo)
+            .map(seg => seg.flightNumber).join('|');
             if (!segmentMap[segKey]) {
                 segmentMap[segKey] = [];
             }
@@ -226,7 +226,7 @@ function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
                     // 如果 amountsMerge 还没有该 itineraryKey，就加一项
                     let mergeItem = mergedAmounts.find(m => m.itineraryKey === chosenKey);
                     if (!mergeItem) {
-                        mergeItem = { itineraryKey: chosenKey, amounts: [] };
+                        mergeItem = {itineraryKey: chosenKey, amounts: []};
                         mergedAmounts.push(mergeItem);
                     }
                     mergeItem.amounts.push(chosenAmount);
@@ -252,7 +252,7 @@ export function getLowestAmountsByItinerary(data: ItinerariesMerge[]) {
         const itineraryNo = item.itineraryNo;
 
         if (!groupMap.has(itineraryNo)) {
-            groupMap.set(itineraryNo, { minAmount: null, minTotal: Infinity });
+            groupMap.set(itineraryNo, {minAmount: null, minTotal: Infinity});
         }
 
         const group = groupMap.get(itineraryNo)!;
@@ -296,7 +296,7 @@ export function amountPrice(amounts: Amount[]) {
     return (totalCents / 100).toFixed(2);
 }
 
-export function getAirports(data:FQueryResult[],dispatch: AppDispatch){
+export function getAirports(data: FQueryResult[], dispatch: AppDispatch) {
     const airports = Array.from(
         new Set(
             data.flatMap(d => d.response.results.flatMap(re => re.itineraries.flatMap(it => it.segments.flatMap(segment => [
@@ -305,13 +305,17 @@ export function getAirports(data:FQueryResult[],dispatch: AppDispatch){
             ])))).filter(Boolean)
         )
     );
-    if(airports && airports.length > 0){
-        queryGlobalAirportsAgent(airports).then(res => {
-            if(res.length){
-                dispatch(setCityArr(res))
-            }
-        })
+    if (airports && airports.length > 0) {
+        queryAirportsAgent(airports, dispatch);
     }
+}
+
+function queryAirportsAgent(airports: string[], dispatch: AppDispatch) {
+    queryGlobalAirportsAgent(airports).then(res => {
+        if (res.length) {
+            dispatch(setCityArr(res))
+        }
+    })
 }
 
 type SSEMessage = {
@@ -380,29 +384,29 @@ export async function getAgentQuery(
         const decoder = new TextDecoder('utf-8')
 
         let buffer = ''
-        const allResults:FQueryResult[] = []
+        const allResults: FQueryResult[] = []
         let shouldStop = false
         while (!shouldStop) {
-            const { value, done } = await reader.read()
+            const {value, done} = await reader.read()
             if (done) break
 
-            buffer += decoder.decode(value, { stream: true })
+            buffer += decoder.decode(value, {stream: true})
 
             buffer = parseSSE(buffer, msg => {
                 if (!msg.data) return
 
-                if (msg.data === "<BOF>"){
+                if (msg.data === "<BOF>") {
                     console.log('stream')
                     dispatch(
                         setFilterDataFilterTime(result.itineraries.map(() => ({
-                            departure:[0,24],
-                            arrival:[0,24],
+                            departure: [0, 24],
+                            arrival: [0, 24],
                         })))
                     );
                 }
-                if (!["<EOF>","<BOF>"].includes(msg.data)) {
+                if (!["<EOF>", "<BOF>"].includes(msg.data)) {
                     const data = JSON.parse(msg.data)
-                    if(!data.succeed){
+                    if (!data.succeed) {
                         console.error(data.errorMessage)
                         return
                     }
@@ -414,10 +418,15 @@ export async function getAgentQuery(
                 if (msg.data === "<EOF>") {
                     console.log('done')
                     if (!allResults.length) {
-                        return handleNoResult(dispatch, t('order.noSuitableData'))
+                        handleNoResult(dispatch, t('order.noSuitableData'))
+                        const airports = [...new Set(
+                            result.itineraries.flatMap(item => [item.arrival, item.departure])
+                        )];
+                        queryAirportsAgent(airports, dispatch)
+                    } else {
+                        getAirports(allResults, dispatch)
+                        dispatch(setSearchLoad(false))
                     }
-                    getAirports(allResults, dispatch)
-                    dispatch(setSearchLoad(false))
                     shouldStop = true
                 }
             })
@@ -430,7 +439,8 @@ export async function getAgentQuery(
         reader?.cancel()
     }
 }
-function interfaceError(dispatch: AppDispatch){
+
+function interfaceError(dispatch: AppDispatch) {
     dispatch(setSearchLoad(false))
     dispatch(setErrorMsg(t('passenger.interfaceError')))
     dispatch(setSearchFlag(false))
@@ -484,7 +494,7 @@ function interfaceError(dispatch: AppDispatch){
 // 🔥 单独抽出“无数据统一处理逻辑”
 function handleNoResult(dispatch: AppDispatch, message: string) {
     dispatch(resetSearchDate());
-    dispatch(setFilterData({ airline: [] , filterTime: [] }));
+    dispatch(setFilterData({airline: [], filterTime: []}));
     dispatch(setErrorMsg(message));
     dispatch(setSearchLoad(false));
 }
