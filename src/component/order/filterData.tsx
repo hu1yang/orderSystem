@@ -142,12 +142,12 @@ const RenderContent = memo(({airItem,searchLoad,disabledChoose}:{
             {
                 !disabledChoose && (
                     <div className={styles.filterContent}>
-                        {airItem.map((searchData, searchDataIndex) => (
+                        {airItem.map(searchData => (
                             <SearchDataProvider
                                 value={searchData}
-                                key={searchDataIndex}
+                                key={searchData.itineraryKey}
                             >
-                                <FilterItem />
+                                <FilterItem key={searchData.itineraryKey} />
                             </SearchDataProvider>
                         ))}
                     </div>
@@ -183,48 +183,46 @@ const FilterData = () => {
 
     const filterDatas = useMemo(() => {
         return airSearchData
-        // 1. 航司过滤
-        .filter(a => filterData.airline.includes(a.channelCode))
-        // 2. 筛选 itinerariesMerge 内部数据
-        .map(a => {
-            const filteredItineraries = a.itinerariesMerge.filter(im => {
-                if (im.itineraryNo !== airportActived) return true;
+            .filter(a => filterData.airline.includes(a.channelCode))
+            .map(a => {
+                const filteredItineraries = a.itineraries.filter(im => {
+                    if (im.itineraryNo !== airportActived) return true;
 
-                const { departure, arrival } = filterData.filterTime[im.itineraryNo];
-                const [depMin, depMax] = departure;
-                const [arrMin, arrMax] = arrival;
+                    const { departure, arrival } = filterData.filterTime[im.itineraryNo];
+                    const [depMin, depMax] = departure;
+                    const [arrMin, arrMax] = arrival;
 
-                // 跳过筛选的情况
-                const noDep = depMin === 0 && depMax === 24;
-                const noArr = arrMin === 0 && arrMax === 24;
+                    // 跳过筛选的情况
+                    const noDep = depMin === 0 && depMax === 24;
+                    const noArr = arrMin === 0 && arrMax === 24;
 
-                if (noDep && noArr) return true; // 不筛选
+                    if (noDep && noArr) return true; // 不筛选
 
-                const segmentsSort = [...im.segments].sort(
-                    (x, y) => x.sequenceNo - y.sequenceNo
-                );
+                    const segmentsSort = [...im.segments].sort(
+                        (x, y) => x.sequenceNo - y.sequenceNo
+                    );
 
-                const depTime = dayjs(segmentsSort[0].departureTime);
-                const arrTime = dayjs(segmentsSort[segmentsSort.length - 1].arrivalTime);
+                    const depTime = dayjs(segmentsSort[0].departureTime);
+                    const arrTime = dayjs(segmentsSort[segmentsSort.length - 1].arrivalTime);
 
-                // 构造筛选时间点（当天日期 + 指定小时）
-                const depMinTime = depTime.startOf('day').add(depMin, 'hour');
-                const depMaxTime = depTime.startOf('day').add(depMax, 'hour');
-                const arrMinTime = arrTime.startOf('day').add(arrMin, 'hour');
-                const arrMaxTime = arrTime.startOf('day').add(arrMax, 'hour');
+                    // 构造筛选时间点（当天日期 + 指定小时）
+                    const depMinTime = depTime.startOf('day').add(depMin, 'hour');
+                    const depMaxTime = depTime.startOf('day').add(depMax, 'hour');
+                    const arrMinTime = arrTime.startOf('day').add(arrMin, 'hour');
+                    const arrMaxTime = arrTime.startOf('day').add(arrMax, 'hour');
 
-                const includedD = noDep || depTime.isBetween(depMinTime, depMaxTime, null, '[]');
-                const includedA = noArr || arrTime.isBetween(arrMinTime, arrMaxTime, null, '[]');
+                    const includedD = noDep || depTime.isBetween(depMinTime, depMaxTime, null, '[]');
+                    const includedA = noArr || arrTime.isBetween(arrMinTime, arrMaxTime, null, '[]');
 
-                return includedD && includedA;
-            });
+                    return includedD && includedA;
+                });
 
-            return {
-                ...a,
-                itinerariesMerge: filteredItineraries,
-            };
-        })
-        .filter(a => a.itinerariesMerge.length > 0);
+                return {
+                    ...a,
+                    itineraries: filteredItineraries,
+                };
+            })
+            .filter(a => a.itineraries.length > 0);
     }, [airSearchData, filterData, airportActived]);
 
     const airItem = useMemo(() => {
@@ -240,18 +238,41 @@ const FilterData = () => {
         }
 
         const result = source
-            .flatMap(({ itinerariesMerge, ...rest }) =>
-                itinerariesMerge
-                .filter(it => it.itineraryNo === airportActived)
-                .map(it => ({
-                    ...rest,
-                    segments: it.segments,
-                    itineraryNo: it.itineraryNo,
-                    amountsMerge: it.amountsMerge,
-                }))
+            .flatMap(({ itineraries, ...rest }) =>
+                itineraries
+                    .filter(it => it.itineraryNo === airportActived)
+                    .map(it => ({
+                        ...rest,
+                        segments: it.segments,
+                        itineraryNo: it.itineraryNo,
+                        amounts: it.amounts,
+                        itineraryKey: it.itineraryKey,
+                    }))
             );
-        return result ?? [];
-    }, [airportActived, airChoose,filterDatas]);
+
+        const resultMerge: MregeResultData[] = Object.values(
+            result.reduce<Record<string, MregeResultData>>((acc, cur) => {
+                const key = cur.itineraryKey;
+
+                if (!acc[key]) {
+                    acc[key] = {
+                        itineraryKey: key,
+                        segments: cur.segments,
+                        teamedKey: cur.teamedKey,
+                        channelCode: cur.channelCode,
+                        currency: cur.currency,
+                        amountsData: [],
+                    };
+                }
+
+                acc[key].amountsData.push(cur);
+
+                return acc;
+            }, {})
+        );
+
+        return resultMerge ?? [];
+    }, [airportActived, airChoose, filterDatas]);
 
     const prevChooseAir = () => {
         dispatch(prevAirChoose())
@@ -263,9 +284,6 @@ const FilterData = () => {
         const result = cityList.find(city => city?.cityCode === arrivalValue || city?.airportCode === arrivalValue)
         return result ? `${result?.[isZhCN?'airportCName':'airportEName']}(${arrivalValue})` : arrivalValue
     },[cityList,query.itineraries,airportActived])
-
-
-
 
     return (
         <div className={`${styles.filterData} flex-1`}>

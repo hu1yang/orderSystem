@@ -3,7 +3,7 @@ import { useSelector} from "react-redux";
 import type {RootState} from "@/store";
 import {
     amountPrice,
-    findLowestAmount,
+    findLowestAmount, findLowestGroup,
     formatDuration, formatTotalDuration, getLowestAmountsByItinerary,
 } from "@/utils/order.ts";
 
@@ -22,7 +22,7 @@ import FareCardsSlider from "@/component/order/detail.tsx";
 import AirTooltip from "@/component/defult/AirTooltip.tsx";
 
 import type {
-    Amount,
+    Amount, ResponseItinerary,
     Segment
 } from "@/types/order.ts";
 
@@ -58,7 +58,6 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
 
         const timer = segments.map(segment => segment.totalFlyingTime) as string[]
 
-        // ⏱️ 计算中转等待时间（只在多段航程时）
         let transferTime = null
         if (segments.length > 1) {
             const prevArrival = segments[0].arrivalTime
@@ -245,23 +244,40 @@ const FilterItem = () => {
     const [open, setOpen] = useState(false)
 
     const nextCheapAmount = useMemo(() => {
-        const airFilter = airSearchData.find(airSearch => airSearch.channelCode === searchData?.channelCode && airSearch.contextId === searchData.contextId && airSearch.resultKey === searchData?.resultKey)
-        if(!airFilter) return []
-        const airResult = airFilter.itinerariesMerge.filter(it => it.itineraryNo > airportActived)
-        const result = getLowestAmountsByItinerary(airResult)
+        const mapAmount = new Map<string, ResponseItinerary[]>();
+
+        searchData?.amountsData.forEach(amtData => {
+            const airSearch = airSearchData.find(
+                item =>
+                    item.contextId === amtData.contextId &&
+                    item.channelCode === amtData.channelCode
+            );
+
+            if (!airSearch) return;
+            const resAir = airSearch.itineraries.filter(
+                it => it.itineraryNo > airportActived
+            )
+
+            mapAmount.set(amtData.contextId, resAir);
+        });
+
+        const result = getLowestAmountsByItinerary(mapAmount)
+
         return result
     }, [airSearchData,searchData,airportActived]);
 
 
     const amountsMemo = useMemo(() => {
-        const result = searchData?.amountsMerge
-        .flatMap(item =>
-            item.amounts
-            .filter(am => am.passengerType === 'adt').map(amount => ({
-                itineraryKey: item.itineraryKey,
+        const result = searchData?.amountsData.flatMap(ad => {
+            return ad.amounts
+            .filter(am => am.passengerType === 'adt')
+            .map(amount => ({
+                itineraryKey: searchData.itineraryKey,
+                contextId: ad.contextId,
+                resultKey: ad.resultKey,
                 amount
-            }))
-        );
+            }));
+        });
         return result!;
     }, [searchData]);
 
@@ -271,7 +287,6 @@ const FilterItem = () => {
             hand: false,
             carry: false,
         }
-
         amountsMemo.forEach(item => item.amount.luggages.forEach(luggage => {
             if (luggage.luggageType === 'checked') result.checked = true
             if (luggage.luggageType === 'hand') result.hand = true
@@ -285,19 +300,32 @@ const FilterItem = () => {
 
         if (airChoose.result) {
             beforeAmount = airChoose.result.itineraries
-            .map(it => it.amounts.find(amt => amt.passengerType === 'adt'))
-            .filter((a): a is Amount => Boolean(a));
+                .map(it => it.amounts.find(amt => amt.passengerType === 'adt'))
+                .filter((a): a is Amount => Boolean(a));
         }
 
-        const currentCheapAmount = findLowestAmount(
-            searchData?.amountsMerge?.flatMap(a => a.amounts.filter(am => am.passengerType === 'adt') ?? []) ?? []
-        );
+        const itinerariesMerge = new Map<string,Amount[]>()
+
+        searchData?.amountsData.forEach(am => {
+            const current = findLowestAmount(
+                am.amounts.filter(am => am.passengerType === 'adt') ?? []
+            );
+            const next = nextCheapAmount.get(am.contextId) ?? [];
+            if(current){
+                itinerariesMerge.set(am.contextId,[
+                    current,
+                    ...next
+                ])
+            }
+        })
+
+        const cheapAmounts = findLowestGroup(itinerariesMerge) ?? []
 
         const result  = [
             ...beforeAmount,
-            ...(currentCheapAmount ? [currentCheapAmount] : []),
-            ...(nextCheapAmount ?? [])
+            ...cheapAmounts
         ] as Amount[];
+
         return result;
     }, [searchData, nextCheapAmount, airChoose]);
 
@@ -307,6 +335,7 @@ const FilterItem = () => {
         const price = amountPrice(cheapAmount as Amount[])
         return price
     },[cheapAmount])
+
 
     return  (
         <div className={styles.filterItem}>
@@ -442,7 +471,7 @@ const FilterItem = () => {
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider nextCheapAmount={nextCheapAmount as Amount[]} amountsMemo={amountsMemo} />
+                <FareCardsSlider nextCheapAmount={nextCheapAmount} amountsMemo={amountsMemo} />
             </div>
         </div>
     )
