@@ -217,8 +217,22 @@ const Airports = memo(({index}:{
             return
         }
         fuzzyQueryGlobalAirportsAgent(value as string).then(res => {
-            setSearchList(flattenByCountry(res))
-        })
+            const keyword = String(value).trim().toUpperCase();
+
+            const exact = res.filter(item =>
+                item.cityCode === keyword ||
+                item.airports.some(airport => airport.airportCode === keyword)
+            );
+
+            const fuzzy = res.filter(item =>
+                !(
+                    item.cityCode === keyword ||
+                    item.airports.some(airport => airport.airportCode === keyword)
+                )
+            );
+
+            setSearchList(flattenByCountry([...exact, ...fuzzy]));
+        });
     }, 300)
 
     const handleEnter = () => {
