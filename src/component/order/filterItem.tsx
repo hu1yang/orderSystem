@@ -404,7 +404,7 @@ const FilterItem = () => {
                         <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
                             <div className={`s-flex ai-fe ${styles.price}`}>
                                 {/*<span>from</span>*/}
-                                <div>{searchData?.currency}${lostPrice}</div>
+                                <div>{searchData?.currency} {lostPrice}</div>
                             </div>
                             <div>
                                 <span>{t(`order.${query.itineraryType}`)}</span>

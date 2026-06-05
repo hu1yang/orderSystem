@@ -70,7 +70,7 @@ const CardCom = memo(({pirceResult}:{
                                         </span>
                                     </div>
                                     <div className={styles.values}>
-                                        <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].totalPrice}</span>
+                                        <span>{resultAir.currency} {pirceResult.perType[amount.passengerType].totalPrice}</span>
                                     </div>
                                 </div>
                                 <div key={`${amount.familyName}-${amount.familyCode}-c2`} className={`${styles.priceHeight} full-width`}
@@ -82,7 +82,7 @@ const CardCom = memo(({pirceResult}:{
                                             </span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span>{resultAir.currency}${pirceResult.perType[amount.passengerType].unitPrice} × {pirceResult.perType[amount.passengerType].count}</span>
+                                            <span>{resultAir.currency} {pirceResult.perType[amount.passengerType].unitPrice} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
@@ -90,7 +90,7 @@ const CardCom = memo(({pirceResult}:{
                                             <span style={{fontSize: 12}}>{t('passenger.Fare')}</span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].printAmount} × {pirceResult.perType[amount.passengerType].count}</span>
+                                            <span style={{fontSize: 12}}>{resultAir.currency} {pirceResult.perType[amount.passengerType].printAmount} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                     <div className={`${styles.priceli} s-flex ai-ct jc-bt`}>
@@ -98,7 +98,7 @@ const CardCom = memo(({pirceResult}:{
                                             <span style={{fontSize: 12}}>{t('passenger.taxesFees')}</span>
                                         </div>
                                         <div className={styles.values}>
-                                            <span style={{fontSize: 12}}>{resultAir.currency}${pirceResult.perType[amount.passengerType].taxesAmount} × {pirceResult.perType[amount.passengerType].count}</span>
+                                            <span style={{fontSize: 12}}>{resultAir.currency} {pirceResult.perType[amount.passengerType].taxesAmount} × {pirceResult.perType[amount.passengerType].count}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -168,7 +168,7 @@ const CardCom = memo(({pirceResult}:{
                 <div className={`s-flex flex-dir jc-fe ai-fe full-width`}>
                     <div className={`${styles.priceLine} s-flex jc-bt ai-ct full-width`}>
                         <div className={styles.labels}>{t('passenger.total')}</div>
-                        <div className={styles.prices}>{resultAir?.currency}${pirceResult.totalPrice}</div>
+                        <div className={styles.prices}>{resultAir?.currency} {pirceResult.totalPrice}</div>
                     </div>
                 </div>
             </CardActions>

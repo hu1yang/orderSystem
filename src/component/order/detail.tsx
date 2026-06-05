@@ -111,6 +111,8 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
             top: 0,
             behavior: 'smooth',
         })
+        dispatch(setDisabledChoose(true))
+
         const airport = airSearchData
             .find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === contextId && airport.resultKey === resultKey)
         if(!airport) return;
@@ -145,10 +147,11 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
         }
         if(query.itineraries.length === airportActived+1){
             navigate('/passenger')
+        }else{
+            setTimeout(() => {
+                dispatch(setDisabledChoose(false))
+            },500)
         }
-        setTimeout(() => {
-            dispatch(setDisabledChoose(false))
-        },500)
     }
 
     const luggageConfig = [
@@ -379,7 +382,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{searchData?.currency}${lostPrice}</Typography>
+                            }}>{searchData?.currency} {lostPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
                     <Button variant="contained" disabled={searchLoad || disabledChoose} onClick={submitResult} className={'full-width'} sx={{
