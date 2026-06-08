@@ -46,7 +46,7 @@ const NextStep = memo(({paySubmit,pirceResult}:{
                 <div className={styles.commonBox}>
                     <div className={`${styles.payPrice} s-flex jc-bt ai-ct`}>
                         <div className={styles.payPriceLabels}>{t('passenger.total')}</div>
-                        <div className={styles.payPricevalue}>{airChoose.result?.currency}${pirceResult.totalPrice}</div>
+                        <div className={styles.payPricevalue}>{airChoose.result?.currency} {pirceResult.totalPrice}</div>
                     </div>
                     <Button type="submit" loading={createdLoading} loadingPosition="end" sx={{
                         backgroundColor: 'var(--active-color)',

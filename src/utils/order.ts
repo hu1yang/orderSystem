@@ -5,7 +5,7 @@ import type {
     PriceSummary,
     ResponseItinerary,
     Travelers,
-    FQueryResult, ItinerariesMerge, IamountsMerge, MregeResultAirport, FQuery
+    FQueryResult, MregeResultAirport, FQuery
 } from "@/types/order.ts";
 import dayjs from '@/utils/dayjs.ts';
 import duration from 'dayjs/plugin/duration'
@@ -135,7 +135,6 @@ export function getAdultAmountTotal(amount: Amount): number {
 export const calculateAirResult = (airport: FQueryResult): MregeResultAirport[] => {
 
     const calculateResult = airport.response.results.flatMap(result => {
-        const mergeItinerariesResult = mergeItineraries(result.itineraries)
         return {
             channelCode: airport.response.channelCode,
             updatedTime: airport.response.updatedTime,
@@ -145,120 +144,40 @@ export const calculateAirResult = (airport: FQueryResult): MregeResultAirport[] 
             resultKey: result.resultKey,
             resultType: result.resultType,
             teamedKey: result.teamedKey,
-            itinerariesMerge: segmentsSort(mergeItinerariesResult)
+            itineraries: result.itineraries.map((itinerarie) => ({...itinerarie,segments:[...itinerarie.segments].sort((a, b) => a.sequenceNo - b.sequenceNo)})),
         }
     })
     return calculateResult
 }
 
-export const segmentsSort = (result: ItinerariesMerge[]): ItinerariesMerge[] => {
-    return result.map(itm => ({
-        ...itm,
-        segments: [...itm.segments].sort((a, b) => a.sequenceNo - b.sequenceNo)
-    }))
-}
-
-// 合并itineraries数据
-function mergeItineraries(data: ResponseItinerary[]): ItinerariesMerge[] {
-    // 按 itineraryNo 分组
-    const grouped = data.reduce<Record<number, ResponseItinerary[]>>((acc, cur) => {
-        acc[cur.itineraryNo] = acc[cur.itineraryNo] || [];
-        acc[cur.itineraryNo].push(cur);
-        return acc;
-    }, {});
-
-    const result: ItinerariesMerge[] = [];
-
-    Object.entries(grouped).forEach(([noStr, items]) => {
-        const itineraryNo = Number(noStr);
-
-        // 按 segments 分组
-        const segmentMap: Record<string, ResponseItinerary[]> = {};
-        items.forEach(item => {
-            const segKey = item.segments
-            .slice() // 防止改动原数组
-            .sort((a, b) => a.sequenceNo - b.sequenceNo)
-            .map(seg => seg.flightNumber).join('|');
-            if (!segmentMap[segKey]) {
-                segmentMap[segKey] = [];
-            }
-            segmentMap[segKey].push(item);
-        });
-
-        // 遍历每组相同 segments
-        Object.entries(segmentMap).forEach(([, list]) => {
-            // 每个行程的 amounts 按价格升序排序
-            const sortedAmountsList = list.map(it => ({
-                itineraryKey: it.itineraryKey,
-                amounts: [...it.amounts].sort(
-                    (a, b) =>
-                        (a.printAmount + a.taxesAmount) -
-                        (b.printAmount + b.taxesAmount)
-                )
-            }));
-
-            const mergedAmounts: IamountsMerge[] = [
-                {
-                    itineraryKey: '',
-                    amounts: []
-                }
-            ];
-
-            const maxLen = Math.max(...sortedAmountsList.map(sa => sa.amounts.length));
-            for (let i = 0; i < maxLen; i++) {
-                let cheapest: number | null = null;
-                let chosenKey = '';
-                let chosenAmount: Amount | null = null;
-
-                sortedAmountsList.forEach(sa => {
-                    const amt = sa.amounts[i];
-                    if (amt) {
-                        const price = amt.printAmount + amt.taxesAmount;
-                        if (cheapest === null || price < cheapest) {
-                            cheapest = price;
-                            chosenKey = sa.itineraryKey;
-                            chosenAmount = amt;
-                        }
-                    }
-                });
-
-                if (chosenAmount) {
-                    // 如果 amountsMerge 还没有该 itineraryKey，就加一项
-                    let mergeItem = mergedAmounts.find(m => m.itineraryKey === chosenKey);
-                    if (!mergeItem) {
-                        mergeItem = {itineraryKey: chosenKey, amounts: []};
-                        mergedAmounts.push(mergeItem);
-                    }
-                    mergeItem.amounts.push(chosenAmount);
-                }
-            }
-
-            result.push({
-                segments: list[0].segments,
-                itineraryNo,
-                amountsMerge: mergedAmounts.filter(m => m.itineraryKey) // 过滤掉空的
-            });
-        });
-    });
-
-    return result;
-}
-
 // 获取每段的最低价格
-export function getLowestAmountsByItinerary(data: ItinerariesMerge[]) {
-    const groupMap = new Map<number, { minAmount: Amount | null, minTotal: number }>();
+export function getLowestAmountsByItinerary(
+    data: Map<string, ResponseItinerary[]>
+) {
+    const result = new Map<string, Amount[]>();
 
-    for (const item of data) {
-        const itineraryNo = item.itineraryNo;
+    data.forEach((itineraries,key) => {
+        const groupMap = new Map<
+            number,
+            {
+                minAmount: Amount | null;
+                minTotal: number;
+            }
+        >();
 
-        if (!groupMap.has(itineraryNo)) {
-            groupMap.set(itineraryNo, {minAmount: null, minTotal: Infinity});
-        }
+        for (const item of itineraries) {
+            const itineraryNo = item.itineraryNo;
 
-        const group = groupMap.get(itineraryNo)!;
+            if (!groupMap.has(itineraryNo)) {
+                groupMap.set(itineraryNo, {
+                    minAmount: null,
+                    minTotal: Infinity,
+                });
+            }
 
-        for (const am of item.amountsMerge) {
-            for (const amount of am.amounts) {
+            const group = groupMap.get(itineraryNo)!;
+
+            for (const amount of item.amounts) {
                 if (amount.passengerType !== 'adt') continue;
 
                 const total = getAdultAmountTotal(amount);
@@ -269,11 +188,37 @@ export function getLowestAmountsByItinerary(data: ItinerariesMerge[]) {
                 }
             }
         }
-    }
 
-    return Array.from(groupMap.values()).map(g => g.minAmount);
+        result.set(
+            key,
+            Array.from(groupMap.values())
+            .map(g => g.minAmount)
+            .filter(Boolean) as Amount[]
+        );
+    });
+
+    return result;
 }
 
+export function findLowestGroup(
+    data: Map<string, Amount[]>
+): Amount[] {
+    let lowestAmounts: Amount[] = [];
+    let lowestPrice = Infinity;
+
+    for (const [, amounts] of data.entries()) {
+        const totalPrice = amounts.reduce((sum, amount) => {
+            return sum + getAdultAmountTotal(amount);
+        }, 0);
+
+        if (totalPrice < lowestPrice) {
+            lowestPrice = totalPrice;
+            lowestAmounts = amounts;
+        }
+    }
+
+    return lowestAmounts;
+}
 // 单独计算最低价
 export function findLowestAmount(amounts: Amount[]): Amount | null {
     if (amounts.length === 0) return null;

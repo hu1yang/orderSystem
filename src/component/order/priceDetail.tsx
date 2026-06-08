@@ -39,7 +39,7 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
                     amounts.map((amount: Amount,amountIndex) => (
                         <div key={`${amount.passengerType}-${amountIndex}`}>
                             <div className={`${styles.priceTitle} s-flex ai-ct jc-fe`}>
-                                <div className={styles.priceFlight}>{currency}${totals[amountIndex]}</div>
+                                <div className={styles.priceFlight}>{currency} {totals[amountIndex]}</div>
                                 <p>/{t(`order.${passengerTypes[amount.passengerType]}`)}</p>
                             </div>
                             <div className={`${styles.priceTips} s-flex jc-fe`}>
@@ -48,15 +48,15 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
                             <div className={styles.details}>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
                                     <span>{t(`order.${passengerTypes[amount.passengerType]}`)} {t(`order.tickets`)}</span>
-                                    <span>{currency}${totals[amountIndex]} × 1</span>
+                                    <span>{currency} {totals[amountIndex]} × 1</span>
                                 </div>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
                                     <span>{t(`passenger.Fare`)}</span>
-                                    <span>{currency}${amount.printAmount} × 1</span>
+                                    <span>{currency} {amount.printAmount} × 1</span>
                                 </div>
                                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue}`}>
                                     <span>{t(`passenger.taxesFees`)}</span>
-                                    <span>{currency}${amount.taxesAmount} × 1</span>
+                                    <span>{currency} {amount.taxesAmount} × 1</span>
                                 </div>
                             </div>
                             <Divider sx={{ borderStyle: 'dashed', my: 1.5 }} />
@@ -65,7 +65,7 @@ const PriceDetail = memo(({ amounts, currency, totalPrice }: {
                 }
                 <div className={`s-flex jc-bt ai-ct ${styles.detailsValue} ${styles.detailsValueWeight}`}>
                     <span>{t(`order.currentTotal`)}</span>
-                    <span>{currency}${totalPrice}</span>
+                    <span>{currency} {totalPrice}</span>
                 </div>
             </div>
         </div>

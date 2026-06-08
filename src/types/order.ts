@@ -354,21 +354,11 @@ export interface AgentSetting extends AddAgentSettingForm {
     expandSettings: ExpandsSetting[];
 }
 
-
-export interface IamountsMerge {
-    amounts: Amount[]
-    itineraryKey:string
-}
-
 export interface Iamount {
     amount: Amount
     itineraryKey:string
-}
-
-export interface ItinerariesMerge{
-    segments: Segment[];
-    itineraryNo:number;
-    amountsMerge:IamountsMerge[]
+    contextId:string
+    resultKey:string
 }
 
 
@@ -381,17 +371,25 @@ export interface MregeResultAirport {
     resultType: ResultType
     teamedKey:null
     updatedTime:string
-    itinerariesMerge: ItinerariesMerge[]
+    itineraries: ResponseItinerary[]
 }
 
-export type MregeResultData = Omit<MregeResultAirport, 'itinerariesMerge'> & {
+export type AmountsData = Omit<MregeResultAirport, 'itineraries'> & {
     segments: Segment[];
     itineraryNo:number;
-    amountsMerge:IamountsMerge[]
+    amounts: Amount[]
+    itineraryKey: string
     key?: string
 }
 
-
+export type MregeResultData = {
+    amountsData: AmountsData[]
+    segments: Segment[]
+    teamedKey: null
+    channelCode: string
+    currency: string
+    itineraryKey:string
+}
 
 // 机场类型
 interface Airport {

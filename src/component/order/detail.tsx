@@ -5,7 +5,7 @@ import type {RootState} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
-import {amountPrice, findLowestAmount} from "@/utils/order.ts";
+import {amountPrice} from "@/utils/order.ts";
 
 import type {Amount, Iamount, Result} from "@/types/order.ts";
 
@@ -43,10 +43,12 @@ import styles from './styles.module.less'
 import type {NavigationOptions} from "swiper/types";
 
 
-const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
-    amount:Amount
-    nextCheapAmount:Amount[]
-    itineraryKey:string
+const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey}:{
+    amount: Amount
+    nextCheapAmount: Map<string, Amount[]>
+    itineraryKey: string
+    contextId: string
+    resultKey: string
 }) => {
     const {t} = useTranslation()
     const searchData = useSearchData();
@@ -85,13 +87,17 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
             .filter((a): a is Amount => Boolean(a));
         }
 
-        const currentCheapAmount = findLowestAmount([amount])
+        const cheapAmounts = [
+            amount,
+            ...nextCheapAmount.get(contextId) as Amount[]
+        ]
+
         return [
             ...beforeAmount,
-            ...(currentCheapAmount ? [currentCheapAmount] : []),
-            ...nextCheapAmount
+            ...cheapAmounts
         ]
-    }, [nextCheapAmount,airChoose,amount]);
+
+    }, [nextCheapAmount,airChoose,amount,contextId]);
 
     const lostPrice = useMemo(() => {
         if(!cheapAmount) return 0
@@ -106,17 +112,17 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
             behavior: 'smooth',
         })
         dispatch(setDisabledChoose(true))
-        const airport = airSearchData.find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === searchData?.contextId && airport.resultKey === searchData?.resultKey)
+
+        const airport = airSearchData
+            .find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === contextId && airport.resultKey === resultKey)
         if(!airport) return;
-        const filteritMer = airport.itinerariesMerge.filter(itm => itm.itineraryNo === airportActived)
+        const filteritMer = airport.itineraries.filter(itm => itm.itineraryNo === airportActived)
 
         const parent = filteritMer.find(item =>
-            item.amountsMerge.some(amr => amr.itineraryKey === itineraryKey)
+            item.itineraryKey === itineraryKey
         );
 
-        const chooseAmount = parent?.amountsMerge
-        .find(amr => amr.itineraryKey === itineraryKey)
-            ?.amounts.filter(am => am.familyName === amount.familyName);
+        const chooseAmount = parent?.amounts.filter(am => am.familyName === amount.familyName && am.familyCode === amount.familyCode);
 
 
         const newItinerarie = {
@@ -141,10 +147,11 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
         }
         if(query.itineraries.length === airportActived+1){
             navigate('/passenger')
+        }else{
+            setTimeout(() => {
+                dispatch(setDisabledChoose(false))
+            },500)
         }
-        setTimeout(() => {
-            dispatch(setDisabledChoose(false))
-        },500)
     }
 
     const luggageConfig = [
@@ -189,10 +196,10 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                                 WebkitBoxOrient: 'vertical',
                                 WebkitLineClamp: 2,
                                 overflow: 'hidden',
-                                wordBreak:'break-word'
+                                wordBreak:'break-all'
                             }}
                         >
-                            {amount.familyName}
+                            {amount.familyName}({resultKey})
                         </Typography>
                     }
                 />
@@ -375,7 +382,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey}:{
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{searchData?.currency}${lostPrice}</Typography>
+                            }}>{searchData?.currency} {lostPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
                     <Button variant="contained" disabled={searchLoad || disabledChoose} onClick={submitResult} className={'full-width'} sx={{
@@ -405,9 +412,10 @@ const arrowBaseSx: SxProps<Theme> = {
 };
 
 const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
-    nextCheapAmount:Amount[]
+    nextCheapAmount: Map<string, Amount[]>
     amountsMemo:Iamount[]
 }) => {
+    const {airportActived} = useSelector((state: RootState) => state.ordersInfo)
 
     const prevRef = useRef<HTMLButtonElement>(null);
     const nextRef = useRef<HTMLButtonElement>(null);
@@ -453,13 +461,15 @@ const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
                     }}
                     modules={[Navigation]}>
                 {
-                    amountsMemo.map((amountsMerge) => (
+                    amountsMemo.map((amountsMerge,amountsMergeIndex) => (
                         <SwiperSlide
-                            key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}`}>
+                            key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}-${amountsMerge.contextId}-${amountsMergeIndex}_${airportActived}`}>
                             <SliderBox
                                 amount={amountsMerge.amount}
                                 nextCheapAmount={nextCheapAmount}
                                 itineraryKey={amountsMerge.itineraryKey}
+                                contextId={amountsMerge.contextId}
+                                resultKey={amountsMerge.resultKey}
                                 />
                         </SwiperSlide>
 
