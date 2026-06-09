@@ -241,7 +241,7 @@ export function amountPrice(amounts: Amount[]) {
     return (totalCents / 100).toFixed(2);
 }
 
-export function getAirports(data: FQueryResult[], dispatch: AppDispatch) {
+export function getAirports(data: FQueryResult[], dispatch: AppDispatch, defaultAirports:string[]) {
     const airports = Array.from(
         new Set(
             data.flatMap(d => d.response.results.flatMap(re => re.itineraries.flatMap(it => it.segments.flatMap(segment => [
@@ -252,6 +252,8 @@ export function getAirports(data: FQueryResult[], dispatch: AppDispatch) {
     );
     if (airports && airports.length > 0) {
         queryAirportsAgent(airports, dispatch);
+    }else{
+        queryAirportsAgent(defaultAirports, dispatch);
     }
 }
 
@@ -364,14 +366,13 @@ export async function getAgentQuery(
                     console.log('done')
                     if (!allResults.length) {
                         handleNoResult(dispatch, t('order.noSuitableData'))
-                        const airports = [...new Set(
-                            result.itineraries.flatMap(item => [item.arrival, item.departure])
-                        )];
-                        queryAirportsAgent(airports, dispatch)
                     } else {
-                        getAirports(allResults, dispatch)
                         dispatch(setSearchLoad(false))
                     }
+                    const defaultAirports = [...new Set(
+                        result.itineraries.flatMap(item => [item.arrival, item.departure])
+                    )];
+                    getAirports(allResults, dispatch, defaultAirports)
                     shouldStop = true
                 }
             })
