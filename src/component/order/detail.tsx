@@ -122,7 +122,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
             item.itineraryKey === itineraryKey
         );
 
-        const chooseAmount = parent?.amounts.filter(am => am.familyName === amount.familyName && am.familyCode === amount.familyCode);
+        const chooseAmount = parent?.amounts.filter(am => am.familyName === amount.familyName);
 
 
         const newItinerarie = {
