@@ -17,7 +17,6 @@ import ContactForm from './ContactForm.tsx'
 import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
 import CardCom from "@/component/passenger/cardCom.tsx";
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
-import {orderCreateAgent} from "@/utils/request/agent.ts";
 
 import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
@@ -26,6 +25,7 @@ import {useNavigate} from "react-router";
 import {resetAirChoose, setCreatedLoading, setDisabledChoose, setPassengers} from "@/store/orderInfo.ts";
 import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 import {useTranslation} from "react-i18next";
+import {bookingCreateAgent} from "@/utils/request/agent.ts";
 
 
 const NextStep = memo(({paySubmit,pirceResult}:{
@@ -157,7 +157,7 @@ const Detail = () => {
                 contacts
             } as OrderCreate
 
-            await orderCreateAgent(result).then(res => {
+            await bookingCreateAgent(result).then(res => {
                 if(res.succeed){
                     setError('success',t('passenger.orderCreatedSuccessfully'))
                     backOrder(res.response.orderNumber)
