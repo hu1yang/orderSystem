@@ -15,6 +15,7 @@ export const queryGlobalAirportsAgent = (form:string[])  => axios.post<QueryAirp
 export const queryBookingAgent = (form:AirChooseForm) => axios.post<FQueryResultForm,AirChooseForm>('/agentApi/Service/QueryBooking',form)
 
 export const orderCreateAgent = (form:OrderCreate) => axios.post<CommonResponseOrder,OrderCreate>('/agentApi/Service/OrderCreate',form)
+export const bookingCreateAgent = (form:OrderCreate) => axios.post<CommonResponseOrder,OrderCreate>('/agentApi/Service/BookingCreate',form)
 
 
 export const paymentOrderAgent = (id:string) => axios.patch<CommonResponseGroup>(`/agentApi/Orders/PaymentOrder/${id}`)
