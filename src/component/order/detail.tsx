@@ -186,21 +186,39 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
                         },
                     }}
                     title={
-                        <Typography
-                            fontWeight="bold"
-                            fontSize="1.6rem"
+                        <HtmlTooltip
+                            placement="bottom"
                             sx={{
-                                lineHeight: '2.2rem',
-                                height: '4.5rem',
-                                display: '-webkit-box',
-                                WebkitBoxOrient: 'vertical',
-                                WebkitLineClamp: 2,
-                                overflow: 'hidden',
-                                wordBreak:'break-all'
+                                '.MuiTooltip-tooltip': {
+                                    fontSize: "1.1rem",
+                                    padding: 'var(--pm-16)',
+                                }
                             }}
+                            title={
+                                <Typography
+                                    fontSize="1.2rem"
+                                    color={'var(--text-color)'}
+                                >
+                                    {amount.familyName}({resultKey})
+                                </Typography>
+                            }
                         >
-                            {amount.familyName}({resultKey})
-                        </Typography>
+                            <Typography
+                                fontWeight="bold"
+                                fontSize="1.6rem"
+                                sx={{
+                                    lineHeight: '2.2rem',
+                                    height: '4.5rem',
+                                    display: '-webkit-box',
+                                    WebkitBoxOrient: 'vertical',
+                                    WebkitLineClamp: 2,
+                                    overflow: 'hidden',
+                                    wordBreak:'break-all'
+                                }}
+                            >
+                                {amount.familyName}({resultKey})
+                            </Typography>
+                        </HtmlTooltip>
                     }
                 />
                 <CardContent>
