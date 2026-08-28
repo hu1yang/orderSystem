@@ -40,6 +40,18 @@
     }
 }
 
+@media (max-width: 768px) {
+    :root {
+        --main-width: calc(100% - 16px);
+        --pm-16: 12px;
+    }
+
+    html, body, #root {
+        min-width: 0;
+        overflow-x: hidden;
+    }
+}
+
 /* semantic color variables for this project */
 :root {
     --color-background: var(--vt-c-white);
@@ -329,5 +341,4 @@ svg:focus{
 .rdrDateDisplayWrapper{
     display: none !important;
 }
-
 

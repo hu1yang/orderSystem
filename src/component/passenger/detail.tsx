@@ -1,5 +1,11 @@
 import React, {Fragment, memo, type ReactElement, useCallback, useMemo, useRef, useState} from "react";
-import styles from './styles.module.less'
+import {useNavigate} from "react-router";
+import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "@/store";
+import {setCreatedLoading, setPassengers} from "@/store/orderInfo.ts";
+
+import {useTranslation} from "react-i18next";
+
 import {
     Alert, AlertTitle, Box,
     Button, CircularProgress,
@@ -8,25 +14,23 @@ import {
     Snackbar, type SnackbarCloseReason, Step, StepLabel, Stepper,
     Typography
 } from "@mui/material";
+
+import {bookingCreateAgent} from "@/utils/request/agent.ts";
+import {calculateTotalPriceSummary} from "@/utils/order.ts";
+
 import type {Luggage, OrderCreate, Passenger, PriceSummary} from '@/types/order.ts'
-import type {RootState} from "@/store";
-import {useDispatch, useSelector} from "react-redux";
 
 import PassengerForm from "./passengerForm.tsx";
 import ContactForm from './ContactForm.tsx'
-import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
+import AirportInformation from "@/component/passenger/airportInformation.tsx";
 import CardCom from "@/component/passenger/cardCom.tsx";
-import {calculateTotalPriceSummary} from "@/utils/order.ts";
+import HtmlTooltip from "@/component/defult/Tooltip.tsx";
 
 import checkIn from "@/assets/checkIn.png_.webp"
 import carryOn from "@/assets/carryOn.png_.webp"
 import personal_no from "@/assets/personal_no.png_.webp"
-import {useNavigate} from "react-router";
-import {resetAirChoose, setCreatedLoading, setDisabledChoose, setPassengers} from "@/store/orderInfo.ts";
-import HtmlTooltip from "@/component/defult/Tooltip.tsx";
-import {useTranslation} from "react-i18next";
-import {bookingCreateAgent} from "@/utils/request/agent.ts";
 
+import styles from './styles.module.less'
 
 const NextStep = memo(({paySubmit,pirceResult}:{
     paySubmit:() => void
@@ -178,12 +182,7 @@ const Detail = () => {
     },[query,airChoose,contacts])
 
     const backOrderNav = () => {
-        dispatch(setDisabledChoose(true))
-        navigate('/')
-        setTimeout(() => {
-            dispatch(resetAirChoose())
-            dispatch(setDisabledChoose(false))
-        },200)
+        navigate(-1)
     }
 
     const backOrder = (orderid:string) => {
@@ -286,7 +285,7 @@ const Detail = () => {
                                 <StepLabel />
                             </Step>
                         </Stepper>
-                        <div className={'s-flex'}>
+                        <div className={`${styles.stepLabels} s-flex`}>
                             <Typography className={'flex-1'} fontWeight={400} fontSize={14} color={'var(--active-color)'}>
                                 {t('passenger.chooseFlight')}
                                 <span className={`${styles.firportSet} cursor-p s-flex ai-ct`} onClick={backOrderNav}>
@@ -297,15 +296,15 @@ const Detail = () => {
                             <Typography className={'flex-1'} textAlign={'right'} fontWeight={400} fontSize={14} color={'var(--text-color)'}>{t('passenger.finalizePayment')}</Typography>
                         </div>
                     </div>
-                    <div className={`s-flex jc-bt`}>
+                    <div className={`${styles.bookingLayout} s-flex jc-bt`}>
                         <div className={`${styles.gap} ${styles.wContainer}`}>
-                            <Box component="section" sx={{ p: 2, border: '1px solid var(--put-border-color)',borderRadius:'var(--border-radius)' }}>
+                            <Box className={styles.flightSummary} component="section" sx={{ p: 2, border: '1px solid var(--put-border-color)',borderRadius:'var(--border-radius)' }}>
                                 <Grid container spacing={2}>
                                     {
                                         !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
                                             <Grid size={12} key={itinerarie.itineraryKey}>
-                                                <FirportInfomation segments={itinerarie.segments}
-                                                                   amounts={itinerarie.amounts ?? null} />
+                                                <AirportInformation segments={itinerarie.segments}
+                                                                    amounts={itinerarie.amounts ?? null} />
                                             </Grid>
                                         ))
                                     }
@@ -322,7 +321,7 @@ const Detail = () => {
                                         </div>
                                         <div className={styles.commonBox}>
                                             <div className={styles.packageContent}>
-                                                <Grid container spacing={2}>
+                                                <Grid className={styles.luggageHeaderGrid} container spacing={2}>
                                                     <Grid size={3}></Grid>
                                                     <Grid size={3}>
                                                         <div className={`${styles.packageli} s-flex ai-ct flex-dir`}>
@@ -375,7 +374,7 @@ const Detail = () => {
 
                                                         return (
                                                             <Fragment key={index}>
-                                                                <Grid container spacing={2}>
+                                                                <Grid className={styles.luggageRouteGrid} container spacing={2}>
                                                                     <Grid size={12}>
                                                                         <div className={styles.cityText}>{cityText}</div>
                                                                     </Grid>
@@ -413,7 +412,7 @@ const Detail = () => {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className={styles.priceAside}>
                             <div className={styles.cardCom}>
                                 {
                                     pirceResult ? <CardCom pirceResult={pirceResult} /> : <></>

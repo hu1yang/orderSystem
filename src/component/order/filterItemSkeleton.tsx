@@ -8,11 +8,7 @@ const FilterItemSkeleton = memo(({skeletonCount=6}:{skeletonCount?:number}) => {
         <Box>
             {
                 [...Array(skeletonCount)].map((_, i) => (
-                    <div key={i} className={styles.filterItem} style={{
-                        backgroundColor:'var(--vt-c-white)',
-                        padding:'12px var(--pm-16) 16px',
-                        marginBottom: '6px'
-                    }}>
+                    <div key={i} className={`${styles.filterItem} ${styles.filterItemSkeleton}`}>
                         <div className={styles.filterItemBox}>
                             <div className={`${styles.filterTips} s-flex ai-ct`}>
                                 <Skeleton variant="text" animation={false} width={60} height={12} />
@@ -20,13 +16,16 @@ const FilterItemSkeleton = memo(({skeletonCount=6}:{skeletonCount?:number}) => {
                             <div className={`${styles.airInfomation} s-flex ai-ct`}>
                                 <div className={`${styles.leftInfo} s-flex flex-1 ai-ct`}>
                                     <div className={`${styles.leftInfoDetail} s-flex`}>
+                                        <div className={`${styles.picture} s-flex ai-ct`}>
+                                            <Skeleton variant="circular" width={34} height={34} />
+                                        </div>
                                         <div className={`${styles.leftInfoDetailTitle}`}>
                                             <div className={`${styles.airTitle} s-flex flex-dir`}>
                                                 <Skeleton variant="text" width={60} sx={{ fontSize: '1rem' }} height={18} />
                                             </div>
                                         </div>
                                     </div>
-                                    <Grid container className={'flex-1'} spacing={2}>
+                                    <Grid container className={`${styles.timelineGrid} flex-1`} spacing={2}>
                                         <Grid size={3} className={`s-flex ai-ct flex-dir`}>
                                             <Skeleton variant="text" sx={{ fontSize: '1.3rem' }} width={60} height={25} />
                                             <Skeleton variant="text" sx={{ fontSize: '.8rem' }} width={80} height={18} />
@@ -41,14 +40,13 @@ const FilterItemSkeleton = memo(({skeletonCount=6}:{skeletonCount?:number}) => {
                                     </Grid>
                                 </div>
                                 <div className={`${styles.rightInfo} s-flex jc-fe ai-ct`}>
-                                    <div className={`${styles.priceBox} s-flex ai-ct`}>
-                                        <div className={`s-flex ai-fe ${styles.price} s-flex flex-dir`} style={{marginRight: '10px'}}>
+                                    <div className={`${styles.priceBox} s-flex flex-dir ai-fe`}>
+                                        <div className={`s-flex ai-fe ${styles.price} flex-dir`}>
                                             <Skeleton variant="text" sx={{ fontSize: '1.2rem' }} width={80} height={18} />
                                             <Skeleton variant="text" sx={{ fontSize: '1.1rem' }} width={40} height={10} />
                                         </div>
-                                        <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={90} height={64} />
                                     </div>
-
+                                    <Skeleton variant="rounded" width={110} height={40} />
                                 </div>
                             </div>
                         </div>

@@ -87,7 +87,7 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
     },[flightSegment])
 
     return (
-        <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
+        <Box className={styles.flightTimeline} display="flex" alignItems="center" justifyContent="space-between" width="100%" flex={1} paddingLeft={'8px'} maxWidth={400}>
             <Box textAlign="center">
                 <Typography fontWeight="bold" fontSize="1.7rem" lineHeight={1}>{extractTimeWithTimezone(flightSegment.departureTime)}</Typography>
                 <HtmlTooltip placement="bottom" sx={{
@@ -392,7 +392,7 @@ const FilterItem = () => {
 
                             </div>
                         </div>
-                        <Grid container className={'flex-1'} spacing={2}>
+                        <Grid container className={`${styles.timelineGrid} flex-1`} spacing={2}>
                             <Grid size={12}>
                                 {
                                     <FlightTimeline segments={searchData?.segments as Segment[]} luggageIncludes={luggageIncludes} />

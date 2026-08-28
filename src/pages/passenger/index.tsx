@@ -24,7 +24,7 @@ const Passenger = () => {
 
     useEffect(() => {
         if(!state.airChoose.result){
-            navigate('/')
+            navigate(-1)
         }else{
             sendResult()
         }
@@ -52,7 +52,7 @@ const Passenger = () => {
     const returnBack = () => {
         setDialogVisible(false)
         setTimeout(() => {
-            navigate('/')
+            navigate(-1)
         },200)
     }
 
@@ -64,7 +64,8 @@ const Passenger = () => {
                 maxWidth={"md"}
                 sx={{
                     '.MuiDialog-paperWidthMd': {
-                        width: '400px'
+                        width: 'calc(100% - 32px)',
+                        maxWidth: '400px'
                     }
                 }}
             >

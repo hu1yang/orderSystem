@@ -191,6 +191,14 @@ const orderInfoSlice = createSlice({
                 filterTime:action.payload
             }
         },
+        restoreOrderList(state) {
+            state.airportActived = 0
+            state.airChoose = {
+                result: null,
+                channelCode: '',
+            }
+            state.disabledChoose = false
+        },
         resetChoose: () => initialState
     },
 })
@@ -213,6 +221,7 @@ export const {
     setCreatedLoading,
     setFilterData,
     setFilterDataFilterTime,
+    restoreOrderList,
     resetSearchDate,
 } = orderInfoSlice.actions
 export default orderInfoSlice.reducer

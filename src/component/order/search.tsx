@@ -10,7 +10,7 @@ import {
     Popover,
     Radio,
     RadioGroup, Select, Stack,
-    Typography
+    Typography, useMediaQuery
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddIcon from '@mui/icons-material/Add';
@@ -374,6 +374,7 @@ const TimerChoose = memo(({isRound,index}:{
     index:number
 }) => {
     const {t} = useTranslation()
+    const isMobile = useMediaQuery('(max-width:768px)')
     const dispatch = useDispatch()
 
     const searchQuery = useSelector((state: RootState) => state.searchInfo.searchQuery)
@@ -507,7 +508,7 @@ const TimerChoose = memo(({isRound,index}:{
                                     to:string
                                     from:string
                                 }).from) : disabledTimer}
-                                numberOfMonths={2}
+                                numberOfMonths={isMobile ? 1 : 2}
                                 fixedWeeks
                             />
                         ) : (
@@ -780,22 +781,22 @@ const SearchComponent = () => {
                 </RadioGroup>
             </div>
             <div>
-                <div className={`s-flex jc-bt`}>
-                    <div className={`flex-1`}>
+                <div className={`${styles.searchFormRow} s-flex jc-bt`}>
+                    <div className={`${styles.searchFields} flex-1`}>
                         <Grid container spacing={2}>
                             {
                                 searchQuery.map((_,searchValIndex) => (
                                     <Grid size={12} key={searchValIndex}>
-                                        <Grid container spacing={1}  sx={{
+                                        <Grid container spacing={1} className={styles.searchSegment} sx={{
                                             alignItems: "center",
                                         }}>
-                                            <Grid size={6}>
+                                            <Grid size={{xs: 12, sm: 6}}>
                                                 <Airports index={searchValIndex} />
                                             </Grid>
-                                            <Grid size={3}>
+                                            <Grid size={{xs: 6, sm: 3}}>
                                                 <TimerChoose isRound={isRound} index={searchValIndex} />
                                             </Grid>
-                                            <Grid size={3}>
+                                            <Grid size={{xs: 6, sm: 3}}>
                                                 {
                                                     searchValIndex > 0 ? (
                                                         searchValIndex > 1 && <CancelSharpIcon className={`cursor-p`} onClick={() => dispatch(delSearch(searchValIndex))} sx={{
@@ -811,7 +812,7 @@ const SearchComponent = () => {
                             }
                         </Grid>
                     </div>
-                    <Button variant="contained" onClick={search} loading={searchLoad} sx={{
+                    <Button className={styles.searchButton} variant="contained" onClick={search} loading={searchLoad} sx={{
                         height: 'var(--put-height)',
                         color: 'white',
                         fontSize: '1.2rem',
