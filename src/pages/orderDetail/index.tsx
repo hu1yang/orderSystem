@@ -1,22 +1,25 @@
 import React, { useEffect, useMemo, useRef, useState} from "react";
+import {useNavigate, useParams} from "react-router";
+import {useSelector} from "react-redux";
+import type {RootState} from "@/store";
+
 import {
     Alert,
     Button,
-
     Grid,
     Snackbar,
     type SnackbarCloseReason,
 } from "@mui/material";
-import styles from './styles.module.less'
-import FirportInfomation from "@/component/passenger/firportInfomation.tsx";
-import {useSelector} from "react-redux";
-import type {RootState} from "@/store";
+
+import AirportInformation from "@/component/passenger/airportInformation.tsx";
 import CardCom from "@/component/passenger/cardCom.tsx";
+
 import {calculateTotalPriceSummary} from "@/utils/order.ts";
-import stylesPass from '@/component/passenger/styles.module.less'
 import {formatDateToShortString} from "@/utils/public.ts";
-import {useNavigate, useParams} from "react-router";
 import {paymentOrderAgent} from "@/utils/request/agent.ts";
+
+import styles from './styles.module.less'
+import stylesPass from '@/component/passenger/styles.module.less'
 
 // const FlightCom = memo((
 //     {type, data}:
@@ -80,7 +83,7 @@ const Flight = () => {
                     {
                         !!airChoose.result && airChoose.result.itineraries.map((itinerarie) => (
                             <Grid size={6} key={itinerarie.itineraryKey}>
-                                <FirportInfomation segments={itinerarie.segments} amounts={itinerarie.amounts} />
+                                <AirportInformation segments={itinerarie.segments} amounts={itinerarie.amounts} />
                             </Grid>
                         ))
                     }
@@ -211,7 +214,7 @@ const OrderDetail = () => {
 
     useEffect(() => {
         if(!payid){
-            navigate('/')
+            navigate(-1)
         }
     }, [payid]);
 
@@ -247,7 +250,7 @@ const OrderDetail = () => {
         },origin)
 
         setTimeout(() => {
-            navigate('/')
+            navigate(-1)
         },500)
     }
 

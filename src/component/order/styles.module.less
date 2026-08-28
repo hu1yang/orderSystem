@@ -460,16 +460,27 @@
                 background: hsla(0, 0%, 100%, .9);
                 border-radius: 4px;
                 position: relative;
-                padding: 6px;
+                padding: 8px;
                 font-size: 1rem;
+
+                .prevComInfo{
+                    flex: 1;
+                    min-width: 0;
+                }
+
                 .airInfos{
-                    margin-left: 30px;
+                    display: grid;
+                    grid-template-columns: repeat(4, minmax(0, auto));
+                    align-items: center;
+                    gap: 8px 20px;
+                    min-width: 0;
+                    margin-left: 20px;
+
                     span{
                         font-size: 1.2em;
                         color: var(--text-color);
                         line-height: 18px;
-                        display: table-cell;
-                        padding-right: 24px;
+                        white-space: nowrap;
                     }
                 }
 
@@ -761,6 +772,427 @@
     .firportInfo{
         background: #fff;
         padding: 0 32px 24px;
+    }
+}
+
+.mobileFilterButton{
+    display: none !important;
+}
+
+.filterItemSkeleton{
+    margin-bottom: 6px;
+    padding: 12px var(--pm-16) 16px;
+    background: var(--vt-c-white);
+}
+
+.defaultShow{
+    min-width: 0;
+
+    .historySection{
+        width: 100%;
+    }
+
+    .historyGridItem{
+        min-width: 0;
+    }
+
+    .historyTitle{
+        margin-bottom: 1rem;
+        color: var(--text-color);
+        font-weight: 700;
+    }
+
+    .historyCard{
+        height: 100%;
+        border-radius: var(--border-radius);
+    }
+
+    .historyHeader{
+        :global(.MuiCardHeader-content){
+            min-width: 0;
+        }
+
+        :global(.MuiCardHeader-title){
+            display: -webkit-box;
+            overflow: hidden;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+    }
+
+    .historyContent{
+        padding-top: 0;
+    }
+
+    .historyMeta{
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .defaultBanner{
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: var(--pm-16);
+        border-radius: var(--border-radius);
+    }
+}
+
+@media (max-width: 768px) {
+    :global(.MuiPopover-root){
+        margin-top: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    :root{
+        --airline-width: auto;
+        --put-height: 50px;
+        --vice-width: 100%;
+        --price-width: 100%;
+        --pop-width: calc(100vw - 24px);
+        //--card-width: min(280px, calc(100vw - 64px));
+    }
+
+    .defaultShow{
+        .historyTitle{
+            margin: 2px 4px 8px;
+            font-size: 1.25rem;
+        }
+
+        .historyCard{
+            box-shadow: 0 2px 10px rgba(15, 41, 77, .08);
+        }
+
+        .historyHeader{
+            padding: 12px 12px 8px;
+
+            :global(.MuiCardHeader-title){
+                font-size: 1.15rem;
+            }
+
+            :global(.MuiCardHeader-subheader){
+                margin-top: 3px;
+                font-size: 1rem;
+            }
+
+            :global(.MuiCardHeader-action){
+                align-self: center;
+                margin: 0 0 0 8px;
+            }
+        }
+
+        .historyContent{
+            padding: 0 12px 12px !important;
+        }
+
+        .historyMeta{
+            justify-content: flex-start;
+
+            > :last-child{
+                margin-left: auto;
+            }
+        }
+
+        .defaultBanner{
+            margin-top: 12px;
+        }
+    }
+
+    .fixHeader{
+        display: none;
+    }
+
+    .searchContainer{
+        padding: 8px 10px 10px;
+        box-shadow: 0 4px 14px rgba(15, 41, 77, .1);
+
+        :global(.MuiFormControlLabel-root){
+            margin-right: 10px;
+        }
+
+        .searchFormRow{
+            flex-direction: column;
+        }
+
+        .searchFields{
+            width: 100%;
+            min-width: 0;
+        }
+
+        .searchSegment{
+            align-items: stretch;
+        }
+
+        .searchButton{
+            width: 100%;
+            margin: 10px 0 0 !important;
+        }
+    }
+
+    .inputModel{
+        padding: 4px;
+
+        .addressCard{
+            padding: 4px 6px;
+        }
+    }
+
+    .cycleAddress{
+        width: 34px;
+        height: 34px;
+        margin: 0 -10px;
+        flex: 0 0 34px;
+
+        svg{
+            font-size: 1.4em;
+        }
+    }
+
+    .popBox{
+        width: calc(100vw - 24px);
+        max-width: 100%;
+
+        .popScroll{
+            max-height: 60vh;
+        }
+    }
+
+    .dateClass{
+        max-width: calc(100vw - 24px);
+        overflow-x: auto;
+        padding: 8px;
+    }
+
+    .dayContainer{
+        margin: 10px 0;
+
+        .dayChoose .dayItem{
+            padding: 7px 10px;
+        }
+    }
+
+    .filterContainer{
+        position: static;
+        width: 100%;
+        margin: 0 0 10px;
+        padding: 0;
+
+        .mobileFilterButton{
+            display: flex !important;
+            min-height: 44px;
+            background: var(--vt-c-white);
+            font-weight: 700;
+            font-size: 1.2rem;
+
+            svg{
+                transition: transform .25s ease;
+            }
+
+            &.mobileFilterOpen{
+                transform: rotate(180deg);
+            }
+        }
+
+        .filterPanel{
+            display: none;
+            background: var(--vt-c-white);
+            border: 1px solid var(--put-border-color);
+            border-top: 0;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            padding: 12px;
+        }
+
+        .mobileFilterPanelOpen{
+            display: block;
+        }
+
+        .filterbox{
+            margin-bottom: 12px;
+        }
+
+        .filterAccordion{
+            margin: 12px 0;
+        }
+    }
+
+    .filterData{
+        width: 100%;
+        min-width: 0;
+
+        .filterBox .filterHeader{
+            padding: 12px;
+            background-position: center;
+
+            .filterHeaderTitle h2{
+                font-size: 1.15em;
+                line-height: 1.35;
+            }
+
+            .prevCom{
+                margin-top: 8px;
+                padding: 10px;
+                //flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+
+                .prevComInfo{
+                    width: 100%;
+                    min-width: 0;
+                    align-items: flex-start;
+
+                    :global(.MuiChip-root){
+                        flex: 0 0 auto;
+                        margin-top: 1px;
+                    }
+                }
+
+                .airInfos{
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 5px 10px;
+                    width: auto;
+                    min-width: 0;
+                    margin-left: 8px;
+
+                    span{
+                        display: block;
+                        min-width: 0;
+                        padding: 0;
+                        font-size: 1.05em;
+                        line-height: 1.35;
+                        white-space: normal;
+                    }
+                }
+
+                .firportSet{
+                    align-self: flex-end;
+                    min-height: 30px;
+                    margin: 0;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                }
+            }
+        }
+    }
+
+    .filterData .filterBox .filterItem{
+        border-radius: var(--border-radius);
+        overflow: hidden;
+
+        .filterItemBox{
+            padding: 0 12px;
+
+            .filterTips{
+                padding: 10px 0 6px;
+            }
+
+            .airInfomation{
+                flex-wrap: wrap;
+                padding-bottom: 10px;
+
+                .leftInfo{
+                    width: 100%;
+                    min-width: 0;
+                    flex: 0 0 100%;
+                    flex-direction: column;
+                    align-items: stretch;
+
+                    .leftInfoDetail{
+                        width: 100%;
+                        flex: 0 0 auto;
+                        align-items: center;
+                        margin-bottom: 8px;
+
+                        .picture{
+                            width: 34px;
+                            height: 34px;
+                        }
+
+                        .leftInfoDetailTitle{
+                            display: flex;
+                            align-items: center;
+                            flex: 1;
+                            min-width: 0;
+
+                            .airTitle{
+                                width: auto;
+
+                                .airTitleSpan{
+                                    white-space: nowrap;
+                                }
+                            }
+                        }
+                    }
+
+                    .timelineGrid{
+                        width: 100%;
+                        min-width: 0;
+                        flex: 0 0 auto;
+                        margin: 0;
+                    }
+                }
+
+                .rightInfo{
+                    width: 100%;
+                    padding: 10px 0 0;
+                    margin-top: 12px;
+                    border-top: 1px solid #edf0f4;
+                    justify-content: space-between;
+
+                    .priceBox{
+                        align-items: flex-start;
+
+                        .price div{
+                            margin-left: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        .flightTimeline{
+            width: 100%;
+            max-width: none;
+            padding-left: 0;
+            min-height: 54px;
+        }
+
+        .filterItemMore{
+            overflow-x: auto;
+
+            .introduction{
+                display: none;
+            }
+        }
+
+        &.filterItemSkeleton{
+            padding: 0;
+
+            .filterItemBox{
+                padding: 0 12px;
+            }
+
+            .leftInfoDetailTitle{
+                padding: 0;
+            }
+
+            .rightInfo{
+                :global(.MuiSkeleton-rounded){
+                    flex: 0 0 110px;
+                }
+            }
+        }
+    }
+
+    .fareCardsSlider{
+        min-width: 100%;
+
+        :global(.swiper){
+            padding-bottom: 4px;
+        }
     }
 }
 

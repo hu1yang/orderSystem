@@ -1,7 +1,7 @@
-import {useEffect, useRef} from "react";
-
+import {useEffect, useLayoutEffect, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
+import {restoreOrderList} from "@/store/orderInfo.ts";
 import { setErrorMsg } from "@/store/searchInfo.ts";
 
 import {throttle} from "@/utils/public.ts";
@@ -26,7 +26,6 @@ const Order = () => {
     const {query, airSearchData} = useSelector((state: RootState) => state.ordersInfo);
 
     useEffect(() => {
-
         const onScroll = throttle(() => {
             const el = dayRef.current
             const root = document.documentElement
@@ -47,6 +46,9 @@ const Order = () => {
         }
     },[])
 
+    useLayoutEffect(() => {
+        dispatch(restoreOrderList())
+    }, [dispatch])
 
     const errClose = () => {
         dispatch(setErrorMsg(null))

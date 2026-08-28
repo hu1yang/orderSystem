@@ -44,6 +44,7 @@ const Itinerary = memo(({ segments }: { segments: Segment[] }) => {
 
     return (
         <Stack
+            className={styles.itinerarySummary}
             direction="row"
             spacing={0.5}
             sx={{
@@ -58,7 +59,7 @@ const Itinerary = memo(({ segments }: { segments: Segment[] }) => {
     );
 });
 
-const FirportInfomation = memo(({segments,amounts}:{
+const AirportInformation = memo(({segments,amounts}:{
     segments:Segment[]
     amounts:Amount[]|null
 }) => {
@@ -67,7 +68,7 @@ const FirportInfomation = memo(({segments,amounts}:{
     const channelCode = useSelector((state: RootState) => state.ordersInfo.airChoose.channelCode)
 
     return (
-        <div className={styles.firportInfomation}>
+        <div className={styles.airportInformation}>
             <div className={`${styles.firportDate} s-flex ai-ct`}>
                 {/*<Chip label={labelPostion} size={'small'} sx={{*/}
                 {/*    background: 'var(--active-color)',*/}
@@ -99,4 +100,4 @@ const FirportInfomation = memo(({segments,amounts}:{
 })
 
 
-export default FirportInfomation;
+export default AirportInformation;

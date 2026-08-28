@@ -1,16 +1,19 @@
-import {Box, Checkbox, Divider, FormControlLabel, FormGroup, Slider, SliderThumb, Typography} from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Brightness2Icon from '@mui/icons-material/Brightness2';
-import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
-import styles from './styles.module.less'
 import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import type {RootState} from "@/store";
-import {airlist, debounce, isZhCN} from "@/utils/public.ts";
-import defaultAir from "@/assets/air/default.webp";
 import {setFilterData} from "@/store/orderInfo.ts";
 import {useTranslation} from "react-i18next";
 
+import {Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, Slider, SliderThumb, Typography} from "@mui/material";
+
+import {airlist, debounce, isZhCN} from "@/utils/public.ts";
+
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Brightness2Icon from '@mui/icons-material/Brightness2';
+import BrightnessLowIcon from '@mui/icons-material/BrightnessLow';
+import defaultAir from "@/assets/air/default.webp";
+
+import styles from './styles.module.less'
 
 type AirbnbThumbComponentProps = React.HTMLAttributes<HTMLSpanElement> & {
     'data-index'?: string;
@@ -153,7 +156,6 @@ const RecommendedCheckboxList = () => {
     )
 }
 
-// --- 新增组件: 时间滑块复用 ---
 const TimeRangeSlider = memo(({label,filterTimevalue,changeFilterTimeFnc,disabled}: {
     label: string
     filterTimevalue: number[]
@@ -245,6 +247,7 @@ const TimeRangeSlider = memo(({label,filterTimevalue,changeFilterTimeFnc,disable
 const FilterComponent = () => {
     const {t} = useTranslation();
     const dispatch = useDispatch()
+    const [mobileOpen, setMobileOpen] = useState(false)
 
     const searchLoad = useSelector((state: RootState) => state.searchInfo.searchLoad)
     const {filterData, cityList, airportActived, query} = useSelector((state: RootState) => state.ordersInfo)
@@ -294,51 +297,59 @@ const FilterComponent = () => {
 
     return (
         <div className={styles.filterContainer}>
-            <div className={styles.filterbox}>
-                <div className={`${styles.titleBox} s-flex ai-ct jc-bt`}>
-                    <div className={styles.title}>
-                        <span>{t('order.filters')} ({(airportActived === 0) ? t('order.departure') : t('order.arrival')})</span>
-                    </div>
-                </div>
-                <div className={`${styles.filterLiBox} s-flex flex-wrap`}>
-                    <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
-                        <div className={styles.label}>
-                            <span>{t('order.departingTo',{airport:arrival})}</span>
+            <Button
+                className={styles.mobileFilterButton}
+                fullWidth
+                variant="outlined"
+                onClick={() => setMobileOpen(value => !value)}
+                endIcon={<ExpandMoreIcon className={mobileOpen ? styles.mobileFilterOpen : ''} />}
+            >
+                {t('order.filters')}
+            </Button>
+            <div className={`${styles.filterPanel} ${mobileOpen ? styles.mobileFilterPanelOpen : ''}`}>
+                <div className={styles.filterbox}>
+                    <div className={`${styles.titleBox} s-flex ai-ct jc-bt`}>
+                        <div className={styles.title}>
+                            <span>{t('order.filters')} ({(airportActived === 0) ? t('order.departure') : t('order.arrival')})</span>
                         </div>
                     </div>
-                    {
-                        filterData.airline.map(item => (
-                            <div className={`${styles.fliterLi} s-flex ai-st cursor-p`} key={item}>
-                                <div className={styles.label}>
-                                    <span>{airlist[item].title}</span>
-                                </div>
+                    <div className={`${styles.filterLiBox} s-flex flex-wrap`}>
+                        <div className={`${styles.fliterLi} s-flex ai-st cursor-p`}>
+                            <div className={styles.label}>
+                                <span>{t('order.departingTo',{airport:arrival})}</span>
                             </div>
-                        ))
-                    }
-
-
-                </div>
-            </div>
-            <Divider component="div"/>
-            <FilterAccordion title={t('order.airlines')} clear={false} render={<RecommendedCheckboxList/>}/>
-            <Divider component="div" />
-            {
-                !searchLoad && filterData.filterTime.map((filterTime,filterTimeIndex) => (
-                    <FilterAccordion
-                        title={t('order.timers',{arrival:query.itineraries[filterTimeIndex].arrival})}
-                        key={filterTimeIndex}
-                        clear={airportActived === filterTimeIndex}
-                        clearFilter={() => clearFilter(filterTimeIndex)}
-                        render={
-                            <>
-                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.departure} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'departure')} label={`${t('order.departureTime')}:`} />
-                                <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.arrival} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'arrival')} label={`${t('order.arrivalTIme')}:`} />
-                            </>
+                        </div>
+                        {
+                            filterData.airline.map(item => (
+                                <div className={`${styles.fliterLi} s-flex ai-st cursor-p`} key={item}>
+                                    <div className={styles.label}>
+                                        <span>{airlist[item].title}</span>
+                                    </div>
+                                </div>
+                            ))
                         }
-                    />
-                ))
-            }
-
+                    </div>
+                </div>
+                <Divider component="div"/>
+                <FilterAccordion title={t('order.airlines')} clear={false} render={<RecommendedCheckboxList/>}/>
+                <Divider component="div" />
+                {
+                    !searchLoad && filterData.filterTime.map((filterTime,filterTimeIndex) => (
+                        <FilterAccordion
+                            title={t('order.timers',{arrival:query.itineraries[filterTimeIndex].arrival})}
+                            key={filterTimeIndex}
+                            clear={airportActived === filterTimeIndex}
+                            clearFilter={() => clearFilter(filterTimeIndex)}
+                            render={
+                                <>
+                                    <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.departure} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'departure')} label={`${t('order.departureTime')}:`} />
+                                    <TimeRangeSlider disabled={filterTimeIndex !== airportActived} filterTimevalue={filterTime.arrival} changeFilterTimeFnc={(value:number[]) => changeFilterTime(value,filterTimeIndex,'arrival')} label={`${t('order.arrivalTIme')}:`} />
+                                </>
+                            }
+                        />
+                    ))
+                }
+            </div>
         </div>
     );
 }
