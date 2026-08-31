@@ -270,7 +270,7 @@ const Airports = memo(({index}:{
             </div>
             <InputModel openPop={(event) => openPop(event,'arrival')}>
                 {
-                    daValue.arrival ? <AddressCard style={{marginLeft: '4px'}} address={daValue.arrival} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>{t('order.goingTo')}</Typography>
+                    daValue.arrival ? <AddressCard address={daValue.arrival} /> : <Typography sx={{color:'var(--put-border-color)',fontWeight:600,fontSize:14,ml:'1rem'}}>{t('order.goingTo')}</Typography>
                 }
             </InputModel>
             <InputPop id='searchInputPop' open={open} anchorEl={anchorEl as HTMLDivElement} closePop={closePop}>
