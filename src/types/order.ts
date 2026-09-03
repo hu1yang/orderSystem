@@ -357,8 +357,12 @@ export interface AgentSetting extends AddAgentSettingForm {
 export interface Iamount {
     amount: Amount
     itineraryKey:string
+    channelCode:string
     contextId:string
     resultKey:string
+    currency:string
+    priceAmounts: Amount[]
+    totalPrice: string
 }
 
 

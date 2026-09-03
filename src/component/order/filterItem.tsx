@@ -38,6 +38,9 @@ import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import {useTranslation} from "react-i18next";
 import dayjs from "dayjs";
 
+const getResultIdentity = (channelCode: string, contextId: string, resultKey: string) =>
+    JSON.stringify([channelCode, contextId, resultKey]);
+
 
 const FlightTimeline = memo(({segments,luggageIncludes}:{
     segments:Segment[]
@@ -238,6 +241,7 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
 const FilterItem = () => {
     const {t} = useTranslation()
     const searchData = useSearchData();
+    console.log(searchData)
 
     const {airChoose, airportActived, airSearchData, query} = useSelector((state: RootState) => state.ordersInfo)
 
@@ -250,7 +254,8 @@ const FilterItem = () => {
             const airSearch = airSearchData.find(
                 item =>
                     item.contextId === amtData.contextId &&
-                    item.channelCode === amtData.channelCode
+                    item.channelCode === amtData.channelCode &&
+                    item.resultKey === amtData.resultKey
             );
 
             if (!airSearch) return;
@@ -258,7 +263,10 @@ const FilterItem = () => {
                 it => it.itineraryNo > airportActived
             )
 
-            mapAmount.set(amtData.contextId, resAir);
+            mapAmount.set(
+                getResultIdentity(amtData.channelCode, amtData.contextId, amtData.resultKey),
+                resAir
+            );
         });
 
         const result = getLowestAmountsByItinerary(mapAmount)
@@ -268,18 +276,39 @@ const FilterItem = () => {
 
 
     const amountsMemo = useMemo(() => {
+        const beforeAmounts = airChoose.result?.itineraries
+            .map(it => it.amounts.find(amount => amount.passengerType === 'adt'))
+            .filter((amount): amount is Amount => Boolean(amount)) ?? [];
+
         const result = searchData?.amountsData.flatMap(ad => {
             return ad.amounts
             .filter(am => am.passengerType === 'adt')
-            .map(amount => ({
-                itineraryKey: searchData.itineraryKey,
-                contextId: ad.contextId,
-                resultKey: ad.resultKey,
-                amount
-            }));
+            .map(amount => {
+                const priceAmounts = [
+                    ...beforeAmounts,
+                    amount,
+                    ...(nextCheapAmount.get(
+                        getResultIdentity(ad.channelCode, ad.contextId, ad.resultKey)
+                    ) ?? []),
+                ];
+
+                return {
+                    itineraryKey: searchData.itineraryKey,
+                    channelCode: ad.channelCode,
+                    contextId: ad.contextId,
+                    resultKey: ad.resultKey,
+                    currency: ad.currency,
+                    amount,
+                    priceAmounts,
+                    totalPrice: amountPrice(priceAmounts),
+                };
+            });
         });
-        return result!;
-    }, [searchData]);
+
+        return (result ?? []).sort(
+            (left, right) => Number(left.totalPrice) - Number(right.totalPrice)
+        );
+    }, [searchData, nextCheapAmount, airChoose.result]);
 
     const luggageIncludes = useMemo(() => {
         const result = {
@@ -310,9 +339,10 @@ const FilterItem = () => {
             const current = findLowestAmount(
                 am.amounts.filter(am => am.passengerType === 'adt') ?? []
             );
-            const next = nextCheapAmount.get(am.contextId) ?? [];
+            const resultIdentity = getResultIdentity(am.channelCode, am.contextId, am.resultKey);
+            const next = nextCheapAmount.get(resultIdentity) ?? [];
             if(current){
-                itinerariesMerge.set(am.contextId,[
+                itinerariesMerge.set(resultIdentity,[
                     current,
                     ...next
                 ])
@@ -471,7 +501,7 @@ const FilterItem = () => {
                         </CardContent>
                     </Card>
                 </div>
-                <FareCardsSlider nextCheapAmount={nextCheapAmount} amountsMemo={amountsMemo} />
+                <FareCardsSlider amountsMemo={amountsMemo} />
             </div>
         </div>
     )
