@@ -5,11 +5,8 @@ import type {RootState} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 import {setChannelCode, setDisabledChoose, setResult, setResultItineraries} from "@/store/orderInfo.ts";
 
-import {amountPrice} from "@/utils/order.ts";
-
 import type {Amount, Iamount, Result} from "@/types/order.ts";
 
-import {useSearchData} from "@/context/order/SearchDataContext.tsx";
 import {useTranslation} from "react-i18next";
 
 import {
@@ -43,18 +40,20 @@ import styles from './styles.module.less'
 import type {NavigationOptions} from "swiper/types";
 
 
-const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey}:{
+const SliderBox = memo(({amount,priceAmounts,totalPrice,itineraryKey,channelCode,contextId,resultKey,currency}:{
     amount: Amount
-    nextCheapAmount: Map<string, Amount[]>
+    priceAmounts: Amount[]
+    totalPrice: string
     itineraryKey: string
+    channelCode: string
     contextId: string
     resultKey: string
+    currency: string
 }) => {
     const {t} = useTranslation()
-    const searchData = useSearchData();
 
     const searchLoad = useSelector((state:RootState) => state.searchInfo.searchLoad)
-    const {airChoose,airSearchData,query,disabledChoose,airportActived} = useSelector((state: RootState) => state.ordersInfo)
+    const {airSearchData,query,disabledChoose,airportActived} = useSelector((state: RootState) => state.ordersInfo)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -78,34 +77,6 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
         }
     }, [amount.luggages]);
 
-    const cheapAmount = useMemo(() => {
-        let beforeAmount: Amount[] = [];
-
-        if (airChoose.result) {
-            beforeAmount = airChoose.result.itineraries
-            .map(it => it.amounts.find(amt => amt.passengerType === 'adt'))
-            .filter((a): a is Amount => Boolean(a));
-        }
-
-        const cheapAmounts = [
-            amount,
-            ...nextCheapAmount.get(contextId) as Amount[]
-        ]
-
-        return [
-            ...beforeAmount,
-            ...cheapAmounts
-        ]
-
-    }, [nextCheapAmount,airChoose,amount,contextId]);
-
-    const lostPrice = useMemo(() => {
-        if(!cheapAmount) return 0
-        const price = amountPrice(cheapAmount as Amount[])
-        return price
-    },[cheapAmount])
-
-
     const submitResult = () => {
         window.scrollTo({
             top: 0,
@@ -114,15 +85,18 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
         dispatch(setDisabledChoose(true))
 
         const airport = airSearchData
-            .find(airport => airport.channelCode === searchData?.channelCode && airport.contextId === contextId && airport.resultKey === resultKey)
-        if(!airport) return;
+            .find(airport => airport.channelCode === channelCode && airport.contextId === contextId && airport.resultKey === resultKey)
+        if(!airport) {
+            dispatch(setDisabledChoose(false))
+            return;
+        }
         const filteritMer = airport.itineraries.filter(itm => itm.itineraryNo === airportActived)
 
         const parent = filteritMer.find(item =>
             item.itineraryKey === itineraryKey
         );
 
-        const chooseAmount = parent?.amounts.filter(am => am.familyName === amount.familyName);
+        const chooseAmount = parent?.amounts.filter(am => am.familyCode === amount.familyCode);
 
 
         const newItinerarie = {
@@ -391,7 +365,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
                                 padding: 'var(--pm-16)',
                             }
                         }} title={
-                            <PriceDetail amounts={cheapAmount as Amount[]} totalPrice={lostPrice} currency={searchData?.currency as string} />
+                            <PriceDetail amounts={priceAmounts} totalPrice={totalPrice} currency={currency} />
                         }>
                             <Typography fontWeight="bold" fontSize="1.1rem" display="inline" sx={{
                                 fontSize: 20,
@@ -400,7 +374,7 @@ const SliderBox = memo(({amount,nextCheapAmount,itineraryKey,contextId,resultKey
                                     textDecoration: 'underline',
                                     cursor: 'help',
                                 }
-                            }}>{searchData?.currency} {lostPrice}</Typography>
+                            }}>{currency} {totalPrice}</Typography>
                         </HtmlTooltip>
                     </Box>
                     <Button variant="contained" disabled={searchLoad || disabledChoose} onClick={submitResult} className={'full-width'} sx={{
@@ -429,8 +403,7 @@ const arrowBaseSx: SxProps<Theme> = {
     height: 48,
 };
 
-const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
-    nextCheapAmount: Map<string, Amount[]>
+const FareCardsSlider = memo(({amountsMemo}: {
     amountsMemo:Iamount[]
 }) => {
     const {airportActived} = useSelector((state: RootState) => state.ordersInfo)
@@ -479,15 +452,18 @@ const FareCardsSlider = memo(({nextCheapAmount,amountsMemo}: {
                     }}
                     modules={[Navigation]}>
                 {
-                    amountsMemo.map((amountsMerge,amountsMergeIndex) => (
+                    amountsMemo.map((amountsMerge) => (
                         <SwiperSlide
-                            key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}-${amountsMerge.contextId}-${amountsMergeIndex}_${airportActived}`}>
+                            key={`${amountsMerge.itineraryKey}-${amountsMerge.amount.familyCode}-${amountsMerge.channelCode}-${amountsMerge.contextId}-${amountsMerge.resultKey}_${airportActived}`}>
                             <SliderBox
                                 amount={amountsMerge.amount}
-                                nextCheapAmount={nextCheapAmount}
+                                priceAmounts={amountsMerge.priceAmounts}
+                                totalPrice={amountsMerge.totalPrice}
                                 itineraryKey={amountsMerge.itineraryKey}
+                                channelCode={amountsMerge.channelCode}
                                 contextId={amountsMerge.contextId}
                                 resultKey={amountsMerge.resultKey}
+                                currency={amountsMerge.currency}
                                 />
                         </SwiperSlide>
 
