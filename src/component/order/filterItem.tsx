@@ -241,7 +241,6 @@ const FlightTimeline = memo(({segments,luggageIncludes}:{
 const FilterItem = () => {
     const {t} = useTranslation()
     const searchData = useSearchData();
-    console.log(searchData)
 
     const {airChoose, airportActived, airSearchData, query} = useSelector((state: RootState) => state.ordersInfo)
 
