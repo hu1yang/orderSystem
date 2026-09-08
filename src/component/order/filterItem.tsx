@@ -269,9 +269,19 @@ const FilterItem = () => {
         });
 
         const result = getLowestAmountsByItinerary(mapAmount)
+        const remainingItineraryCount = Math.max(
+            query.itineraries.length - airportActived - 1,
+            0
+        );
+
+        result.forEach((amounts, resultIdentity) => {
+            if (amounts.length !== remainingItineraryCount) {
+                result.delete(resultIdentity);
+            }
+        });
 
         return result
-    }, [airSearchData,searchData,airportActived]);
+    }, [airSearchData,searchData,airportActived,query.itineraries.length]);
 
 
     const amountsMemo = useMemo(() => {
@@ -280,15 +290,20 @@ const FilterItem = () => {
             .filter((amount): amount is Amount => Boolean(amount)) ?? [];
 
         const result = searchData?.amountsData.flatMap(ad => {
+            const nextAmounts = nextCheapAmount.get(
+                getResultIdentity(ad.channelCode, ad.contextId, ad.resultKey)
+            );
+
+            // 缺少任一后续行程报价时，不能把缺失价格当作 0 参与排序。
+            if (!nextAmounts) return [];
+
             return ad.amounts
             .filter(am => am.passengerType === 'adt')
             .map(amount => {
                 const priceAmounts = [
                     ...beforeAmounts,
                     amount,
-                    ...(nextCheapAmount.get(
-                        getResultIdentity(ad.channelCode, ad.contextId, ad.resultKey)
-                    ) ?? []),
+                    ...nextAmounts,
                 ];
 
                 return {
@@ -339,8 +354,8 @@ const FilterItem = () => {
                 am.amounts.filter(am => am.passengerType === 'adt') ?? []
             );
             const resultIdentity = getResultIdentity(am.channelCode, am.contextId, am.resultKey);
-            const next = nextCheapAmount.get(resultIdentity) ?? [];
-            if(current){
+            const next = nextCheapAmount.get(resultIdentity);
+            if(current && next){
                 itinerariesMerge.set(resultIdentity,[
                     current,
                     ...next

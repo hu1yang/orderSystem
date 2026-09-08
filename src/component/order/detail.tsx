@@ -96,14 +96,24 @@ const SliderBox = memo(({amount,priceAmounts,totalPrice,itineraryKey,channelCode
             item.itineraryKey === itineraryKey
         );
 
-        const chooseAmount = parent?.amounts.filter(am => am.familyCode === amount.familyCode);
+        if(!parent) {
+            dispatch(setDisabledChoose(false))
+            return;
+        }
+
+        const chooseAmount = parent.amounts.filter(am => am.familyName === amount.familyName);
+
+        if(!chooseAmount.length) {
+            dispatch(setDisabledChoose(false))
+            return;
+        }
 
 
         const newItinerarie = {
-            amounts:[...chooseAmount!],
-            itineraryNo: parent!.itineraryNo,
+            amounts:[...chooseAmount],
+            itineraryNo: parent.itineraryNo,
             itineraryKey: itineraryKey,
-            segments: parent!.segments
+            segments: parent.segments
         }
         if(airportActived === 0){
             const resultObj = {
