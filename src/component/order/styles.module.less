@@ -780,9 +780,25 @@
 }
 
 .filterItemSkeleton{
-    margin-bottom: 6px;
-    padding: 12px var(--pm-16) 16px;
-    background: var(--vt-c-white);
+    pointer-events: none;
+
+    .skeletonTimeline{
+        width: 100%;
+        max-width: 400px;
+        min-height: 54px;
+        padding-left: 8px;
+    }
+
+    .skeletonAirport{
+        flex: 0 0 80px;
+    }
+
+    .skeletonRoute{
+        flex: 1;
+        min-width: 60px;
+        margin: 0 8px;
+        gap: 1px;
+    }
 }
 
 .defaultShow{
@@ -1169,8 +1185,6 @@
         }
 
         &.filterItemSkeleton{
-            padding: 0;
-
             .filterItemBox{
                 padding: 0 12px;
             }
@@ -1183,6 +1197,11 @@
                 :global(.MuiSkeleton-rounded){
                     flex: 0 0 110px;
                 }
+            }
+
+            .skeletonTimeline{
+                max-width: none;
+                padding-left: 0;
             }
         }
     }
